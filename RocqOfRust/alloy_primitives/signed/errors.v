@@ -123,27 +123,37 @@ Module signed.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Ruint" |) |) |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Ruint" |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "ruint::string::ParseError" ] ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                            |)
-                          ]
-                        |)
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "ruint::string::ParseError" ]
+                                ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                              |)
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                       ]
                     |)));
                 fun γ =>
@@ -166,11 +176,15 @@ Module signed.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| mk_str (| "IntegerOverflow" |) |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| mk_str (| "IntegerOverflow" |) |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)))
               ]
@@ -232,7 +246,14 @@ Module signed.
                     [],
                     [ Ty.path "alloy_primitives::signed::errors::ParseSignedError" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "alloy_primitives::signed::errors::ParseSignedError" ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "isize" :=
                 M.call_closure (|
@@ -242,7 +263,14 @@ Module signed.
                     [],
                     [ Ty.path "alloy_primitives::signed::errors::ParseSignedError" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "alloy_primitives::signed::errors::ParseSignedError" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "bool",
@@ -311,8 +339,28 @@ Module signed.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "ruint::string::ParseError" ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "ruint::string::ParseError" ]
+                                    ])
                               ]
                             |)));
                         fun γ => ltac:(M.monadic (Value.Bool true))
@@ -409,18 +457,18 @@ Module signed.
                         γ0_0,
                         "ruint::base_convert::BaseConvertError::Overflow"
                       |) in
-                    Value.StructTuple
-                      "alloy_primitives::signed::errors::ParseSignedError::IntegerOverflow"
-                      []
-                      []
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "alloy_primitives::signed::errors::ParseSignedError::IntegerOverflow"
+                        [])
+                      (Ty.path "alloy_primitives::signed::errors::ParseSignedError")));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "alloy_primitives::signed::errors::ParseSignedError::Ruint"
-                      []
-                      []
-                      [ M.read (| err |) ]))
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "alloy_primitives::signed::errors::ParseSignedError::Ruint"
+                        [ M.read (| err |) ])
+                      (Ty.path "alloy_primitives::signed::errors::ParseSignedError")))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -479,26 +527,30 @@ Module signed.
                         Ty.apply (Ty.path "&") [] [ Ty.path "ruint::string::ParseError" ],
                         γ1_0
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ]
-                      [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply (Ty.path "&") [] [ Ty.path "ruint::string::ParseError" ])
-                            (Ty.apply
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.call_closure (|
+                            Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| err |) |) |) ]
-                        |)
-                      ]));
+                              [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "ruint::string::ParseError" ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| err |) |) |) ]
+                          |)
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                        ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -507,11 +559,13 @@ Module signed.
                         γ,
                         "alloy_primitives::signed::errors::ParseSignedError::IntegerOverflow"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ]
-                      []))
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                        ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -587,8 +641,12 @@ Module signed.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| e |) |) |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| e |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "ruint::string::ParseError" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                       ]
                     |)));
                 fun γ =>
@@ -611,11 +669,15 @@ Module signed.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| mk_str (| "number does not fit in the integer size" |) |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| mk_str (| "number does not fit in the integer size" |) |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)))
               ]
@@ -706,8 +768,15 @@ Module signed.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BigIntConversionError" |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| mk_str (| "BigIntConversionError" |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -847,11 +916,15 @@ Module signed.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| mk_str (| "output of range integer conversion attempted" |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| mk_str (| "output of range integer conversion attempted" |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

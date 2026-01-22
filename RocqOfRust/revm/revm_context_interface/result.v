@@ -80,99 +80,111 @@ Module result.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ResultAndState" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "result" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "revm_context_interface::result::ExecutionResult")
-                        []
-                        [ HaltReasonT ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_context_interface::result::ResultAndState",
-                          "result"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ResultAndState" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "result" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "revm_context_interface::result::ExecutionResult")
+                          []
+                          [ HaltReasonT ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_context_interface::result::ResultAndState",
+                            "result"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "state" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "hashbrown::map::HashMap")
-                            []
-                            [
-                              Ty.path "alloy_primitives::bits::address::Address";
-                              Ty.path "revm_state::Account";
-                              Ty.path "foldhash::seed::fast::RandomState";
-                              Ty.path "hashbrown::raw::alloc::inner::Global"
-                            ]
-                        ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "hashbrown::map::HashMap")
-                                []
-                                [
-                                  Ty.path "alloy_primitives::bits::address::Address";
-                                  Ty.path "revm_state::Account";
-                                  Ty.path "foldhash::seed::fast::RandomState";
-                                  Ty.path "hashbrown::raw::alloc::inner::Global"
-                                ]
-                            ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_context_interface::result::ResultAndState",
-                              "state"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "state" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "hashbrown::map::HashMap")
+                              []
+                              [
+                                Ty.path "alloy_primitives::bits::address::Address";
+                                Ty.path "revm_state::Account";
+                                Ty.path "foldhash::seed::fast::RandomState";
+                                Ty.path "hashbrown::raw::alloc::inner::Global"
+                              ]
+                          ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "hashbrown::map::HashMap")
+                                  []
+                                  [
+                                    Ty.path "alloy_primitives::bits::address::Address";
+                                    Ty.path "revm_state::Account";
+                                    Ty.path "foldhash::seed::fast::RandomState";
+                                    Ty.path "hashbrown::raw::alloc::inner::Global"
+                                  ]
+                              ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_context_interface::result::ResultAndState",
+                                "state"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -216,58 +228,56 @@ Module result.
                 ],
               self
             |) in
-          Value.mkStructRecord
-            "revm_context_interface::result::ResultAndState"
-            []
-            [ HaltReasonT ]
-            [
-              ("result",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "revm_context_interface::result::ExecutionResult")
-                    []
-                    [ HaltReasonT ],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "revm_context_interface::result::ResultAndState"
+              [
+                ("result",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "revm_context_interface::result::ExecutionResult")
                       []
                       [ HaltReasonT ],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::result::ResultAndState",
-                            "result"
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("state",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "hashbrown::map::HashMap")
-                    []
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.apply
+                        (Ty.path "revm_context_interface::result::ExecutionResult")
+                        []
+                        [ HaltReasonT ],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
                     [
-                      Ty.path "alloy_primitives::bits::address::Address";
-                      Ty.path "revm_state::Account";
-                      Ty.path "foldhash::seed::fast::RandomState";
-                      Ty.path "hashbrown::raw::alloc::inner::Global"
-                    ],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_context_interface::result::ResultAndState",
+                                "result"
+                              |)
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "revm_context_interface::result::ExecutionResult")
+                              []
+                              [ HaltReasonT ]
+                          ])
+                    ]
+                  |));
+                ("state",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "hashbrown::map::HashMap")
                       []
@@ -277,29 +287,59 @@ Module result.
                         Ty.path "foldhash::seed::fast::RandomState";
                         Ty.path "hashbrown::raw::alloc::inner::Global"
                       ],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.apply
+                        (Ty.path "hashbrown::map::HashMap")
+                        []
+                        [
+                          Ty.path "alloy_primitives::bits::address::Address";
+                          Ty.path "revm_state::Account";
+                          Ty.path "foldhash::seed::fast::RandomState";
+                          Ty.path "hashbrown::raw::alloc::inner::Global"
+                        ],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::result::ResultAndState",
-                            "state"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_context_interface::result::ResultAndState",
+                                "state"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "hashbrown::map::HashMap")
+                              []
+                              [
+                                Ty.path "alloy_primitives::bits::address::Address";
+                                Ty.path "revm_state::Account";
+                                Ty.path "foldhash::seed::fast::RandomState";
+                                Ty.path "hashbrown::raw::alloc::inner::Global"
+                              ]
+                          ])
+                    ]
+                  |))
+              ])
+            (Ty.apply
+              (Ty.path "revm_context_interface::result::ResultAndState")
+              []
+              [ HaltReasonT ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -384,22 +424,42 @@ Module result.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_context_interface::result::ResultAndState",
-                    "result"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "revm_context_interface::result::ResultAndState",
-                    "result"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_context_interface::result::ResultAndState",
+                      "result"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "revm_context_interface::result::ExecutionResult")
+                        []
+                        [ HaltReasonT ]
+                    ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "revm_context_interface::result::ResultAndState",
+                      "result"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "revm_context_interface::result::ExecutionResult")
+                        []
+                        [ HaltReasonT ]
+                    ])
               ]
             |),
             ltac:(M.monadic
@@ -433,22 +493,52 @@ Module result.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_context_interface::result::ResultAndState",
-                      "state"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "revm_context_interface::result::ResultAndState",
-                      "state"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_context_interface::result::ResultAndState",
+                        "state"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "hashbrown::map::HashMap")
+                          []
+                          [
+                            Ty.path "alloy_primitives::bits::address::Address";
+                            Ty.path "revm_state::Account";
+                            Ty.path "foldhash::seed::fast::RandomState";
+                            Ty.path "hashbrown::raw::alloc::inner::Global"
+                          ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "revm_context_interface::result::ResultAndState",
+                        "state"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "hashbrown::map::HashMap")
+                          []
+                          [
+                            Ty.path "alloy_primitives::bits::address::Address";
+                            Ty.path "revm_state::Account";
+                            Ty.path "foldhash::seed::fast::RandomState";
+                            Ty.path "hashbrown::raw::alloc::inner::Global"
+                          ]
+                      ])
                 ]
               |)))
           |)))
@@ -677,67 +767,78 @@ Module result.
                         [ Ty.path "revm_context_interface::result::Output" ],
                       γ1_4
                     |) in
-                  Value.mkStructRecord
-                    "revm_context_interface::result::ExecutionResult::Success"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      ("reason",
-                        M.call_closure (|
-                          Ty.path "revm_context_interface::result::SuccessReason",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "revm_context_interface::result::ExecutionResult::Success"
+                      [
+                        ("reason",
+                          M.call_closure (|
                             Ty.path "revm_context_interface::result::SuccessReason",
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                        |));
-                      ("gas_used",
-                        M.call_closure (|
-                          Ty.path "u64",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
-                            Ty.path "u64",
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
-                        |));
-                      ("gas_refunded",
-                        M.call_closure (|
-                          Ty.path "u64",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
-                            Ty.path "u64",
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_2 |) |) |) ]
-                        |));
-                      ("logs",
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "alloc::vec::Vec")
-                            []
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.path "revm_context_interface::result::SuccessReason",
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
                             [
-                              Ty.apply
-                                (Ty.path "alloy_primitives::log::Log")
-                                []
-                                [ Ty.path "alloy_primitives::log::LogData" ];
-                              Ty.path "alloc::alloc::Global"
-                            ],
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "revm_context_interface::result::SuccessReason" ])
+                            ]
+                          |));
+                        ("gas_used",
+                          M.call_closure (|
+                            Ty.path "u64",
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.path "u64",
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_1 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                            ]
+                          |));
+                        ("gas_refunded",
+                          M.call_closure (|
+                            Ty.path "u64",
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.path "u64",
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_2 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                            ]
+                          |));
+                        ("logs",
+                          M.call_closure (|
                             Ty.apply
                               (Ty.path "alloc::vec::Vec")
                               []
@@ -748,29 +849,76 @@ Module result.
                                   [ Ty.path "alloy_primitives::log::LogData" ];
                                 Ty.path "alloc::alloc::Global"
                               ],
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_3 |) |) |) ]
-                        |));
-                      ("output",
-                        M.call_closure (|
-                          Ty.path "revm_context_interface::result::Output",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.apply
+                                (Ty.path "alloc::vec::Vec")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloy_primitives::log::Log")
+                                    []
+                                    [ Ty.path "alloy_primitives::log::LogData" ];
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_3 |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::vec::Vec")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloy_primitives::log::Log")
+                                          []
+                                          [ Ty.path "alloy_primitives::log::LogData" ];
+                                        Ty.path "alloc::alloc::Global"
+                                      ]
+                                  ])
+                            ]
+                          |));
+                        ("output",
+                          M.call_closure (|
                             Ty.path "revm_context_interface::result::Output",
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_4 |) |) |) ]
-                        |))
-                    ]));
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.path "revm_context_interface::result::Output",
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_4 |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "revm_context_interface::result::Output" ])
+                            ]
+                          |))
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_context_interface::result::ExecutionResult")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -792,40 +940,60 @@ Module result.
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
                       γ1_1
                     |) in
-                  Value.mkStructRecord
-                    "revm_context_interface::result::ExecutionResult::Revert"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      ("gas_used",
-                        M.call_closure (|
-                          Ty.path "u64",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "revm_context_interface::result::ExecutionResult::Revert"
+                      [
+                        ("gas_used",
+                          M.call_closure (|
                             Ty.path "u64",
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                        |));
-                      ("output",
-                        M.call_closure (|
-                          Ty.path "alloy_primitives::bytes_::Bytes",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.path "u64",
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                            ]
+                          |));
+                        ("output",
+                          M.call_closure (|
                             Ty.path "alloy_primitives::bytes_::Bytes",
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
-                        |))
-                    ]));
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.path "alloy_primitives::bytes_::Bytes",
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_1 |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                            ]
+                          |))
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_context_interface::result::ExecutionResult")
+                      []
+                      [ HaltReasonT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -843,40 +1011,57 @@ Module result.
                     |) in
                   let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ HaltReasonT ], γ1_0 |) in
                   let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
-                  Value.mkStructRecord
-                    "revm_context_interface::result::ExecutionResult::Halt"
-                    []
-                    [ HaltReasonT ]
-                    [
-                      ("reason",
-                        M.call_closure (|
-                          HaltReasonT,
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "revm_context_interface::result::ExecutionResult::Halt"
+                      [
+                        ("reason",
+                          M.call_closure (|
                             HaltReasonT,
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                        |));
-                      ("gas_used",
-                        M.call_closure (|
-                          Ty.path "u64",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              HaltReasonT,
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ HaltReasonT ])
+                            ]
+                          |));
+                        ("gas_used",
+                          M.call_closure (|
                             Ty.path "u64",
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
-                        |))
-                    ]))
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.path "u64",
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_1 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                            ]
+                          |))
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_context_interface::result::ExecutionResult")
+                      []
+                      [ HaltReasonT ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1006,98 +1191,122 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Success" |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "reason" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.path "revm_context_interface::result::SuccessReason" ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "gas_used" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
-                      |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "gas_refunded" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_2 |) |) |) ]
-                      |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "logs" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "alloc::vec::Vec")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloy_primitives::log::Log")
-                                    []
-                                    [ Ty.path "alloy_primitives::log::LogData" ];
-                                  Ty.path "alloc::alloc::Global"
-                                ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_3 |) |) |) ]
-                      |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "output" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "revm_context_interface::result::Output" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_4 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Success" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "reason" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "revm_context_interface::result::SuccessReason" ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "gas_used" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "gas_refunded" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_2 |) |) |) ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "logs" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloy_primitives::log::Log")
+                                      []
+                                      [ Ty.path "alloy_primitives::log::LogData" ];
+                                    Ty.path "alloc::alloc::Global"
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_3 |) |) |) ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "output" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "revm_context_interface::result::Output" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_4 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -1133,45 +1342,57 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Revert" |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "gas_used" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "output" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "alloy_primitives::bytes_::Bytes" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Revert" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "gas_used" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "output" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -1203,40 +1424,52 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Halt" |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "reason" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ HaltReasonT ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "gas_used" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Halt" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "reason" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ HaltReasonT ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "gas_used" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)))
             ]
@@ -1318,7 +1551,19 @@ Module result.
                       [ HaltReasonT ]
                   ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "revm_context_interface::result::ExecutionResult")
+                          []
+                          [ HaltReasonT ]
+                      ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -1333,7 +1578,19 @@ Module result.
                       [ HaltReasonT ]
                   ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "revm_context_interface::result::ExecutionResult")
+                          []
+                          [ HaltReasonT ]
+                      ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -1540,8 +1797,34 @@ Module result.
                                       []
                                     |),
                                     [
-                                      M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                      M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.path
+                                                  "revm_context_interface::result::SuccessReason"
+                                              ]
+                                          ]);
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.path
+                                                  "revm_context_interface::result::SuccessReason"
+                                              ]
+                                          ])
                                     ]
                                   |),
                                   ltac:(M.monadic
@@ -1557,8 +1840,18 @@ Module result.
                                         []
                                       |),
                                       [
-                                        M.borrow (| Pointer.Kind.Ref, __self_1 |);
-                                        M.borrow (| Pointer.Kind.Ref, __arg1_1 |)
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, __self_1 |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]);
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, __arg1_1 |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
                                       ]
                                     |)))
                                 |),
@@ -1575,8 +1868,18 @@ Module result.
                                       []
                                     |),
                                     [
-                                      M.borrow (| Pointer.Kind.Ref, __self_2 |);
-                                      M.borrow (| Pointer.Kind.Ref, __arg1_2 |)
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.Ref, __self_2 |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]);
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.Ref, __arg1_2 |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
                                     ]
                                   |)))
                               |),
@@ -1623,8 +1926,50 @@ Module result.
                                     []
                                   |),
                                   [
-                                    M.borrow (| Pointer.Kind.Ref, __self_3 |);
-                                    M.borrow (| Pointer.Kind.Ref, __arg1_3 |)
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, __self_3 |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::vec::Vec")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloy_primitives::log::Log")
+                                                    []
+                                                    [ Ty.path "alloy_primitives::log::LogData" ];
+                                                  Ty.path "alloc::alloc::Global"
+                                                ]
+                                            ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, __arg1_3 |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::vec::Vec")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloy_primitives::log::Log")
+                                                    []
+                                                    [ Ty.path "alloy_primitives::log::LogData" ];
+                                                  Ty.path "alloc::alloc::Global"
+                                                ]
+                                            ]
+                                        ])
                                   ]
                                 |)))
                             |),
@@ -1649,8 +1994,28 @@ Module result.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, __self_4 |);
-                                  M.borrow (| Pointer.Kind.Ref, __arg1_4 |)
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __self_4 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "revm_context_interface::result::Output" ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __arg1_4 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "revm_context_interface::result::Output" ]
+                                      ])
                                 ]
                               |)))
                           |)));
@@ -1717,8 +2082,18 @@ Module result.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
                               ]
                             |),
                             ltac:(M.monadic
@@ -1742,8 +2117,28 @@ Module result.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, __self_1 |);
-                                  M.borrow (| Pointer.Kind.Ref, __arg1_1 |)
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __self_1 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "alloy_primitives::bytes_::Bytes" ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __arg1_1 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "alloy_primitives::bytes_::Bytes" ]
+                                      ])
                                 ]
                               |)))
                           |)));
@@ -1798,8 +2193,18 @@ Module result.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ HaltReasonT ] ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ HaltReasonT ] ])
                               ]
                             |),
                             ltac:(M.monadic
@@ -1815,8 +2220,18 @@ Module result.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, __self_1 |);
-                                  M.borrow (| Pointer.Kind.Ref, __arg1_1 |)
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __self_1 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]);
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __arg1_1 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
                                 ]
                               |)))
                           |)));
@@ -1981,7 +2396,19 @@ Module result.
                       [ HaltReasonT ]
                   ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "revm_context_interface::result::ExecutionResult")
+                          []
+                          [ HaltReasonT ]
+                      ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
@@ -1996,11 +2423,15 @@ Module result.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             M.alloc (|
@@ -2095,8 +2526,21 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "revm_context_interface::result::SuccessReason" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |) in
                         let~ _ : Ty.tuple [] :=
@@ -2112,8 +2556,18 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_1 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |) in
                         let~ _ : Ty.tuple [] :=
@@ -2129,8 +2583,18 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_2 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_2 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |) in
                         let~ _ : Ty.tuple [] :=
@@ -2155,8 +2619,32 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_3 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_3 |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::vec::Vec")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloy_primitives::log::Log")
+                                          []
+                                          [ Ty.path "alloy_primitives::log::LogData" ];
+                                        Ty.path "alloc::alloc::Global"
+                                      ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |) in
                         M.alloc (|
@@ -2173,8 +2661,21 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_4 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_4 |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "revm_context_interface::result::Output" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |)
                         |)
@@ -2215,8 +2716,18 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |) in
                         M.alloc (|
@@ -2233,8 +2744,21 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_1 |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |)
                         |)
@@ -2272,8 +2796,18 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ HaltReasonT ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |) in
                         M.alloc (|
@@ -2290,8 +2824,18 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_1 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |)
                         |)
@@ -2445,8 +2989,33 @@ Module result.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "alloy_primitives::bits::address::Address" ]
+                            ],
+                          M.get_associated_function (|
+                            Ty.path "revm_context_interface::result::Output",
+                            "address",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| output |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "revm_context_interface::result::Output" ])
+                          ]
+                        |))
+                        (Ty.apply
                           (Ty.path "core::option::Option")
                           []
                           [
@@ -2454,24 +3023,17 @@ Module result.
                               (Ty.path "&")
                               []
                               [ Ty.path "alloy_primitives::bits::address::Address" ]
-                          ],
-                        M.get_associated_function (|
-                          Ty.path "revm_context_interface::result::Output",
-                          "address",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| output |) |) |) ]
-                      |)
+                          ])
                     ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.path "alloy_primitives::bits::address::Address" ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "alloy_primitives::bits::address::Address" ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2592,27 +3154,44 @@ Module result.
                         [ Ty.path "revm_context_interface::result::Output" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ] ]
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                            M.get_associated_function (|
-                              Ty.path "revm_context_interface::result::Output",
-                              "data",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| output |) |) |) ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                              M.get_associated_function (|
+                                Ty.path "revm_context_interface::result::Output",
+                                "data",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| output |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "revm_context_interface::result::Output" ])
+                              ]
+                            |)
                           |)
                         |)
-                      |)
-                    ]));
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -2627,18 +3206,23 @@ Module result.
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ] ]
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| output |) |) |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| output |) |) |) ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ] ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ] ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2694,22 +3278,29 @@ Module result.
                     |) in
                   let output :=
                     M.copy (| Ty.path "revm_context_interface::result::Output", γ0_0 |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "alloy_primitives::bytes_::Bytes" ]
-                    [
-                      M.call_closure (|
-                        Ty.path "alloy_primitives::bytes_::Bytes",
-                        M.get_associated_function (|
-                          Ty.path "revm_context_interface::result::Output",
-                          "into_data",
-                          [],
-                          []
-                        |),
-                        [ M.read (| output |) ]
-                      |)
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.call_closure (|
+                          Ty.path "alloy_primitives::bytes_::Bytes",
+                          M.get_associated_function (|
+                            Ty.path "revm_context_interface::result::Output",
+                            "into_data",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (| output |))
+                              (Ty.path "revm_context_interface::result::Output")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "alloy_primitives::bytes_::Bytes" ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
@@ -2719,18 +3310,20 @@ Module result.
                       "output"
                     |) in
                   let output := M.copy (| Ty.path "alloy_primitives::bytes_::Bytes", γ0_0 |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "alloy_primitives::bytes_::Bytes" ]
-                    [ M.read (| output |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| output |) ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "alloy_primitives::bytes_::Bytes" ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.path "alloy_primitives::bytes_::Bytes" ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "alloy_primitives::bytes_::Bytes" ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2854,7 +3447,25 @@ Module result.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| logs |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| logs |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::vec::Vec")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloy_primitives::log::Log")
+                                          []
+                                          [ Ty.path "alloy_primitives::log::LogData" ];
+                                        Ty.path "alloc::alloc::Global"
+                                      ]
+                                  ])
+                            ]
                           |)
                         |)
                       |)));
@@ -3215,32 +3826,38 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Call" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "alloy_primitives::bytes_::Bytes" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Call" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -3288,48 +3905,59 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Create" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::option::Option")
-                                    []
-                                    [ Ty.path "alloy_primitives::bits::address::Address" ]
-                                ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Create" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "alloy_primitives::bits::address::Address" ]
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)))
             ]
@@ -3377,25 +4005,32 @@ Module result.
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::Output::Call"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "alloy_primitives::bytes_::Bytes",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::Output::Call"
+                      [
+                        M.call_closure (|
                           Ty.path "alloy_primitives::bytes_::Bytes",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "alloy_primitives::bytes_::Bytes",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "revm_context_interface::result::Output")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -3429,44 +4064,63 @@ Module result.
                         ],
                       γ1_1
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::Output::Create"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "alloy_primitives::bytes_::Bytes",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::Output::Create"
+                      [
+                        M.call_closure (|
                           Ty.path "alloy_primitives::bytes_::Bytes",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |);
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::option::Option")
-                          []
-                          [ Ty.path "alloy_primitives::bits::address::Address" ],
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "alloy_primitives::bytes_::Bytes",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                          ]
+                        |);
+                        M.call_closure (|
                           Ty.apply
                             (Ty.path "core::option::Option")
                             []
                             [ Ty.path "alloy_primitives::bits::address::Address" ],
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
-                      |)
-                    ]))
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.path "alloy_primitives::bits::address::Address" ],
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.path "alloy_primitives::bits::address::Address" ]
+                                ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "revm_context_interface::result::Output")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3520,7 +4174,11 @@ Module result.
                   [],
                   [ Ty.path "revm_context_interface::result::Output" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::result::Output" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -3530,7 +4188,11 @@ Module result.
                   [],
                   [ Ty.path "revm_context_interface::result::Output" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::result::Output" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -3612,8 +4274,28 @@ Module result.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "alloy_primitives::bytes_::Bytes" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "alloy_primitives::bytes_::Bytes" ]
+                                  ])
                             ]
                           |)));
                       fun γ =>
@@ -3709,8 +4391,28 @@ Module result.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "alloy_primitives::bytes_::Bytes" ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "alloy_primitives::bytes_::Bytes" ]
+                                    ])
                               ]
                             |),
                             ltac:(M.monadic
@@ -3744,8 +4446,38 @@ Module result.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, __self_1 |);
-                                  M.borrow (| Pointer.Kind.Ref, __arg1_1 |)
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __self_1 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "alloy_primitives::bits::address::Address" ]
+                                          ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __arg1_1 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "alloy_primitives::bits::address::Address" ]
+                                          ]
+                                      ])
                                 ]
                               |)))
                           |)));
@@ -3841,7 +4573,11 @@ Module result.
                   [],
                   [ Ty.path "revm_context_interface::result::Output" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "revm_context_interface::result::Output" ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
@@ -3856,11 +4592,15 @@ Module result.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             M.alloc (|
@@ -3895,8 +4635,15 @@ Module result.
                           [ __H ]
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ __H ])
                         ]
                       |)));
                   fun γ =>
@@ -3946,8 +4693,21 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |) in
                         M.alloc (|
@@ -3967,8 +4727,26 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_1 |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "alloy_primitives::bits::address::Address" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |)
                         |)
@@ -4149,16 +4927,17 @@ Module result.
                       "revm_context_interface::result::Output::Call",
                       0
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.path "alloy_primitives::bits::address::Address" ]
-                    ]
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "alloy_primitives::bits::address::Address" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -4206,7 +4985,19 @@ Module result.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| address |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| address |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.path "alloy_primitives::bits::address::Address" ]
+                          ])
+                    ]
                   |)))
             ]
           |)))
@@ -4323,27 +5114,33 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Transaction" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ TransactionError ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Transaction" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ TransactionError ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -4375,32 +5172,38 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Header" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "revm_context_interface::result::InvalidHeader" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Header" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "revm_context_interface::result::InvalidHeader" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -4425,24 +5228,30 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Database" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ DBError ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Database" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ DBError ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -4471,27 +5280,33 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Custom" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Custom" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -4520,27 +5335,33 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Precompile" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Precompile" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)))
             ]
@@ -4607,25 +5428,32 @@ Module result.
                     |) in
                   let __self_0 :=
                     M.alloc (| Ty.apply (Ty.path "&") [] [ TransactionError ], γ1_0 |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::EVMError::Transaction"
-                    []
-                    [ DBError; TransactionError ]
-                    [
-                      M.call_closure (|
-                        TransactionError,
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::EVMError::Transaction"
+                      [
+                        M.call_closure (|
                           TransactionError,
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            TransactionError,
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ TransactionError ])
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_context_interface::result::EVMError")
+                      []
+                      [ DBError; TransactionError ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -4643,25 +5471,35 @@ Module result.
                         [ Ty.path "revm_context_interface::result::InvalidHeader" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::EVMError::Header"
-                    []
-                    [ DBError; TransactionError ]
-                    [
-                      M.call_closure (|
-                        Ty.path "revm_context_interface::result::InvalidHeader",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::EVMError::Header"
+                      [
+                        M.call_closure (|
                           Ty.path "revm_context_interface::result::InvalidHeader",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "revm_context_interface::result::InvalidHeader",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "revm_context_interface::result::InvalidHeader" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_context_interface::result::EVMError")
+                      []
+                      [ DBError; TransactionError ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -4672,25 +5510,32 @@ Module result.
                       0
                     |) in
                   let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ DBError ], γ1_0 |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::EVMError::Database"
-                    []
-                    [ DBError; TransactionError ]
-                    [
-                      M.call_closure (|
-                        DBError,
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::EVMError::Database"
+                      [
+                        M.call_closure (|
                           DBError,
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            DBError,
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ DBError ])
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_context_interface::result::EVMError")
+                      []
+                      [ DBError; TransactionError ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -4705,25 +5550,32 @@ Module result.
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::EVMError::Custom"
-                    []
-                    [ DBError; TransactionError ]
-                    [
-                      M.call_closure (|
-                        Ty.path "alloc::string::String",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::EVMError::Custom"
+                      [
+                        M.call_closure (|
                           Ty.path "alloc::string::String",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "alloc::string::String",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_context_interface::result::EVMError")
+                      []
+                      [ DBError; TransactionError ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -4738,25 +5590,32 @@ Module result.
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::EVMError::Precompile"
-                    []
-                    [ DBError; TransactionError ]
-                    [
-                      M.call_closure (|
-                        Ty.path "alloc::string::String",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::EVMError::Precompile"
+                      [
+                        M.call_closure (|
                           Ty.path "alloc::string::String",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]))
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "alloc::string::String",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_context_interface::result::EVMError")
+                      []
+                      [ DBError; TransactionError ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4847,7 +5706,19 @@ Module result.
                       [ DBError; TransactionError ]
                   ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "revm_context_interface::result::EVMError")
+                          []
+                          [ DBError; TransactionError ]
+                      ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -4862,7 +5733,19 @@ Module result.
                       [ DBError; TransactionError ]
                   ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "revm_context_interface::result::EVMError")
+                          []
+                          [ DBError; TransactionError ]
+                      ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -4934,8 +5817,18 @@ Module result.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ TransactionError ] ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ TransactionError ] ])
                             ]
                           |)));
                       fun γ =>
@@ -4992,8 +5885,28 @@ Module result.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "revm_context_interface::result::InvalidHeader" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "revm_context_interface::result::InvalidHeader" ]
+                                  ])
                             ]
                           |)));
                       fun γ =>
@@ -5030,8 +5943,18 @@ Module result.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ DBError ] ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ DBError ] ])
                             ]
                           |)));
                       fun γ =>
@@ -5074,8 +5997,19 @@ Module result.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ])
                             ]
                           |)));
                       fun γ =>
@@ -5118,8 +6052,19 @@ Module result.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ])
                             ]
                           |)));
                       fun γ =>
@@ -5247,11 +6192,11 @@ Module result.
       | [], [], [ value ] =>
         ltac:(M.monadic
           (let value := M.alloc (| DBError, value |) in
-          Value.StructTuple
-            "revm_context_interface::result::EVMError::Database"
-            []
-            [ DBError; TX ]
-            [ M.read (| value |) ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "revm_context_interface::result::EVMError::Database"
+              [ M.read (| value |) ])
+            (Ty.apply (Ty.path "revm_context_interface::result::EVMError") [] [ DBError; TX ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -5288,11 +6233,11 @@ Module result.
       | [], [], [ value ] =>
         ltac:(M.monadic
           (let value := M.alloc (| Ty.path "alloc::string::String", value |) in
-          Value.StructTuple
-            "revm_context_interface::result::EVMError::Custom"
-            []
-            [ DB; TX ]
-            [ M.read (| value |) ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "revm_context_interface::result::EVMError::Custom"
+              [ M.read (| value |) ])
+            (Ty.apply (Ty.path "revm_context_interface::result::EVMError") [] [ DB; TX ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -5325,11 +6270,14 @@ Module result.
         ltac:(M.monadic
           (let value :=
             M.alloc (| Ty.path "revm_context_interface::result::InvalidTransaction", value |) in
-          Value.StructTuple
-            "revm_context_interface::result::EVMError::Transaction"
-            []
-            [ DB; Ty.path "revm_context_interface::result::InvalidTransaction" ]
-            [ M.read (| value |) ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "revm_context_interface::result::EVMError::Transaction"
+              [ M.read (| value |) ])
+            (Ty.apply
+              (Ty.path "revm_context_interface::result::EVMError")
+              []
+              [ DB; Ty.path "revm_context_interface::result::InvalidTransaction" ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -5400,11 +6348,14 @@ Module result.
                       0
                     |) in
                   let e := M.copy (| TransactionValidationErrorT, γ0_0 |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::EVMError::Transaction"
-                    []
-                    [ E; TransactionValidationErrorT ]
-                    [ M.read (| e |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::EVMError::Transaction"
+                      [ M.read (| e |) ])
+                    (Ty.apply
+                      (Ty.path "revm_context_interface::result::EVMError")
+                      []
+                      [ E; TransactionValidationErrorT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
@@ -5415,11 +6366,14 @@ Module result.
                     |) in
                   let e :=
                     M.copy (| Ty.path "revm_context_interface::result::InvalidHeader", γ0_0 |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::EVMError::Header"
-                    []
-                    [ E; TransactionValidationErrorT ]
-                    [ M.read (| e |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::EVMError::Header"
+                      [ M.read (| e |) ])
+                    (Ty.apply
+                      (Ty.path "revm_context_interface::result::EVMError")
+                      []
+                      [ E; TransactionValidationErrorT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
@@ -5429,25 +6383,31 @@ Module result.
                       0
                     |) in
                   let e := M.copy (| DBError, γ0_0 |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::EVMError::Database"
-                    []
-                    [ E; TransactionValidationErrorT ]
-                    [
-                      M.call_closure (|
-                        E,
-                        M.get_trait_method (|
-                          "core::ops::function::FnOnce",
-                          F,
-                          [],
-                          [ Ty.tuple [ DBError ] ],
-                          "call_once",
-                          [],
-                          []
-                        |),
-                        [ M.read (| op |); Value.Tuple [ M.read (| e |) ] ]
-                      |)
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::EVMError::Database"
+                      [
+                        M.call_closure (|
+                          E,
+                          M.get_trait_method (|
+                            "core::ops::function::FnOnce",
+                            F,
+                            [],
+                            [ Ty.tuple [ DBError ] ],
+                            "call_once",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty (M.read (| op |)) F;
+                            M.value_with_ty (Value.Tuple [ M.read (| e |) ]) (Ty.tuple [ DBError ])
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "revm_context_interface::result::EVMError")
+                      []
+                      [ E; TransactionValidationErrorT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
@@ -5457,11 +6417,14 @@ Module result.
                       0
                     |) in
                   let e := M.copy (| Ty.path "alloc::string::String", γ0_0 |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::EVMError::Precompile"
-                    []
-                    [ E; TransactionValidationErrorT ]
-                    [ M.read (| e |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::EVMError::Precompile"
+                      [ M.read (| e |) ])
+                    (Ty.apply
+                      (Ty.path "revm_context_interface::result::EVMError")
+                      []
+                      [ E; TransactionValidationErrorT ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
@@ -5471,11 +6434,14 @@ Module result.
                       0
                     |) in
                   let e := M.copy (| Ty.path "alloc::string::String", γ0_0 |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::EVMError::Custom"
-                    []
-                    [ E; TransactionValidationErrorT ]
-                    [ M.read (| e |) ]))
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::EVMError::Custom"
+                      [ M.read (| e |) ])
+                    (Ty.apply
+                      (Ty.path "revm_context_interface::result::EVMError")
+                      []
+                      [ E; TransactionValidationErrorT ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5549,23 +6515,30 @@ Module result.
                     |) in
                   let e :=
                     M.alloc (| Ty.apply (Ty.path "&") [] [ TransactionValidationErrorT ], γ1_0 |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ]
-                    [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ TransactionValidationErrorT ])
-                          (Ty.apply
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.call_closure (|
+                          Ty.apply
                             (Ty.path "&")
                             []
-                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| e |) |) |) ]
-                      |)
-                    ]));
+                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ TransactionValidationErrorT ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| e |) |) |) ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -5583,26 +6556,33 @@ Module result.
                         [ Ty.path "revm_context_interface::result::InvalidHeader" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ]
-                    [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.call_closure (|
+                          Ty.apply
                             (Ty.path "&")
                             []
-                            [ Ty.path "revm_context_interface::result::InvalidHeader" ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| e |) |) |) ]
-                      |)
-                    ]));
+                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "revm_context_interface::result::InvalidHeader" ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| e |) |) |) ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -5613,23 +6593,30 @@ Module result.
                       0
                     |) in
                   let e := M.alloc (| Ty.apply (Ty.path "&") [] [ DBError ], γ1_0 |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ]
-                    [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ DBError ])
-                          (Ty.apply
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.call_closure (|
+                          Ty.apply
                             (Ty.path "&")
                             []
-                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| e |) |) |) ]
-                      |)
-                    ]));
+                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ DBError ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| e |) |) |) ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (M.find_or_pattern (Ty.tuple []) (|
@@ -5661,16 +6648,17 @@ Module result.
                         match γ with
                         | [] =>
                           ltac:(M.monadic
-                            (Value.StructTuple
-                              "core::option::Option::None"
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
-                              ]
-                              []))
+                            (M.value_with_ty
+                              (Value.StructTuple "core::option::Option::None" [])
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                                ])))
                         | _ => M.impossible "wrong number of arguments"
                         end)
                   |)))
@@ -5762,70 +6750,105 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "transaction validation error: " |) ]
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "transaction validation error: " |) ]
+                                    |)
+                                  |)
                                 |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [ TransactionValidationErrorT ]
-                                          ]
-                                        |),
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      Value.Array
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, e |) |)
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ TransactionValidationErrorT ]
+                                              ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, e |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ TransactionValidationErrorT ]
+                                                  ])
+                                            ]
                                           |)
                                         ]
-                                      |)
-                                    ]
+                                    |)
+                                  |)
                                 |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -5857,73 +6880,111 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "header validation error: " |) ]
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "header validation error: " |) ]
+                                    |)
+                                  |)
                                 |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.path
-                                                  "revm_context_interface::result::InvalidHeader"
-                                              ]
-                                          ]
-                                        |),
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      Value.Array
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, e |) |)
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "revm_context_interface::result::InvalidHeader"
+                                                  ]
+                                              ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, e |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.path
+                                                          "revm_context_interface::result::InvalidHeader"
+                                                      ]
+                                                  ])
+                                            ]
                                           |)
                                         ]
-                                      |)
-                                    ]
+                                    |)
+                                  |)
                                 |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -5948,65 +7009,95 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "database error: " |) ]
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "database error: " |) ]
+                                    |)
+                                  |)
                                 |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.apply (Ty.path "&") [] [ DBError ] ]
-                                        |),
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      Value.Array
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, e |) |)
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [ Ty.apply (Ty.path "&") [] [ DBError ] ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, e |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&") [] [ DBError ] ])
+                                            ]
                                           |)
                                         ]
-                                      |)
-                                    ]
+                                    |)
+                                  |)
                                 |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -6063,30 +7154,39 @@ Module result.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                      M.get_trait_method (|
-                                        "core::ops::deref::Deref",
-                                        Ty.path "alloc::string::String",
-                                        [],
-                                        [],
-                                        "deref",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| e |) |)
-                                        |)
-                                      ]
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                        M.get_trait_method (|
+                                          "core::ops::deref::Deref",
+                                          Ty.path "alloc::string::String",
+                                          [],
+                                          [],
+                                          "deref",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| e |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "alloc::string::String" ])
+                                        ]
+                                      |)
                                     |)
-                                  |)
-                                |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                               ]
                             |)))
                         | _ => M.impossible "wrong number of arguments"
@@ -6131,11 +7231,14 @@ Module result.
         ltac:(M.monadic
           (let value :=
             M.alloc (| Ty.path "revm_context_interface::result::InvalidHeader", value |) in
-          Value.StructTuple
-            "revm_context_interface::result::EVMError::Header"
-            []
-            [ DBError; TransactionValidationErrorT ]
-            [ M.read (| value |) ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "revm_context_interface::result::EVMError::Header"
+              [ M.read (| value |) ])
+            (Ty.apply
+              (Ty.path "revm_context_interface::result::EVMError")
+              []
+              [ DBError; TransactionValidationErrorT ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -6442,11 +7545,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "PriorityFeeGreaterThanMaxFee" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "PriorityFeeGreaterThanMaxFee" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -6469,11 +7576,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "GasPriceLessThanBasefee" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "GasPriceLessThanBasefee" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -6496,11 +7607,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CallerGasLimitMoreThanBlock" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CallerGasLimitMoreThanBlock" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -6523,11 +7638,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CallGasCostMoreThanGasLimit" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CallGasCostMoreThanGasLimit" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -6550,11 +7669,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "RejectCallerWithCode" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "RejectCallerWithCode" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -6628,79 +7751,91 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "LackOfFundForMaxFee" |) |)
-                      |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "fee" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "alloc::boxed::Box")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    [];
-                                  Ty.path "alloc::alloc::Global"
-                                ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "balance" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::boxed::Box")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "ruint::Uint")
-                                        [
-                                          Value.Integer IntegerKind.Usize 256;
-                                          Value.Integer IntegerKind.Usize 4
-                                        ]
-                                        [];
-                                      Ty.path "alloc::alloc::Global"
-                                    ]
-                                ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "LackOfFundForMaxFee" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "fee" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::boxed::Box")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "ruint::Uint")
+                                      [
+                                        Value.Integer IntegerKind.Usize 256;
+                                        Value.Integer IntegerKind.Usize 4
+                                      ]
+                                      [];
+                                    Ty.path "alloc::alloc::Global"
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "balance" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::boxed::Box")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          [];
+                                        Ty.path "alloc::alloc::Global"
+                                      ]
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -6723,11 +7858,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "OverflowPaymentInTransaction" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "OverflowPaymentInTransaction" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -6750,11 +7889,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "NonceOverflowInTransaction" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "NonceOverflowInTransaction" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -6786,40 +7929,52 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NonceTooHigh" |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "tx" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "state" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NonceTooHigh" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "tx" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "state" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -6851,40 +8006,52 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NonceTooLow" |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "tx" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "state" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NonceTooLow" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "tx" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "state" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -6907,11 +8074,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CreateInitCodeSizeLimit" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CreateInitCodeSizeLimit" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -6934,8 +8105,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidChainId" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InvalidChainId" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -6958,11 +8136,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "AccessListNotSupported" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "AccessListNotSupported" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -6985,11 +8167,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "MaxFeePerBlobGasNotSupported" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "MaxFeePerBlobGasNotSupported" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -7012,11 +8198,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BlobVersionedHashesNotSupported" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BlobVersionedHashesNotSupported" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -7039,11 +8229,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BlobGasPriceGreaterThanMax" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BlobGasPriceGreaterThanMax" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -7066,8 +8260,12 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EmptyBlobs" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EmptyBlobs" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -7090,11 +8288,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BlobCreateTransaction" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BlobCreateTransaction" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -7128,40 +8330,52 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "TooManyBlobs" |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "max" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "have" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "TooManyBlobs" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "max" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "have" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -7184,11 +8398,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BlobVersionNotSupported" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BlobVersionNotSupported" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -7211,11 +8429,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EofCrateShouldHaveToAddress" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "EofCrateShouldHaveToAddress" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -7238,11 +8460,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "AuthorizationListNotSupported" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "AuthorizationListNotSupported" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -7265,11 +8491,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "AuthorizationListInvalidFields" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "AuthorizationListInvalidFields" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -7292,11 +8522,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EmptyAuthorizationList" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "EmptyAuthorizationList" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -7331,38 +8565,44 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "InvalidAuthorizationList" |) |)
-                      |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.path
-                                    "revm_specification::eip7702::authorization_list::InvalidAuthorization"
-                                ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InvalidAuthorizationList" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.path
+                                      "revm_specification::eip7702::authorization_list::InvalidAuthorization"
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -7385,11 +8625,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Eip2930NotSupported" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Eip2930NotSupported" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -7412,11 +8656,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Eip1559NotSupported" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Eip1559NotSupported" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -7439,11 +8687,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Eip4844NotSupported" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Eip4844NotSupported" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -7466,11 +8718,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Eip7702NotSupported" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Eip7702NotSupported" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)))
             ]
@@ -7515,11 +8771,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::PriorityFeeGreaterThanMaxFee"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::PriorityFeeGreaterThanMaxFee"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::PriorityFeeGreaterThanMaxFee"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7528,11 +8784,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::GasPriceLessThanBasefee"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::GasPriceLessThanBasefee"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::GasPriceLessThanBasefee"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7541,11 +8797,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::CallerGasLimitMoreThanBlock"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::CallerGasLimitMoreThanBlock"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::CallerGasLimitMoreThanBlock"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7554,11 +8810,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::CallGasCostMoreThanGasLimit"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7567,11 +8823,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::RejectCallerWithCode"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::RejectCallerWithCode"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::RejectCallerWithCode"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7631,28 +8887,12 @@ Module result.
                         ],
                       γ1_1
                     |) in
-                  Value.mkStructRecord
-                    "revm_context_interface::result::InvalidTransaction::LackOfFundForMaxFee"
-                    []
-                    []
-                    [
-                      ("fee",
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "alloc::boxed::Box")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "ruint::Uint")
-                                [
-                                  Value.Integer IntegerKind.Usize 256;
-                                  Value.Integer IntegerKind.Usize 4
-                                ]
-                                [];
-                              Ty.path "alloc::alloc::Global"
-                            ],
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "revm_context_interface::result::InvalidTransaction::LackOfFundForMaxFee"
+                      [
+                        ("fee",
+                          M.call_closure (|
                             Ty.apply
                               (Ty.path "alloc::boxed::Box")
                               []
@@ -7666,31 +8906,55 @@ Module result.
                                   [];
                                 Ty.path "alloc::alloc::Global"
                               ],
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                        |));
-                      ("balance",
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "alloc::boxed::Box")
-                            []
-                            [
+                            M.get_trait_method (|
+                              "core::clone::Clone",
                               Ty.apply
-                                (Ty.path "ruint::Uint")
+                                (Ty.path "alloc::boxed::Box")
+                                []
                                 [
-                                  Value.Integer IntegerKind.Usize 256;
-                                  Value.Integer IntegerKind.Usize 4
-                                ]
-                                [];
-                              Ty.path "alloc::alloc::Global"
-                            ],
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    [];
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::boxed::Box")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          [];
+                                        Ty.path "alloc::alloc::Global"
+                                      ]
+                                  ])
+                            ]
+                          |));
+                        ("balance",
+                          M.call_closure (|
                             Ty.apply
                               (Ty.path "alloc::boxed::Box")
                               []
@@ -7704,15 +8968,55 @@ Module result.
                                   [];
                                 Ty.path "alloc::alloc::Global"
                               ],
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
-                        |))
-                    ]));
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    [];
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_1 |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::boxed::Box")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          [];
+                                        Ty.path "alloc::alloc::Global"
+                                      ]
+                                  ])
+                            ]
+                          |))
+                      ])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7721,11 +9025,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::OverflowPaymentInTransaction"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::OverflowPaymentInTransaction"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::OverflowPaymentInTransaction"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7734,11 +9038,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::NonceOverflowInTransaction"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::NonceOverflowInTransaction"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::NonceOverflowInTransaction"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7756,40 +9060,54 @@ Module result.
                     |) in
                   let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
                   let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
-                  Value.mkStructRecord
-                    "revm_context_interface::result::InvalidTransaction::NonceTooHigh"
-                    []
-                    []
-                    [
-                      ("tx",
-                        M.call_closure (|
-                          Ty.path "u64",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "revm_context_interface::result::InvalidTransaction::NonceTooHigh"
+                      [
+                        ("tx",
+                          M.call_closure (|
                             Ty.path "u64",
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                        |));
-                      ("state",
-                        M.call_closure (|
-                          Ty.path "u64",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.path "u64",
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                            ]
+                          |));
+                        ("state",
+                          M.call_closure (|
                             Ty.path "u64",
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
-                        |))
-                    ]));
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.path "u64",
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_1 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                            ]
+                          |))
+                      ])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7807,40 +9125,54 @@ Module result.
                     |) in
                   let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
                   let __self_1 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_1 |) in
-                  Value.mkStructRecord
-                    "revm_context_interface::result::InvalidTransaction::NonceTooLow"
-                    []
-                    []
-                    [
-                      ("tx",
-                        M.call_closure (|
-                          Ty.path "u64",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "revm_context_interface::result::InvalidTransaction::NonceTooLow"
+                      [
+                        ("tx",
+                          M.call_closure (|
                             Ty.path "u64",
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                        |));
-                      ("state",
-                        M.call_closure (|
-                          Ty.path "u64",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.path "u64",
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                            ]
+                          |));
+                        ("state",
+                          M.call_closure (|
                             Ty.path "u64",
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
-                        |))
-                    ]));
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.path "u64",
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_1 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                            ]
+                          |))
+                      ])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7849,11 +9181,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::CreateInitCodeSizeLimit"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::CreateInitCodeSizeLimit"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::CreateInitCodeSizeLimit"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7862,11 +9194,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::InvalidChainId"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::InvalidChainId"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::InvalidChainId"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7875,11 +9207,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::AccessListNotSupported"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::AccessListNotSupported"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::AccessListNotSupported"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7888,11 +9220,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::MaxFeePerBlobGasNotSupported"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::MaxFeePerBlobGasNotSupported"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::MaxFeePerBlobGasNotSupported"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7901,11 +9233,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::BlobVersionedHashesNotSupported"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::BlobVersionedHashesNotSupported"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::BlobVersionedHashesNotSupported"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7914,11 +9246,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::BlobGasPriceGreaterThanMax"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7927,11 +9259,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::EmptyBlobs"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::EmptyBlobs"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::EmptyBlobs"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7940,11 +9272,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::BlobCreateTransaction"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::BlobCreateTransaction"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::BlobCreateTransaction"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -7964,40 +9296,54 @@ Module result.
                     M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
                   let __self_1 :=
                     M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_1 |) in
-                  Value.mkStructRecord
-                    "revm_context_interface::result::InvalidTransaction::TooManyBlobs"
-                    []
-                    []
-                    [
-                      ("max",
-                        M.call_closure (|
-                          Ty.path "usize",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "revm_context_interface::result::InvalidTransaction::TooManyBlobs"
+                      [
+                        ("max",
+                          M.call_closure (|
                             Ty.path "usize",
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                        |));
-                      ("have",
-                        M.call_closure (|
-                          Ty.path "usize",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.path "usize",
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                            ]
+                          |));
+                        ("have",
+                          M.call_closure (|
                             Ty.path "usize",
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |) ]
-                        |))
-                    ]));
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.path "usize",
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_1 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                            ]
+                          |))
+                      ])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -8006,11 +9352,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::BlobVersionNotSupported"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::BlobVersionNotSupported"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::BlobVersionNotSupported"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -8019,11 +9365,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::EofCrateShouldHaveToAddress"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::EofCrateShouldHaveToAddress"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::EofCrateShouldHaveToAddress"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -8032,11 +9378,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::AuthorizationListNotSupported"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::AuthorizationListNotSupported"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::AuthorizationListNotSupported"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -8045,11 +9391,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::AuthorizationListInvalidFields"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::AuthorizationListInvalidFields"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::AuthorizationListInvalidFields"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -8058,11 +9404,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::EmptyAuthorizationList"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::EmptyAuthorizationList"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::EmptyAuthorizationList"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -8083,27 +9429,37 @@ Module result.
                         ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::InvalidAuthorizationList"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path
-                          "revm_specification::eip7702::authorization_list::InvalidAuthorization",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::InvalidAuthorizationList"
+                      [
+                        M.call_closure (|
                           Ty.path
                             "revm_specification::eip7702::authorization_list::InvalidAuthorization",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path
+                              "revm_specification::eip7702::authorization_list::InvalidAuthorization",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.path
+                                    "revm_specification::eip7702::authorization_list::InvalidAuthorization"
+                                ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -8112,11 +9468,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::Eip2930NotSupported"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::Eip2930NotSupported"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::Eip2930NotSupported"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -8125,11 +9481,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::Eip1559NotSupported"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::Eip1559NotSupported"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::Eip1559NotSupported"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -8138,11 +9494,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::Eip4844NotSupported"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::Eip4844NotSupported"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::Eip4844NotSupported"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -8151,11 +9507,11 @@ Module result.
                       γ,
                       "revm_context_interface::result::InvalidTransaction::Eip7702NotSupported"
                     |) in
-                  Value.StructTuple
-                    "revm_context_interface::result::InvalidTransaction::Eip7702NotSupported"
-                    []
-                    []
-                    []))
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_context_interface::result::InvalidTransaction::Eip7702NotSupported"
+                      [])
+                    (Ty.path "revm_context_interface::result::InvalidTransaction")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -8215,7 +9571,14 @@ Module result.
                   [],
                   [ Ty.path "revm_context_interface::result::InvalidTransaction" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_context_interface::result::InvalidTransaction" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -8225,7 +9588,14 @@ Module result.
                   [],
                   [ Ty.path "revm_context_interface::result::InvalidTransaction" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_context_interface::result::InvalidTransaction" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -8420,8 +9790,56 @@ Module result.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::boxed::Box")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "ruint::Uint")
+                                                [
+                                                  Value.Integer IntegerKind.Usize 256;
+                                                  Value.Integer IntegerKind.Usize 4
+                                                ]
+                                                [];
+                                              Ty.path "alloc::alloc::Global"
+                                            ]
+                                        ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::boxed::Box")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "ruint::Uint")
+                                                [
+                                                  Value.Integer IntegerKind.Usize 256;
+                                                  Value.Integer IntegerKind.Usize 4
+                                                ]
+                                                [];
+                                              Ty.path "alloc::alloc::Global"
+                                            ]
+                                        ]
+                                    ])
                               ]
                             |),
                             ltac:(M.monadic
@@ -8473,8 +9891,56 @@ Module result.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, __self_1 |);
-                                  M.borrow (| Pointer.Kind.Ref, __arg1_1 |)
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __self_1 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::boxed::Box")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "ruint::Uint")
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 256;
+                                                    Value.Integer IntegerKind.Usize 4
+                                                  ]
+                                                  [];
+                                                Ty.path "alloc::alloc::Global"
+                                              ]
+                                          ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __arg1_1 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::boxed::Box")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "ruint::Uint")
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 256;
+                                                    Value.Integer IntegerKind.Usize 4
+                                                  ]
+                                                  [];
+                                                Ty.path "alloc::alloc::Global"
+                                              ]
+                                          ]
+                                      ])
                                 ]
                               |)))
                           |)));
@@ -8529,8 +9995,18 @@ Module result.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
                               ]
                             |),
                             ltac:(M.monadic
@@ -8546,8 +10022,18 @@ Module result.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, __self_1 |);
-                                  M.borrow (| Pointer.Kind.Ref, __arg1_1 |)
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __self_1 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]);
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __arg1_1 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
                                 ]
                               |)))
                           |)));
@@ -8602,8 +10088,18 @@ Module result.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
                               ]
                             |),
                             ltac:(M.monadic
@@ -8619,8 +10115,18 @@ Module result.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, __self_1 |);
-                                  M.borrow (| Pointer.Kind.Ref, __arg1_1 |)
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __self_1 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]);
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __arg1_1 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
                                 ]
                               |)))
                           |)));
@@ -8675,8 +10181,18 @@ Module result.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
                               ]
                             |),
                             ltac:(M.monadic
@@ -8692,8 +10208,18 @@ Module result.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, __self_1 |);
-                                  M.borrow (| Pointer.Kind.Ref, __arg1_1 |)
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __self_1 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]);
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __arg1_1 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
                                 ]
                               |)))
                           |)));
@@ -8763,8 +10289,34 @@ Module result.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.path
+                                          "revm_specification::eip7702::authorization_list::InvalidAuthorization"
+                                      ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.path
+                                          "revm_specification::eip7702::authorization_list::InvalidAuthorization"
+                                      ]
+                                  ])
                             ]
                           |)));
                       fun γ => ltac:(M.monadic (Value.Bool true))
@@ -8882,7 +10434,14 @@ Module result.
                   [],
                   [ Ty.path "revm_context_interface::result::InvalidTransaction" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_context_interface::result::InvalidTransaction" ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
@@ -8897,11 +10456,15 @@ Module result.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             M.alloc (|
@@ -8995,8 +10558,35 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::boxed::Box")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          [];
+                                        Ty.path "alloc::alloc::Global"
+                                      ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |) in
                         M.alloc (|
@@ -9025,8 +10615,35 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_1 |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::boxed::Box")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          [];
+                                        Ty.path "alloc::alloc::Global"
+                                      ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |)
                         |)
@@ -9064,8 +10681,18 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |) in
                         M.alloc (|
@@ -9082,8 +10709,18 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_1 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |)
                         |)
@@ -9121,8 +10758,18 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |) in
                         M.alloc (|
@@ -9139,8 +10786,18 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_1 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |)
                         |)
@@ -9178,8 +10835,18 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |) in
                         M.alloc (|
@@ -9196,8 +10863,18 @@ Module result.
                               [ __H ]
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_1 |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_1 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| state |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ __H ])
                             ]
                           |)
                         |)
@@ -9235,8 +10912,18 @@ Module result.
                           [ __H ]
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.path
+                                  "revm_specification::eip7702::authorization_list::InvalidAuthorization"
+                              ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ __H ])
                         ]
                       |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -9285,11 +10972,11 @@ Module result.
               Ty.path "revm_specification::eip7702::authorization_list::InvalidAuthorization",
               value
             |) in
-          Value.StructTuple
-            "revm_context_interface::result::InvalidTransaction::InvalidAuthorizationList"
-            []
-            []
-            [ M.read (| value |) ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "revm_context_interface::result::InvalidTransaction::InvalidAuthorizationList"
+              [ M.read (| value |) ])
+            (Ty.path "revm_context_interface::result::InvalidTransaction")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -9426,34 +11113,48 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [ mk_str (| "priority fee is greater than max fee" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [ mk_str (| "priority fee is greater than max fee" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -9476,33 +11177,47 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "gas price is less than basefee" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "gas price is less than basefee" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -9525,34 +11240,52 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [
+                                          mk_str (|
+                                            "caller gas limit exceeds the block gas limit"
+                                          |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [ mk_str (| "caller gas limit exceeds the block gas limit" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -9575,33 +11308,48 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [ mk_str (| "call gas cost exceeds the gas limit" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "call gas cost exceeds the gas limit" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -9624,38 +11372,52 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [
+                                          mk_str (|
+                                            "reject transactions from senders with deployed code"
+                                          |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (|
-                                        "reject transactions from senders with deployed code"
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -9729,123 +11491,198 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 3; Value.Integer IntegerKind.Usize 2 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 3; Value.Integer IntegerKind.Usize 2
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 3 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [
+                                          mk_str (| "lack of funds (" |);
+                                          mk_str (| ") for max fee (" |);
+                                          mk_str (| ")" |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 3 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (| "lack of funds (" |);
-                                      mk_str (| ") for max fee (" |);
-                                      mk_str (| ")" |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      Value.Array
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::boxed::Box")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "ruint::Uint")
+                                                          [
+                                                            Value.Integer IntegerKind.Usize 256;
+                                                            Value.Integer IntegerKind.Usize 4
+                                                          ]
+                                                          [];
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ]
+                                                  ]
+                                              ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, balance |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "alloc::boxed::Box")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "ruint::Uint")
+                                                              [
+                                                                Value.Integer IntegerKind.Usize 256;
+                                                                Value.Integer IntegerKind.Usize 4
+                                                              ]
+                                                              [];
+                                                            Ty.path "alloc::alloc::Global"
+                                                          ]
+                                                      ]
+                                                  ])
+                                            ]
+                                          |);
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::boxed::Box")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "ruint::Uint")
+                                                          [
+                                                            Value.Integer IntegerKind.Usize 256;
+                                                            Value.Integer IntegerKind.Usize 4
+                                                          ]
+                                                          [];
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ]
+                                                  ]
+                                              ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, fee |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "alloc::boxed::Box")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "ruint::Uint")
+                                                              [
+                                                                Value.Integer IntegerKind.Usize 256;
+                                                                Value.Integer IntegerKind.Usize 4
+                                                              ]
+                                                              [];
+                                                            Ty.path "alloc::alloc::Global"
+                                                          ]
+                                                      ]
+                                                  ])
+                                            ]
+                                          |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "alloc::boxed::Box")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "ruint::Uint")
-                                                      [
-                                                        Value.Integer IntegerKind.Usize 256;
-                                                        Value.Integer IntegerKind.Usize 4
-                                                      ]
-                                                      [];
-                                                    Ty.path "alloc::alloc::Global"
-                                                  ]
-                                              ]
-                                          ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, balance |) |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "alloc::boxed::Box")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "ruint::Uint")
-                                                      [
-                                                        Value.Integer IntegerKind.Usize 256;
-                                                        Value.Integer IntegerKind.Usize 4
-                                                      ]
-                                                      [];
-                                                    Ty.path "alloc::alloc::Global"
-                                                  ]
-                                              ]
-                                          ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, fee |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -9868,33 +11705,47 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "overflow payment in transaction" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "overflow payment in transaction" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -9917,33 +11768,47 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "nonce overflow in transaction" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "nonce overflow in transaction" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -9975,81 +11840,119 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [ mk_str (| "nonce " |); mk_str (| " too high, expected " |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [ mk_str (| "nonce " |); mk_str (| " too high, expected " |) ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      Value.Array
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, tx |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                                            ]
+                                          |);
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, state |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                                            ]
+                                          |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, tx |) |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, state |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -10081,81 +11984,119 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [ mk_str (| "nonce " |); mk_str (| " too low, expected " |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [ mk_str (| "nonce " |); mk_str (| " too low, expected " |) ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      Value.Array
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, tx |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                                            ]
+                                          |);
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, state |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                                            ]
+                                          |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, tx |) |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, state |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -10178,33 +12119,47 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "create initcode size limit" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "create initcode size limit" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -10227,33 +12182,47 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "invalid chain ID" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "invalid chain ID" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -10276,33 +12245,47 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "access list not supported" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "access list not supported" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -10325,33 +12308,48 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [ mk_str (| "max fee per blob gas not supported" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "max fee per blob gas not supported" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -10374,33 +12372,48 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [ mk_str (| "blob versioned hashes not supported" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "blob versioned hashes not supported" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -10423,38 +12436,52 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [
+                                          mk_str (|
+                                            "blob gas price is greater than max fee per blob gas"
+                                          |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (|
-                                        "blob gas price is greater than max fee per blob gas"
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -10477,33 +12504,47 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "empty blobs" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "empty blobs" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -10526,33 +12567,47 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "blob create transaction" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "blob create transaction" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -10584,81 +12639,121 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [
+                                          mk_str (| "too many blobs, have " |);
+                                          mk_str (| ", max " |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [ mk_str (| "too many blobs, have " |); mk_str (| ", max " |) ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      Value.Array
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, have |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
+                                            ]
+                                          |);
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, max |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ])
+                                            ]
+                                          |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, have |) |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, max |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -10681,33 +12776,47 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "blob version not supported" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "blob version not supported" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -10730,33 +12839,48 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [ mk_str (| "EOF crate should have `to` address" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "EOF crate should have `to` address" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -10779,33 +12903,48 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [ mk_str (| "authorization list not supported" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "authorization list not supported" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -10828,34 +12967,48 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [ mk_str (| "authorization list tx has invalid fields" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [ mk_str (| "authorization list tx has invalid fields" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -10878,33 +13031,47 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "empty authorization list" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "empty authorization list" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -10927,33 +13094,47 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "Eip2930 is not supported" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "Eip2930 is not supported" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -10976,33 +13157,47 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "Eip1559 is not supported" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "Eip1559 is not supported" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -11025,33 +13220,47 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "Eip4844 is not supported" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "Eip4844 is not supported" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -11074,33 +13283,47 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "Eip7702 is not supported" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "Eip7702 is not supported" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -11139,8 +13362,18 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| i |) |) |);
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| i |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.path
+                              "revm_specification::eip7702::authorization_list::InvalidAuthorization"
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)))
             ]
@@ -11203,37 +13436,41 @@ Module result.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::result::InvalidHeader::PrevrandaoNotSet"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "PrevrandaoNotSet" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::result::InvalidHeader::ExcessBlobGasNotSet"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "ExcessBlobGasNotSet" |) |)
-                      |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_context_interface::result::InvalidHeader::PrevrandaoNotSet"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "PrevrandaoNotSet" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_context_interface::result::InvalidHeader::ExcessBlobGasNotSet"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "ExcessBlobGasNotSet" |) |)
+                        |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -11325,7 +13562,14 @@ Module result.
                   [],
                   [ Ty.path "revm_context_interface::result::InvalidHeader" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_context_interface::result::InvalidHeader" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -11335,7 +13579,14 @@ Module result.
                   [],
                   [ Ty.path "revm_context_interface::result::InvalidHeader" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_context_interface::result::InvalidHeader" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -11412,7 +13663,14 @@ Module result.
                   [],
                   [ Ty.path "revm_context_interface::result::InvalidHeader" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_context_interface::result::InvalidHeader" ])
+                ]
               |) in
             M.alloc (|
               Ty.tuple [],
@@ -11428,11 +13686,15 @@ Module result.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)
@@ -11510,33 +13772,47 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "`prevrandao` not set" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "`prevrandao` not set" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -11559,33 +13835,47 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "`excess_blob_gas` not set" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "`excess_blob_gas` not set" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)))
             ]
@@ -11660,52 +13950,59 @@ Module result.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::result::SuccessReason::Stop"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Stop" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::result::SuccessReason::Return"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Return" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::result::SuccessReason::SelfDestruct"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SelfDestruct" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::result::SuccessReason::EofReturnContract"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EofReturnContract" |) |)
-                      |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_context_interface::result::SuccessReason::Stop"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Stop" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_context_interface::result::SuccessReason::Return"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Return" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_context_interface::result::SuccessReason::SelfDestruct"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "SelfDestruct" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_context_interface::result::SuccessReason::EofReturnContract"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "EofReturnContract" |) |)
+                        |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -11797,7 +14094,14 @@ Module result.
                   [],
                   [ Ty.path "revm_context_interface::result::SuccessReason" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_context_interface::result::SuccessReason" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -11807,7 +14111,14 @@ Module result.
                   [],
                   [ Ty.path "revm_context_interface::result::SuccessReason" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_context_interface::result::SuccessReason" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -11884,7 +14195,14 @@ Module result.
                   [],
                   [ Ty.path "revm_context_interface::result::SuccessReason" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_context_interface::result::SuccessReason" ])
+                ]
               |) in
             M.alloc (|
               Ty.tuple [],
@@ -11900,11 +14218,15 @@ Module result.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)
@@ -12122,32 +14444,38 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OutOfGas" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "revm_context_interface::result::OutOfGasError" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OutOfGas" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "revm_context_interface::result::OutOfGasError" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -12170,8 +14498,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OpcodeNotFound" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "OpcodeNotFound" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12194,8 +14529,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidFEOpcode" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InvalidFEOpcode" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12218,8 +14560,12 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidJump" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidJump" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12242,8 +14588,12 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NotActivated" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NotActivated" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12266,8 +14616,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "StackUnderflow" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "StackUnderflow" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12290,8 +14647,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "StackOverflow" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "StackOverflow" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12314,8 +14678,12 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OutOfOffset" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OutOfOffset" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12338,8 +14706,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CreateCollision" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CreateCollision" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12362,8 +14737,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PrecompileError" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "PrecompileError" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12386,8 +14768,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NonceOverflow" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "NonceOverflow" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12410,11 +14799,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CreateContractSizeLimit" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CreateContractSizeLimit" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12437,11 +14830,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CreateContractStartingWithEF" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CreateContractStartingWithEF" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12464,11 +14861,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CreateInitCodeSizeLimit" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CreateInitCodeSizeLimit" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12491,8 +14892,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OverflowPayment" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "OverflowPayment" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12515,11 +14923,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "StateChangeDuringStaticCall" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "StateChangeDuringStaticCall" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12542,11 +14954,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "CallNotAllowedInsideStatic" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "CallNotAllowedInsideStatic" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12569,8 +14985,12 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OutOfFunds" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OutOfFunds" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12593,8 +15013,12 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CallTooDeep" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CallTooDeep" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12617,11 +15041,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EofAuxDataOverflow" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "EofAuxDataOverflow" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12644,11 +15072,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "EofAuxDataTooSmall" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "EofAuxDataTooSmall" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12671,11 +15103,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "SubRoutineStackOverflow" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "SubRoutineStackOverflow" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -12698,11 +15134,15 @@ Module result.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "InvalidEXTCALLTarget" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InvalidEXTCALLTarget" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)))
             ]
@@ -12800,7 +15240,14 @@ Module result.
                   [],
                   [ Ty.path "revm_context_interface::result::HaltReason" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_context_interface::result::HaltReason" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -12810,7 +15257,14 @@ Module result.
                   [],
                   [ Ty.path "revm_context_interface::result::HaltReason" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_context_interface::result::HaltReason" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -12892,8 +15346,28 @@ Module result.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "revm_context_interface::result::OutOfGasError" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "revm_context_interface::result::OutOfGasError" ]
+                                  ])
                             ]
                           |)));
                       fun γ => ltac:(M.monadic (Value.Bool true))
@@ -12972,7 +15446,14 @@ Module result.
                   [],
                   [ Ty.path "revm_context_interface::result::HaltReason" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_context_interface::result::HaltReason" ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
@@ -12987,11 +15468,15 @@ Module result.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             M.alloc (|
@@ -13029,8 +15514,15 @@ Module result.
                           [ __H ]
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "revm_context_interface::result::OutOfGasError" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ __H ])
                         ]
                       |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -13120,73 +15612,77 @@ Module result.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::result::OutOfGasError::Basic"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Basic" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::result::OutOfGasError::MemoryLimit"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MemoryLimit" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::result::OutOfGasError::Memory"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Memory" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::result::OutOfGasError::Precompile"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Precompile" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::result::OutOfGasError::InvalidOperand"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "InvalidOperand" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "revm_context_interface::result::OutOfGasError::ReentrancySentry"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "ReentrancySentry" |) |)
-                      |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_context_interface::result::OutOfGasError::Basic"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Basic" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_context_interface::result::OutOfGasError::MemoryLimit"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MemoryLimit" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_context_interface::result::OutOfGasError::Memory"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Memory" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_context_interface::result::OutOfGasError::Precompile"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Precompile" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_context_interface::result::OutOfGasError::InvalidOperand"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "InvalidOperand" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "revm_context_interface::result::OutOfGasError::ReentrancySentry"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "ReentrancySentry" |) |)
+                        |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -13278,7 +15774,14 @@ Module result.
                   [],
                   [ Ty.path "revm_context_interface::result::OutOfGasError" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_context_interface::result::OutOfGasError" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -13288,7 +15791,14 @@ Module result.
                   [],
                   [ Ty.path "revm_context_interface::result::OutOfGasError" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_context_interface::result::OutOfGasError" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -13365,7 +15875,14 @@ Module result.
                   [],
                   [ Ty.path "revm_context_interface::result::OutOfGasError" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_context_interface::result::OutOfGasError" ])
+                ]
               |) in
             M.alloc (|
               Ty.tuple [],
@@ -13381,11 +15898,15 @@ Module result.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)

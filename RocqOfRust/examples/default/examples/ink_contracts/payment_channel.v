@@ -17,25 +17,25 @@ Module Impl_core_default_Default_for_payment_channel_AccountId.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.StructTuple
-          "payment_channel::AccountId"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.path "u128",
-              M.get_trait_method (|
-                "core::default::Default",
+        (M.value_with_ty
+          (Value.StructTuple
+            "payment_channel::AccountId"
+            [
+              M.call_closure (|
                 Ty.path "u128",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "u128",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
-          ]))
+              |)
+            ])
+          (Ty.path "payment_channel::AccountId")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -196,7 +196,11 @@ Module Impl_core_convert_From_array_Usize_32_u8_for_payment_channel_AccountId.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -320,7 +324,11 @@ Module Impl_core_cmp_PartialEq_payment_channel_Error_for_payment_channel_Error.
                 [],
                 [ Ty.path "payment_channel::Error" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "payment_channel::Error" ])
+              ]
             |) in
           let~ __arg1_discr : Ty.path "isize" :=
             M.call_closure (|
@@ -330,7 +338,11 @@ Module Impl_core_cmp_PartialEq_payment_channel_Error_for_payment_channel_Error.
                 [],
                 [ Ty.path "payment_channel::Error" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "payment_channel::Error" ])
+              ]
             |) in
           M.alloc (|
             Ty.path "bool",
@@ -456,7 +468,11 @@ Module Impl_payment_channel_Env.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -483,7 +499,11 @@ Module Impl_payment_channel_Env.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -511,7 +531,11 @@ Module Impl_payment_channel_Env.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -536,7 +560,11 @@ Module Impl_payment_channel_Env.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -562,7 +590,11 @@ Module Impl_payment_channel_Env.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -587,7 +619,11 @@ Module Impl_payment_channel_Env.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -630,7 +666,11 @@ Definition hash_encoded (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
         M.call_closure (|
           Ty.path "never",
           M.get_function (| "core::panicking::panic", [], [] |),
-          [ mk_str (| "not implemented" |) ]
+          [
+            M.value_with_ty
+              (mk_str (| "not implemented" |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+          ]
         |)
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"
@@ -682,7 +722,11 @@ Definition ecdsa_recover (ε : list Value.t) (τ : list Ty.t) (α : list Value.t
         M.call_closure (|
           Ty.path "never",
           M.get_function (| "core::panicking::panic", [], [] |),
-          [ mk_str (| "not implemented" |) ]
+          [
+            M.value_with_ty
+              (mk_str (| "not implemented" |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+          ]
         |)
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"
@@ -833,7 +877,11 @@ Module Impl_payment_channel_CryptoHash_for_payment_channel_Sha2x256.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -884,7 +932,11 @@ Module Impl_payment_channel_CryptoHash_for_payment_channel_Keccak256.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -935,7 +987,11 @@ Module Impl_payment_channel_CryptoHash_for_payment_channel_Blake2x256.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -986,7 +1042,11 @@ Module Impl_payment_channel_CryptoHash_for_payment_channel_Blake2x128.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1017,7 +1077,11 @@ Module Impl_payment_channel_PaymentChannel.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1101,22 +1165,31 @@ Module Impl_payment_channel_PaymentChannel.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "payment_channel::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "payment_channel::Env",
-                          M.get_associated_function (|
-                            Ty.path "payment_channel::PaymentChannel",
-                            "env",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "payment_channel::Env",
+                            M.get_associated_function (|
+                              Ty.path "payment_channel::PaymentChannel",
+                              "env",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "payment_channel::PaymentChannel" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "payment_channel::Env" ])
                   ]
                 |);
                 M.read (| amount |)
@@ -1148,14 +1221,29 @@ Module Impl_payment_channel_PaymentChannel.
                 ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, encodable |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.borrow (| Pointer.Kind.MutRef, message |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, encodable |) |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.tuple [ Ty.path "payment_channel::AccountId"; Ty.path "u128" ] ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (| M.borrow (| Pointer.Kind.MutRef, message |) |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ]
+                    ])
               ]
             |) in
           let~ pub_key :
@@ -1174,55 +1262,96 @@ Module Impl_payment_channel_PaymentChannel.
                 [ Ty.function [ Ty.path "payment_channel::Error" ] (Ty.tuple []) ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "payment_channel::Error" ],
+                    M.get_function (| "payment_channel::ecdsa_recover", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.borrow (| Pointer.Kind.Ref, signature |) |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 65 ]
+                              [ Ty.path "u8" ]
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.borrow (| Pointer.Kind.Ref, message |) |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              [ Ty.path "u8" ]
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, pub_key |) |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 33 ]
+                              [ Ty.path "u8" ]
+                          ])
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::result::Result")
                     []
-                    [ Ty.tuple []; Ty.path "payment_channel::Error" ],
-                  M.get_function (| "payment_channel::ecdsa_recover", [], [] |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, signature |) |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, message |) |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (| M.borrow (| Pointer.Kind.MutRef, pub_key |) |)
-                    |)
-                  ]
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.tuple [],
-                            M.alloc (| Ty.path "payment_channel::Error", α0 |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let err := M.copy (| Ty.path "payment_channel::Error", γ |) in
-                                  M.never_to_any (|
-                                    M.call_closure (|
-                                      Ty.path "never",
-                                      M.get_function (|
-                                        "std::panicking::begin_panic",
-                                        [],
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                      |),
-                                      [ mk_str (| "recover failed: {err:?}" |) ]
-                                    |)
-                                  |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                    [ Ty.tuple []; Ty.path "payment_channel::Error" ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.tuple [],
+                              M.alloc (| Ty.path "payment_channel::Error", α0 |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let err := M.copy (| Ty.path "payment_channel::Error", γ |) in
+                                    M.never_to_any (|
+                                      M.call_closure (|
+                                        Ty.path "never",
+                                        M.get_function (|
+                                          "std::panicking::begin_panic",
+                                          [],
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (mk_str (| "recover failed: {err:?}" |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                        ]
+                                      |)
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function [ Ty.path "payment_channel::Error" ] (Ty.tuple []))
               ]
             |) in
           let~ signature_account_id :
@@ -1241,31 +1370,46 @@ Module Impl_payment_channel_PaymentChannel.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 33 ]
-                          [ Ty.path "u8" ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, pub_key |) |)
-                    |)
-                  ]
-                |);
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (| M.borrow (| Pointer.Kind.MutRef, signature_account_id |) |)
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 33 ]
+                            [ Ty.path "u8" ]
+                        ])
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, pub_key |) |)
+                      |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (| M.borrow (| Pointer.Kind.MutRef, signature_account_id |) |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [ Ty.path "u8" ]
+                    ])
               ]
             |) in
           M.alloc (|
@@ -1282,36 +1426,47 @@ Module Impl_payment_channel_PaymentChannel.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "payment_channel::PaymentChannel",
-                    "recipient"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "payment_channel::AccountId",
-                    M.call_closure (|
-                      Ty.path "payment_channel::AccountId",
-                      M.get_trait_method (|
-                        "core::convert::Into",
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 32 ]
-                          [ Ty.path "u8" ],
-                        [],
-                        [ Ty.path "payment_channel::AccountId" ],
-                        "into",
-                        [],
-                        []
-                      |),
-                      [ M.read (| signature_account_id |) ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "payment_channel::PaymentChannel",
+                      "recipient"
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "payment_channel::AccountId" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "payment_channel::AccountId",
+                      M.call_closure (|
+                        Ty.path "payment_channel::AccountId",
+                        M.get_trait_method (|
+                          "core::convert::Into",
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            [ Ty.path "u8" ],
+                          [],
+                          [ Ty.path "payment_channel::AccountId" ],
+                          "into",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| signature_account_id |))
+                            (Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              [ Ty.path "u8" ])
+                        ]
+                      |)
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "payment_channel::AccountId" ])
               ]
             |)
           |)
@@ -1341,39 +1496,44 @@ Module Impl_payment_channel_PaymentChannel.
       ltac:(M.monadic
         (let recipient := M.alloc (| Ty.path "payment_channel::AccountId", recipient |) in
         let close_duration := M.alloc (| Ty.path "u64", close_duration |) in
-        Value.mkStructRecord
-          "payment_channel::PaymentChannel"
-          []
-          []
-          [
-            ("sender",
-              M.call_closure (|
-                Ty.path "payment_channel::AccountId",
-                M.get_associated_function (| Ty.path "payment_channel::Env", "caller", [], [] |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.alloc (|
-                      Ty.path "payment_channel::Env",
-                      M.call_closure (|
-                        Ty.path "payment_channel::Env",
-                        M.get_associated_function (|
-                          Ty.path "payment_channel::PaymentChannel",
-                          "init_env",
-                          [],
-                          []
-                        |),
-                        []
-                      |)
-                    |)
-                  |)
-                ]
-              |));
-            ("recipient", M.read (| recipient |));
-            ("expiration", Value.StructTuple "core::option::Option::None" [] [ Ty.path "u64" ] []);
-            ("withdrawn", Value.Integer IntegerKind.U128 0);
-            ("close_duration", M.read (| close_duration |))
-          ]))
+        M.value_with_ty
+          (Value.mkStructRecord
+            "payment_channel::PaymentChannel"
+            [
+              ("sender",
+                M.call_closure (|
+                  Ty.path "payment_channel::AccountId",
+                  M.get_associated_function (| Ty.path "payment_channel::Env", "caller", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.path "payment_channel::Env",
+                          M.call_closure (|
+                            Ty.path "payment_channel::Env",
+                            M.get_associated_function (|
+                              Ty.path "payment_channel::PaymentChannel",
+                              "init_env",
+                              [],
+                              []
+                            |),
+                            []
+                          |)
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "payment_channel::Env" ])
+                  ]
+                |));
+              ("recipient", M.read (| recipient |));
+              ("expiration",
+                M.value_with_ty
+                  (Value.StructTuple "core::option::Option::None" [])
+                  (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ]));
+              ("withdrawn", Value.Integer IntegerKind.U128 0);
+              ("close_duration", M.read (| close_duration |))
+            ])
+          (Ty.path "payment_channel::PaymentChannel")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -1448,52 +1608,75 @@ Module Impl_payment_channel_PaymentChannel.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.path "payment_channel::AccountId",
-                                      M.call_closure (|
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
                                         Ty.path "payment_channel::AccountId",
-                                        M.get_associated_function (|
-                                          Ty.path "payment_channel::Env",
-                                          "caller",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.path "payment_channel::Env",
-                                              M.call_closure (|
-                                                Ty.path "payment_channel::Env",
-                                                M.get_associated_function (|
-                                                  Ty.path "payment_channel::PaymentChannel",
-                                                  "env",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| self |) |)
+                                        M.call_closure (|
+                                          Ty.path "payment_channel::AccountId",
+                                          M.get_associated_function (|
+                                            Ty.path "payment_channel::Env",
+                                            "caller",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.alloc (|
+                                                  Ty.path "payment_channel::Env",
+                                                  M.call_closure (|
+                                                    Ty.path "payment_channel::Env",
+                                                    M.get_associated_function (|
+                                                      Ty.path "payment_channel::PaymentChannel",
+                                                      "env",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| M.read (| self |) |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "payment_channel::PaymentChannel"
+                                                          ])
+                                                    ]
                                                   |)
-                                                ]
-                                              |)
-                                            |)
-                                          |)
-                                        ]
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "payment_channel::Env" ])
+                                          ]
+                                        |)
                                       |)
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "payment_channel::PaymentChannel",
-                                      "recipient"
-                                    |)
-                                  |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "payment_channel::AccountId" ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "payment_channel::PaymentChannel",
+                                        "recipient"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "payment_channel::AccountId" ])
                                 ]
                               |)
                             |)) in
@@ -1501,17 +1684,20 @@ Module Impl_payment_channel_PaymentChannel.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "payment_channel::Error" ]
-                                [
-                                  Value.StructTuple
-                                    "payment_channel::Error::CallerIsNotRecipient"
-                                    []
-                                    []
-                                    []
-                                ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "payment_channel::Error::CallerIsNotRecipient"
+                                        [])
+                                      (Ty.path "payment_channel::Error")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "payment_channel::Error" ])
                             |)
                           |)
                         |)));
@@ -1548,17 +1734,20 @@ Module Impl_payment_channel_PaymentChannel.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "payment_channel::Error" ]
-                                [
-                                  Value.StructTuple
-                                    "payment_channel::Error::AmountIsLessThanWithdrawn"
-                                    []
-                                    []
-                                    []
-                                ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "payment_channel::Error::AmountIsLessThanWithdrawn"
+                                        [])
+                                      (Ty.path "payment_channel::Error")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "payment_channel::Error" ])
                             |)
                           |)
                         |)));
@@ -1589,12 +1778,22 @@ Module Impl_payment_channel_PaymentChannel.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      M.read (| amount |);
-                                      M.read (| signature |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "payment_channel::PaymentChannel" ]);
+                                      M.value_with_ty (M.read (| amount |)) (Ty.path "u128");
+                                      M.value_with_ty
+                                        (M.read (| signature |))
+                                        (Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 65 ]
+                                          [ Ty.path "u8" ])
                                     ]
                                   |)
                                 ]
@@ -1604,17 +1803,20 @@ Module Impl_payment_channel_PaymentChannel.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "payment_channel::Error" ]
-                                [
-                                  Value.StructTuple
-                                    "payment_channel::Error::InvalidSignature"
-                                    []
-                                    []
-                                    []
-                                ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "payment_channel::Error::InvalidSignature"
+                                        [])
+                                      (Ty.path "payment_channel::Error")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "payment_channel::Error" ])
                             |)
                           |)
                         |)));
@@ -1660,105 +1862,133 @@ Module Impl_payment_channel_PaymentChannel.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [ Ty.tuple []; Ty.path "payment_channel::Error" ],
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [ Ty.tuple []; Ty.path "payment_channel::Error" ],
-                            "map_err",
-                            [],
-                            [
-                              Ty.path "payment_channel::Error";
-                              Ty.function
-                                [ Ty.path "payment_channel::Error" ]
-                                (Ty.path "payment_channel::Error")
-                            ]
-                          |),
-                          [
-                            M.call_closure (|
+                            M.get_associated_function (|
                               Ty.apply
                                 (Ty.path "core::result::Result")
                                 []
                                 [ Ty.tuple []; Ty.path "payment_channel::Error" ],
-                              M.get_associated_function (|
-                                Ty.path "payment_channel::Env",
-                                "transfer",
-                                [],
-                                []
-                              |),
+                              "map_err",
+                              [],
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.path "payment_channel::Env",
-                                    M.call_closure (|
-                                      Ty.path "payment_channel::Env",
-                                      M.get_associated_function (|
-                                        Ty.path "payment_channel::PaymentChannel",
-                                        "env",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |);
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "payment_channel::PaymentChannel",
-                                    "recipient"
-                                  |)
-                                |);
-                                M.call_closure (|
-                                  Ty.path "u128",
-                                  BinOp.Wrap.sub,
-                                  [
-                                    M.read (| amount |);
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "payment_channel::PaymentChannel",
-                                        "withdrawn"
-                                      |)
-                                    |)
-                                  ]
-                                |)
+                                Ty.path "payment_channel::Error";
+                                Ty.function
+                                  [ Ty.path "payment_channel::Error" ]
+                                  (Ty.path "payment_channel::Error")
                               ]
-                            |);
-                            M.closure
-                              (fun γ =>
-                                ltac:(M.monadic
-                                  match γ with
-                                  | [ α0 ] =>
-                                    ltac:(M.monadic
-                                      (M.match_operator (|
-                                        Ty.path "payment_channel::Error",
-                                        M.alloc (| Ty.path "payment_channel::Error", α0 |),
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "payment_channel::Error" ],
+                                  M.get_associated_function (|
+                                    Ty.path "payment_channel::Env",
+                                    "transfer",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.path "payment_channel::Env",
+                                          M.call_closure (|
+                                            Ty.path "payment_channel::Env",
+                                            M.get_associated_function (|
+                                              Ty.path "payment_channel::PaymentChannel",
+                                              "env",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.path "payment_channel::PaymentChannel" ])
+                                            ]
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "payment_channel::Env" ]);
+                                    M.value_with_ty
+                                      (M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "payment_channel::PaymentChannel",
+                                          "recipient"
+                                        |)
+                                      |))
+                                      (Ty.path "payment_channel::AccountId");
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "u128",
+                                        BinOp.Wrap.sub,
                                         [
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (Value.StructTuple
-                                                "payment_channel::Error::TransferFailed"
-                                                []
-                                                []
-                                                []))
+                                          M.read (| amount |);
+                                          M.read (|
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "payment_channel::PaymentChannel",
+                                              "withdrawn"
+                                            |)
+                                          |)
                                         ]
-                                      |)))
-                                  | _ => M.impossible "wrong number of arguments"
-                                  end))
-                          ]
-                        |)
+                                      |))
+                                      (Ty.path "u128")
+                                  ]
+                                |))
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "payment_channel::Error" ]);
+                              M.value_with_ty
+                                (M.closure
+                                  (fun γ =>
+                                    ltac:(M.monadic
+                                      match γ with
+                                      | [ α0 ] =>
+                                        ltac:(M.monadic
+                                          (M.match_operator (|
+                                            Ty.path "payment_channel::Error",
+                                            M.alloc (| Ty.path "payment_channel::Error", α0 |),
+                                            [
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "payment_channel::Error::TransferFailed"
+                                                      [])
+                                                    (Ty.path "payment_channel::Error")))
+                                            ]
+                                          |)))
+                                      | _ => M.impossible "wrong number of arguments"
+                                      end)))
+                                (Ty.function
+                                  [ Ty.path "payment_channel::Error" ]
+                                  (Ty.path "payment_channel::Error"))
+                            ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.tuple []; Ty.path "payment_channel::Error" ])
                       ]
                     |)
                   |),
@@ -1810,7 +2040,17 @@ Module Impl_payment_channel_PaymentChannel.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "payment_channel::Error"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -1832,11 +2072,12 @@ Module Impl_payment_channel_PaymentChannel.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "payment_channel::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "payment_channel::Error" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "payment_channel::Error" ])
               |)
             |)))
         |)))
@@ -1917,23 +2158,41 @@ Module Impl_payment_channel_PaymentChannel.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "payment_channel::Error" ],
+                            M.get_associated_function (|
+                              Ty.path "payment_channel::PaymentChannel",
+                              "close_inner",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| self |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.path "payment_channel::PaymentChannel" ]);
+                              M.value_with_ty (M.read (| amount |)) (Ty.path "u128");
+                              M.value_with_ty
+                                (M.read (| signature |))
+                                (Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 65 ]
+                                  [ Ty.path "u8" ])
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "payment_channel::Error" ],
-                          M.get_associated_function (|
-                            Ty.path "payment_channel::PaymentChannel",
-                            "close_inner",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                            M.read (| amount |);
-                            M.read (| signature |)
-                          ]
-                        |)
+                            [ Ty.tuple []; Ty.path "payment_channel::Error" ])
                       ]
                     |)
                   |),
@@ -1985,7 +2244,17 @@ Module Impl_payment_channel_PaymentChannel.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "payment_channel::Error"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -2012,29 +2281,40 @@ Module Impl_payment_channel_PaymentChannel.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "payment_channel::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "payment_channel::Env",
-                          M.get_associated_function (|
-                            Ty.path "payment_channel::PaymentChannel",
-                            "env",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "payment_channel::Env",
+                            M.get_associated_function (|
+                              Ty.path "payment_channel::PaymentChannel",
+                              "env",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "payment_channel::PaymentChannel" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "payment_channel::PaymentChannel",
-                        "sender"
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "payment_channel::Env" ]);
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "payment_channel::PaymentChannel",
+                          "sender"
+                        |)
+                      |))
+                      (Ty.path "payment_channel::AccountId")
                   ]
                 |) in
               M.alloc (|
@@ -2042,11 +2322,12 @@ Module Impl_payment_channel_PaymentChannel.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "payment_channel::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "payment_channel::Error" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "payment_channel::Error" ])
               |)
             |)))
         |)))
@@ -2116,52 +2397,75 @@ Module Impl_payment_channel_PaymentChannel.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.path "payment_channel::AccountId",
-                                      M.call_closure (|
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
                                         Ty.path "payment_channel::AccountId",
-                                        M.get_associated_function (|
-                                          Ty.path "payment_channel::Env",
-                                          "caller",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.path "payment_channel::Env",
-                                              M.call_closure (|
-                                                Ty.path "payment_channel::Env",
-                                                M.get_associated_function (|
-                                                  Ty.path "payment_channel::PaymentChannel",
-                                                  "env",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| self |) |)
+                                        M.call_closure (|
+                                          Ty.path "payment_channel::AccountId",
+                                          M.get_associated_function (|
+                                            Ty.path "payment_channel::Env",
+                                            "caller",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.alloc (|
+                                                  Ty.path "payment_channel::Env",
+                                                  M.call_closure (|
+                                                    Ty.path "payment_channel::Env",
+                                                    M.get_associated_function (|
+                                                      Ty.path "payment_channel::PaymentChannel",
+                                                      "env",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| M.read (| self |) |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "payment_channel::PaymentChannel"
+                                                          ])
+                                                    ]
                                                   |)
-                                                ]
-                                              |)
-                                            |)
-                                          |)
-                                        ]
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "payment_channel::Env" ])
+                                          ]
+                                        |)
                                       |)
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "payment_channel::PaymentChannel",
-                                      "sender"
-                                    |)
-                                  |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "payment_channel::AccountId" ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "payment_channel::PaymentChannel",
+                                        "sender"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "payment_channel::AccountId" ])
                                 ]
                               |)
                             |)) in
@@ -2169,17 +2473,20 @@ Module Impl_payment_channel_PaymentChannel.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "payment_channel::Error" ]
-                                [
-                                  Value.StructTuple
-                                    "payment_channel::Error::CallerIsNotSender"
-                                    []
-                                    []
-                                    []
-                                ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "payment_channel::Error::CallerIsNotSender"
+                                        [])
+                                      (Ty.path "payment_channel::Error")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "payment_channel::Error" ])
                             |)
                           |)
                         |)));
@@ -2196,22 +2503,31 @@ Module Impl_payment_channel_PaymentChannel.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "payment_channel::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "payment_channel::Env",
-                          M.get_associated_function (|
-                            Ty.path "payment_channel::PaymentChannel",
-                            "env",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "payment_channel::Env",
+                            M.get_associated_function (|
+                              Ty.path "payment_channel::PaymentChannel",
+                              "env",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "payment_channel::PaymentChannel" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "payment_channel::Env" ])
                   ]
                 |) in
               let~ expiration : Ty.path "u64" :=
@@ -2239,43 +2555,54 @@ Module Impl_payment_channel_PaymentChannel.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "payment_channel::Env",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "payment_channel::Env",
-                          M.get_associated_function (|
-                            Ty.path "payment_channel::PaymentChannel",
-                            "env",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.path "payment_channel::Env",
+                            M.get_associated_function (|
+                              Ty.path "payment_channel::PaymentChannel",
+                              "env",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "payment_channel::PaymentChannel" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |);
-                    Value.StructTuple
-                      "payment_channel::Event::SenderCloseStarted"
-                      []
-                      []
-                      [
-                        Value.mkStructRecord
-                          "payment_channel::SenderCloseStarted"
-                          []
-                          []
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "payment_channel::Env" ]);
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.StructTuple
+                          "payment_channel::Event::SenderCloseStarted"
                           [
-                            ("expiration", M.read (| expiration |));
-                            ("close_duration",
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "payment_channel::PaymentChannel",
-                                  "close_duration"
-                                |)
-                              |))
-                          ]
-                      ]
+                            M.value_with_ty
+                              (Value.mkStructRecord
+                                "payment_channel::SenderCloseStarted"
+                                [
+                                  ("expiration", M.read (| expiration |));
+                                  ("close_duration",
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "payment_channel::PaymentChannel",
+                                        "close_duration"
+                                      |)
+                                    |))
+                                ])
+                              (Ty.path "payment_channel::SenderCloseStarted")
+                          ])
+                        (Ty.path "payment_channel::Event"))
+                      (Ty.path "payment_channel::Event")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -2285,22 +2612,21 @@ Module Impl_payment_channel_PaymentChannel.
                     "payment_channel::PaymentChannel",
                     "expiration"
                   |),
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "u64" ]
-                    [ M.read (| expiration |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| expiration |) ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ])
                 |) in
               M.alloc (|
                 Ty.apply
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "payment_channel::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "payment_channel::Error" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "payment_channel::Error" ])
               |)
             |)))
         |)))
@@ -2378,23 +2704,34 @@ Module Impl_payment_channel_PaymentChannel.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.path "payment_channel::Env",
-                                M.call_closure (|
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
                                   Ty.path "payment_channel::Env",
-                                  M.get_associated_function (|
-                                    Ty.path "payment_channel::PaymentChannel",
-                                    "env",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                                  ]
+                                  M.call_closure (|
+                                    Ty.path "payment_channel::Env",
+                                    M.get_associated_function (|
+                                      Ty.path "payment_channel::PaymentChannel",
+                                      "env",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "payment_channel::PaymentChannel" ])
+                                    ]
+                                  |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "payment_channel::Env" ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -2422,17 +2759,20 @@ Module Impl_payment_channel_PaymentChannel.
                                 M.never_to_any (|
                                   M.read (|
                                     M.return_ (|
-                                      Value.StructTuple
-                                        "core::result::Result::Err"
-                                        []
-                                        [ Ty.tuple []; Ty.path "payment_channel::Error" ]
-                                        [
-                                          Value.StructTuple
-                                            "payment_channel::Error::NotYetExpired"
-                                            []
-                                            []
-                                            []
-                                        ]
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "core::result::Result::Err"
+                                          [
+                                            M.value_with_ty
+                                              (Value.StructTuple
+                                                "payment_channel::Error::NotYetExpired"
+                                                [])
+                                              (Ty.path "payment_channel::Error")
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [ Ty.tuple []; Ty.path "payment_channel::Error" ])
                                     |)
                                   |)
                                 |)));
@@ -2449,30 +2789,43 @@ Module Impl_payment_channel_PaymentChannel.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.path "payment_channel::Env",
-                                M.call_closure (|
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
                                   Ty.path "payment_channel::Env",
-                                  M.get_associated_function (|
-                                    Ty.path "payment_channel::PaymentChannel",
-                                    "env",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                                  ]
+                                  M.call_closure (|
+                                    Ty.path "payment_channel::Env",
+                                    M.get_associated_function (|
+                                      Ty.path "payment_channel::PaymentChannel",
+                                      "env",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "payment_channel::PaymentChannel" ])
+                                    ]
+                                  |)
                                 |)
-                              |)
-                            |);
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "payment_channel::PaymentChannel",
-                                "sender"
-                              |)
-                            |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "payment_channel::Env" ]);
+                            M.value_with_ty
+                              (M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "payment_channel::PaymentChannel",
+                                  "sender"
+                                |)
+                              |))
+                              (Ty.path "payment_channel::AccountId")
                           ]
                         |) in
                       M.alloc (|
@@ -2480,21 +2833,29 @@ Module Impl_payment_channel_PaymentChannel.
                           (Ty.path "core::result::Result")
                           []
                           [ Ty.tuple []; Ty.path "payment_channel::Error" ],
-                        Value.StructTuple
-                          "core::result::Result::Ok"
-                          []
-                          [ Ty.tuple []; Ty.path "payment_channel::Error" ]
-                          [ Value.Tuple [] ]
+                        M.value_with_ty
+                          (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.tuple []; Ty.path "payment_channel::Error" ])
                       |)
                     |)));
                 fun γ =>
                   ltac:(M.monadic
                     (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-                    Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [ Ty.tuple []; Ty.path "payment_channel::Error" ]
-                      [ Value.StructTuple "payment_channel::Error::NotYetExpired" [] [] [] ]))
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Err"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "payment_channel::Error::NotYetExpired" [])
+                            (Ty.path "payment_channel::Error")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.tuple []; Ty.path "payment_channel::Error" ])))
               ]
             |)))
         |)))
@@ -2577,52 +2938,75 @@ Module Impl_payment_channel_PaymentChannel.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.path "payment_channel::AccountId",
-                                      M.call_closure (|
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
                                         Ty.path "payment_channel::AccountId",
-                                        M.get_associated_function (|
-                                          Ty.path "payment_channel::Env",
-                                          "caller",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.path "payment_channel::Env",
-                                              M.call_closure (|
-                                                Ty.path "payment_channel::Env",
-                                                M.get_associated_function (|
-                                                  Ty.path "payment_channel::PaymentChannel",
-                                                  "env",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| self |) |)
+                                        M.call_closure (|
+                                          Ty.path "payment_channel::AccountId",
+                                          M.get_associated_function (|
+                                            Ty.path "payment_channel::Env",
+                                            "caller",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.alloc (|
+                                                  Ty.path "payment_channel::Env",
+                                                  M.call_closure (|
+                                                    Ty.path "payment_channel::Env",
+                                                    M.get_associated_function (|
+                                                      Ty.path "payment_channel::PaymentChannel",
+                                                      "env",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| M.read (| self |) |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "payment_channel::PaymentChannel"
+                                                          ])
+                                                    ]
                                                   |)
-                                                ]
-                                              |)
-                                            |)
-                                          |)
-                                        ]
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "payment_channel::Env" ])
+                                          ]
+                                        |)
                                       |)
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "payment_channel::PaymentChannel",
-                                      "recipient"
-                                    |)
-                                  |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "payment_channel::AccountId" ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "payment_channel::PaymentChannel",
+                                        "recipient"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "payment_channel::AccountId" ])
                                 ]
                               |)
                             |)) in
@@ -2630,17 +3014,20 @@ Module Impl_payment_channel_PaymentChannel.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "payment_channel::Error" ]
-                                [
-                                  Value.StructTuple
-                                    "payment_channel::Error::CallerIsNotRecipient"
-                                    []
-                                    []
-                                    []
-                                ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "payment_channel::Error::CallerIsNotRecipient"
+                                        [])
+                                      (Ty.path "payment_channel::Error")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "payment_channel::Error" ])
                             |)
                           |)
                         |)));
@@ -2671,12 +3058,22 @@ Module Impl_payment_channel_PaymentChannel.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      M.read (| amount |);
-                                      M.read (| signature |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "payment_channel::PaymentChannel" ]);
+                                      M.value_with_ty (M.read (| amount |)) (Ty.path "u128");
+                                      M.value_with_ty
+                                        (M.read (| signature |))
+                                        (Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 65 ]
+                                          [ Ty.path "u8" ])
                                     ]
                                   |)
                                 ]
@@ -2686,17 +3083,20 @@ Module Impl_payment_channel_PaymentChannel.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "payment_channel::Error" ]
-                                [
-                                  Value.StructTuple
-                                    "payment_channel::Error::InvalidSignature"
-                                    []
-                                    []
-                                    []
-                                ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "payment_channel::Error::InvalidSignature"
+                                        [])
+                                      (Ty.path "payment_channel::Error")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "payment_channel::Error" ])
                             |)
                           |)
                         |)));
@@ -2733,17 +3133,20 @@ Module Impl_payment_channel_PaymentChannel.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "payment_channel::Error" ]
-                                [
-                                  Value.StructTuple
-                                    "payment_channel::Error::AmountIsLessThanWithdrawn"
-                                    []
-                                    []
-                                    []
-                                ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "payment_channel::Error::AmountIsLessThanWithdrawn"
+                                        [])
+                                      (Ty.path "payment_channel::Error")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "payment_channel::Error" ])
                             |)
                           |)
                         |)));
@@ -2819,92 +3222,120 @@ Module Impl_payment_channel_PaymentChannel.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [ Ty.tuple []; Ty.path "payment_channel::Error" ],
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [ Ty.tuple []; Ty.path "payment_channel::Error" ],
-                            "map_err",
-                            [],
-                            [
-                              Ty.path "payment_channel::Error";
-                              Ty.function
-                                [ Ty.path "payment_channel::Error" ]
-                                (Ty.path "payment_channel::Error")
-                            ]
-                          |),
-                          [
-                            M.call_closure (|
+                            M.get_associated_function (|
                               Ty.apply
                                 (Ty.path "core::result::Result")
                                 []
                                 [ Ty.tuple []; Ty.path "payment_channel::Error" ],
-                              M.get_associated_function (|
-                                Ty.path "payment_channel::Env",
-                                "transfer",
-                                [],
-                                []
-                              |),
+                              "map_err",
+                              [],
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.path "payment_channel::Env",
-                                    M.call_closure (|
-                                      Ty.path "payment_channel::Env",
-                                      M.get_associated_function (|
-                                        Ty.path "payment_channel::PaymentChannel",
-                                        "env",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |);
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "payment_channel::PaymentChannel",
-                                    "recipient"
-                                  |)
-                                |);
-                                M.read (| amount_to_withdraw |)
+                                Ty.path "payment_channel::Error";
+                                Ty.function
+                                  [ Ty.path "payment_channel::Error" ]
+                                  (Ty.path "payment_channel::Error")
                               ]
-                            |);
-                            M.closure
-                              (fun γ =>
-                                ltac:(M.monadic
-                                  match γ with
-                                  | [ α0 ] =>
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "payment_channel::Error" ],
+                                  M.get_associated_function (|
+                                    Ty.path "payment_channel::Env",
+                                    "transfer",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.path "payment_channel::Env",
+                                          M.call_closure (|
+                                            Ty.path "payment_channel::Env",
+                                            M.get_associated_function (|
+                                              Ty.path "payment_channel::PaymentChannel",
+                                              "env",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.path "payment_channel::PaymentChannel" ])
+                                            ]
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "payment_channel::Env" ]);
+                                    M.value_with_ty
+                                      (M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "payment_channel::PaymentChannel",
+                                          "recipient"
+                                        |)
+                                      |))
+                                      (Ty.path "payment_channel::AccountId");
+                                    M.value_with_ty
+                                      (M.read (| amount_to_withdraw |))
+                                      (Ty.path "u128")
+                                  ]
+                                |))
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "payment_channel::Error" ]);
+                              M.value_with_ty
+                                (M.closure
+                                  (fun γ =>
                                     ltac:(M.monadic
-                                      (M.match_operator (|
-                                        Ty.path "payment_channel::Error",
-                                        M.alloc (| Ty.path "payment_channel::Error", α0 |),
-                                        [
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (Value.StructTuple
-                                                "payment_channel::Error::TransferFailed"
-                                                []
-                                                []
-                                                []))
-                                        ]
-                                      |)))
-                                  | _ => M.impossible "wrong number of arguments"
-                                  end))
-                          ]
-                        |)
+                                      match γ with
+                                      | [ α0 ] =>
+                                        ltac:(M.monadic
+                                          (M.match_operator (|
+                                            Ty.path "payment_channel::Error",
+                                            M.alloc (| Ty.path "payment_channel::Error", α0 |),
+                                            [
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "payment_channel::Error::TransferFailed"
+                                                      [])
+                                                    (Ty.path "payment_channel::Error")))
+                                            ]
+                                          |)))
+                                      | _ => M.impossible "wrong number of arguments"
+                                      end)))
+                                (Ty.function
+                                  [ Ty.path "payment_channel::Error" ]
+                                  (Ty.path "payment_channel::Error"))
+                            ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.tuple []; Ty.path "payment_channel::Error" ])
                       ]
                     |)
                   |),
@@ -2956,7 +3387,17 @@ Module Impl_payment_channel_PaymentChannel.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "payment_channel::Error"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -2978,11 +3419,12 @@ Module Impl_payment_channel_PaymentChannel.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "payment_channel::Error" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "payment_channel::Error" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "payment_channel::Error" ])
               |)
             |)))
         |)))
@@ -3156,22 +3598,28 @@ Module Impl_payment_channel_PaymentChannel.
           Ty.path "u128",
           M.get_associated_function (| Ty.path "payment_channel::Env", "balance", [], [] |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.alloc (|
-                Ty.path "payment_channel::Env",
-                M.call_closure (|
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.alloc (|
                   Ty.path "payment_channel::Env",
-                  M.get_associated_function (|
-                    Ty.path "payment_channel::PaymentChannel",
-                    "env",
-                    [],
-                    []
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  M.call_closure (|
+                    Ty.path "payment_channel::Env",
+                    M.get_associated_function (|
+                      Ty.path "payment_channel::PaymentChannel",
+                      "env",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "payment_channel::PaymentChannel" ])
+                    ]
+                  |)
                 |)
-              |)
-            |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "payment_channel::Env" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"

@@ -30,11 +30,11 @@ Module FrameInput.
     φ x :=
       match x with
       | Call inputs =>
-          Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Call" [] [] [φ inputs]
+          Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Call" [φ inputs]
       | Create inputs =>
-          Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Create" [] [] [φ inputs]
+          Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Create" [φ inputs]
       | EOFCreate inputs =>
-          Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::EOFCreate" [] [] [φ inputs]
+          Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::EOFCreate" [φ inputs]
       end
   }.
 
@@ -47,7 +47,7 @@ Module FrameInput.
   Instance IsOfValueWith_Call
       (inputs' : Value.t) {H_inputs : OfValueWith.C ((Box.t CallInputs.t Global.t)) inputs'}
       :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Call" [] [] [inputs']) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Call" [inputs']) :=
   {
     value := Call
       H_inputs.(OfValueWith.value)
@@ -58,7 +58,7 @@ Module FrameInput.
   Instance IsOfValue_Call
       (inputs' : Value.t) {H_inputs : OfValueWith.C ((Box.t CallInputs.t Global.t)) inputs'}
       :
-    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Call" [] [] [inputs']) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Call" [inputs']) :=
   {
     value := Call
       H_inputs.(OfValueWith.value)
@@ -69,7 +69,7 @@ Module FrameInput.
   Instance IsOfValueWith_Create
       (inputs' : Value.t) {H_inputs : OfValueWith.C ((Box.t CreateInputs.t Global.t)) inputs'}
       :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Create" [] [] [inputs']) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Create" [inputs']) :=
   {
     value := Create
       H_inputs.(OfValueWith.value)
@@ -80,7 +80,7 @@ Module FrameInput.
   Instance IsOfValue_Create
       (inputs' : Value.t) {H_inputs : OfValueWith.C ((Box.t CreateInputs.t Global.t)) inputs'}
       :
-    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Create" [] [] [inputs']) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::Create" [inputs']) :=
   {
     value := Create
       H_inputs.(OfValueWith.value)
@@ -91,7 +91,7 @@ Module FrameInput.
   Instance IsOfValueWith_EOFCreate
       (inputs' : Value.t) {H_inputs : OfValueWith.C ((Box.t EOFCreateInputs.t Global.t)) inputs'}
       :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::EOFCreate" [] [] [inputs']) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::EOFCreate" [inputs']) :=
   {
     value := EOFCreate
       H_inputs.(OfValueWith.value)
@@ -102,7 +102,7 @@ Module FrameInput.
   Instance IsOfValue_EOFCreate
       (inputs' : Value.t) {H_inputs : OfValueWith.C ((Box.t EOFCreateInputs.t Global.t)) inputs'}
       :
-    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::EOFCreate" [] [] [inputs']) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::FrameInput::EOFCreate" [inputs']) :=
   {
     value := EOFCreate
       H_inputs.(OfValueWith.value)
@@ -200,13 +200,13 @@ Module InterpreterAction.
     φ x :=
       match x with
       | NewFrame frame =>
-          Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::NewFrame" [] [] [φ frame]
+          Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::NewFrame" [φ frame]
       | Return result =>
-          Value.StructRecord "revm_interpreter::interpreter_action::InterpreterAction::Return" [] [] [
+          Value.StructRecord "revm_interpreter::interpreter_action::InterpreterAction::Return" [
             ("result", φ result)
           ]
       | None_ =>
-          Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::None" [] [] []
+          Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::None" []
       end
   }.
 
@@ -219,7 +219,7 @@ Module InterpreterAction.
   Instance IsOfValueWith_NewFrame
       (frame' : Value.t) {H_frame : OfValueWith.C (FrameInput.t) frame'}
       :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::NewFrame" [] [] [frame']) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::NewFrame" [frame']) :=
   {
     value := NewFrame
       H_frame.(OfValueWith.value)
@@ -230,7 +230,7 @@ Module InterpreterAction.
   Instance IsOfValue_NewFrame
       (frame' : Value.t) {H_frame : OfValueWith.C (FrameInput.t) frame'}
       :
-    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::NewFrame" [] [] [frame']) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::NewFrame" [frame']) :=
   {
     value := NewFrame
       H_frame.(OfValueWith.value)
@@ -241,7 +241,7 @@ Module InterpreterAction.
   Instance IsOfValueWith_Return
       (result' : Value.t) {H_result : OfValueWith.C (InterpreterResult.t) result'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_interpreter::interpreter_action::InterpreterAction::Return" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_interpreter::interpreter_action::InterpreterAction::Return" [
       ("result", result')
     ]) :=
   {
@@ -254,7 +254,7 @@ Module InterpreterAction.
   Instance IsOfValue_Return
       (result' : Value.t) {H_result : OfValueWith.C (InterpreterResult.t) result'}
       :
-    OfValue.C (Value.StructRecord "revm_interpreter::interpreter_action::InterpreterAction::Return" [] [] [
+    OfValue.C (Value.StructRecord "revm_interpreter::interpreter_action::InterpreterAction::Return" [
       ("result", result')
     ]) :=
   {
@@ -265,14 +265,14 @@ Module InterpreterAction.
   }.
 
   Instance IsOfValueWith_None_ :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::None" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::None" []) :=
   {
     value := None_;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_None_ :
-    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::None" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::None" []) :=
   {
     value := None_;
     eq := eq_refl;

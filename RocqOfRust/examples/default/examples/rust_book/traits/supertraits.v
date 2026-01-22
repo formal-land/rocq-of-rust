@@ -37,229 +37,329 @@ Definition comp_sci_student_greeting (ε : list Value.t) (τ : list Ty.t) (α : 
         Ty.path "alloc::string::String",
         M.get_function (| "core::hint::must_use", [], [ Ty.path "alloc::string::String" ] |),
         [
-          M.read (|
-            let~ res : Ty.path "alloc::string::String" :=
-              M.call_closure (|
-                Ty.path "alloc::string::String",
-                M.get_function (| "alloc::fmt::format", [], [] |),
-                [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 4; Value.Integer IntegerKind.Usize 4 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 4 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array
-                                [
-                                  mk_str (| "My name is " |);
-                                  mk_str (| " and I attend " |);
-                                  mk_str (| ". My favorite language is " |);
-                                  mk_str (| ". My Git username is " |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 4 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "alloc::string::String" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.path "alloc::string::String",
-                                              M.call_closure (|
-                                                Ty.path "alloc::string::String",
-                                                M.get_trait_method (|
-                                                  "supertraits::Person",
-                                                  Ty.dyn
-                                                    [ ("supertraits::CompSciStudent::Trait", []) ],
-                                                  [],
-                                                  [],
-                                                  "name",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| student |) |)
-                                                  |)
-                                                ]
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "alloc::string::String" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.path "alloc::string::String",
-                                              M.call_closure (|
-                                                Ty.path "alloc::string::String",
-                                                M.get_trait_method (|
-                                                  "supertraits::Student",
-                                                  Ty.dyn
-                                                    [ ("supertraits::CompSciStudent::Trait", []) ],
-                                                  [],
-                                                  [],
-                                                  "university",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| student |) |)
-                                                  |)
-                                                ]
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "alloc::string::String" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.path "alloc::string::String",
-                                              M.call_closure (|
-                                                Ty.path "alloc::string::String",
-                                                M.get_trait_method (|
-                                                  "supertraits::Programmer",
-                                                  Ty.dyn
-                                                    [ ("supertraits::CompSciStudent::Trait", []) ],
-                                                  [],
-                                                  [],
-                                                  "fav_language",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| student |) |)
-                                                  |)
-                                                ]
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "alloc::string::String" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.path "alloc::string::String",
-                                              M.call_closure (|
-                                                Ty.path "alloc::string::String",
-                                                M.get_trait_method (|
-                                                  "supertraits::CompSciStudent",
-                                                  Ty.dyn
-                                                    [ ("supertraits::CompSciStudent::Trait", []) ],
-                                                  [],
-                                                  [],
-                                                  "git_username",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| student |) |)
-                                                  |)
-                                                ]
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
+          M.value_with_ty
+            (M.read (|
+              let~ res : Ty.path "alloc::string::String" :=
+                M.call_closure (|
+                  Ty.path "alloc::string::String",
+                  M.get_function (| "alloc::fmt::format", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "core::fmt::Arguments",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new_v1",
+                          [ Value.Integer IntegerKind.Usize 4; Value.Integer IntegerKind.Usize 4 ],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 4 ]
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                    Value.Array
+                                      [
+                                        mk_str (| "My name is " |);
+                                        mk_str (| " and I attend " |);
+                                        mk_str (| ". My favorite language is " |);
+                                        mk_str (| ". My Git username is " |)
+                                      ]
                                   |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
-                ]
-              |) in
-            res
-          |)
+                                |)
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 4 ]
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                              ]);
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 4 ]
+                                      [ Ty.path "core::fmt::rt::Argument" ],
+                                    Value.Array
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          M.get_associated_function (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            "new_display",
+                                            [],
+                                            [ Ty.path "alloc::string::String" ]
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.alloc (|
+                                                      Ty.path "alloc::string::String",
+                                                      M.call_closure (|
+                                                        Ty.path "alloc::string::String",
+                                                        M.get_trait_method (|
+                                                          "supertraits::Person",
+                                                          Ty.dyn
+                                                            [
+                                                              ("supertraits::CompSciStudent::Trait",
+                                                                [])
+                                                            ],
+                                                          [],
+                                                          [],
+                                                          "name",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| student |) |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.dyn
+                                                                  [
+                                                                    ("supertraits::CompSciStudent::Trait",
+                                                                      [])
+                                                                  ]
+                                                              ])
+                                                        ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "alloc::string::String" ])
+                                          ]
+                                        |);
+                                        M.call_closure (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          M.get_associated_function (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            "new_display",
+                                            [],
+                                            [ Ty.path "alloc::string::String" ]
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.alloc (|
+                                                      Ty.path "alloc::string::String",
+                                                      M.call_closure (|
+                                                        Ty.path "alloc::string::String",
+                                                        M.get_trait_method (|
+                                                          "supertraits::Student",
+                                                          Ty.dyn
+                                                            [
+                                                              ("supertraits::CompSciStudent::Trait",
+                                                                [])
+                                                            ],
+                                                          [],
+                                                          [],
+                                                          "university",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| student |) |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.dyn
+                                                                  [
+                                                                    ("supertraits::CompSciStudent::Trait",
+                                                                      [])
+                                                                  ]
+                                                              ])
+                                                        ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "alloc::string::String" ])
+                                          ]
+                                        |);
+                                        M.call_closure (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          M.get_associated_function (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            "new_display",
+                                            [],
+                                            [ Ty.path "alloc::string::String" ]
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.alloc (|
+                                                      Ty.path "alloc::string::String",
+                                                      M.call_closure (|
+                                                        Ty.path "alloc::string::String",
+                                                        M.get_trait_method (|
+                                                          "supertraits::Programmer",
+                                                          Ty.dyn
+                                                            [
+                                                              ("supertraits::CompSciStudent::Trait",
+                                                                [])
+                                                            ],
+                                                          [],
+                                                          [],
+                                                          "fav_language",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| student |) |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.dyn
+                                                                  [
+                                                                    ("supertraits::CompSciStudent::Trait",
+                                                                      [])
+                                                                  ]
+                                                              ])
+                                                        ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "alloc::string::String" ])
+                                          ]
+                                        |);
+                                        M.call_closure (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          M.get_associated_function (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            "new_display",
+                                            [],
+                                            [ Ty.path "alloc::string::String" ]
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.alloc (|
+                                                      Ty.path "alloc::string::String",
+                                                      M.call_closure (|
+                                                        Ty.path "alloc::string::String",
+                                                        M.get_trait_method (|
+                                                          "supertraits::CompSciStudent",
+                                                          Ty.dyn
+                                                            [
+                                                              ("supertraits::CompSciStudent::Trait",
+                                                                [])
+                                                            ],
+                                                          [],
+                                                          [],
+                                                          "git_username",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| student |) |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.dyn
+                                                                  [
+                                                                    ("supertraits::CompSciStudent::Trait",
+                                                                      [])
+                                                                  ]
+                                                              ])
+                                                        ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.path "alloc::string::String" ])
+                                          ]
+                                        |)
+                                      ]
+                                  |)
+                                |)
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 4 ]
+                                  [ Ty.path "core::fmt::rt::Argument" ]
+                              ])
+                        ]
+                      |))
+                      (Ty.path "core::fmt::Arguments")
+                  ]
+                |) in
+              res
+            |))
+            (Ty.path "alloc::string::String")
         ]
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"

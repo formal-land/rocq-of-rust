@@ -52,7 +52,7 @@ Module PhantomData.
 
   Instance IsLink (T : Set) `{Link T} `{PointeeSized.Run T} : Link (t T) :=
     { Φ := Ty.apply (Ty.path "core::marker::PhantomData") [] [Φ T];
-      φ _ := Value.StructTuple "core::marker::PhantomData" [] [Φ T] []
+      φ _ := Value.StructTuple "core::marker::PhantomData" []
     }.
 
   Instance PointeeSized_Run_Ref {K A} `{Link A} `{PointeeSized.Run A}

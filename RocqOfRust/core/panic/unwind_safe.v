@@ -423,14 +423,16 @@ Module panic.
                 []
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (|
-                    self,
-                    "core::panic::unwind_safe::AssertUnwindSafe",
-                    0
-                  |)
-                |);
-                Value.Tuple []
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::panic::unwind_safe::AssertUnwindSafe",
+                      0
+                    |)
+                  |))
+                  F;
+                M.value_with_ty (Value.Tuple []) (Ty.tuple [])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -486,69 +488,94 @@ Module panic.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::builders::DebugTuple",
-                        "field",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.alloc (|
-                            Ty.path "core::fmt::builders::DebugTuple",
-                            M.call_closure (|
-                              Ty.path "core::fmt::builders::DebugTuple",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::Formatter",
-                                "debug_tuple",
-                                [],
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::builders::DebugTuple",
+                          "field",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.alloc (|
+                                Ty.path "core::fmt::builders::DebugTuple",
+                                M.call_closure (|
+                                  Ty.path "core::fmt::builders::DebugTuple",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::Formatter",
+                                    "debug_tuple",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| f |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| mk_str (| "AssertUnwindSafe" |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                  ]
+                                |)
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
                                 []
-                              |),
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply (Ty.path "&") [] [ T ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
                               [
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
                                 M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.deref (| mk_str (| "AssertUnwindSafe" |) |)
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_tuple_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::panic::unwind_safe::AssertUnwindSafe",
+                                        0
+                                      |)
+                                    |)
+                                  |)
                                 |)
                               ]
-                            |)
-                          |)
-                        |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply (Ty.path "&") [] [ T ])
+                            |))
                             (Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_tuple_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::panic::unwind_safe::AssertUnwindSafe",
-                                    0
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      ]
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -578,17 +605,17 @@ Module panic.
         match ε, τ, α with
         | [], [], [] =>
           ltac:(M.monadic
-            (Value.StructTuple
-              "core::panic::unwind_safe::AssertUnwindSafe"
-              []
-              [ T ]
-              [
-                M.call_closure (|
-                  T,
-                  M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                  []
-                |)
-              ]))
+            (M.value_with_ty
+              (Value.StructTuple
+                "core::panic::unwind_safe::AssertUnwindSafe"
+                [
+                  M.call_closure (|
+                    T,
+                    M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                    []
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::panic::unwind_safe::AssertUnwindSafe") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -676,61 +703,90 @@ Module panic.
                     ]
                   |),
                   [
-                    M.read (| self |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0 ] =>
-                            ltac:(M.monadic
-                              (M.match_operator (|
-                                Ty.apply (Ty.path "&mut") [] [ F ],
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::panic::unwind_safe::AssertUnwindSafe")
-                                        []
-                                        [ F ]
-                                    ],
-                                  α0
-                                |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let x :=
-                                        M.copy (|
-                                          Ty.apply
-                                            (Ty.path "&mut")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path
-                                                  "core::panic::unwind_safe::AssertUnwindSafe")
-                                                []
-                                                [ F ]
-                                            ],
-                                          γ
-                                        |) in
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.SubPointer.get_struct_tuple_field (|
-                                              M.deref (| M.read (| x |) |),
-                                              "core::panic::unwind_safe::AssertUnwindSafe",
-                                              0
+                    M.value_with_ty
+                      (M.read (| self |))
+                      (Ty.apply
+                        (Ty.path "core::pin::Pin")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::panic::unwind_safe::AssertUnwindSafe")
+                                []
+                                [ F ]
+                            ]
+                        ]);
+                    M.value_with_ty
+                      (M.closure
+                        (fun γ =>
+                          ltac:(M.monadic
+                            match γ with
+                            | [ α0 ] =>
+                              ltac:(M.monadic
+                                (M.match_operator (|
+                                  Ty.apply (Ty.path "&mut") [] [ F ],
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::panic::unwind_safe::AssertUnwindSafe")
+                                          []
+                                          [ F ]
+                                      ],
+                                    α0
+                                  |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let x :=
+                                          M.copy (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "core::panic::unwind_safe::AssertUnwindSafe")
+                                                  []
+                                                  [ F ]
+                                              ],
+                                            γ
+                                          |) in
+                                        M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.SubPointer.get_struct_tuple_field (|
+                                                M.deref (| M.read (| x |) |),
+                                                "core::panic::unwind_safe::AssertUnwindSafe",
+                                                0
+                                              |)
                                             |)
                                           |)
-                                        |)
-                                      |)))
-                                ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
+                                        |)))
+                                  ]
+                                |)))
+                            | _ => M.impossible "wrong number of arguments"
+                            end)))
+                      (Ty.function
+                        [
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::panic::unwind_safe::AssertUnwindSafe")
+                                []
+                                [ F ]
+                            ]
+                        ]
+                        (Ty.apply (Ty.path "&mut") [] [ F ]))
                   ]
                 |) in
               M.alloc (|
@@ -753,8 +809,15 @@ Module panic.
                     []
                   |),
                   [
-                    M.read (| pinned_field |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |)
+                    M.value_with_ty
+                      (M.read (| pinned_field |))
+                      (Ty.apply
+                        (Ty.path "core::pin::Pin")
+                        []
+                        [ Ty.apply (Ty.path "&mut") [] [ F ] ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::task::wake::Context" ])
                   ]
                 |)
               |)
@@ -837,24 +900,13 @@ Module panic.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ S ] ],
-                  M.get_associated_function (|
-                    Ty.apply
-                      (Ty.path "core::pin::Pin")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&mut")
-                          []
-                          [ Ty.apply (Ty.path "core::panic::unwind_safe::AssertUnwindSafe") [] [ S ]
-                          ]
-                      ],
-                    "map_unchecked_mut",
-                    [],
-                    [
-                      S;
-                      Ty.function
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ S ] ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "core::pin::Pin")
+                        []
                         [
                           Ty.apply
                             (Ty.path "&mut")
@@ -865,69 +917,117 @@ Module panic.
                                 []
                                 [ S ]
                             ]
-                        ]
-                        (Ty.apply (Ty.path "&mut") [] [ S ])
-                    ]
-                  |),
-                  [
-                    M.read (| self |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0 ] =>
+                        ],
+                      "map_unchecked_mut",
+                      [],
+                      [
+                        S;
+                        Ty.function
+                          [
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::panic::unwind_safe::AssertUnwindSafe")
+                                  []
+                                  [ S ]
+                              ]
+                          ]
+                          (Ty.apply (Ty.path "&mut") [] [ S ])
+                      ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.apply
+                          (Ty.path "core::pin::Pin")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::panic::unwind_safe::AssertUnwindSafe")
+                                  []
+                                  [ S ]
+                              ]
+                          ]);
+                      M.value_with_ty
+                        (M.closure
+                          (fun γ =>
                             ltac:(M.monadic
-                              (M.match_operator (|
-                                Ty.apply (Ty.path "&mut") [] [ S ],
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [
+                              match γ with
+                              | [ α0 ] =>
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.apply (Ty.path "&mut") [] [ S ],
+                                    M.alloc (|
                                       Ty.apply
-                                        (Ty.path "core::panic::unwind_safe::AssertUnwindSafe")
+                                        (Ty.path "&mut")
                                         []
-                                        [ S ]
-                                    ],
-                                  α0
-                                |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let x :=
-                                        M.copy (|
+                                        [
                                           Ty.apply
-                                            (Ty.path "&mut")
+                                            (Ty.path "core::panic::unwind_safe::AssertUnwindSafe")
                                             []
-                                            [
+                                            [ S ]
+                                        ],
+                                      α0
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let x :=
+                                            M.copy (|
                                               Ty.apply
-                                                (Ty.path
-                                                  "core::panic::unwind_safe::AssertUnwindSafe")
+                                                (Ty.path "&mut")
                                                 []
-                                                [ S ]
-                                            ],
-                                          γ
-                                        |) in
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "core::panic::unwind_safe::AssertUnwindSafe")
+                                                    []
+                                                    [ S ]
+                                                ],
+                                              γ
+                                            |) in
                                           M.borrow (|
                                             Pointer.Kind.MutRef,
-                                            M.SubPointer.get_struct_tuple_field (|
-                                              M.deref (| M.read (| x |) |),
-                                              "core::panic::unwind_safe::AssertUnwindSafe",
-                                              0
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_tuple_field (|
+                                                  M.deref (| M.read (| x |) |),
+                                                  "core::panic::unwind_safe::AssertUnwindSafe",
+                                                  0
+                                                |)
+                                              |)
                                             |)
-                                          |)
-                                        |)
-                                      |)))
-                                ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |)
+                                          |)))
+                                    ]
+                                  |)))
+                              | _ => M.impossible "wrong number of arguments"
+                              end)))
+                        (Ty.function
+                          [
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::panic::unwind_safe::AssertUnwindSafe")
+                                  []
+                                  [ S ]
+                              ]
+                          ]
+                          (Ty.apply (Ty.path "&mut") [] [ S ]))
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ S ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::task::wake::Context" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -965,14 +1065,16 @@ Module panic.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::panic::unwind_safe::AssertUnwindSafe",
-                    0
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::panic::unwind_safe::AssertUnwindSafe",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ S ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

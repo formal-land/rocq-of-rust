@@ -109,21 +109,11 @@ Module interpreter_action.
                         ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::interpreter_action::FrameInput::Call"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [
-                            Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInputs";
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::interpreter_action::FrameInput::Call"
+                      [
+                        M.call_closure (|
                           Ty.apply
                             (Ty.path "alloc::boxed::Box")
                             []
@@ -132,15 +122,42 @@ Module interpreter_action.
                                 "revm_interpreter::interpreter_action::call_inputs::CallInputs";
                               Ty.path "alloc::alloc::Global"
                             ],
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [
+                                Ty.path
+                                  "revm_interpreter::interpreter_action::call_inputs::CallInputs";
+                                Ty.path "alloc::alloc::Global"
+                              ],
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::boxed::Box")
+                                    []
+                                    [
+                                      Ty.path
+                                        "revm_interpreter::interpreter_action::call_inputs::CallInputs";
+                                      Ty.path "alloc::alloc::Global"
+                                    ]
+                                ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "revm_interpreter::interpreter_action::FrameInput")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -167,22 +184,11 @@ Module interpreter_action.
                         ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::interpreter_action::FrameInput::Create"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [
-                            Ty.path
-                              "revm_interpreter::interpreter_action::create_inputs::CreateInputs";
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::interpreter_action::FrameInput::Create"
+                      [
+                        M.call_closure (|
                           Ty.apply
                             (Ty.path "alloc::boxed::Box")
                             []
@@ -191,15 +197,42 @@ Module interpreter_action.
                                 "revm_interpreter::interpreter_action::create_inputs::CreateInputs";
                               Ty.path "alloc::alloc::Global"
                             ],
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [
+                                Ty.path
+                                  "revm_interpreter::interpreter_action::create_inputs::CreateInputs";
+                                Ty.path "alloc::alloc::Global"
+                              ],
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::boxed::Box")
+                                    []
+                                    [
+                                      Ty.path
+                                        "revm_interpreter::interpreter_action::create_inputs::CreateInputs";
+                                      Ty.path "alloc::alloc::Global"
+                                    ]
+                                ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "revm_interpreter::interpreter_action::FrameInput")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -226,22 +259,11 @@ Module interpreter_action.
                         ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::interpreter_action::FrameInput::EOFCreate"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [
-                            Ty.path
-                              "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::interpreter_action::FrameInput::EOFCreate"
+                      [
+                        M.call_closure (|
                           Ty.apply
                             (Ty.path "alloc::boxed::Box")
                             []
@@ -250,15 +272,42 @@ Module interpreter_action.
                                 "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
                               Ty.path "alloc::alloc::Global"
                             ],
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]))
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [
+                                Ty.path
+                                  "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
+                                Ty.path "alloc::alloc::Global"
+                              ],
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::boxed::Box")
+                                    []
+                                    [
+                                      Ty.path
+                                        "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
+                                      Ty.path "alloc::alloc::Global"
+                                    ]
+                                ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "revm_interpreter::interpreter_action::FrameInput")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -336,41 +385,47 @@ Module interpreter_action.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Call" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::boxed::Box")
-                                    []
-                                    [
-                                      Ty.path
-                                        "revm_interpreter::interpreter_action::call_inputs::CallInputs";
-                                      Ty.path "alloc::alloc::Global"
-                                    ]
-                                ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Call" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::boxed::Box")
+                                      []
+                                      [
+                                        Ty.path
+                                          "revm_interpreter::interpreter_action::call_inputs::CallInputs";
+                                        Ty.path "alloc::alloc::Global"
+                                      ]
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -411,41 +466,47 @@ Module interpreter_action.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Create" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::boxed::Box")
-                                    []
-                                    [
-                                      Ty.path
-                                        "revm_interpreter::interpreter_action::create_inputs::CreateInputs";
-                                      Ty.path "alloc::alloc::Global"
-                                    ]
-                                ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Create" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::boxed::Box")
+                                      []
+                                      [
+                                        Ty.path
+                                          "revm_interpreter::interpreter_action::create_inputs::CreateInputs";
+                                        Ty.path "alloc::alloc::Global"
+                                      ]
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -486,41 +547,47 @@ Module interpreter_action.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EOFCreate" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::boxed::Box")
-                                    []
-                                    [
-                                      Ty.path
-                                        "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
-                                      Ty.path "alloc::alloc::Global"
-                                    ]
-                                ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EOFCreate" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::boxed::Box")
+                                      []
+                                      [
+                                        Ty.path
+                                          "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
+                                        Ty.path "alloc::alloc::Global"
+                                      ]
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)))
             ]
@@ -582,7 +649,14 @@ Module interpreter_action.
                   [],
                   [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -592,7 +666,14 @@ Module interpreter_action.
                   [],
                   [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -710,8 +791,46 @@ Module interpreter_action.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::boxed::Box")
+                                          []
+                                          [
+                                            Ty.path
+                                              "revm_interpreter::interpreter_action::call_inputs::CallInputs";
+                                            Ty.path "alloc::alloc::Global"
+                                          ]
+                                      ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::boxed::Box")
+                                          []
+                                          [
+                                            Ty.path
+                                              "revm_interpreter::interpreter_action::call_inputs::CallInputs";
+                                            Ty.path "alloc::alloc::Global"
+                                          ]
+                                      ]
+                                  ])
                             ]
                           |)));
                       fun γ =>
@@ -804,8 +923,46 @@ Module interpreter_action.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::boxed::Box")
+                                          []
+                                          [
+                                            Ty.path
+                                              "revm_interpreter::interpreter_action::create_inputs::CreateInputs";
+                                            Ty.path "alloc::alloc::Global"
+                                          ]
+                                      ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::boxed::Box")
+                                          []
+                                          [
+                                            Ty.path
+                                              "revm_interpreter::interpreter_action::create_inputs::CreateInputs";
+                                            Ty.path "alloc::alloc::Global"
+                                          ]
+                                      ]
+                                  ])
                             ]
                           |)));
                       fun γ =>
@@ -898,8 +1055,46 @@ Module interpreter_action.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::boxed::Box")
+                                          []
+                                          [
+                                            Ty.path
+                                              "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
+                                            Ty.path "alloc::alloc::Global"
+                                          ]
+                                      ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::boxed::Box")
+                                          []
+                                          [
+                                            Ty.path
+                                              "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
+                                            Ty.path "alloc::alloc::Global"
+                                          ]
+                                      ]
+                                  ])
                             ]
                           |)));
                       fun γ =>
@@ -1086,25 +1281,32 @@ Module interpreter_action.
                         [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::interpreter_action::InterpreterAction::NewFrame"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "revm_interpreter::interpreter_action::FrameInput",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::interpreter_action::InterpreterAction::NewFrame"
+                      [
+                        M.call_closure (|
                           Ty.path "revm_interpreter::interpreter_action::FrameInput",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "revm_interpreter::interpreter_action::FrameInput",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "revm_interpreter::interpreter_action::InterpreterAction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -1122,26 +1324,36 @@ Module interpreter_action.
                         [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ],
                       γ1_0
                     |) in
-                  Value.mkStructRecord
-                    "revm_interpreter::interpreter_action::InterpreterAction::Return"
-                    []
-                    []
-                    [
-                      ("result",
-                        M.call_closure (|
-                          Ty.path "revm_interpreter::interpreter::InterpreterResult",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "revm_interpreter::interpreter_action::InterpreterAction::Return"
+                      [
+                        ("result",
+                          M.call_closure (|
                             Ty.path "revm_interpreter::interpreter::InterpreterResult",
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                        |))
-                    ]));
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.path "revm_interpreter::interpreter::InterpreterResult",
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ])
+                            ]
+                          |))
+                      ])
+                    (Ty.path "revm_interpreter::interpreter_action::InterpreterAction")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -1150,11 +1362,11 @@ Module interpreter_action.
                       γ,
                       "revm_interpreter::interpreter_action::InterpreterAction::None"
                     |) in
-                  Value.StructTuple
-                    "revm_interpreter::interpreter_action::InterpreterAction::None"
-                    []
-                    []
-                    []))
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_interpreter::interpreter_action::InterpreterAction::None"
+                      [])
+                    (Ty.path "revm_interpreter::interpreter_action::InterpreterAction")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1223,32 +1435,38 @@ Module interpreter_action.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NewFrame" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NewFrame" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -1280,33 +1498,41 @@ Module interpreter_action.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Return" |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "result" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Return" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "result" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -1329,8 +1555,12 @@ Module interpreter_action.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "None" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "None" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)))
             ]
@@ -1355,11 +1585,9 @@ Module interpreter_action.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.StructTuple
-            "revm_interpreter::interpreter_action::InterpreterAction::None"
-            []
-            []
-            []))
+          (M.value_with_ty
+            (Value.StructTuple "revm_interpreter::interpreter_action::InterpreterAction::None" [])
+            (Ty.path "revm_interpreter::interpreter_action::InterpreterAction")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1417,7 +1645,14 @@ Module interpreter_action.
                   [],
                   [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -1427,7 +1662,14 @@ Module interpreter_action.
                   [],
                   [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -1509,8 +1751,28 @@ Module interpreter_action.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "revm_interpreter::interpreter_action::FrameInput" ]
+                                  ])
                             ]
                           |)));
                       fun γ =>
@@ -1567,8 +1829,28 @@ Module interpreter_action.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ]
+                                  ])
                             ]
                           |)));
                       fun γ => ltac:(M.monadic (Value.Bool true))
@@ -1842,7 +2124,14 @@ Module interpreter_action.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ])
+                ]
               |)
             ]
           |)))
@@ -1884,18 +2173,20 @@ Module interpreter_action.
                     |) in
                   let result :=
                     M.copy (| Ty.path "revm_interpreter::interpreter::InterpreterResult", γ0_0 |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ]
-                    [ M.read (| result |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| result |) ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_interpreter::interpreter::InterpreterResult" ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

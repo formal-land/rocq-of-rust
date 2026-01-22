@@ -116,7 +116,7 @@ Module hint.
                             [],
                             []
                           |),
-                          [ M.read (| cond |) ]
+                          [ M.value_with_ty (M.read (| cond |)) (Ty.path "bool") ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
                     |)));
@@ -127,7 +127,7 @@ Module hint.
             M.call_closure (|
               Ty.tuple [],
               M.get_function (| "core::intrinsics::assume", [], [] |),
-              [ M.read (| cond |) ]
+              [ M.value_with_ty (M.read (| cond |)) (Ty.path "bool") ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
         |)))
@@ -210,7 +210,7 @@ Module hint.
         M.call_closure (|
           T,
           M.get_function (| "core::intrinsics::black_box", [], [ T ] |),
-          [ M.read (| dummy |) ]
+          [ M.value_with_ty (M.read (| dummy |)) T ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.

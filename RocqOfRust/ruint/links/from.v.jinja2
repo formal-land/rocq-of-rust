@@ -112,7 +112,7 @@ Module UintTryFrom_T_for_Uint_where_TryFrom.
     eexists.
     { constructor.
       eapply IsTraitMethod.Defined.
-      { apply from.Impl_ruint_from_UintTryFrom_where_core_convert_TryFrom_ruint_Uint_BITS_LIMBS_T_T_for_ruint_Uint_BITS_LIMBS.Implements. }
+      { with_strategy transparent [Φ] apply from.Impl_ruint_from_UintTryFrom_where_core_convert_TryFrom_ruint_Uint_BITS_LIMBS_T_T_for_ruint_Uint_BITS_LIMBS.Implements. }
       { reflexivity. }
     }
     { apply run_uint_try_from. }
@@ -139,7 +139,7 @@ Module TryFrom_u64_for_Uint.
       (Φ (Error BITS LIMBS)).
   Proof.
     eexists; split.
-    { apply from.Impl_core_convert_TryFrom_u64_for_ruint_Uint_BITS_LIMBS.Implements. }
+    { with_strategy transparent [Φ] apply from.Impl_core_convert_TryFrom_u64_for_ruint_Uint_BITS_LIMBS.Implements. }
     { reflexivity. }
   Qed.
 

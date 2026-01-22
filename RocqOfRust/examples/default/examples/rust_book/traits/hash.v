@@ -35,20 +35,24 @@ Module Impl_core_hash_Hash_for_hash_Person.
                 [ __H ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "hash::Person",
-                        "id"
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "hash::Person",
+                          "id"
+                        |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ __H ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -64,20 +68,24 @@ Module Impl_core_hash_Hash_for_hash_Person.
                 [ __H ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "hash::Person",
-                        "name"
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "hash::Person",
+                          "name"
+                        |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ __H ])
               ]
             |) in
           M.alloc (|
@@ -94,20 +102,24 @@ Module Impl_core_hash_Hash_for_hash_Person.
                 [ __H ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "hash::Person",
-                        "phone"
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "hash::Person",
+                          "phone"
+                        |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ __H ])
               ]
             |)
           |)
@@ -161,11 +173,15 @@ Definition calculate_hash (ε : list Value.t) (τ : list Ty.t) (α : list Value.
               [ Ty.path "std::hash::random::DefaultHasher" ]
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| t |) |) |);
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.borrow (| Pointer.Kind.MutRef, s |) |)
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| t |) |) |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.borrow (| Pointer.Kind.MutRef, s |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "std::hash::random::DefaultHasher" ])
             ]
           |) in
         M.alloc (|
@@ -181,7 +197,11 @@ Definition calculate_hash (ε : list Value.t) (τ : list Ty.t) (α : list Value.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, s |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, s |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "std::hash::random::DefaultHasher" ])
+            ]
           |)
         |)
       |)))
@@ -215,51 +235,59 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     ltac:(M.monadic
       (M.read (|
         let~ person1 : Ty.path "hash::Person" :=
-          Value.mkStructRecord
-            "hash::Person"
-            []
-            []
-            [
-              ("id", Value.Integer IntegerKind.U32 5);
-              ("name",
-                M.call_closure (|
-                  Ty.path "alloc::string::String",
-                  M.get_trait_method (|
-                    "alloc::string::ToString",
-                    Ty.path "str",
-                    [],
-                    [],
-                    "to_string",
-                    [],
-                    []
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Janet" |) |) |) ]
-                |));
-              ("phone", Value.Integer IntegerKind.U64 5556667777)
-            ] in
+          M.value_with_ty
+            (Value.mkStructRecord
+              "hash::Person"
+              [
+                ("id", Value.Integer IntegerKind.U32 5);
+                ("name",
+                  M.call_closure (|
+                    Ty.path "alloc::string::String",
+                    M.get_trait_method (|
+                      "alloc::string::ToString",
+                      Ty.path "str",
+                      [],
+                      [],
+                      "to_string",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Janet" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                    ]
+                  |));
+                ("phone", Value.Integer IntegerKind.U64 5556667777)
+              ])
+            (Ty.path "hash::Person") in
         let~ person2 : Ty.path "hash::Person" :=
-          Value.mkStructRecord
-            "hash::Person"
-            []
-            []
-            [
-              ("id", Value.Integer IntegerKind.U32 5);
-              ("name",
-                M.call_closure (|
-                  Ty.path "alloc::string::String",
-                  M.get_trait_method (|
-                    "alloc::string::ToString",
-                    Ty.path "str",
-                    [],
-                    [],
-                    "to_string",
-                    [],
-                    []
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Bob" |) |) |) ]
-                |));
-              ("phone", Value.Integer IntegerKind.U64 5556667777)
-            ] in
+          M.value_with_ty
+            (Value.mkStructRecord
+              "hash::Person"
+              [
+                ("id", Value.Integer IntegerKind.U32 5);
+                ("name",
+                  M.call_closure (|
+                    Ty.path "alloc::string::String",
+                    M.get_trait_method (|
+                      "alloc::string::ToString",
+                      Ty.path "str",
+                      [],
+                      [],
+                      "to_string",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Bob" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                    ]
+                  |));
+                ("phone", Value.Integer IntegerKind.U64 5556667777)
+              ])
+            (Ty.path "hash::Person") in
         let~ _ : Ty.tuple [] :=
           M.match_operator (|
             Ty.tuple [],
@@ -287,10 +315,12 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                     [ Ty.path "hash::Person" ]
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.borrow (| Pointer.Kind.Ref, person1 |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.borrow (| Pointer.Kind.Ref, person1 |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "hash::Person" ])
                                   ]
                                 |);
                                 M.call_closure (|
@@ -301,10 +331,12 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                     [ Ty.path "hash::Person" ]
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.borrow (| Pointer.Kind.Ref, person2 |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.borrow (| Pointer.Kind.Ref, person2 |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "hash::Person" ])
                                   ]
                                 |)
                               ]
@@ -318,9 +350,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic", [], [] |),
                       [
-                        mk_str (|
-                          "assertion failed: calculate_hash(&person1) != calculate_hash(&person2)"
-                        |)
+                        M.value_with_ty
+                          (mk_str (|
+                            "assertion failed: calculate_hash(&person1) != calculate_hash(&person2)"
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)
                   |)));

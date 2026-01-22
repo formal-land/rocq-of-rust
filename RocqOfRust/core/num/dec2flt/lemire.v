@@ -113,7 +113,7 @@ Module num.
                         [],
                         []
                       |),
-                      [ Value.Integer IntegerKind.I32 0 ]
+                      [ M.value_with_ty (Value.Integer IntegerKind.I32 0) (Ty.path "i32") ]
                     |) in
                   let~ fp_inf : Ty.path "core::num::dec2flt::common::BiasedFp" :=
                     M.call_closure (|
@@ -125,12 +125,14 @@ Module num.
                         []
                       |),
                       [
-                        M.read (|
-                          get_constant (|
-                            "core::num::dec2flt::float::RawFloat::INFINITE_POWER",
-                            Ty.path "i32"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.read (|
+                            get_constant (|
+                              "core::num::dec2flt::float::RawFloat::INFINITE_POWER",
+                              Ty.path "i32"
+                            |)
+                          |))
+                          (Ty.path "i32")
                       ]
                     |) in
                   let~ fp_error : Ty.path "core::num::dec2flt::common::BiasedFp" :=
@@ -142,7 +144,7 @@ Module num.
                         [],
                         []
                       |),
-                      [ Value.Integer IntegerKind.I32 (-1) ]
+                      [ M.value_with_ty (Value.Integer IntegerKind.I32 (-1)) (Ty.path "i32") ]
                     |) in
                   let~ _ : Ty.tuple [] :=
                     M.match_operator (|
@@ -229,7 +231,7 @@ Module num.
                     M.call_closure (|
                       Ty.path "u32",
                       M.get_associated_function (| Ty.path "u64", "leading_zeros", [], [] |),
-                      [ M.read (| w |) ]
+                      [ M.value_with_ty (M.read (| w |)) (Ty.path "u64") ]
                     |) in
                   let~ _ : Ty.tuple [] :=
                     let β := w in
@@ -255,21 +257,23 @@ Module num.
                             []
                           |),
                           [
-                            M.read (| q |);
-                            M.read (| w |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              BinOp.Wrap.add,
-                              [
-                                M.read (|
-                                  get_constant (|
-                                    "core::num::dec2flt::float::RawFloat::MANTISSA_EXPLICIT_BITS",
-                                    Ty.path "usize"
-                                  |)
-                                |);
-                                Value.Integer IntegerKind.Usize 3
-                              ]
-                            |)
+                            M.value_with_ty (M.read (| q |)) (Ty.path "i64");
+                            M.value_with_ty (M.read (| w |)) (Ty.path "u64");
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                BinOp.Wrap.add,
+                                [
+                                  M.read (|
+                                    get_constant (|
+                                      "core::num::dec2flt::float::RawFloat::MANTISSA_EXPLICIT_BITS",
+                                      Ty.path "usize"
+                                    |)
+                                  |);
+                                  Value.Integer IntegerKind.Usize 3
+                                ]
+                              |))
+                              (Ty.path "usize")
                           ]
                         |)
                       |),
@@ -426,7 +430,11 @@ Module num.
                                                 [],
                                                 []
                                               |),
-                                              [ M.cast (Ty.path "i32") (M.read (| q |)) ]
+                                              [
+                                                M.value_with_ty
+                                                  (M.cast (Ty.path "i32") (M.read (| q |)))
+                                                  (Ty.path "i32")
+                                              ]
                                             |);
                                             M.read (| upperbit |)
                                           ]
@@ -595,14 +603,14 @@ Module num.
                                                   |))
                                               |) in
                                             M.return_ (|
-                                              Value.mkStructRecord
-                                                "core::num::dec2flt::common::BiasedFp"
-                                                []
-                                                []
-                                                [
-                                                  ("f", M.read (| mantissa |));
-                                                  ("e", M.read (| power2 |))
-                                                ]
+                                              M.value_with_ty
+                                                (Value.mkStructRecord
+                                                  "core::num::dec2flt::common::BiasedFp"
+                                                  [
+                                                    ("f", M.read (| mantissa |));
+                                                    ("e", M.read (| power2 |))
+                                                  ])
+                                                (Ty.path "core::num::dec2flt::common::BiasedFp")
                                             |)
                                           |)
                                         |)));
@@ -925,11 +933,11 @@ Module num.
                                 |) in
                               M.alloc (|
                                 Ty.path "core::num::dec2flt::common::BiasedFp",
-                                Value.mkStructRecord
-                                  "core::num::dec2flt::common::BiasedFp"
-                                  []
-                                  []
-                                  [ ("f", M.read (| mantissa |)); ("e", M.read (| power2 |)) ]
+                                M.value_with_ty
+                                  (Value.mkStructRecord
+                                    "core::num::dec2flt::common::BiasedFp"
+                                    [ ("f", M.read (| mantissa |)); ("e", M.read (| power2 |)) ])
+                                  (Ty.path "core::num::dec2flt::common::BiasedFp")
                               |)
                             |)))
                       ]
@@ -967,15 +975,17 @@ Module num.
                       Ty.path "i32",
                       M.get_associated_function (| Ty.path "i32", "wrapping_mul", [], [] |),
                       [
-                        M.read (| q |);
-                        M.call_closure (|
-                          Ty.path "i32",
-                          BinOp.Wrap.add,
-                          [
-                            Value.Integer IntegerKind.I32 152170;
-                            Value.Integer IntegerKind.I32 65536
-                          ]
-                        |)
+                        M.value_with_ty (M.read (| q |)) (Ty.path "i32");
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.path "i32",
+                            BinOp.Wrap.add,
+                            [
+                              Value.Integer IntegerKind.I32 152170;
+                              Value.Integer IntegerKind.I32 65536
+                            ]
+                          |))
+                          (Ty.path "i32")
                       ]
                     |);
                     Value.Integer IntegerKind.I32 16
@@ -1134,9 +1144,11 @@ Module num.
                                         Ty.path "never",
                                         M.get_function (| "core::panicking::panic", [], [] |),
                                         [
-                                          mk_str (|
-                                            "assertion failed: q >= SMALLEST_POWER_OF_FIVE as i64"
-                                          |)
+                                          M.value_with_ty
+                                            (mk_str (|
+                                              "assertion failed: q >= SMALLEST_POWER_OF_FIVE as i64"
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                         ]
                                       |)
                                     |)));
@@ -1201,9 +1213,11 @@ Module num.
                                         Ty.path "never",
                                         M.get_function (| "core::panicking::panic", [], [] |),
                                         [
-                                          mk_str (|
-                                            "assertion failed: q <= LARGEST_POWER_OF_FIVE as i64"
-                                          |)
+                                          M.value_with_ty
+                                            (mk_str (|
+                                              "assertion failed: q <= LARGEST_POWER_OF_FIVE as i64"
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                         ]
                                       |)
                                     |)));
@@ -1260,7 +1274,11 @@ Module num.
                                       M.call_closure (|
                                         Ty.path "never",
                                         M.get_function (| "core::panicking::panic", [], [] |),
-                                        [ mk_str (| "assertion failed: precision <= 64" |) ]
+                                        [
+                                          M.value_with_ty
+                                            (mk_str (| "assertion failed: precision <= 64" |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                        ]
                                       |)
                                     |)));
                                 fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -1359,7 +1377,10 @@ Module num.
                                 [],
                                 []
                               |),
-                              [ M.read (| w |); M.read (| lo5 |) ]
+                              [
+                                M.value_with_ty (M.read (| w |)) (Ty.path "u64");
+                                M.value_with_ty (M.read (| lo5 |)) (Ty.path "u64")
+                              ]
                             |)
                           |),
                           [
@@ -1410,7 +1431,14 @@ Module num.
                                                     [],
                                                     []
                                                   |),
-                                                  [ M.read (| w |); M.read (| hi5 |) ]
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.read (| w |))
+                                                      (Ty.path "u64");
+                                                    M.value_with_ty
+                                                      (M.read (| hi5 |))
+                                                      (Ty.path "u64")
+                                                  ]
                                                 |)
                                               |),
                                               [
@@ -1435,8 +1463,12 @@ Module num.
                                                               []
                                                             |),
                                                             [
-                                                              M.read (| first_lo |);
-                                                              M.read (| second_hi |)
+                                                              M.value_with_ty
+                                                                (M.read (| first_lo |))
+                                                                (Ty.path "u64");
+                                                              M.value_with_ty
+                                                                (M.read (| second_hi |))
+                                                                (Ty.path "u64")
                                                             ]
                                                           |)
                                                         |) in

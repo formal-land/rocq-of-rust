@@ -28,25 +28,42 @@ Module task.
                 Ty.tuple [],
                 M.get_trait_method (| "alloc::task::Wake", Self, [], [], "wake", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "alloc::sync::Arc")
-                      []
-                      [ Self; Ty.path "alloc::alloc::Global" ],
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.apply
                         (Ty.path "alloc::sync::Arc")
                         []
                         [ Self; Ty.path "alloc::alloc::Global" ],
-                      [],
-                      [],
-                      "clone",
-                      [],
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ Self; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::sync::Arc")
+                                []
+                                [ Self; Ty.path "alloc::alloc::Global" ]
+                            ])
+                      ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "alloc::sync::Arc")
                       []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                  |)
+                      [ Self; Ty.path "alloc::alloc::Global" ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -82,11 +99,20 @@ Module task.
             Ty.path "core::task::wake::Waker",
             M.get_associated_function (| Ty.path "core::task::wake::Waker", "from_raw", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::task::wake::RawWaker",
-                M.get_function (| "alloc::task::raw_waker", [], [ W ] |),
-                [ M.read (| waker |) ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "core::task::wake::RawWaker",
+                  M.get_function (| "alloc::task::raw_waker", [], [ W ] |),
+                  [
+                    M.value_with_ty
+                      (M.read (| waker |))
+                      (Ty.apply
+                        (Ty.path "alloc::sync::Arc")
+                        []
+                        [ W; Ty.path "alloc::alloc::Global" ])
+                  ]
+                |))
+                (Ty.path "core::task::wake::RawWaker")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -124,7 +150,11 @@ Module task.
           M.call_closure (|
             Ty.path "core::task::wake::RawWaker",
             M.get_function (| "alloc::task::raw_waker", [], [ W ] |),
-            [ M.read (| waker |) ]
+            [
+              M.value_with_ty
+                (M.read (| waker |))
+                (Ty.apply (Ty.path "alloc::sync::Arc") [] [ W; Ty.path "alloc::alloc::Global" ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -196,96 +226,123 @@ Module task.
           Ty.path "core::task::wake::RawWaker",
           M.get_associated_function (| Ty.path "core::task::wake::RawWaker", "new", [], [] |),
           [
-            M.cast
-              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
-              (M.call_closure (|
-                Ty.apply (Ty.path "*const") [] [ W ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "alloc::sync::Arc") [] [ W; Ty.path "alloc::alloc::Global" ],
-                  "into_raw",
-                  [],
-                  []
-                |),
-                [ M.read (| waker |) ]
-              |));
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::task::wake::RawWakerVTable",
-                    M.call_closure (|
-                      Ty.path "core::task::wake::RawWakerVTable",
-                      M.get_associated_function (|
-                        Ty.path "core::task::wake::RawWakerVTable",
-                        "new",
-                        [],
+            M.value_with_ty
+              (M.cast
+                (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                (M.call_closure (|
+                  Ty.apply (Ty.path "*const") [] [ W ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "alloc::sync::Arc") [] [ W; Ty.path "alloc::alloc::Global" ],
+                    "into_raw",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (| waker |))
+                      (Ty.apply
+                        (Ty.path "alloc::sync::Arc")
                         []
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.function
-                            [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                            (Ty.path "core::task::wake::RawWaker"),
-                          M.pointer_coercion
-                            M.PointerCoercion.ReifyFnPointer
+                        [ W; Ty.path "alloc::alloc::Global" ])
+                  ]
+                |)))
+              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::task::wake::RawWakerVTable",
+                      M.call_closure (|
+                        Ty.path "core::task::wake::RawWakerVTable",
+                        M.get_associated_function (|
+                          Ty.path "core::task::wake::RawWakerVTable",
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.function
+                                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                (Ty.path "core::task::wake::RawWaker"),
+                              M.pointer_coercion
+                                M.PointerCoercion.ReifyFnPointer
+                                (Ty.function
+                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                  (Ty.path "core::task::wake::RawWaker"))
+                                (Ty.function
+                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                  (Ty.path "core::task::wake::RawWaker")),
+                              [ M.get_function (| "alloc::task::raw_waker.clone_waker", [], [] |) ]
+                            |))
                             (Ty.function
                               [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                              (Ty.path "core::task::wake::RawWaker"))
+                              (Ty.path "core::task::wake::RawWaker"));
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.function
+                                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                (Ty.tuple []),
+                              M.pointer_coercion
+                                M.PointerCoercion.ReifyFnPointer
+                                (Ty.function
+                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                  (Ty.tuple []))
+                                (Ty.function
+                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                  (Ty.tuple [])),
+                              [ M.get_function (| "alloc::task::raw_waker.wake", [], [] |) ]
+                            |))
                             (Ty.function
                               [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                              (Ty.path "core::task::wake::RawWaker")),
-                          [ M.get_function (| "alloc::task::raw_waker.clone_waker", [], [] |) ]
-                        |);
-                        M.call_closure (|
-                          Ty.function
-                            [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                            (Ty.tuple []),
-                          M.pointer_coercion
-                            M.PointerCoercion.ReifyFnPointer
+                              (Ty.tuple []));
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.function
+                                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                (Ty.tuple []),
+                              M.pointer_coercion
+                                M.PointerCoercion.ReifyFnPointer
+                                (Ty.function
+                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                  (Ty.tuple []))
+                                (Ty.function
+                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                  (Ty.tuple [])),
+                              [ M.get_function (| "alloc::task::raw_waker.wake_by_ref", [], [] |) ]
+                            |))
+                            (Ty.function
+                              [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                              (Ty.tuple []));
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.function
+                                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                (Ty.tuple []),
+                              M.pointer_coercion
+                                M.PointerCoercion.ReifyFnPointer
+                                (Ty.function
+                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                  (Ty.tuple []))
+                                (Ty.function
+                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                  (Ty.tuple [])),
+                              [ M.get_function (| "alloc::task::raw_waker.drop_waker", [], [] |) ]
+                            |))
                             (Ty.function
                               [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
                               (Ty.tuple []))
-                            (Ty.function
-                              [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                              (Ty.tuple [])),
-                          [ M.get_function (| "alloc::task::raw_waker.wake", [], [] |) ]
-                        |);
-                        M.call_closure (|
-                          Ty.function
-                            [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                            (Ty.tuple []),
-                          M.pointer_coercion
-                            M.PointerCoercion.ReifyFnPointer
-                            (Ty.function
-                              [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                              (Ty.tuple []))
-                            (Ty.function
-                              [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                              (Ty.tuple [])),
-                          [ M.get_function (| "alloc::task::raw_waker.wake_by_ref", [], [] |) ]
-                        |);
-                        M.call_closure (|
-                          Ty.function
-                            [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                            (Ty.tuple []),
-                          M.pointer_coercion
-                            M.PointerCoercion.ReifyFnPointer
-                            (Ty.function
-                              [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                              (Ty.tuple []))
-                            (Ty.function
-                              [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                              (Ty.tuple [])),
-                          [ M.get_function (| "alloc::task::raw_waker.drop_waker", [], [] |) ]
-                        |)
-                      ]
+                        ]
+                      |)
                     |)
                   |)
                 |)
-              |)
-            |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::RawWakerVTable" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -320,7 +377,11 @@ Module task.
                   [],
                   []
                 |),
-                [ M.cast (Ty.apply (Ty.path "*const") [] [ W ]) (M.read (| waker |)) ]
+                [
+                  M.value_with_ty
+                    (M.cast (Ty.apply (Ty.path "*const") [] [ W ]) (M.read (| waker |)))
+                    (Ty.apply (Ty.path "*const") [] [ W ])
+                ]
               |) in
             M.alloc (|
               Ty.path "core::task::wake::RawWaker",
@@ -328,87 +389,123 @@ Module task.
                 Ty.path "core::task::wake::RawWaker",
                 M.get_associated_function (| Ty.path "core::task::wake::RawWaker", "new", [], [] |),
                 [
-                  M.read (| waker |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.path "core::task::wake::RawWakerVTable",
-                          M.call_closure (|
+                  M.value_with_ty
+                    (M.read (| waker |))
+                    (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
                             Ty.path "core::task::wake::RawWakerVTable",
-                            M.get_associated_function (|
+                            M.call_closure (|
                               Ty.path "core::task::wake::RawWakerVTable",
-                              "new",
-                              [],
-                              []
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.function
-                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                  (Ty.path "core::task::wake::RawWaker"),
-                                M.pointer_coercion
-                                  M.PointerCoercion.ReifyFnPointer
+                              M.get_associated_function (|
+                                Ty.path "core::task::wake::RawWakerVTable",
+                                "new",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.function
+                                      [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                      (Ty.path "core::task::wake::RawWaker"),
+                                    M.pointer_coercion
+                                      M.PointerCoercion.ReifyFnPointer
+                                      (Ty.function
+                                        [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                        (Ty.path "core::task::wake::RawWaker"))
+                                      (Ty.function
+                                        [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                        (Ty.path "core::task::wake::RawWaker")),
+                                    [
+                                      M.get_function (|
+                                        "alloc::task::raw_waker.clone_waker",
+                                        [],
+                                        []
+                                      |)
+                                    ]
+                                  |))
                                   (Ty.function
                                     [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                    (Ty.path "core::task::wake::RawWaker"))
+                                    (Ty.path "core::task::wake::RawWaker"));
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.function
+                                      [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                      (Ty.tuple []),
+                                    M.pointer_coercion
+                                      M.PointerCoercion.ReifyFnPointer
+                                      (Ty.function
+                                        [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                        (Ty.tuple []))
+                                      (Ty.function
+                                        [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                        (Ty.tuple [])),
+                                    [ M.get_function (| "alloc::task::raw_waker.wake", [], [] |) ]
+                                  |))
                                   (Ty.function
                                     [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                    (Ty.path "core::task::wake::RawWaker")),
-                                [ M.get_function (| "alloc::task::raw_waker.clone_waker", [], [] |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.function
-                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                  (Ty.tuple []),
-                                M.pointer_coercion
-                                  M.PointerCoercion.ReifyFnPointer
+                                    (Ty.tuple []));
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.function
+                                      [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                      (Ty.tuple []),
+                                    M.pointer_coercion
+                                      M.PointerCoercion.ReifyFnPointer
+                                      (Ty.function
+                                        [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                        (Ty.tuple []))
+                                      (Ty.function
+                                        [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                        (Ty.tuple [])),
+                                    [
+                                      M.get_function (|
+                                        "alloc::task::raw_waker.wake_by_ref",
+                                        [],
+                                        []
+                                      |)
+                                    ]
+                                  |))
+                                  (Ty.function
+                                    [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                    (Ty.tuple []));
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.function
+                                      [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                      (Ty.tuple []),
+                                    M.pointer_coercion
+                                      M.PointerCoercion.ReifyFnPointer
+                                      (Ty.function
+                                        [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                        (Ty.tuple []))
+                                      (Ty.function
+                                        [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                        (Ty.tuple [])),
+                                    [
+                                      M.get_function (|
+                                        "alloc::task::raw_waker.drop_waker",
+                                        [],
+                                        []
+                                      |)
+                                    ]
+                                  |))
                                   (Ty.function
                                     [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
                                     (Ty.tuple []))
-                                  (Ty.function
-                                    [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                    (Ty.tuple [])),
-                                [ M.get_function (| "alloc::task::raw_waker.wake", [], [] |) ]
-                              |);
-                              M.call_closure (|
-                                Ty.function
-                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                  (Ty.tuple []),
-                                M.pointer_coercion
-                                  M.PointerCoercion.ReifyFnPointer
-                                  (Ty.function
-                                    [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                    (Ty.tuple []))
-                                  (Ty.function
-                                    [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                    (Ty.tuple [])),
-                                [ M.get_function (| "alloc::task::raw_waker.wake_by_ref", [], [] |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.function
-                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                  (Ty.tuple []),
-                                M.pointer_coercion
-                                  M.PointerCoercion.ReifyFnPointer
-                                  (Ty.function
-                                    [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                    (Ty.tuple []))
-                                  (Ty.function
-                                    [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                    (Ty.tuple [])),
-                                [ M.get_function (| "alloc::task::raw_waker.drop_waker", [], [] |) ]
-                              |)
-                            ]
+                              ]
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::RawWakerVTable" ])
                 ]
               |)
             |)
@@ -443,13 +540,21 @@ Module task.
                   [],
                   []
                 |),
-                [ M.cast (Ty.apply (Ty.path "*const") [] [ W ]) (M.read (| waker |)) ]
+                [
+                  M.value_with_ty
+                    (M.cast (Ty.apply (Ty.path "*const") [] [ W ]) (M.read (| waker |)))
+                    (Ty.apply (Ty.path "*const") [] [ W ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
                 Ty.tuple [],
                 M.get_trait_method (| "alloc::task::Wake", W, [], [], "wake", [], [] |),
-                [ M.read (| waker |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| waker |))
+                    (Ty.apply (Ty.path "alloc::sync::Arc") [] [ W; Ty.path "alloc::alloc::Global" ])
+                ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -495,19 +600,28 @@ Module task.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply (Ty.path "alloc::sync::Arc") [] [ W; Ty.path "alloc::alloc::Global" ],
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.apply
                         (Ty.path "alloc::sync::Arc")
                         []
                         [ W; Ty.path "alloc::alloc::Global" ],
-                      "from_raw",
-                      [],
-                      []
-                    |),
-                    [ M.cast (Ty.apply (Ty.path "*const") [] [ W ]) (M.read (| waker |)) ]
-                  |)
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ W; Ty.path "alloc::alloc::Global" ],
+                        "from_raw",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.cast (Ty.apply (Ty.path "*const") [] [ W ]) (M.read (| waker |)))
+                          (Ty.apply (Ty.path "*const") [] [ W ])
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "alloc::sync::Arc") [] [ W; Ty.path "alloc::alloc::Global" ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -515,23 +629,13 @@ Module task.
                 Ty.tuple [],
                 M.get_trait_method (| "alloc::task::Wake", W, [], [], "wake_by_ref", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "alloc::sync::Arc")
-                              []
-                              [ W; Ty.path "alloc::alloc::Global" ]
-                          ],
-                        M.get_trait_method (|
-                          "core::ops::deref::Deref",
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
                           Ty.apply
-                            (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                            (Ty.path "&")
                             []
                             [
                               Ty.apply
@@ -539,21 +643,56 @@ Module task.
                                 []
                                 [ W; Ty.path "alloc::alloc::Global" ]
                             ],
-                          [],
-                          [],
-                          "deref",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, waker |) |)
-                          |)
-                        ]
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply
+                              (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::sync::Arc")
+                                  []
+                                  [ W; Ty.path "alloc::alloc::Global" ]
+                              ],
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, waker |) |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::sync::Arc")
+                                        []
+                                        [ W; Ty.path "alloc::alloc::Global" ]
+                                    ]
+                                ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [ W; Ty.path "alloc::alloc::Global" ]
+                      ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -586,7 +725,11 @@ Module task.
                   [],
                   []
                 |),
-                [ M.cast (Ty.apply (Ty.path "*const") [] [ W ]) (M.read (| waker |)) ]
+                [
+                  M.value_with_ty
+                    (M.cast (Ty.apply (Ty.path "*const") [] [ W ]) (M.read (| waker |)))
+                    (Ty.apply (Ty.path "*const") [] [ W ])
+                ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -624,22 +767,39 @@ Module task.
                 Ty.tuple [],
                 M.get_trait_method (| "alloc::task::LocalWake", Self, [], [], "wake", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.apply (Ty.path "alloc::rc::Rc") [] [ Self; Ty.path "alloc::alloc::Global" ],
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.apply
                         (Ty.path "alloc::rc::Rc")
                         []
                         [ Self; Ty.path "alloc::alloc::Global" ],
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.apply
+                          (Ty.path "alloc::rc::Rc")
+                          []
+                          [ Self; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::rc::Rc")
+                                []
+                                [ Self; Ty.path "alloc::alloc::Global" ]
+                            ])
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "alloc::rc::Rc") [] [ Self; Ty.path "alloc::alloc::Global" ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -680,11 +840,17 @@ Module task.
               []
             |),
             [
-              M.call_closure (|
-                Ty.path "core::task::wake::RawWaker",
-                M.get_function (| "alloc::task::local_raw_waker", [], [ W ] |),
-                [ M.read (| waker |) ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "core::task::wake::RawWaker",
+                  M.get_function (| "alloc::task::local_raw_waker", [], [ W ] |),
+                  [
+                    M.value_with_ty
+                      (M.read (| waker |))
+                      (Ty.apply (Ty.path "alloc::rc::Rc") [] [ W; Ty.path "alloc::alloc::Global" ])
+                  ]
+                |))
+                (Ty.path "core::task::wake::RawWaker")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -722,7 +888,11 @@ Module task.
           M.call_closure (|
             Ty.path "core::task::wake::RawWaker",
             M.get_function (| "alloc::task::local_raw_waker", [], [ W ] |),
-            [ M.read (| waker |) ]
+            [
+              M.value_with_ty
+                (M.read (| waker |))
+                (Ty.apply (Ty.path "alloc::rc::Rc") [] [ W; Ty.path "alloc::alloc::Global" ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -789,98 +959,138 @@ Module task.
           Ty.path "core::task::wake::RawWaker",
           M.get_associated_function (| Ty.path "core::task::wake::RawWaker", "new", [], [] |),
           [
-            M.cast
-              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
-              (M.call_closure (|
-                Ty.apply (Ty.path "*const") [] [ W ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "alloc::rc::Rc") [] [ W; Ty.path "alloc::alloc::Global" ],
-                  "into_raw",
-                  [],
-                  []
-                |),
-                [ M.read (| waker |) ]
-              |));
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::task::wake::RawWakerVTable",
-                    M.call_closure (|
+            M.value_with_ty
+              (M.cast
+                (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                (M.call_closure (|
+                  Ty.apply (Ty.path "*const") [] [ W ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "alloc::rc::Rc") [] [ W; Ty.path "alloc::alloc::Global" ],
+                    "into_raw",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (| waker |))
+                      (Ty.apply (Ty.path "alloc::rc::Rc") [] [ W; Ty.path "alloc::alloc::Global" ])
+                  ]
+                |)))
+              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "core::task::wake::RawWakerVTable",
-                      M.get_associated_function (|
+                      M.call_closure (|
                         Ty.path "core::task::wake::RawWakerVTable",
-                        "new",
-                        [],
-                        []
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.function
-                            [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                            (Ty.path "core::task::wake::RawWaker"),
-                          M.pointer_coercion
-                            M.PointerCoercion.ReifyFnPointer
+                        M.get_associated_function (|
+                          Ty.path "core::task::wake::RawWakerVTable",
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.function
+                                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                (Ty.path "core::task::wake::RawWaker"),
+                              M.pointer_coercion
+                                M.PointerCoercion.ReifyFnPointer
+                                (Ty.function
+                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                  (Ty.path "core::task::wake::RawWaker"))
+                                (Ty.function
+                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                  (Ty.path "core::task::wake::RawWaker")),
+                              [
+                                M.get_function (|
+                                  "alloc::task::local_raw_waker.clone_waker",
+                                  [],
+                                  []
+                                |)
+                              ]
+                            |))
                             (Ty.function
                               [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                              (Ty.path "core::task::wake::RawWaker"))
+                              (Ty.path "core::task::wake::RawWaker"));
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.function
+                                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                (Ty.tuple []),
+                              M.pointer_coercion
+                                M.PointerCoercion.ReifyFnPointer
+                                (Ty.function
+                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                  (Ty.tuple []))
+                                (Ty.function
+                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                  (Ty.tuple [])),
+                              [ M.get_function (| "alloc::task::local_raw_waker.wake", [], [] |) ]
+                            |))
                             (Ty.function
                               [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                              (Ty.path "core::task::wake::RawWaker")),
-                          [ M.get_function (| "alloc::task::local_raw_waker.clone_waker", [], [] |)
-                          ]
-                        |);
-                        M.call_closure (|
-                          Ty.function
-                            [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                            (Ty.tuple []),
-                          M.pointer_coercion
-                            M.PointerCoercion.ReifyFnPointer
+                              (Ty.tuple []));
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.function
+                                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                (Ty.tuple []),
+                              M.pointer_coercion
+                                M.PointerCoercion.ReifyFnPointer
+                                (Ty.function
+                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                  (Ty.tuple []))
+                                (Ty.function
+                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                  (Ty.tuple [])),
+                              [
+                                M.get_function (|
+                                  "alloc::task::local_raw_waker.wake_by_ref",
+                                  [],
+                                  []
+                                |)
+                              ]
+                            |))
+                            (Ty.function
+                              [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                              (Ty.tuple []));
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.function
+                                [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                (Ty.tuple []),
+                              M.pointer_coercion
+                                M.PointerCoercion.ReifyFnPointer
+                                (Ty.function
+                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                  (Ty.tuple []))
+                                (Ty.function
+                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                  (Ty.tuple [])),
+                              [
+                                M.get_function (|
+                                  "alloc::task::local_raw_waker.drop_waker",
+                                  [],
+                                  []
+                                |)
+                              ]
+                            |))
                             (Ty.function
                               [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
                               (Ty.tuple []))
-                            (Ty.function
-                              [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                              (Ty.tuple [])),
-                          [ M.get_function (| "alloc::task::local_raw_waker.wake", [], [] |) ]
-                        |);
-                        M.call_closure (|
-                          Ty.function
-                            [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                            (Ty.tuple []),
-                          M.pointer_coercion
-                            M.PointerCoercion.ReifyFnPointer
-                            (Ty.function
-                              [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                              (Ty.tuple []))
-                            (Ty.function
-                              [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                              (Ty.tuple [])),
-                          [ M.get_function (| "alloc::task::local_raw_waker.wake_by_ref", [], [] |)
-                          ]
-                        |);
-                        M.call_closure (|
-                          Ty.function
-                            [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                            (Ty.tuple []),
-                          M.pointer_coercion
-                            M.PointerCoercion.ReifyFnPointer
-                            (Ty.function
-                              [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                              (Ty.tuple []))
-                            (Ty.function
-                              [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                              (Ty.tuple [])),
-                          [ M.get_function (| "alloc::task::local_raw_waker.drop_waker", [], [] |) ]
-                        |)
-                      ]
+                        ]
+                      |)
                     |)
                   |)
                 |)
-              |)
-            |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::RawWakerVTable" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -916,7 +1126,11 @@ Module task.
                   [],
                   []
                 |),
-                [ M.cast (Ty.apply (Ty.path "*const") [] [ W ]) (M.read (| waker |)) ]
+                [
+                  M.value_with_ty
+                    (M.cast (Ty.apply (Ty.path "*const") [] [ W ]) (M.read (| waker |)))
+                    (Ty.apply (Ty.path "*const") [] [ W ])
+                ]
               |) in
             M.alloc (|
               Ty.path "core::task::wake::RawWaker",
@@ -924,103 +1138,129 @@ Module task.
                 Ty.path "core::task::wake::RawWaker",
                 M.get_associated_function (| Ty.path "core::task::wake::RawWaker", "new", [], [] |),
                 [
-                  M.read (| waker |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.path "core::task::wake::RawWakerVTable",
-                          M.call_closure (|
+                  M.value_with_ty
+                    (M.read (| waker |))
+                    (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
                             Ty.path "core::task::wake::RawWakerVTable",
-                            M.get_associated_function (|
+                            M.call_closure (|
                               Ty.path "core::task::wake::RawWakerVTable",
-                              "new",
-                              [],
-                              []
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.function
-                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                  (Ty.path "core::task::wake::RawWaker"),
-                                M.pointer_coercion
-                                  M.PointerCoercion.ReifyFnPointer
+                              M.get_associated_function (|
+                                Ty.path "core::task::wake::RawWakerVTable",
+                                "new",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.function
+                                      [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                      (Ty.path "core::task::wake::RawWaker"),
+                                    M.pointer_coercion
+                                      M.PointerCoercion.ReifyFnPointer
+                                      (Ty.function
+                                        [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                        (Ty.path "core::task::wake::RawWaker"))
+                                      (Ty.function
+                                        [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                        (Ty.path "core::task::wake::RawWaker")),
+                                    [
+                                      M.get_function (|
+                                        "alloc::task::local_raw_waker.clone_waker",
+                                        [],
+                                        []
+                                      |)
+                                    ]
+                                  |))
                                   (Ty.function
                                     [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                    (Ty.path "core::task::wake::RawWaker"))
+                                    (Ty.path "core::task::wake::RawWaker"));
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.function
+                                      [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                      (Ty.tuple []),
+                                    M.pointer_coercion
+                                      M.PointerCoercion.ReifyFnPointer
+                                      (Ty.function
+                                        [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                        (Ty.tuple []))
+                                      (Ty.function
+                                        [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                        (Ty.tuple [])),
+                                    [
+                                      M.get_function (|
+                                        "alloc::task::local_raw_waker.wake",
+                                        [],
+                                        []
+                                      |)
+                                    ]
+                                  |))
                                   (Ty.function
                                     [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                    (Ty.path "core::task::wake::RawWaker")),
-                                [
-                                  M.get_function (|
-                                    "alloc::task::local_raw_waker.clone_waker",
-                                    [],
-                                    []
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.function
-                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                  (Ty.tuple []),
-                                M.pointer_coercion
-                                  M.PointerCoercion.ReifyFnPointer
+                                    (Ty.tuple []));
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.function
+                                      [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                      (Ty.tuple []),
+                                    M.pointer_coercion
+                                      M.PointerCoercion.ReifyFnPointer
+                                      (Ty.function
+                                        [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                        (Ty.tuple []))
+                                      (Ty.function
+                                        [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                        (Ty.tuple [])),
+                                    [
+                                      M.get_function (|
+                                        "alloc::task::local_raw_waker.wake_by_ref",
+                                        [],
+                                        []
+                                      |)
+                                    ]
+                                  |))
+                                  (Ty.function
+                                    [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                    (Ty.tuple []));
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.function
+                                      [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                      (Ty.tuple []),
+                                    M.pointer_coercion
+                                      M.PointerCoercion.ReifyFnPointer
+                                      (Ty.function
+                                        [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                        (Ty.tuple []))
+                                      (Ty.function
+                                        [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
+                                        (Ty.tuple [])),
+                                    [
+                                      M.get_function (|
+                                        "alloc::task::local_raw_waker.drop_waker",
+                                        [],
+                                        []
+                                      |)
+                                    ]
+                                  |))
                                   (Ty.function
                                     [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
                                     (Ty.tuple []))
-                                  (Ty.function
-                                    [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                    (Ty.tuple [])),
-                                [ M.get_function (| "alloc::task::local_raw_waker.wake", [], [] |) ]
-                              |);
-                              M.call_closure (|
-                                Ty.function
-                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                  (Ty.tuple []),
-                                M.pointer_coercion
-                                  M.PointerCoercion.ReifyFnPointer
-                                  (Ty.function
-                                    [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                    (Ty.tuple []))
-                                  (Ty.function
-                                    [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                    (Ty.tuple [])),
-                                [
-                                  M.get_function (|
-                                    "alloc::task::local_raw_waker.wake_by_ref",
-                                    [],
-                                    []
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.function
-                                  [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                  (Ty.tuple []),
-                                M.pointer_coercion
-                                  M.PointerCoercion.ReifyFnPointer
-                                  (Ty.function
-                                    [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                    (Ty.tuple []))
-                                  (Ty.function
-                                    [ Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ] ]
-                                    (Ty.tuple [])),
-                                [
-                                  M.get_function (|
-                                    "alloc::task::local_raw_waker.drop_waker",
-                                    [],
-                                    []
-                                  |)
-                                ]
-                              |)
-                            ]
+                              ]
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::task::wake::RawWakerVTable" ])
                 ]
               |)
             |)
@@ -1055,13 +1295,21 @@ Module task.
                   [],
                   []
                 |),
-                [ M.cast (Ty.apply (Ty.path "*const") [] [ W ]) (M.read (| waker |)) ]
+                [
+                  M.value_with_ty
+                    (M.cast (Ty.apply (Ty.path "*const") [] [ W ]) (M.read (| waker |)))
+                    (Ty.apply (Ty.path "*const") [] [ W ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
                 Ty.tuple [],
                 M.get_trait_method (| "alloc::task::LocalWake", W, [], [], "wake", [], [] |),
-                [ M.read (| waker |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| waker |))
+                    (Ty.apply (Ty.path "alloc::rc::Rc") [] [ W; Ty.path "alloc::alloc::Global" ])
+                ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -1105,16 +1353,22 @@ Module task.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply (Ty.path "alloc::rc::Rc") [] [ W; Ty.path "alloc::alloc::Global" ],
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.apply (Ty.path "alloc::rc::Rc") [] [ W; Ty.path "alloc::alloc::Global" ],
-                      "from_raw",
-                      [],
-                      []
-                    |),
-                    [ M.cast (Ty.apply (Ty.path "*const") [] [ W ]) (M.read (| waker |)) ]
-                  |)
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ W; Ty.path "alloc::alloc::Global" ],
+                        "from_raw",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.cast (Ty.apply (Ty.path "*const") [] [ W ]) (M.read (| waker |)))
+                          (Ty.apply (Ty.path "*const") [] [ W ])
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "alloc::rc::Rc") [] [ W; Ty.path "alloc::alloc::Global" ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -1122,23 +1376,13 @@ Module task.
                 Ty.tuple [],
                 M.get_trait_method (| "alloc::task::LocalWake", W, [], [], "wake_by_ref", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "alloc::rc::Rc")
-                              []
-                              [ W; Ty.path "alloc::alloc::Global" ]
-                          ],
-                        M.get_trait_method (|
-                          "core::ops::deref::Deref",
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
                           Ty.apply
-                            (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                            (Ty.path "&")
                             []
                             [
                               Ty.apply
@@ -1146,21 +1390,52 @@ Module task.
                                 []
                                 [ W; Ty.path "alloc::alloc::Global" ]
                             ],
-                          [],
-                          [],
-                          "deref",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, waker |) |)
-                          |)
-                        ]
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply
+                              (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::rc::Rc")
+                                  []
+                                  [ W; Ty.path "alloc::alloc::Global" ]
+                              ],
+                            [],
+                            [],
+                            "deref",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, waker |) |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::rc::Rc")
+                                        []
+                                        [ W; Ty.path "alloc::alloc::Global" ]
+                                    ]
+                                ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "alloc::rc::Rc") [] [ W; Ty.path "alloc::alloc::Global" ]
+                      ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1193,7 +1468,11 @@ Module task.
                   [],
                   []
                 |),
-                [ M.cast (Ty.apply (Ty.path "*const") [] [ W ]) (M.read (| waker |)) ]
+                [
+                  M.value_with_ty
+                    (M.cast (Ty.apply (Ty.path "*const") [] [ W ]) (M.read (| waker |)))
+                    (Ty.apply (Ty.path "*const") [] [ W ])
+                ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))

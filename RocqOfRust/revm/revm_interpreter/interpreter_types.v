@@ -40,20 +40,24 @@ Module interpreter_types.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-              Value.mkStructRecord
-                "core::ops::range::Range"
-                []
-                [ Ty.path "usize" ]
-                [
-                  ("start", M.read (| offset |));
-                  ("end_",
-                    M.call_closure (|
-                      Ty.path "usize",
-                      BinOp.Wrap.add,
-                      [ M.read (| offset |); M.read (| len |) ]
-                    |))
-                ]
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Self ]);
+              M.value_with_ty
+                (M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::ops::range::Range"
+                    [
+                      ("start", M.read (| offset |));
+                      ("end_",
+                        M.call_closure (|
+                          Ty.path "usize",
+                          BinOp.Wrap.add,
+                          [ M.read (| offset |); M.read (| len |) ]
+                        |))
+                    ])
+                  (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]))
+                (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -88,7 +92,11 @@ Module interpreter_types.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Self ])
+                ]
               |);
               Value.Integer IntegerKind.Usize 0
             ]
@@ -122,7 +130,11 @@ Module interpreter_types.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Self ])
+                ]
               |);
               Value.Integer IntegerKind.Usize 0
             ]
@@ -157,31 +169,45 @@ Module interpreter_types.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Self ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    [],
+                  M.get_trait_method (|
+                    "core::convert::Into",
+                    Ty.apply
+                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                      [ Value.Integer IntegerKind.Usize 32 ]
+                      [],
+                    [],
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []
+                    ],
+                    "into",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (| value |))
+                      (Ty.apply
+                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "ruint::Uint")
                   [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                  [],
-                M.get_trait_method (|
-                  "core::convert::Into",
-                  Ty.apply
-                    (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                    [ Value.Integer IntegerKind.Usize 32 ]
-                    [],
-                  [],
-                  [
-                    Ty.apply
-                      (Ty.path "ruint::Uint")
-                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                      []
-                  ],
-                  "into",
-                  [],
-                  []
-                |),
-                [ M.read (| value |) ]
-              |)
+                  [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -292,8 +318,56 @@ Module interpreter_types.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [
+                      Ty.tuple
+                        [
+                          Ty.apply
+                            (Ty.path "array")
+                            [ Value.Integer IntegerKind.Usize 0 ]
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
+                            ];
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
+                            ]
+                        ]
+                    ],
+                  M.get_trait_method (|
+                    "revm_interpreter::interpreter_types::StackTrait",
+                    Self,
+                    [],
+                    [],
+                    "popn_top",
+                    [ Value.Integer IntegerKind.Usize 0 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Self ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::option::Option")
                   []
                   [
@@ -324,93 +398,122 @@ Module interpreter_types.
                               []
                           ]
                       ]
-                  ],
-                M.get_trait_method (|
-                  "revm_interpreter::interpreter_types::StackTrait",
-                  Self,
-                  [],
-                  [],
-                  "popn_top",
-                  [ Value.Integer IntegerKind.Usize 0 ],
-                  []
-                |),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
-              |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "ruint::Uint")
-                                [
-                                  Value.Integer IntegerKind.Usize 256;
-                                  Value.Integer IntegerKind.Usize 4
-                                ]
-                                []
-                            ],
-                          M.alloc (|
-                            Ty.tuple
+                  ]);
+              M.value_with_ty
+                (M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
                               [
                                 Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 0 ]
+                                  (Ty.path "ruint::Uint")
                                   [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  ];
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
                                   ]
+                                  []
                               ],
-                            α0
-                          |),
+                            M.alloc (|
+                              Ty.tuple
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 0 ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ];
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ]
+                                ],
+                              α0
+                            |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                                  let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                  let top :=
+                                    M.copy (|
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [
+                                              Value.Integer IntegerKind.Usize 256;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ]
+                                            []
+                                        ],
+                                      γ0_1
+                                    |) in
+                                  M.read (| top |)))
+                            ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end)))
+                (Ty.function
+                  [
+                    Ty.tuple
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 0 ]
                           [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                                let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                                let top :=
-                                  M.copy (|
-                                    Ty.apply
-                                      (Ty.path "&mut")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "ruint::Uint")
-                                          [
-                                            Value.Integer IntegerKind.Usize 256;
-                                            Value.Integer IntegerKind.Usize 4
-                                          ]
-                                          []
-                                      ],
-                                    γ0_1
-                                  |) in
-                                M.read (| top |)))
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              []
+                          ];
+                        Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              []
                           ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+                      ]
+                  ]
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []
+                    ]))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -474,8 +577,39 @@ Module interpreter_types.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 1 ]
+                        [
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            []
+                        ]
+                    ],
+                  M.get_trait_method (|
+                    "revm_interpreter::interpreter_types::StackTrait",
+                    Self,
+                    [],
+                    [],
+                    "popn",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Self ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::option::Option")
                   []
                   [
@@ -488,65 +622,73 @@ Module interpreter_types.
                           [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
                           []
                       ]
-                  ],
-                M.get_trait_method (|
-                  "revm_interpreter::interpreter_types::StackTrait",
-                  Self,
-                  [],
-                  [],
-                  "popn",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
-              |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.apply
-                            (Ty.path "ruint::Uint")
-                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
-                            ]
-                            [],
-                          M.alloc (|
+                  ]);
+              M.value_with_ty
+                (M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
                             Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
+                              (Ty.path "ruint::Uint")
                               [
-                                Ty.apply
-                                  (Ty.path "ruint::Uint")
-                                  [
-                                    Value.Integer IntegerKind.Usize 256;
-                                    Value.Integer IntegerKind.Usize 4
-                                  ]
-                                  []
-                              ],
-                            α0
-                          |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let γ0_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
-                                let value :=
-                                  M.copy (|
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      [],
-                                    γ0_0
-                                  |) in
-                                M.read (| value |)))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              [],
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    []
+                                ],
+                              α0
+                            |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let γ0_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
+                                  let value :=
+                                    M.copy (|
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        [],
+                                      γ0_0
+                                    |) in
+                                  M.read (| value |)))
+                            ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end)))
+                (Ty.function
+                  [
+                    Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 1 ]
+                      [
+                        Ty.apply
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                          []
+                      ]
+                  ]
+                  (Ty.apply
+                    (Ty.path "ruint::Uint")
+                    [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                    []))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -594,8 +736,33 @@ Module interpreter_types.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []
+                    ],
+                  M.get_trait_method (|
+                    "revm_interpreter::interpreter_types::StackTrait",
+                    Self,
+                    [],
+                    [],
+                    "pop",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Self ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::option::Option")
                   []
                   [
@@ -603,92 +770,110 @@ Module interpreter_types.
                       (Ty.path "ruint::Uint")
                       [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
                       []
-                  ],
-                M.get_trait_method (|
-                  "revm_interpreter::interpreter_types::StackTrait",
-                  Self,
-                  [],
-                  [],
-                  "pop",
-                  [],
-                  []
-                |),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
-              |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.path "alloy_primitives::bits::address::Address",
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "ruint::Uint")
-                              [
-                                Value.Integer IntegerKind.Usize 256;
-                                Value.Integer IntegerKind.Usize 4
-                              ]
-                              [],
-                            α0
-                          |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let value :=
-                                  M.copy (|
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      [],
-                                    γ
-                                  |) in
-                                M.call_closure (|
-                                  Ty.path "alloy_primitives::bits::address::Address",
-                                  M.get_trait_method (|
-                                    "core::convert::From",
+                  ]);
+              M.value_with_ty
+                (M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.path "alloy_primitives::bits::address::Address",
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                [],
+                              α0
+                            |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let value :=
+                                    M.copy (|
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        [],
+                                      γ
+                                    |) in
+                                  M.call_closure (|
                                     Ty.path "alloy_primitives::bits::address::Address",
-                                    [],
-                                    [
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 20 ]
-                                        [ Ty.path "u8" ]
-                                    ],
-                                    "from",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 20 ]
-                                        [ Ty.path "u8" ],
-                                      M.get_associated_function (|
+                                    M.get_trait_method (|
+                                      "core::convert::From",
+                                      Ty.path "alloy_primitives::bits::address::Address",
+                                      [],
+                                      [
                                         Ty.apply
-                                          (Ty.path "ruint::Uint")
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 20 ]
+                                          [ Ty.path "u8" ]
+                                      ],
+                                      "from",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 20 ]
+                                            [ Ty.path "u8" ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              [],
+                                            "to_be_bytes",
+                                            [ Value.Integer IntegerKind.Usize 20 ],
+                                            []
+                                          |),
                                           [
-                                            Value.Integer IntegerKind.Usize 256;
-                                            Value.Integer IntegerKind.Usize 4
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, value |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 256;
+                                                      Value.Integer IntegerKind.Usize 4
+                                                    ]
+                                                    []
+                                                ])
                                           ]
-                                          [],
-                                        "to_be_bytes",
-                                        [ Value.Integer IntegerKind.Usize 20 ],
-                                        []
-                                      |),
-                                      [ M.borrow (| Pointer.Kind.Ref, value |) ]
-                                    |)
-                                  ]
-                                |)))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 20 ]
+                                          [ Ty.path "u8" ])
+                                    ]
+                                  |)))
+                            ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end)))
+                (Ty.function
+                  [
+                    Ty.apply
+                      (Ty.path "ruint::Uint")
+                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                      []
+                  ]
+                  (Ty.path "alloy_primitives::bits::address::Address"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

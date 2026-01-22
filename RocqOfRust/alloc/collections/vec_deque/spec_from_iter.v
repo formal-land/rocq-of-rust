@@ -54,19 +54,24 @@ Module collections.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; Ty.path "alloc::alloc::Global" ],
-                    M.get_trait_method (|
-                      "core::iter::traits::collect::FromIterator",
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; Ty.path "alloc::alloc::Global" ],
-                      [],
-                      [ T ],
-                      "from_iter",
-                      [],
-                      [ I ]
-                    |),
-                    [ M.read (| iterator |) ]
-                  |)
+                      M.get_trait_method (|
+                        "core::iter::traits::collect::FromIterator",
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ T; Ty.path "alloc::alloc::Global" ],
+                        [],
+                        [ T ],
+                        "from_iter",
+                        [],
+                        [ I ]
+                      |),
+                      [ M.value_with_ty (M.read (| iterator |)) I ]
+                    |))
+                    (Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; Ty.path "alloc::alloc::Global" ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -126,7 +131,14 @@ Module collections.
                   [],
                   []
                 |),
-                [ M.read (| iterator |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| iterator |))
+                    (Ty.apply
+                      (Ty.path "alloc::vec::into_iter::IntoIter")
+                      []
+                      [ T; Ty.path "alloc::alloc::Global" ])
+                ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
@@ -192,7 +204,14 @@ Module collections.
                   [],
                   []
                 |),
-                [ M.read (| iterator |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| iterator |))
+                    (Ty.apply
+                      (Ty.path "alloc::collections::vec_deque::into_iter::IntoIter")
+                      []
+                      [ T; Ty.path "alloc::alloc::Global" ])
+                ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.

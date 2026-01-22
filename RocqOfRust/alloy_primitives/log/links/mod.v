@@ -28,7 +28,7 @@ Module Log.
   Instance IsLink (T : Set) `{Link T}: Link (t T) := {
     Φ := Ty.apply (Ty.path "alloy_primitives::log::Log") [] [Φ T];
     φ x :=
-      Value.StructRecord "alloy_primitives::log::Log" [] [Φ T] [
+      Value.StructRecord "alloy_primitives::log::Log" [
         ("address", φ x.(address));
         ("data", φ x.(data))
       ];
@@ -51,7 +51,7 @@ Module Log.
     T' = Φ T ->
     address' = φ address ->
     data' = φ data ->
-    Value.StructRecord "alloy_primitives::log::Log" [] [T'] [
+    Value.StructRecord "alloy_primitives::log::Log" [
       ("address", address');
       ("data", data')
     ] = φ (Build_t T address data).
@@ -78,7 +78,7 @@ Module LogData.
   Instance IsLink : Link t := {
     Φ := Ty.path "alloy_primitives::log::LogData";
     φ x :=
-      Value.StructRecord "alloy_primitives::log::LogData" [] [] [
+      Value.StructRecord "alloy_primitives::log::LogData" [
         ("data", φ x.(data));
         ("topics", φ x.(topics))
       ];
@@ -94,7 +94,7 @@ Module LogData.
       (data' : Value.t) {H_data : OfValueWith.C (Bytes.t) data'}
       (topics' : Value.t) {H_topics : OfValueWith.C ((Vec.t aliases.U256.t Global.t)) topics'}
       :
-    OfValueWith.C t (Value.StructRecord "alloy_primitives::log::LogData" [] [] [
+    OfValueWith.C t (Value.StructRecord "alloy_primitives::log::LogData" [
       ("data", data');
       ("topics", topics')
     ]) :=
@@ -110,7 +110,7 @@ Module LogData.
       (data' : Value.t) {H_data : OfValueWith.C (Bytes.t) data'}
       (topics' : Value.t) {H_topics : OfValueWith.C ((Vec.t aliases.U256.t Global.t)) topics'}
       :
-    OfValue.C (Value.StructRecord "alloy_primitives::log::LogData" [] [] [
+    OfValue.C (Value.StructRecord "alloy_primitives::log::LogData" [
       ("data", data');
       ("topics", topics')
     ]) :=

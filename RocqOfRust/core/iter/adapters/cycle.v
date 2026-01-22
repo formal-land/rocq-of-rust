@@ -30,52 +30,56 @@ Module iter.
                     [ Ty.apply (Ty.path "core::iter::adapters::cycle::Cycle") [] [ I ] ],
                   self
                 |) in
-              Value.mkStructRecord
-                "core::iter::adapters::cycle::Cycle"
-                []
-                [ I ]
-                [
-                  ("orig",
-                    M.call_closure (|
-                      I,
-                      M.get_trait_method (| "core::clone::Clone", I, [], [], "clone", [], [] |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "core::iter::adapters::cycle::Cycle"
+                  [
+                    ("orig",
+                      M.call_closure (|
+                        I,
+                        M.get_trait_method (| "core::clone::Clone", I, [], [], "clone", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
                               Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::iter::adapters::cycle::Cycle",
-                                "orig"
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::iter::adapters::cycle::Cycle",
+                                    "orig"
+                                  |)
+                                |)
                               |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |));
-                  ("iter",
-                    M.call_closure (|
-                      I,
-                      M.get_trait_method (| "core::clone::Clone", I, [], [], "clone", [], [] |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ I ])
+                        ]
+                      |));
+                    ("iter",
+                      M.call_closure (|
+                        I,
+                        M.get_trait_method (| "core::clone::Clone", I, [], [], "clone", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
                               Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::iter::adapters::cycle::Cycle",
-                                "iter"
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::iter::adapters::cycle::Cycle",
+                                    "iter"
+                                  |)
+                                |)
                               |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |))
-                ]))
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ I ])
+                        ]
+                      |))
+                  ])
+                (Ty.apply (Ty.path "core::iter::adapters::cycle::Cycle") [] [ I ])))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -121,60 +125,72 @@ Module iter.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Cycle" |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "orig" |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply (Ty.path "&") [] [ I ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::iter::adapters::cycle::Cycle",
-                              "orig"
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Cycle" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "orig" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply (Ty.path "&") [] [ I ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::iter::adapters::cycle::Cycle",
+                                "orig"
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "iter" |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ I ] ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply (Ty.path "&") [] [ I ],
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::iter::adapters::cycle::Cycle",
-                                  "iter"
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "iter" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ I ] ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ I ],
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::iter::adapters::cycle::Cycle",
+                                    "iter"
+                                  |)
                                 |)
                               |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |)
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -205,19 +221,23 @@ Module iter.
           | [], [], [ iter ] =>
             ltac:(M.monadic
               (let iter := M.alloc (| I, iter |) in
-              Value.mkStructRecord
-                "core::iter::adapters::cycle::Cycle"
-                []
-                [ I ]
-                [
-                  ("orig",
-                    M.call_closure (|
-                      I,
-                      M.get_trait_method (| "core::clone::Clone", I, [], [], "clone", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, iter |) ]
-                    |));
-                  ("iter", M.read (| iter |))
-                ]))
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "core::iter::adapters::cycle::Cycle"
+                  [
+                    ("orig",
+                      M.call_closure (|
+                        I,
+                        M.get_trait_method (| "core::clone::Clone", I, [], [], "clone", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, iter |))
+                            (Ty.apply (Ty.path "&") [] [ I ])
+                        ]
+                      |));
+                    ("iter", M.read (| iter |))
+                  ])
+                (Ty.apply (Ty.path "core::iter::adapters::cycle::Cycle") [] [ I ])))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -294,14 +314,16 @@ Module iter.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::iter::adapters::cycle::Cycle",
-                          "iter"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::iter::adapters::cycle::Cycle",
+                            "iter"
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ I ])
                     ]
                   |)
                 |),
@@ -329,14 +351,16 @@ Module iter.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::adapters::cycle::Cycle",
-                                    "orig"
-                                  |)
-                                |)
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::iter::adapters::cycle::Cycle",
+                                      "orig"
+                                    |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ I ])
                               ]
                             |)
                           |) in
@@ -374,14 +398,16 @@ Module iter.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::iter::adapters::cycle::Cycle",
-                                  "iter"
-                                |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::iter::adapters::cycle::Cycle",
+                                    "iter"
+                                  |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ I ])
                             ]
                           |)
                         |)
@@ -460,14 +486,16 @@ Module iter.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::iter::adapters::cycle::Cycle",
-                          "orig"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::iter::adapters::cycle::Cycle",
+                            "orig"
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ I ])
                     ]
                   |)
                 |),
@@ -514,7 +542,9 @@ Module iter.
                       Value.Tuple
                         [
                           Value.Integer IntegerKind.Usize 0;
-                          Value.StructTuple "core::option::Option::None" [] [ Ty.path "usize" ] []
+                          M.value_with_ty
+                            (Value.StructTuple "core::option::Option::None" [])
+                            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                         ]));
                   fun γ =>
                     ltac:(M.monadic
@@ -523,7 +553,9 @@ Module iter.
                           M.read (|
                             get_associated_constant (| Ty.path "usize", "MAX", Ty.path "usize" |)
                           |);
-                          Value.StructTuple "core::option::Option::None" [] [ Ty.path "usize" ] []
+                          M.value_with_ty
+                            (Value.StructTuple "core::option::Option::None" [])
+                            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                         ]))
                 ]
               |)))
@@ -619,30 +651,36 @@ Module iter.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  R,
-                                  M.get_trait_method (|
-                                    "core::iter::traits::iterator::Iterator",
-                                    I,
-                                    [],
-                                    [],
-                                    "try_fold",
-                                    [],
-                                    [ Acc; Ty.apply (Ty.path "&mut") [] [ F ]; R ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::iter::adapters::cycle::Cycle",
-                                        "iter"
-                                      |)
-                                    |);
-                                    M.read (| acc |);
-                                    M.borrow (| Pointer.Kind.MutRef, f |)
-                                  ]
-                                |)
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    R,
+                                    M.get_trait_method (|
+                                      "core::iter::traits::iterator::Iterator",
+                                      I,
+                                      [],
+                                      [],
+                                      "try_fold",
+                                      [],
+                                      [ Acc; Ty.apply (Ty.path "&mut") [] [ F ]; R ]
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::iter::adapters::cycle::Cycle",
+                                            "iter"
+                                          |)
+                                        |))
+                                        (Ty.apply (Ty.path "&mut") [] [ I ]);
+                                      M.value_with_ty (M.read (| acc |)) Acc;
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.MutRef, f |))
+                                        (Ty.apply (Ty.path "&mut") [] [ F ])
+                                    ]
+                                  |))
+                                  R
                               ]
                             |)
                           |),
@@ -686,7 +724,16 @@ Module iter.
                                           [],
                                           []
                                         |),
-                                        [ M.read (| residual |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| residual |))
+                                            (Ty.associated_in_trait
+                                              "core::ops::try_trait::Try"
+                                              []
+                                              []
+                                              R
+                                              "Residual")
+                                        ]
                                       |)
                                     |)
                                   |)
@@ -715,14 +762,16 @@ Module iter.
                           I,
                           M.get_trait_method (| "core::clone::Clone", I, [], [], "clone", [], [] |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::iter::adapters::cycle::Cycle",
-                                "orig"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::iter::adapters::cycle::Cycle",
+                                  "orig"
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ I ])
                           ]
                         |)
                       |) in
@@ -768,130 +817,162 @@ Module iter.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  R,
-                                  M.get_trait_method (|
-                                    "core::iter::traits::iterator::Iterator",
-                                    I,
-                                    [],
-                                    [],
-                                    "try_fold",
-                                    [],
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    R,
+                                    M.get_trait_method (|
+                                      "core::iter::traits::iterator::Iterator",
+                                      I,
+                                      [],
+                                      [],
+                                      "try_fold",
+                                      [],
+                                      [
+                                        Acc;
+                                        Ty.function
+                                          [
+                                            Acc;
+                                            Ty.associated_in_trait
+                                              "core::iter::traits::iterator::Iterator"
+                                              []
+                                              []
+                                              I
+                                              "Item"
+                                          ]
+                                          R;
+                                        R
+                                      ]
+                                    |),
                                     [
-                                      Acc;
-                                      Ty.function
-                                        [
-                                          Acc;
-                                          Ty.associated_in_trait
-                                            "core::iter::traits::iterator::Iterator"
-                                            []
-                                            []
-                                            I
-                                            "Item"
-                                        ]
-                                        R;
-                                      R
-                                    ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::iter::adapters::cycle::Cycle",
-                                        "iter"
-                                      |)
-                                    |);
-                                    M.read (| acc |);
-                                    M.closure
-                                      (fun γ =>
-                                        ltac:(M.monadic
-                                          match γ with
-                                          | [ α0; α1 ] =>
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::iter::adapters::cycle::Cycle",
+                                            "iter"
+                                          |)
+                                        |))
+                                        (Ty.apply (Ty.path "&mut") [] [ I ]);
+                                      M.value_with_ty (M.read (| acc |)) Acc;
+                                      M.value_with_ty
+                                        (M.closure
+                                          (fun γ =>
                                             ltac:(M.monadic
-                                              (M.match_operator (|
-                                                R,
-                                                M.alloc (| Acc, α0 |),
-                                                [
-                                                  fun γ =>
-                                                    ltac:(M.monadic
-                                                      (let acc := M.copy (| Acc, γ |) in
-                                                      M.match_operator (|
-                                                        R,
-                                                        M.alloc (|
-                                                          Ty.associated_in_trait
-                                                            "core::iter::traits::iterator::Iterator"
-                                                            []
-                                                            []
-                                                            I
-                                                            "Item",
-                                                          α1
-                                                        |),
-                                                        [
-                                                          fun γ =>
-                                                            ltac:(M.monadic
-                                                              (let x :=
-                                                                M.copy (|
-                                                                  Ty.associated_in_trait
-                                                                    "core::iter::traits::iterator::Iterator"
-                                                                    []
-                                                                    []
-                                                                    I
-                                                                    "Item",
-                                                                  γ
-                                                                |) in
-                                                              M.read (|
-                                                                let~ _ : Ty.tuple [] :=
-                                                                  M.write (|
-                                                                    is_empty,
-                                                                    Value.Bool false
-                                                                  |) in
-                                                                M.alloc (|
-                                                                  R,
-                                                                  M.call_closure (|
-                                                                    R,
-                                                                    M.get_trait_method (|
-                                                                      "core::ops::function::FnMut",
-                                                                      F,
-                                                                      [],
-                                                                      [
-                                                                        Ty.tuple
+                                              match γ with
+                                              | [ α0; α1 ] =>
+                                                ltac:(M.monadic
+                                                  (M.match_operator (|
+                                                    R,
+                                                    M.alloc (| Acc, α0 |),
+                                                    [
+                                                      fun γ =>
+                                                        ltac:(M.monadic
+                                                          (let acc := M.copy (| Acc, γ |) in
+                                                          M.match_operator (|
+                                                            R,
+                                                            M.alloc (|
+                                                              Ty.associated_in_trait
+                                                                "core::iter::traits::iterator::Iterator"
+                                                                []
+                                                                []
+                                                                I
+                                                                "Item",
+                                                              α1
+                                                            |),
+                                                            [
+                                                              fun γ =>
+                                                                ltac:(M.monadic
+                                                                  (let x :=
+                                                                    M.copy (|
+                                                                      Ty.associated_in_trait
+                                                                        "core::iter::traits::iterator::Iterator"
+                                                                        []
+                                                                        []
+                                                                        I
+                                                                        "Item",
+                                                                      γ
+                                                                    |) in
+                                                                  M.read (|
+                                                                    let~ _ : Ty.tuple [] :=
+                                                                      M.write (|
+                                                                        is_empty,
+                                                                        Value.Bool false
+                                                                      |) in
+                                                                    M.alloc (|
+                                                                      R,
+                                                                      M.call_closure (|
+                                                                        R,
+                                                                        M.get_trait_method (|
+                                                                          "core::ops::function::FnMut",
+                                                                          F,
+                                                                          [],
                                                                           [
-                                                                            Acc;
-                                                                            Ty.associated_in_trait
-                                                                              "core::iter::traits::iterator::Iterator"
-                                                                              []
-                                                                              []
-                                                                              I
-                                                                              "Item"
-                                                                          ]
-                                                                      ],
-                                                                      "call_mut",
-                                                                      [],
-                                                                      []
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.MutRef,
-                                                                        f
-                                                                      |);
-                                                                      Value.Tuple
+                                                                            Ty.tuple
+                                                                              [
+                                                                                Acc;
+                                                                                Ty.associated_in_trait
+                                                                                  "core::iter::traits::iterator::Iterator"
+                                                                                  []
+                                                                                  []
+                                                                                  I
+                                                                                  "Item"
+                                                                              ]
+                                                                          ],
+                                                                          "call_mut",
+                                                                          [],
+                                                                          []
+                                                                        |),
                                                                         [
-                                                                          M.read (| acc |);
-                                                                          M.read (| x |)
+                                                                          M.value_with_ty
+                                                                            (M.borrow (|
+                                                                              Pointer.Kind.MutRef,
+                                                                              f
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "&mut")
+                                                                              []
+                                                                              [ F ]);
+                                                                          M.value_with_ty
+                                                                            (Value.Tuple
+                                                                              [
+                                                                                M.read (| acc |);
+                                                                                M.read (| x |)
+                                                                              ])
+                                                                            (Ty.tuple
+                                                                              [
+                                                                                Acc;
+                                                                                Ty.associated_in_trait
+                                                                                  "core::iter::traits::iterator::Iterator"
+                                                                                  []
+                                                                                  []
+                                                                                  I
+                                                                                  "Item"
+                                                                              ])
                                                                         ]
-                                                                    ]
-                                                                  |)
-                                                                |)
-                                                              |)))
-                                                        ]
-                                                      |)))
-                                                ]
-                                              |)))
-                                          | _ => M.impossible "wrong number of arguments"
-                                          end))
-                                  ]
-                                |)
+                                                                      |)
+                                                                    |)
+                                                                  |)))
+                                                            ]
+                                                          |)))
+                                                    ]
+                                                  |)))
+                                              | _ => M.impossible "wrong number of arguments"
+                                              end)))
+                                        (Ty.function
+                                          [
+                                            Acc;
+                                            Ty.associated_in_trait
+                                              "core::iter::traits::iterator::Iterator"
+                                              []
+                                              []
+                                              I
+                                              "Item"
+                                          ]
+                                          R)
+                                    ]
+                                  |))
+                                  R
                               ]
                             |)
                           |),
@@ -935,7 +1016,16 @@ Module iter.
                                           [],
                                           []
                                         |),
-                                        [ M.read (| residual |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| residual |))
+                                            (Ty.associated_in_trait
+                                              "core::ops::try_trait::Try"
+                                              []
+                                              []
+                                              R
+                                              "Residual")
+                                        ]
                                       |)
                                     |)
                                   |)
@@ -977,7 +1067,7 @@ Module iter.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| acc |) ]
+                                      [ M.value_with_ty (M.read (| acc |)) Acc ]
                                     |)
                                   |)
                                 |)
@@ -1011,14 +1101,16 @@ Module iter.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::iter::adapters::cycle::Cycle",
-                                          "orig"
-                                        |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::iter::adapters::cycle::Cycle",
+                                            "orig"
+                                          |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ I ])
                                     ]
                                   |)
                                 |) in
@@ -1063,30 +1155,36 @@ Module iter.
                                           []
                                         |),
                                         [
-                                          M.call_closure (|
-                                            R,
-                                            M.get_trait_method (|
-                                              "core::iter::traits::iterator::Iterator",
-                                              I,
-                                              [],
-                                              [],
-                                              "try_fold",
-                                              [],
-                                              [ Acc; Ty.apply (Ty.path "&mut") [] [ F ]; R ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "core::iter::adapters::cycle::Cycle",
-                                                  "iter"
-                                                |)
-                                              |);
-                                              M.read (| acc |);
-                                              M.borrow (| Pointer.Kind.MutRef, f |)
-                                            ]
-                                          |)
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              R,
+                                              M.get_trait_method (|
+                                                "core::iter::traits::iterator::Iterator",
+                                                I,
+                                                [],
+                                                [],
+                                                "try_fold",
+                                                [],
+                                                [ Acc; Ty.apply (Ty.path "&mut") [] [ F ]; R ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "core::iter::adapters::cycle::Cycle",
+                                                      "iter"
+                                                    |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&mut") [] [ I ]);
+                                                M.value_with_ty (M.read (| acc |)) Acc;
+                                                M.value_with_ty
+                                                  (M.borrow (| Pointer.Kind.MutRef, f |))
+                                                  (Ty.apply (Ty.path "&mut") [] [ F ])
+                                              ]
+                                            |))
+                                            R
                                         ]
                                       |)
                                     |),
@@ -1130,7 +1228,16 @@ Module iter.
                                                     [],
                                                     []
                                                   |),
-                                                  [ M.read (| residual |) ]
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.read (| residual |))
+                                                      (Ty.associated_in_trait
+                                                        "core::ops::try_trait::Try"
+                                                        []
+                                                        []
+                                                        R
+                                                        "Residual")
+                                                  ]
                                                 |)
                                               |)
                                             |)
@@ -1241,15 +1348,17 @@ Module iter.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::iter::adapters::cycle::Cycle",
-                                  "iter"
-                                |)
-                              |);
-                              M.read (| n |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::iter::adapters::cycle::Cycle",
+                                    "iter"
+                                  |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ I ]);
+                              M.value_with_ty (M.read (| n |)) (Ty.path "usize")
                             ]
                           |)
                         |),
@@ -1265,17 +1374,20 @@ Module iter.
                               M.never_to_any (|
                                 M.read (|
                                   M.return_ (|
-                                    Value.StructTuple
-                                      "core::result::Result::Ok"
-                                      []
-                                      [
-                                        Ty.tuple [];
-                                        Ty.apply
-                                          (Ty.path "core::num::nonzero::NonZero")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ]
-                                      [ Value.Tuple [] ]
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "core::result::Result::Ok"
+                                        [ Value.Tuple [] ])
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.tuple [];
+                                          Ty.apply
+                                            (Ty.path "core::num::nonzero::NonZero")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ])
                                   |)
                                 |)
                               |)));
@@ -1306,7 +1418,14 @@ Module iter.
                                   [],
                                   []
                                 |),
-                                [ M.read (| rem |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| rem |))
+                                    (Ty.apply
+                                      (Ty.path "core::num::nonzero::NonZero")
+                                      []
+                                      [ Ty.path "usize" ])
+                                ]
                               |)))
                         ]
                       |) in
@@ -1358,14 +1477,16 @@ Module iter.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "core::iter::adapters::cycle::Cycle",
-                                                    "orig"
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "core::iter::adapters::cycle::Cycle",
+                                                      "orig"
+                                                    |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ I ])
                                               ]
                                             |)
                                           |) in
@@ -1406,15 +1527,19 @@ Module iter.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (|
-                                                      Pointer.Kind.MutRef,
-                                                      M.SubPointer.get_struct_record_field (|
-                                                        M.deref (| M.read (| self |) |),
-                                                        "core::iter::adapters::cycle::Cycle",
-                                                        "iter"
-                                                      |)
-                                                    |);
-                                                    M.read (| n |)
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.MutRef,
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "core::iter::adapters::cycle::Cycle",
+                                                          "iter"
+                                                        |)
+                                                      |))
+                                                      (Ty.apply (Ty.path "&mut") [] [ I ]);
+                                                    M.value_with_ty
+                                                      (M.read (| n |))
+                                                      (Ty.path "usize")
                                                   ]
                                                 |)
                                               |),
@@ -1430,18 +1555,21 @@ Module iter.
                                                     M.never_to_any (|
                                                       M.read (|
                                                         M.return_ (|
-                                                          Value.StructTuple
-                                                            "core::result::Result::Ok"
-                                                            []
-                                                            [
-                                                              Ty.tuple [];
-                                                              Ty.apply
-                                                                (Ty.path
-                                                                  "core::num::nonzero::NonZero")
-                                                                []
-                                                                [ Ty.path "usize" ]
-                                                            ]
-                                                            [ Value.Tuple [] ]
+                                                          M.value_with_ty
+                                                            (Value.StructTuple
+                                                              "core::result::Result::Ok"
+                                                              [ Value.Tuple [] ])
+                                                            (Ty.apply
+                                                              (Ty.path "core::result::Result")
+                                                              []
+                                                              [
+                                                                Ty.tuple [];
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::num::nonzero::NonZero")
+                                                                  []
+                                                                  [ Ty.path "usize" ]
+                                                              ])
                                                         |)
                                                       |)
                                                     |)));
@@ -1495,7 +1623,15 @@ Module iter.
                                                                 [],
                                                                 []
                                                               |),
-                                                              [ M.read (| rem |) ]
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.read (| rem |))
+                                                                  (Ty.apply
+                                                                    (Ty.path
+                                                                      "core::num::nonzero::NonZero")
+                                                                    []
+                                                                    [ Ty.path "usize" ])
+                                                              ]
                                                             |);
                                                             M.read (| n |)
                                                           ]
@@ -1536,7 +1672,14 @@ Module iter.
                                                         [],
                                                         []
                                                       |),
-                                                      [ M.read (| rem |) ]
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| rem |))
+                                                          (Ty.apply
+                                                            (Ty.path "core::num::nonzero::NonZero")
+                                                            []
+                                                            [ Ty.path "usize" ])
+                                                      ]
                                                     |)))
                                               ]
                                             |)
@@ -1616,8 +1759,29 @@ Module iter.
                           ]
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::num::nonzero::NonZero")
+                                    []
+                                    [ Ty.path "usize" ]
+                                ],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "core::num::nonzero::NonZero")
+                                  []
+                                  [ Ty.path "usize" ],
+                                "new",
+                                [],
+                                []
+                              |),
+                              [ M.value_with_ty (M.read (| n |)) (Ty.path "usize") ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::option::Option")
                               []
                               [
@@ -1625,39 +1789,49 @@ Module iter.
                                   (Ty.path "core::num::nonzero::NonZero")
                                   []
                                   [ Ty.path "usize" ]
-                              ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "core::num::nonzero::NonZero")
+                              ]);
+                          M.value_with_ty
+                            (M.value_with_ty
+                              (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
                                 []
-                                [ Ty.path "usize" ],
-                              "new",
-                              [],
+                                [
+                                  Ty.tuple [];
+                                  Ty.apply
+                                    (Ty.path "core::num::nonzero::NonZero")
+                                    []
+                                    [ Ty.path "usize" ]
+                                ]))
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
                               []
-                            |),
-                            [ M.read (| n |) ]
-                          |);
-                          Value.StructTuple
-                            "core::result::Result::Ok"
-                            []
-                            [
-                              Ty.tuple [];
-                              Ty.apply
-                                (Ty.path "core::num::nonzero::NonZero")
+                              [
+                                Ty.tuple [];
+                                Ty.apply
+                                  (Ty.path "core::num::nonzero::NonZero")
+                                  []
+                                  [ Ty.path "usize" ]
+                              ]);
+                          M.value_with_ty
+                            (M.constructor_as_closure "core::result::Result::Err")
+                            (Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "core::num::nonzero::NonZero")
+                                  []
+                                  [ Ty.path "usize" ]
+                              ]
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
                                 []
-                                [ Ty.path "usize" ]
-                            ]
-                            [ Value.Tuple [] ];
-                          M.constructor_as_closure
-                            "core::result::Result::Err"
-                            []
-                            [
-                              Ty.tuple [];
-                              Ty.apply
-                                (Ty.path "core::num::nonzero::NonZero")
-                                []
-                                [ Ty.path "usize" ]
-                            ]
+                                [
+                                  Ty.tuple [];
+                                  Ty.apply
+                                    (Ty.path "core::num::nonzero::NonZero")
+                                    []
+                                    [ Ty.path "usize" ]
+                                ]))
                         ]
                       |)
                     |)

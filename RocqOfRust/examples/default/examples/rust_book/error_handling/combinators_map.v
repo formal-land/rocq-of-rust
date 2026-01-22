@@ -43,28 +43,32 @@ Module Impl_core_fmt_Debug_for_combinators_map_Food.
           Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.path "core::fmt::Error" ],
           M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.match_operator (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-              self,
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ := M.is_struct_tuple (| γ, "combinators_map::Food::Apple" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Apple" |) |) |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ := M.is_struct_tuple (| γ, "combinators_map::Food::Carrot" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Carrot" |) |) |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ := M.is_struct_tuple (| γ, "combinators_map::Food::Potato" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Potato" |) |) |)))
-              ]
-            |)
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.match_operator (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                self,
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ := M.is_struct_tuple (| γ, "combinators_map::Food::Apple" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Apple" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ := M.is_struct_tuple (| γ, "combinators_map::Food::Carrot" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Carrot" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ := M.is_struct_tuple (| γ, "combinators_map::Food::Potato" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Potato" |) |) |)))
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -107,39 +111,45 @@ Module Impl_core_fmt_Debug_for_combinators_map_Peeled.
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Peeled" |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "&") [] [ Ty.path "combinators_map::Food" ] ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply (Ty.path "&") [] [ Ty.path "combinators_map::Food" ],
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "combinators_map::Peeled",
-                            0
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Peeled" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "&") [] [ Ty.path "combinators_map::Food" ] ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "combinators_map::Food" ],
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "combinators_map::Peeled",
+                              0
+                            |)
                           |)
                         |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -182,39 +192,45 @@ Module Impl_core_fmt_Debug_for_combinators_map_Chopped.
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Chopped" |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "&") [] [ Ty.path "combinators_map::Food" ] ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply (Ty.path "&") [] [ Ty.path "combinators_map::Food" ],
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "combinators_map::Chopped",
-                            0
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Chopped" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "&") [] [ Ty.path "combinators_map::Food" ] ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "combinators_map::Food" ],
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "combinators_map::Chopped",
+                              0
+                            |)
                           |)
                         |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -257,39 +273,45 @@ Module Impl_core_fmt_Debug_for_combinators_map_Cooked.
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Cooked" |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "&") [] [ Ty.path "combinators_map::Food" ] ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply (Ty.path "&") [] [ Ty.path "combinators_map::Food" ],
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "combinators_map::Cooked",
-                            0
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Cooked" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "&") [] [ Ty.path "combinators_map::Food" ] ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "combinators_map::Food" ],
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "combinators_map::Cooked",
+                              0
+                            |)
                           |)
                         |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -330,19 +352,27 @@ Definition peel (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               (let γ0_0 :=
                 M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
               let food := M.copy (| Ty.path "combinators_map::Food", γ0_0 |) in
-              Value.StructTuple
-                "core::option::Option::Some"
-                []
-                [ Ty.path "combinators_map::Peeled" ]
-                [ Value.StructTuple "combinators_map::Peeled" [] [] [ M.read (| food |) ] ]));
+              M.value_with_ty
+                (Value.StructTuple
+                  "core::option::Option::Some"
+                  [
+                    M.value_with_ty
+                      (Value.StructTuple "combinators_map::Peeled" [ M.read (| food |) ])
+                      (Ty.path "combinators_map::Peeled")
+                  ])
+                (Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.path "combinators_map::Peeled" ])));
           fun γ =>
             ltac:(M.monadic
               (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-              Value.StructTuple
-                "core::option::Option::None"
-                []
-                [ Ty.path "combinators_map::Peeled" ]
-                []))
+              M.value_with_ty
+                (Value.StructTuple "core::option::Option::None" [])
+                (Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.path "combinators_map::Peeled" ])))
         ]
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"
@@ -380,19 +410,27 @@ Definition chop (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               let γ1_0 :=
                 M.SubPointer.get_struct_tuple_field (| γ0_0, "combinators_map::Peeled", 0 |) in
               let food := M.copy (| Ty.path "combinators_map::Food", γ1_0 |) in
-              Value.StructTuple
-                "core::option::Option::Some"
-                []
-                [ Ty.path "combinators_map::Chopped" ]
-                [ Value.StructTuple "combinators_map::Chopped" [] [] [ M.read (| food |) ] ]));
+              M.value_with_ty
+                (Value.StructTuple
+                  "core::option::Option::Some"
+                  [
+                    M.value_with_ty
+                      (Value.StructTuple "combinators_map::Chopped" [ M.read (| food |) ])
+                      (Ty.path "combinators_map::Chopped")
+                  ])
+                (Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.path "combinators_map::Chopped" ])));
           fun γ =>
             ltac:(M.monadic
               (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-              Value.StructTuple
-                "core::option::Option::None"
-                []
-                [ Ty.path "combinators_map::Chopped" ]
-                []))
+              M.value_with_ty
+                (Value.StructTuple "core::option::Option::None" [])
+                (Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.path "combinators_map::Chopped" ])))
         ]
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"
@@ -428,35 +466,37 @@ Definition cook (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           ]
         |),
         [
-          M.read (| chopped |);
-          M.closure
-            (fun γ =>
-              ltac:(M.monadic
-                match γ with
-                | [ α0 ] =>
-                  ltac:(M.monadic
-                    (M.match_operator (|
-                      Ty.path "combinators_map::Cooked",
-                      M.alloc (| Ty.path "combinators_map::Chopped", α0 |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "combinators_map::Chopped",
-                                0
-                              |) in
-                            let food := M.copy (| Ty.path "combinators_map::Food", γ0_0 |) in
-                            Value.StructTuple
-                              "combinators_map::Cooked"
-                              []
-                              []
-                              [ M.read (| food |) ]))
-                      ]
-                    |)))
-                | _ => M.impossible "wrong number of arguments"
-                end))
+          M.value_with_ty
+            (M.read (| chopped |))
+            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Chopped" ]);
+          M.value_with_ty
+            (M.closure
+              (fun γ =>
+                ltac:(M.monadic
+                  match γ with
+                  | [ α0 ] =>
+                    ltac:(M.monadic
+                      (M.match_operator (|
+                        Ty.path "combinators_map::Cooked",
+                        M.alloc (| Ty.path "combinators_map::Chopped", α0 |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "combinators_map::Chopped",
+                                  0
+                                |) in
+                              let food := M.copy (| Ty.path "combinators_map::Food", γ0_0 |) in
+                              M.value_with_ty
+                                (Value.StructTuple "combinators_map::Cooked" [ M.read (| food |) ])
+                                (Ty.path "combinators_map::Cooked")))
+                        ]
+                      |)))
+                  | _ => M.impossible "wrong number of arguments"
+                  end)))
+            (Ty.function [ Ty.path "combinators_map::Chopped" ] (Ty.path "combinators_map::Cooked"))
         ]
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"
@@ -494,113 +534,144 @@ Definition process (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M 
           ]
         |),
         [
-          M.call_closure (|
-            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Chopped" ],
-            M.get_associated_function (|
-              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Peeled" ],
-              "map",
-              [],
-              [
-                Ty.path "combinators_map::Chopped";
-                Ty.function
-                  [ Ty.path "combinators_map::Peeled" ]
-                  (Ty.path "combinators_map::Chopped")
-              ]
-            |),
-            [
-              M.call_closure (|
+          M.value_with_ty
+            (M.call_closure (|
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Chopped" ],
+              M.get_associated_function (|
                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Peeled" ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Food" ],
-                  "map",
-                  [],
-                  [
-                    Ty.path "combinators_map::Peeled";
-                    Ty.function
-                      [ Ty.path "combinators_map::Food" ]
-                      (Ty.path "combinators_map::Peeled")
-                  ]
-                |),
+                "map",
+                [],
                 [
-                  M.read (| food |);
-                  M.closure
+                  Ty.path "combinators_map::Chopped";
+                  Ty.function
+                    [ Ty.path "combinators_map::Peeled" ]
+                    (Ty.path "combinators_map::Chopped")
+                ]
+              |),
+              [
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "combinators_map::Peeled" ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "combinators_map::Food" ],
+                      "map",
+                      [],
+                      [
+                        Ty.path "combinators_map::Peeled";
+                        Ty.function
+                          [ Ty.path "combinators_map::Food" ]
+                          (Ty.path "combinators_map::Peeled")
+                      ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| food |))
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.path "combinators_map::Food" ]);
+                      M.value_with_ty
+                        (M.closure
+                          (fun γ =>
+                            ltac:(M.monadic
+                              match γ with
+                              | [ α0 ] =>
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "combinators_map::Peeled",
+                                    M.alloc (| Ty.path "combinators_map::Food", α0 |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let f :=
+                                            M.copy (| Ty.path "combinators_map::Food", γ |) in
+                                          M.value_with_ty
+                                            (Value.StructTuple
+                                              "combinators_map::Peeled"
+                                              [ M.read (| f |) ])
+                                            (Ty.path "combinators_map::Peeled")))
+                                    ]
+                                  |)))
+                              | _ => M.impossible "wrong number of arguments"
+                              end)))
+                        (Ty.function
+                          [ Ty.path "combinators_map::Food" ]
+                          (Ty.path "combinators_map::Peeled"))
+                    ]
+                  |))
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.path "combinators_map::Peeled" ]);
+                M.value_with_ty
+                  (M.closure
                     (fun γ =>
                       ltac:(M.monadic
                         match γ with
                         | [ α0 ] =>
                           ltac:(M.monadic
                             (M.match_operator (|
-                              Ty.path "combinators_map::Peeled",
-                              M.alloc (| Ty.path "combinators_map::Food", α0 |),
+                              Ty.path "combinators_map::Chopped",
+                              M.alloc (| Ty.path "combinators_map::Peeled", α0 |),
                               [
                                 fun γ =>
                                   ltac:(M.monadic
-                                    (let f := M.copy (| Ty.path "combinators_map::Food", γ |) in
-                                    Value.StructTuple
-                                      "combinators_map::Peeled"
-                                      []
-                                      []
-                                      [ M.read (| f |) ]))
+                                    (let γ0_0 :=
+                                      M.SubPointer.get_struct_tuple_field (|
+                                        γ,
+                                        "combinators_map::Peeled",
+                                        0
+                                      |) in
+                                    let f := M.copy (| Ty.path "combinators_map::Food", γ0_0 |) in
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "combinators_map::Chopped"
+                                        [ M.read (| f |) ])
+                                      (Ty.path "combinators_map::Chopped")))
                               ]
                             |)))
                         | _ => M.impossible "wrong number of arguments"
-                        end))
-                ]
-              |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.path "combinators_map::Chopped",
-                          M.alloc (| Ty.path "combinators_map::Peeled", α0 |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let γ0_0 :=
-                                  M.SubPointer.get_struct_tuple_field (|
-                                    γ,
-                                    "combinators_map::Peeled",
-                                    0
-                                  |) in
-                                let f := M.copy (| Ty.path "combinators_map::Food", γ0_0 |) in
-                                Value.StructTuple
-                                  "combinators_map::Chopped"
-                                  []
-                                  []
-                                  [ M.read (| f |) ]))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
-            ]
-          |);
-          M.closure
-            (fun γ =>
-              ltac:(M.monadic
-                match γ with
-                | [ α0 ] =>
-                  ltac:(M.monadic
-                    (M.match_operator (|
-                      Ty.path "combinators_map::Cooked",
-                      M.alloc (| Ty.path "combinators_map::Chopped", α0 |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "combinators_map::Chopped",
-                                0
-                              |) in
-                            let f := M.copy (| Ty.path "combinators_map::Food", γ0_0 |) in
-                            Value.StructTuple "combinators_map::Cooked" [] [] [ M.read (| f |) ]))
-                      ]
-                    |)))
-                | _ => M.impossible "wrong number of arguments"
-                end))
+                        end)))
+                  (Ty.function
+                    [ Ty.path "combinators_map::Peeled" ]
+                    (Ty.path "combinators_map::Chopped"))
+              ]
+            |))
+            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Chopped" ]);
+          M.value_with_ty
+            (M.closure
+              (fun γ =>
+                ltac:(M.monadic
+                  match γ with
+                  | [ α0 ] =>
+                    ltac:(M.monadic
+                      (M.match_operator (|
+                        Ty.path "combinators_map::Cooked",
+                        M.alloc (| Ty.path "combinators_map::Chopped", α0 |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "combinators_map::Chopped",
+                                  0
+                                |) in
+                              let f := M.copy (| Ty.path "combinators_map::Food", γ0_0 |) in
+                              M.value_with_ty
+                                (Value.StructTuple "combinators_map::Cooked" [ M.read (| f |) ])
+                                (Ty.path "combinators_map::Cooked")))
+                        ]
+                      |)))
+                  | _ => M.impossible "wrong number of arguments"
+                  end)))
+            (Ty.function [ Ty.path "combinators_map::Chopped" ] (Ty.path "combinators_map::Cooked"))
         ]
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"
@@ -642,65 +713,95 @@ Definition eat (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Ty.tuple [],
                     M.get_function (| "std::io::stdio::_print", [], [] |),
                     [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "Mmm. I love " |); mk_str (| "
+" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "Mmm. I love " |); mk_str (| "
-" |) ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      Value.Array
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_debug",
+                                              [],
+                                              [ Ty.path "combinators_map::Cooked" ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, food |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.path "combinators_map::Cooked" ])
+                                            ]
+                                          |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_debug",
-                                          [],
-                                          [ Ty.path "combinators_map::Cooked" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, food |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -714,33 +815,45 @@ Definition eat (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Ty.tuple [],
                     M.get_function (| "std::io::stdio::_print", [], [] |),
                     [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "Oh no! It wasn't edible.
+" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "Oh no! It wasn't edible.
-" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -777,45 +890,71 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       (M.read (|
         let~ apple :
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Food" ] :=
-          Value.StructTuple
-            "core::option::Option::Some"
-            []
-            [ Ty.path "combinators_map::Food" ]
-            [ Value.StructTuple "combinators_map::Food::Apple" [] [] [] ] in
+          M.value_with_ty
+            (Value.StructTuple
+              "core::option::Option::Some"
+              [
+                M.value_with_ty
+                  (Value.StructTuple "combinators_map::Food::Apple" [])
+                  (Ty.path "combinators_map::Food")
+              ])
+            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Food" ]) in
         let~ carrot :
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Food" ] :=
-          Value.StructTuple
-            "core::option::Option::Some"
-            []
-            [ Ty.path "combinators_map::Food" ]
-            [ Value.StructTuple "combinators_map::Food::Carrot" [] [] [] ] in
+          M.value_with_ty
+            (Value.StructTuple
+              "core::option::Option::Some"
+              [
+                M.value_with_ty
+                  (Value.StructTuple "combinators_map::Food::Carrot" [])
+                  (Ty.path "combinators_map::Food")
+              ])
+            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Food" ]) in
         let~ potato :
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Food" ] :=
-          Value.StructTuple
-            "core::option::Option::None"
-            []
-            [ Ty.path "combinators_map::Food" ]
-            [] in
+          M.value_with_ty
+            (Value.StructTuple "core::option::Option::None" [])
+            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Food" ]) in
         let~ cooked_apple :
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Cooked" ] :=
           M.call_closure (|
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Cooked" ],
             M.get_function (| "combinators_map::cook", [], [] |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Chopped" ],
-                M.get_function (| "combinators_map::chop", [], [] |),
-                [
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::option::Option")
-                      []
-                      [ Ty.path "combinators_map::Peeled" ],
-                    M.get_function (| "combinators_map::peel", [], [] |),
-                    [ M.read (| apple |) ]
-                  |)
-                ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.path "combinators_map::Chopped" ],
+                  M.get_function (| "combinators_map::chop", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.path "combinators_map::Peeled" ],
+                        M.get_function (| "combinators_map::peel", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.read (| apple |))
+                            (Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.path "combinators_map::Food" ])
+                        ]
+                      |))
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "combinators_map::Peeled" ])
+                  ]
+                |))
+                (Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.path "combinators_map::Chopped" ])
             ]
           |) in
         let~ cooked_carrot :
@@ -824,20 +963,40 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Cooked" ],
             M.get_function (| "combinators_map::cook", [], [] |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Chopped" ],
-                M.get_function (| "combinators_map::chop", [], [] |),
-                [
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::option::Option")
-                      []
-                      [ Ty.path "combinators_map::Peeled" ],
-                    M.get_function (| "combinators_map::peel", [], [] |),
-                    [ M.read (| carrot |) ]
-                  |)
-                ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.path "combinators_map::Chopped" ],
+                  M.get_function (| "combinators_map::chop", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.path "combinators_map::Peeled" ],
+                        M.get_function (| "combinators_map::peel", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.read (| carrot |))
+                            (Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.path "combinators_map::Food" ])
+                        ]
+                      |))
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "combinators_map::Peeled" ])
+                  ]
+                |))
+                (Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.path "combinators_map::Chopped" ])
             ]
           |) in
         let~ cooked_potato :
@@ -845,25 +1004,41 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           M.call_closure (|
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Cooked" ],
             M.get_function (| "combinators_map::process", [], [] |),
-            [ M.read (| potato |) ]
+            [
+              M.value_with_ty
+                (M.read (| potato |))
+                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Food" ])
+            ]
           |) in
         let~ _ : Ty.tuple [] :=
           M.call_closure (|
             Ty.tuple [],
             M.get_function (| "combinators_map::eat", [], [] |),
-            [ M.read (| cooked_apple |) ]
+            [
+              M.value_with_ty
+                (M.read (| cooked_apple |))
+                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Cooked" ])
+            ]
           |) in
         let~ _ : Ty.tuple [] :=
           M.call_closure (|
             Ty.tuple [],
             M.get_function (| "combinators_map::eat", [], [] |),
-            [ M.read (| cooked_carrot |) ]
+            [
+              M.value_with_ty
+                (M.read (| cooked_carrot |))
+                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Cooked" ])
+            ]
           |) in
         let~ _ : Ty.tuple [] :=
           M.call_closure (|
             Ty.tuple [],
             M.get_function (| "combinators_map::eat", [], [] |),
-            [ M.read (| cooked_potato |) ]
+            [
+              M.value_with_ty
+                (M.read (| cooked_potato |))
+                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_map::Cooked" ])
+            ]
           |) in
         M.alloc (| Ty.tuple [], Value.Tuple [] |)
       |)))

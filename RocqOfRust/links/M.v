@@ -21,6 +21,7 @@ Unset Typeclasses Strict Resolution.
 Arguments Φ _ {_}.
 
 Global Opaque φ.
+Global Opaque Φ.
 
 Smpl Create of_ty.
 Smpl Add reflexivity : of_ty.
@@ -35,7 +36,7 @@ Module OfTy.
     let '@Make _ A _ _ := x in
     A.
 
-  Global Instance InductiveIsLink {ty' : Ty.t} (x : t ty') : Link (get_Set x).
+  Instance InductiveIsLink {ty' : Ty.t} (x : t ty') : Link (get_Set x).
   Proof.
     destruct x.
     assumption.
@@ -55,13 +56,19 @@ Module OfTy.
     eq : ty = Φ A;
   }.
 
-  Global Instance IsLink (T' : Ty.t) {H_T : C T'} : Link H_T.(A) :=
+  Instance IsLink (T' : Ty.t) {H_T : C T'} : Link H_T.(A) :=
     H_T.(H).
+
+  Instance IsIdentity {T : Set} `{Link T} : C (Φ T) := {
+    A := T;
+    eq := eq_refl;
+  }.
 
   Definition to_inductive {ty : Ty.t} `{C ty} : OfTy.t ty :=
     OfTy.Make ty eq.
   Smpl Add apply to_inductive : of_ty.
 End OfTy.
+Export (hints) OfTy.
 
 Smpl Create of_value.
 Smpl Add reflexivity : of_value.
@@ -84,12 +91,15 @@ Module OfValueWith.
     eq := eq_refl;
   }.
 
-  Lemma of_value_with {A : Set} `{Link A} {value' : Value.t} `{C A value'} :
+  Lemma of_value_with {A : Set} `{Link A} {value' : Value.t} `{!C A value'} :
     value' = φ (A := A) value.
   Proof.
     exact eq.
   Qed.
   Smpl Add apply of_value_with : of_value.
+
+  Definition get_value (A : Set) `{Link A} (value' : Value.t) (H : C A value') : A :=
+    H.(value).
 End OfValueWith.
 
 Module OfValue.
@@ -148,16 +158,27 @@ Module OfValue.
     eq : value' = φ value;
   }.
 
-  Global Instance IsIdentity {T : Set} `{Link T} (value : T) : C (φ value) := {
+  Instance IsIdentity {T : Set} `{Link T} (value : T) : C (φ value) := {
     A := T;
     value := value;
     eq := eq_refl;
+  }.
+
+  Instance IsValueWithTy (value' : Value.t) (ty' : Ty.t)
+      (H_ty' : OfTy.C ty')
+      (H_value' : OfValueWith.C H_ty'.(OfTy.A) value') :
+      C (M.value_with_ty value' ty') :=
+  {
+    A := H_ty'.(OfTy.A);
+    value := H_value'.(OfValueWith.value);
+    eq := H_value'.(OfValueWith.eq);
   }.
 
   Definition to_inductive {value' : Value.t} `{C value'} : OfValue.t value' :=
     OfValue.Make value' value eq.
   Smpl Add apply to_inductive : of_value.
 End OfValue.
+Export (hints) OfValue.
 
 (** Implementation of the primitive Rust operator for equality check *)
 Module PrimitiveEq.
@@ -1379,15 +1400,27 @@ Ltac as_of_values elements :=
   | [] => constr:(@nil Value.t)
   | ?element :: ?elements =>
     let elements := as_of_values elements in
-    constr:(
-      (let value := OfValue.get_value (value' := element) ltac:(repeat (
-        smpl of_value ||
-        smpl of_ty ||
-        reflexivity
-      )) in
-      φ value) ::
-      elements
-    )
+    (* TODO: eventually we should always have type-annotated values *)
+    lazymatch element with
+    | M.value_with_ty ?value' ?ty' =>
+      let ty := constr:(OfTy.get_Set (ty' := ty') ltac:(repeat smpl of_ty)) in
+      let ty := eval cbn in ty in
+      constr:(
+        (let value := OfValueWith.get_value ty value' _ in
+        φ value) ::
+        elements
+      )
+    | _ =>
+      constr:(
+        (let value := OfValue.get_value (value' := element) ltac:(repeat (
+          smpl of_value ||
+          smpl of_ty ||
+          reflexivity
+        )) in
+        φ value) ::
+        elements
+      )
+    end
   end.
 
 Ltac as_of_tys elements :=
@@ -1434,8 +1467,11 @@ Ltac prepare_call :=
     represented in a nice form in the final [Run.t] tree, that is to say as applications of the [φ] or
     the [Φ] function. This is helpful to have less inference problems later for the simulations. *)
 Ltac prepare_call_closure :=
-  with_strategy opaque [Φ] match goal with
-  | |- {{ LowM.CallClosure _ ?closure ?arguments _ 🔽 _, _ }} =>
+  match goal with
+  | |- {{ LowM.CallClosure ?ty' ?closure ?arguments _ 🔽 _, _ }} =>
+    let ty := constr:(OfTy.get_Set (ty' := ty') ltac:(repeat smpl of_ty)) in
+    let ty := eval cbn in ty in
+    change ty' with (Φ ty);
     let arguments' := as_of_values arguments in
     let arguments' := eval cbn in arguments' in
     change arguments with arguments';
@@ -1674,19 +1710,19 @@ Ltac run_symbolic :=
 Axiom is_discriminant_tuple_eq :
   forall
     (kind : IntegerKind.t)
-    (variant_name : string) (consts : list Value.t) (tys : list Ty.t) (fields : list Value.t)
+    (variant_name : string) (fields : list Value.t)
     (discriminant : Z),
   M.IsDiscriminant variant_name discriminant ->
-  M.cast (Φ (Integer.t kind)) (Value.StructTuple variant_name consts tys fields) =
+  M.cast (Φ (Integer.t kind)) (Value.StructTuple variant_name fields) =
   Value.Integer kind (Integer.normalize_wrap kind discriminant).
 
 Axiom is_discriminant_record_eq :
   forall
     (kind : IntegerKind.t)
-    (variant_name : string) (consts : list Value.t) (tys : list Ty.t) (fields : list (string * Value.t))
+    (variant_name : string) (fields : list (string * Value.t))
     (discriminant : Z),
   M.IsDiscriminant variant_name discriminant ->
-  M.cast (Φ (Integer.t kind)) (Value.StructRecord variant_name consts tys fields) =
+  M.cast (Φ (Integer.t kind)) (Value.StructRecord variant_name fields) =
   Value.Integer kind (Integer.normalize_wrap kind discriminant).
 
 Instance run_pointer_coercion_intrinsic_reify_fn_pointer (F : Set) `{Link F} (f : F) :

@@ -57,83 +57,99 @@ Module eof.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "TypesSection" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "inputs" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_bytecode::eof::types_section::TypesSection",
-                            "inputs"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "TypesSection" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "inputs" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_bytecode::eof::types_section::TypesSection",
+                              "inputs"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "outputs" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_bytecode::eof::types_section::TypesSection",
-                            "outputs"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "outputs" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_bytecode::eof::types_section::TypesSection",
+                              "outputs"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "max_stack_size" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "revm_bytecode::eof::types_section::TypesSection",
-                                "max_stack_size"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "max_stack_size" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_bytecode::eof::types_section::TypesSection",
+                                  "max_stack_size"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -197,54 +213,54 @@ Module eof.
         match ε, τ, α with
         | [], [], [] =>
           ltac:(M.monadic
-            (Value.mkStructRecord
-              "revm_bytecode::eof::types_section::TypesSection"
-              []
-              []
-              [
-                ("inputs",
-                  M.call_closure (|
-                    Ty.path "u8",
-                    M.get_trait_method (|
-                      "core::default::Default",
+            (M.value_with_ty
+              (Value.mkStructRecord
+                "revm_bytecode::eof::types_section::TypesSection"
+                [
+                  ("inputs",
+                    M.call_closure (|
                       Ty.path "u8",
-                      [],
-                      [],
-                      "default",
-                      [],
+                      M.get_trait_method (|
+                        "core::default::Default",
+                        Ty.path "u8",
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |));
-                ("outputs",
-                  M.call_closure (|
-                    Ty.path "u8",
-                    M.get_trait_method (|
-                      "core::default::Default",
+                    |));
+                  ("outputs",
+                    M.call_closure (|
                       Ty.path "u8",
-                      [],
-                      [],
-                      "default",
-                      [],
+                      M.get_trait_method (|
+                        "core::default::Default",
+                        Ty.path "u8",
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |));
-                ("max_stack_size",
-                  M.call_closure (|
-                    Ty.path "u16",
-                    M.get_trait_method (|
-                      "core::default::Default",
+                    |));
+                  ("max_stack_size",
+                    M.call_closure (|
                       Ty.path "u16",
-                      [],
-                      [],
-                      "default",
-                      [],
+                      M.get_trait_method (|
+                        "core::default::Default",
+                        Ty.path "u16",
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |))
-              ]))
+                    |))
+                ])
+              (Ty.path "revm_bytecode::eof::types_section::TypesSection")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -288,20 +304,24 @@ Module eof.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_bytecode::eof::types_section::TypesSection",
-                            "inputs"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_bytecode::eof::types_section::TypesSection",
+                              "inputs"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -317,20 +337,24 @@ Module eof.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_bytecode::eof::types_section::TypesSection",
-                            "outputs"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_bytecode::eof::types_section::TypesSection",
+                              "outputs"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |) in
               M.alloc (|
@@ -347,20 +371,24 @@ Module eof.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_bytecode::eof::types_section::TypesSection",
-                            "max_stack_size"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_bytecode::eof::types_section::TypesSection",
+                              "max_stack_size"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |)
               |)
@@ -590,32 +618,36 @@ Module eof.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_bytecode::eof::types_section::TypesSection",
-                            "inputs"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_bytecode::eof::types_section::TypesSection",
+                              "inputs"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| other |) |),
-                            "revm_bytecode::eof::types_section::TypesSection",
-                            "inputs"
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| other |) |),
+                              "revm_bytecode::eof::types_section::TypesSection",
+                              "inputs"
+                            |)
                           |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                   ]
                 |)
               |),
@@ -654,32 +686,36 @@ Module eof.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "revm_bytecode::eof::types_section::TypesSection",
-                                    "outputs"
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "revm_bytecode::eof::types_section::TypesSection",
+                                      "outputs"
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| other |) |),
-                                    "revm_bytecode::eof::types_section::TypesSection",
-                                    "outputs"
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| other |) |),
+                                      "revm_bytecode::eof::types_section::TypesSection",
+                                      "outputs"
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                           ]
                         |)
                       |),
@@ -708,32 +744,36 @@ Module eof.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "revm_bytecode::eof::types_section::TypesSection",
-                                        "max_stack_size"
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "revm_bytecode::eof::types_section::TypesSection",
+                                          "max_stack_size"
+                                        |)
                                       |)
                                     |)
-                                  |)
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| other |) |),
-                                        "revm_bytecode::eof::types_section::TypesSection",
-                                        "max_stack_size"
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| other |) |),
+                                          "revm_bytecode::eof::types_section::TypesSection",
+                                          "max_stack_size"
+                                        |)
                                       |)
                                     |)
-                                  |)
-                                |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
                               ]
                             |)));
                         fun γ =>
@@ -807,32 +847,36 @@ Module eof.
                   Ty.path "core::cmp::Ordering",
                   M.get_trait_method (| "core::cmp::Ord", Ty.path "u8", [], [], "cmp", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_bytecode::eof::types_section::TypesSection",
-                            "inputs"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_bytecode::eof::types_section::TypesSection",
+                              "inputs"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| other |) |),
-                            "revm_bytecode::eof::types_section::TypesSection",
-                            "inputs"
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| other |) |),
+                              "revm_bytecode::eof::types_section::TypesSection",
+                              "inputs"
+                            |)
                           |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                   ]
                 |)
               |),
@@ -856,32 +900,36 @@ Module eof.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "revm_bytecode::eof::types_section::TypesSection",
-                                    "outputs"
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "revm_bytecode::eof::types_section::TypesSection",
+                                      "outputs"
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| other |) |),
-                                    "revm_bytecode::eof::types_section::TypesSection",
-                                    "outputs"
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| other |) |),
+                                      "revm_bytecode::eof::types_section::TypesSection",
+                                      "outputs"
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                           ]
                         |)
                       |),
@@ -901,32 +949,36 @@ Module eof.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "revm_bytecode::eof::types_section::TypesSection",
-                                        "max_stack_size"
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "revm_bytecode::eof::types_section::TypesSection",
+                                          "max_stack_size"
+                                        |)
                                       |)
                                     |)
-                                  |)
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| other |) |),
-                                        "revm_bytecode::eof::types_section::TypesSection",
-                                        "max_stack_size"
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| other |) |),
+                                          "revm_bytecode::eof::types_section::TypesSection",
+                                          "max_stack_size"
+                                        |)
                                       |)
                                     |)
-                                  |)
-                                |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
                               ]
                             |)));
                         fun γ =>
@@ -972,15 +1024,15 @@ Module eof.
             (let inputs := M.alloc (| Ty.path "u8", inputs |) in
             let outputs := M.alloc (| Ty.path "u8", outputs |) in
             let max_stack_size := M.alloc (| Ty.path "u16", max_stack_size |) in
-            Value.mkStructRecord
-              "revm_bytecode::eof::types_section::TypesSection"
-              []
-              []
-              [
-                ("inputs", M.read (| inputs |));
-                ("outputs", M.read (| outputs |));
-                ("max_stack_size", M.read (| max_stack_size |))
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "revm_bytecode::eof::types_section::TypesSection"
+                [
+                  ("inputs", M.read (| inputs |));
+                  ("outputs", M.read (| outputs |));
+                  ("max_stack_size", M.read (| max_stack_size |))
+                ])
+              (Ty.path "revm_bytecode::eof::types_section::TypesSection")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1126,14 +1178,26 @@ Module eof.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| buffer |) |) |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_bytecode::eof::types_section::TypesSection",
-                        "inputs"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| buffer |) |) |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_bytecode::eof::types_section::TypesSection",
+                          "inputs"
+                        |)
+                      |))
+                      (Ty.path "u8")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -1149,14 +1213,26 @@ Module eof.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| buffer |) |) |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_bytecode::eof::types_section::TypesSection",
-                        "outputs"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| buffer |) |) |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_bytecode::eof::types_section::TypesSection",
+                          "outputs"
+                        |)
+                      |))
+                      (Ty.path "u8")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -1172,62 +1248,79 @@ Module eof.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| buffer |) |) |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| buffer |) |) |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                        ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
                           (Ty.path "&")
                           []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 2 ]
-                              [ Ty.path "u8" ]
-                          ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 2 ]
-                                  [ Ty.path "u8" ],
-                                M.call_closure (|
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 2 ]
+                                [ Ty.path "u8" ]
+                            ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 2 ]
                                     [ Ty.path "u8" ],
-                                  M.get_associated_function (|
-                                    Ty.path "u16",
-                                    "to_be_bytes",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "revm_bytecode::eof::types_section::TypesSection",
-                                        "max_stack_size"
-                                      |)
-                                    |)
-                                  ]
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 2 ]
+                                      [ Ty.path "u8" ],
+                                    M.get_associated_function (|
+                                      Ty.path "u16",
+                                      "to_be_bytes",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "revm_bytecode::eof::types_section::TypesSection",
+                                            "max_stack_size"
+                                          |)
+                                        |))
+                                        (Ty.path "u16")
+                                    ]
+                                  |)
                                 |)
                               |)
                             |)
                           |)
-                        |)
-                      ]
-                    |)
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1373,8 +1466,40 @@ Module eof.
                             []
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.tuple
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                                        Ty.path "u8"
+                                      ];
+                                    Ty.path "revm_bytecode::eof::EofDecodeError"
+                                  ],
+                                M.get_function (|
+                                  "revm_bytecode::eof::decode_helpers::consume_u8",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| input |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                ]
+                              |))
+                              (Ty.apply
                                 (Ty.path "core::result::Result")
                                 []
                                 [
@@ -1387,14 +1512,7 @@ Module eof.
                                       Ty.path "u8"
                                     ];
                                   Ty.path "revm_bytecode::eof::EofDecodeError"
-                                ],
-                              M.get_function (|
-                                "revm_bytecode::eof::decode_helpers::consume_u8",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |) ]
-                            |)
+                                ])
                           ]
                         |)
                       |),
@@ -1468,7 +1586,17 @@ Module eof.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| residual |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| residual |))
+                                        (Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.path "core::convert::Infallible";
+                                            Ty.path "revm_bytecode::eof::EofDecodeError"
+                                          ])
+                                    ]
                                   |)
                                 |)
                               |)
@@ -1609,8 +1737,41 @@ Module eof.
                                     []
                                   |),
                                   [
-                                    M.call_closure (|
-                                      Ty.apply
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.tuple
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                  ];
+                                                Ty.path "u8"
+                                              ];
+                                            Ty.path "revm_bytecode::eof::EofDecodeError"
+                                          ],
+                                        M.get_function (|
+                                          "revm_bytecode::eof::decode_helpers::consume_u8",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| input |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                        ]
+                                      |))
+                                      (Ty.apply
                                         (Ty.path "core::result::Result")
                                         []
                                         [
@@ -1623,19 +1784,7 @@ Module eof.
                                               Ty.path "u8"
                                             ];
                                           Ty.path "revm_bytecode::eof::EofDecodeError"
-                                        ],
-                                      M.get_function (|
-                                        "revm_bytecode::eof::decode_helpers::consume_u8",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| input |) |)
-                                        |)
-                                      ]
-                                    |)
+                                        ])
                                   ]
                                 |)
                               |),
@@ -1719,7 +1868,17 @@ Module eof.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| residual |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| residual |))
+                                                (Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.path "core::convert::Infallible";
+                                                    Ty.path "revm_bytecode::eof::EofDecodeError"
+                                                  ])
+                                            ]
                                           |)
                                         |)
                                       |)
@@ -1867,8 +2026,50 @@ Module eof.
                                             []
                                           |),
                                           [
-                                            M.call_closure (|
-                                              Ty.apply
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.tuple
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "slice")
+                                                              []
+                                                              [ Ty.path "u8" ]
+                                                          ];
+                                                        Ty.path "u16"
+                                                      ];
+                                                    Ty.path "revm_bytecode::eof::EofDecodeError"
+                                                  ],
+                                                M.get_function (|
+                                                  "revm_bytecode::eof::decode_helpers::consume_u16",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| input |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ])
+                                                ]
+                                              |))
+                                              (Ty.apply
                                                 (Ty.path "core::result::Result")
                                                 []
                                                 [
@@ -1886,19 +2087,7 @@ Module eof.
                                                       Ty.path "u16"
                                                     ];
                                                   Ty.path "revm_bytecode::eof::EofDecodeError"
-                                                ],
-                                              M.get_function (|
-                                                "revm_bytecode::eof::decode_helpers::consume_u16",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| input |) |)
-                                                |)
-                                              ]
-                                            |)
+                                                ])
                                           ]
                                         |)
                                       |),
@@ -1984,7 +2173,18 @@ Module eof.
                                                       [],
                                                       []
                                                     |),
-                                                    [ M.read (| residual |) ]
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (| residual |))
+                                                        (Ty.apply
+                                                          (Ty.path "core::result::Result")
+                                                          []
+                                                          [
+                                                            Ty.path "core::convert::Infallible";
+                                                            Ty.path
+                                                              "revm_bytecode::eof::EofDecodeError"
+                                                          ])
+                                                    ]
                                                   |)
                                                 |)
                                               |)
@@ -2036,15 +2236,16 @@ Module eof.
                                           let~ section :
                                               Ty.path
                                                 "revm_bytecode::eof::types_section::TypesSection" :=
-                                            Value.mkStructRecord
-                                              "revm_bytecode::eof::types_section::TypesSection"
-                                              []
-                                              []
-                                              [
-                                                ("inputs", M.read (| inputs |));
-                                                ("outputs", M.read (| outputs |));
-                                                ("max_stack_size", M.read (| max_stack_size |))
-                                              ] in
+                                            M.value_with_ty
+                                              (Value.mkStructRecord
+                                                "revm_bytecode::eof::types_section::TypesSection"
+                                                [
+                                                  ("inputs", M.read (| inputs |));
+                                                  ("outputs", M.read (| outputs |));
+                                                  ("max_stack_size", M.read (| max_stack_size |))
+                                                ])
+                                              (Ty.path
+                                                "revm_bytecode::eof::types_section::TypesSection") in
                                           let~ _ : Ty.tuple [] :=
                                             M.match_operator (|
                                               Ty.tuple [],
@@ -2093,24 +2294,46 @@ Module eof.
                                                     []
                                                   |),
                                                   [
-                                                    M.call_closure (|
-                                                      Ty.apply
+                                                    M.value_with_ty
+                                                      (M.call_closure (|
+                                                        Ty.apply
+                                                          (Ty.path "core::result::Result")
+                                                          []
+                                                          [
+                                                            Ty.tuple [];
+                                                            Ty.path
+                                                              "revm_bytecode::eof::EofDecodeError"
+                                                          ],
+                                                        M.get_associated_function (|
+                                                          Ty.path
+                                                            "revm_bytecode::eof::types_section::TypesSection",
+                                                          "validate",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              section
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "revm_bytecode::eof::types_section::TypesSection"
+                                                              ])
+                                                        ]
+                                                      |))
+                                                      (Ty.apply
                                                         (Ty.path "core::result::Result")
                                                         []
                                                         [
                                                           Ty.tuple [];
                                                           Ty.path
                                                             "revm_bytecode::eof::EofDecodeError"
-                                                        ],
-                                                      M.get_associated_function (|
-                                                        Ty.path
-                                                          "revm_bytecode::eof::types_section::TypesSection",
-                                                        "validate",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [ M.borrow (| Pointer.Kind.Ref, section |) ]
-                                                    |)
+                                                        ])
                                                   ]
                                                 |)
                                               |),
@@ -2199,7 +2422,19 @@ Module eof.
                                                               [],
                                                               []
                                                             |),
-                                                            [ M.read (| residual |) ]
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.read (| residual |))
+                                                                (Ty.apply
+                                                                  (Ty.path "core::result::Result")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "core::convert::Infallible";
+                                                                    Ty.path
+                                                                      "revm_bytecode::eof::EofDecodeError"
+                                                                  ])
+                                                            ]
                                                           |)
                                                         |)
                                                       |)
@@ -2237,36 +2472,39 @@ Module eof.
                                                   ];
                                                 Ty.path "revm_bytecode::eof::EofDecodeError"
                                               ],
-                                            Value.StructTuple
-                                              "core::result::Result::Ok"
-                                              []
-                                              [
-                                                Ty.tuple
-                                                  [
-                                                    Ty.path
-                                                      "revm_bytecode::eof::types_section::TypesSection";
-                                                    Ty.apply
-                                                      (Ty.path "&")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "slice")
-                                                          []
-                                                          [ Ty.path "u8" ]
-                                                      ]
-                                                  ];
-                                                Ty.path "revm_bytecode::eof::EofDecodeError"
-                                              ]
-                                              [
-                                                Value.Tuple
-                                                  [
-                                                    M.read (| section |);
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| input |) |)
-                                                    |)
-                                                  ]
-                                              ]
+                                            M.value_with_ty
+                                              (Value.StructTuple
+                                                "core::result::Result::Ok"
+                                                [
+                                                  Value.Tuple
+                                                    [
+                                                      M.read (| section |);
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| input |) |)
+                                                      |)
+                                                    ]
+                                                ])
+                                              (Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.tuple
+                                                    [
+                                                      Ty.path
+                                                        "revm_bytecode::eof::types_section::TypesSection";
+                                                      Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "slice")
+                                                            []
+                                                            [ Ty.path "u8" ]
+                                                        ]
+                                                    ];
+                                                  Ty.path "revm_bytecode::eof::EofDecodeError"
+                                                ])
                                           |)
                                         |)))
                                   ]
@@ -2378,17 +2616,20 @@ Module eof.
                             M.never_to_any (|
                               M.read (|
                                 M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [ Ty.tuple []; Ty.path "revm_bytecode::eof::EofDecodeError" ]
-                                    [
-                                      Value.StructTuple
-                                        "revm_bytecode::eof::EofDecodeError::InvalidTypesSection"
-                                        []
-                                        []
-                                        []
-                                    ]
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::result::Result::Err"
+                                      [
+                                        M.value_with_ty
+                                          (Value.StructTuple
+                                            "revm_bytecode::eof::EofDecodeError::InvalidTypesSection"
+                                            [])
+                                          (Ty.path "revm_bytecode::eof::EofDecodeError")
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "revm_bytecode::eof::EofDecodeError" ])
                                 |)
                               |)
                             |)));
@@ -2434,17 +2675,20 @@ Module eof.
                             M.never_to_any (|
                               M.read (|
                                 M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [ Ty.tuple []; Ty.path "revm_bytecode::eof::EofDecodeError" ]
-                                    [
-                                      Value.StructTuple
-                                        "revm_bytecode::eof::EofDecodeError::InvalidTypesSection"
-                                        []
-                                        []
-                                        []
-                                    ]
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::result::Result::Err"
+                                      [
+                                        M.value_with_ty
+                                          (Value.StructTuple
+                                            "revm_bytecode::eof::EofDecodeError::InvalidTypesSection"
+                                            [])
+                                          (Ty.path "revm_bytecode::eof::EofDecodeError")
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [ Ty.tuple []; Ty.path "revm_bytecode::eof::EofDecodeError" ])
                                 |)
                               |)
                             |)));
@@ -2456,11 +2700,12 @@ Module eof.
                       (Ty.path "core::result::Result")
                       []
                       [ Ty.tuple []; Ty.path "revm_bytecode::eof::EofDecodeError" ],
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [ Ty.tuple []; Ty.path "revm_bytecode::eof::EofDecodeError" ]
-                      [ Value.Tuple [] ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.tuple []; Ty.path "revm_bytecode::eof::EofDecodeError" ])
                   |)
                 |)))
             |)))

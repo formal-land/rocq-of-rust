@@ -79,98 +79,110 @@ Module annotated_value.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MoveStruct" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "type_" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.path "move_core_types::language_storage::StructTag" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "move_core_types::annotated_value::MoveStruct",
-                          "type_"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MoveStruct" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "type_" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "move_core_types::language_storage::StructTag" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "move_core_types::annotated_value::MoveStruct",
+                            "type_"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "fields" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "alloc::vec::Vec")
-                            []
-                            [
-                              Ty.tuple
-                                [
-                                  Ty.path "move_core_types::identifier::Identifier";
-                                  Ty.path "move_core_types::annotated_value::MoveValue"
-                                ];
-                              Ty.path "alloc::alloc::Global"
-                            ]
-                        ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "alloc::vec::Vec")
-                                []
-                                [
-                                  Ty.tuple
-                                    [
-                                      Ty.path "move_core_types::identifier::Identifier";
-                                      Ty.path "move_core_types::annotated_value::MoveValue"
-                                    ];
-                                  Ty.path "alloc::alloc::Global"
-                                ]
-                            ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "move_core_types::annotated_value::MoveStruct",
-                              "fields"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "fields" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.path "move_core_types::identifier::Identifier";
+                                    Ty.path "move_core_types::annotated_value::MoveValue"
+                                  ];
+                                Ty.path "alloc::alloc::Global"
+                              ]
+                          ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
+                                  []
+                                  [
+                                    Ty.tuple
+                                      [
+                                        Ty.path "move_core_types::identifier::Identifier";
+                                        Ty.path "move_core_types::annotated_value::MoveValue"
+                                      ];
+                                    Ty.path "alloc::alloc::Global"
+                                  ]
+                              ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "move_core_types::annotated_value::MoveStruct",
+                                "fields"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -228,22 +240,32 @@ Module annotated_value.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "move_core_types::annotated_value::MoveStruct",
-                    "type_"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "move_core_types::annotated_value::MoveStruct",
-                    "type_"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "move_core_types::annotated_value::MoveStruct",
+                      "type_"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.path "move_core_types::language_storage::StructTag" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "move_core_types::annotated_value::MoveStruct",
+                      "type_"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.path "move_core_types::language_storage::StructTag" ])
               ]
             |),
             ltac:(M.monadic
@@ -281,22 +303,56 @@ Module annotated_value.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "move_core_types::annotated_value::MoveStruct",
-                      "fields"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "move_core_types::annotated_value::MoveStruct",
-                      "fields"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "move_core_types::annotated_value::MoveStruct",
+                        "fields"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [
+                            Ty.tuple
+                              [
+                                Ty.path "move_core_types::identifier::Identifier";
+                                Ty.path "move_core_types::annotated_value::MoveValue"
+                              ];
+                            Ty.path "alloc::alloc::Global"
+                          ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "move_core_types::annotated_value::MoveStruct",
+                        "fields"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [
+                            Ty.tuple
+                              [
+                                Ty.path "move_core_types::identifier::Identifier";
+                                Ty.path "move_core_types::annotated_value::MoveValue"
+                              ];
+                            Ty.path "alloc::alloc::Global"
+                          ]
+                      ])
                 ]
               |)))
           |)))
@@ -368,54 +424,45 @@ Module annotated_value.
               Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::annotated_value::MoveStruct" ],
               self
             |) in
-          Value.mkStructRecord
-            "move_core_types::annotated_value::MoveStruct"
-            []
-            []
-            [
-              ("type_",
-                M.call_closure (|
-                  Ty.path "move_core_types::language_storage::StructTag",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "move_core_types::annotated_value::MoveStruct"
+              [
+                ("type_",
+                  M.call_closure (|
                     Ty.path "move_core_types::language_storage::StructTag",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "move_core_types::annotated_value::MoveStruct",
-                            "type_"
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("fields",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
-                    []
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "move_core_types::language_storage::StructTag",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
                     [
-                      Ty.tuple
-                        [
-                          Ty.path "move_core_types::identifier::Identifier";
-                          Ty.path "move_core_types::annotated_value::MoveValue"
-                        ];
-                      Ty.path "alloc::alloc::Global"
-                    ],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "move_core_types::annotated_value::MoveStruct",
+                                "type_"
+                              |)
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_core_types::language_storage::StructTag" ])
+                    ]
+                  |));
+                ("fields",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "alloc::vec::Vec")
                       []
@@ -427,29 +474,60 @@ Module annotated_value.
                           ];
                         Ty.path "alloc::alloc::Global"
                       ],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [
+                          Ty.tuple
+                            [
+                              Ty.path "move_core_types::identifier::Identifier";
+                              Ty.path "move_core_types::annotated_value::MoveValue"
+                            ];
+                          Ty.path "alloc::alloc::Global"
+                        ],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "move_core_types::annotated_value::MoveStruct",
-                            "fields"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "move_core_types::annotated_value::MoveStruct",
+                                "fields"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.path "move_core_types::identifier::Identifier";
+                                    Ty.path "move_core_types::annotated_value::MoveValue"
+                                  ];
+                                Ty.path "alloc::alloc::Global"
+                              ]
+                          ])
+                    ]
+                  |))
+              ])
+            (Ty.path "move_core_types::annotated_value::MoveStruct")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -594,24 +672,33 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U8" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U8" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -636,27 +723,33 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U64" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U64" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -682,27 +775,33 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U128" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U128" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -728,27 +827,33 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Bool" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Bool" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -780,32 +885,38 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Address" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "move_core_types::account_address::AccountAddress" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Address" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "move_core_types::account_address::AccountAddress" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -845,40 +956,46 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Vector" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::vec::Vec")
-                                    []
-                                    [
-                                      Ty.path "move_core_types::annotated_value::MoveValue";
-                                      Ty.path "alloc::alloc::Global"
-                                    ]
-                                ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Vector" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::vec::Vec")
+                                      []
+                                      [
+                                        Ty.path "move_core_types::annotated_value::MoveValue";
+                                        Ty.path "alloc::alloc::Global"
+                                      ]
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -910,32 +1027,38 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Struct" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "move_core_types::annotated_value::MoveStruct" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Struct" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "move_core_types::annotated_value::MoveStruct" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -967,32 +1090,38 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Signer" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "move_core_types::account_address::AccountAddress" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Signer" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "move_core_types::account_address::AccountAddress" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -1017,27 +1146,33 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U16" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U16" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -1062,27 +1197,33 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U32" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U32" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -1111,27 +1252,34 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U256" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::u256::U256" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U256" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::u256::U256" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)))
             ]
@@ -1187,7 +1335,14 @@ Module annotated_value.
                   [],
                   [ Ty.path "move_core_types::annotated_value::MoveValue" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "move_core_types::annotated_value::MoveValue" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -1197,7 +1352,14 @@ Module annotated_value.
                   [],
                   [ Ty.path "move_core_types::annotated_value::MoveValue" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "move_core_types::annotated_value::MoveValue" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -1259,8 +1421,18 @@ Module annotated_value.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ])
                             ]
                           |)));
                       fun γ =>
@@ -1297,8 +1469,18 @@ Module annotated_value.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
                             ]
                           |)));
                       fun γ =>
@@ -1335,8 +1517,18 @@ Module annotated_value.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ])
                             ]
                           |)));
                       fun γ =>
@@ -1373,8 +1565,18 @@ Module annotated_value.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
                             ]
                           |)));
                       fun γ =>
@@ -1431,8 +1633,28 @@ Module annotated_value.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "move_core_types::account_address::AccountAddress" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "move_core_types::account_address::AccountAddress" ]
+                                  ])
                             ]
                           |)));
                       fun γ =>
@@ -1521,8 +1743,44 @@ Module annotated_value.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [
+                                            Ty.path "move_core_types::annotated_value::MoveValue";
+                                            Ty.path "alloc::alloc::Global"
+                                          ]
+                                      ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [
+                                            Ty.path "move_core_types::annotated_value::MoveValue";
+                                            Ty.path "alloc::alloc::Global"
+                                          ]
+                                      ]
+                                  ])
                             ]
                           |)));
                       fun γ =>
@@ -1579,8 +1837,28 @@ Module annotated_value.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "move_core_types::annotated_value::MoveStruct" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "move_core_types::annotated_value::MoveStruct" ]
+                                  ])
                             ]
                           |)));
                       fun γ =>
@@ -1637,8 +1915,28 @@ Module annotated_value.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "move_core_types::account_address::AccountAddress" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "move_core_types::account_address::AccountAddress" ]
+                                  ])
                             ]
                           |)));
                       fun γ =>
@@ -1675,8 +1973,18 @@ Module annotated_value.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ])
                             ]
                           |)));
                       fun γ =>
@@ -1713,8 +2021,18 @@ Module annotated_value.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ])
                             ]
                           |)));
                       fun γ =>
@@ -1758,8 +2076,28 @@ Module annotated_value.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "move_core_types::u256::U256" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "move_core_types::u256::U256" ]
+                                  ])
                             ]
                           |)));
                       fun γ =>
@@ -1927,25 +2265,29 @@ Module annotated_value.
                       0
                     |) in
                   let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], γ1_0 |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveValue::U8"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "u8",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::annotated_value::MoveValue::U8"
+                      [
+                        M.call_closure (|
                           Ty.path "u8",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "u8",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "move_core_types::annotated_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -1956,25 +2298,29 @@ Module annotated_value.
                       0
                     |) in
                   let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], γ1_0 |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveValue::U64"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::annotated_value::MoveValue::U64"
+                      [
+                        M.call_closure (|
                           Ty.path "u64",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "u64",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "move_core_types::annotated_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -1986,25 +2332,29 @@ Module annotated_value.
                     |) in
                   let __self_0 :=
                     M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u128" ], γ1_0 |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveValue::U128"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "u128",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::annotated_value::MoveValue::U128"
+                      [
+                        M.call_closure (|
                           Ty.path "u128",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "u128",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "u128" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "move_core_types::annotated_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -2016,25 +2366,29 @@ Module annotated_value.
                     |) in
                   let __self_0 :=
                     M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "bool" ], γ1_0 |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveValue::Bool"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "bool",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::annotated_value::MoveValue::Bool"
+                      [
+                        M.call_closure (|
                           Ty.path "bool",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "bool",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "move_core_types::annotated_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -2052,25 +2406,32 @@ Module annotated_value.
                         [ Ty.path "move_core_types::account_address::AccountAddress" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveValue::Address"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "move_core_types::account_address::AccountAddress",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::annotated_value::MoveValue::Address"
+                      [
+                        M.call_closure (|
                           Ty.path "move_core_types::account_address::AccountAddress",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "move_core_types::account_address::AccountAddress",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "move_core_types::account_address::AccountAddress" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "move_core_types::annotated_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -2096,21 +2457,11 @@ Module annotated_value.
                         ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveValue::Vector"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "alloc::vec::Vec")
-                          []
-                          [
-                            Ty.path "move_core_types::annotated_value::MoveValue";
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::annotated_value::MoveValue::Vector"
+                      [
+                        M.call_closure (|
                           Ty.apply
                             (Ty.path "alloc::vec::Vec")
                             []
@@ -2118,15 +2469,40 @@ Module annotated_value.
                               Ty.path "move_core_types::annotated_value::MoveValue";
                               Ty.path "alloc::alloc::Global"
                             ],
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [
+                                Ty.path "move_core_types::annotated_value::MoveValue";
+                                Ty.path "alloc::alloc::Global"
+                              ],
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::vec::Vec")
+                                    []
+                                    [
+                                      Ty.path "move_core_types::annotated_value::MoveValue";
+                                      Ty.path "alloc::alloc::Global"
+                                    ]
+                                ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "move_core_types::annotated_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -2144,25 +2520,32 @@ Module annotated_value.
                         [ Ty.path "move_core_types::annotated_value::MoveStruct" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveValue::Struct"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "move_core_types::annotated_value::MoveStruct",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::annotated_value::MoveValue::Struct"
+                      [
+                        M.call_closure (|
                           Ty.path "move_core_types::annotated_value::MoveStruct",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "move_core_types::annotated_value::MoveStruct",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "move_core_types::annotated_value::MoveStruct" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "move_core_types::annotated_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -2180,25 +2563,32 @@ Module annotated_value.
                         [ Ty.path "move_core_types::account_address::AccountAddress" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveValue::Signer"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "move_core_types::account_address::AccountAddress",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::annotated_value::MoveValue::Signer"
+                      [
+                        M.call_closure (|
                           Ty.path "move_core_types::account_address::AccountAddress",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "move_core_types::account_address::AccountAddress",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "move_core_types::account_address::AccountAddress" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "move_core_types::annotated_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -2209,25 +2599,29 @@ Module annotated_value.
                       0
                     |) in
                   let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], γ1_0 |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveValue::U16"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "u16",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::annotated_value::MoveValue::U16"
+                      [
+                        M.call_closure (|
                           Ty.path "u16",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "u16",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "move_core_types::annotated_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -2238,25 +2632,29 @@ Module annotated_value.
                       0
                     |) in
                   let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ1_0 |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveValue::U32"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "u32",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::annotated_value::MoveValue::U32"
+                      [
+                        M.call_closure (|
                           Ty.path "u32",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "u32",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "move_core_types::annotated_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -2271,25 +2669,29 @@ Module annotated_value.
                       Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::u256::U256" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveValue::U256"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "move_core_types::u256::U256",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::annotated_value::MoveValue::U256"
+                      [
+                        M.call_closure (|
                           Ty.path "move_core_types::u256::U256",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]))
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "move_core_types::u256::U256",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::u256::U256" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "move_core_types::annotated_value::MoveValue")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2346,71 +2748,86 @@ Module annotated_value.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MoveFieldLayout" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "name" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::identifier::Identifier" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "move_core_types::annotated_value::MoveFieldLayout",
-                          "name"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MoveFieldLayout" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "name" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "move_core_types::identifier::Identifier" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "move_core_types::annotated_value::MoveFieldLayout",
+                            "name"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "layout" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.path "move_core_types::annotated_value::MoveTypeLayout" ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.path "move_core_types::annotated_value::MoveTypeLayout" ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "move_core_types::annotated_value::MoveFieldLayout",
-                              "layout"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "layout" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_core_types::annotated_value::MoveTypeLayout" ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "move_core_types::annotated_value::MoveTypeLayout" ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "move_core_types::annotated_value::MoveFieldLayout",
+                                "layout"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2441,68 +2858,78 @@ Module annotated_value.
                 [ Ty.path "move_core_types::annotated_value::MoveFieldLayout" ],
               self
             |) in
-          Value.mkStructRecord
-            "move_core_types::annotated_value::MoveFieldLayout"
-            []
-            []
-            [
-              ("name",
-                M.call_closure (|
-                  Ty.path "move_core_types::identifier::Identifier",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "move_core_types::annotated_value::MoveFieldLayout"
+              [
+                ("name",
+                  M.call_closure (|
                     Ty.path "move_core_types::identifier::Identifier",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "move_core_types::identifier::Identifier",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "move_core_types::annotated_value::MoveFieldLayout",
-                            "name"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "move_core_types::annotated_value::MoveFieldLayout",
+                                "name"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("layout",
-                M.call_closure (|
-                  Ty.path "move_core_types::annotated_value::MoveTypeLayout",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_core_types::identifier::Identifier" ])
+                    ]
+                  |));
+                ("layout",
+                  M.call_closure (|
                     Ty.path "move_core_types::annotated_value::MoveTypeLayout",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "move_core_types::annotated_value::MoveTypeLayout",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "move_core_types::annotated_value::MoveFieldLayout",
-                            "layout"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "move_core_types::annotated_value::MoveFieldLayout",
+                                "layout"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_core_types::annotated_value::MoveTypeLayout" ])
+                    ]
+                  |))
+              ])
+            (Ty.path "move_core_types::annotated_value::MoveFieldLayout")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2583,23 +3010,27 @@ Module annotated_value.
                             []
                           |),
                           [
-                            M.read (| __serializer |);
-                            mk_str (| "MoveFieldLayout" |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              BinOp.Wrap.add,
-                              [
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.add,
-                                  [
-                                    M.cast (Ty.path "usize") (Value.Bool false);
-                                    Value.Integer IntegerKind.Usize 1
-                                  ]
-                                |);
-                                Value.Integer IntegerKind.Usize 1
-                              ]
-                            |)
+                            M.value_with_ty (M.read (| __serializer |)) __S;
+                            M.value_with_ty
+                              (mk_str (| "MoveFieldLayout" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                BinOp.Wrap.add,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [
+                                      M.cast (Ty.path "usize") (Value.Bool false);
+                                      Value.Integer IntegerKind.Usize 1
+                                    ]
+                                  |);
+                                  Value.Integer IntegerKind.Usize 1
+                                ]
+                              |))
+                              (Ty.path "usize")
                           ]
                         |)
                       |),
@@ -2639,24 +3070,27 @@ Module annotated_value.
                             M.never_to_any (|
                               M.read (|
                                 M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::result::Result::Err"
+                                      [ M.read (| __err |) ])
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.associated_in_trait
+                                          "serde::ser::Serializer"
+                                          []
+                                          []
+                                          __S
+                                          "Ok";
+                                        Ty.associated_in_trait
+                                          "serde::ser::Serializer"
+                                          []
+                                          []
+                                          __S
+                                          "Error"
+                                      ])
                                 |)
                               |)
                             |)))
@@ -2696,24 +3130,43 @@ Module annotated_value.
                             [ Ty.path "move_core_types::identifier::Identifier" ]
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
-                            |);
-                            mk_str (| "name" |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_core_types::annotated_value::MoveFieldLayout",
-                                    "name"
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "serde::ser::Serializer"
+                                    []
+                                    []
+                                    __S
+                                    "SerializeStruct"
+                                ]);
+                            M.value_with_ty
+                              (mk_str (| "name" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "move_core_types::annotated_value::MoveFieldLayout",
+                                      "name"
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "move_core_types::identifier::Identifier" ])
                           ]
                         |)
                       |),
@@ -2744,24 +3197,27 @@ Module annotated_value.
                             M.never_to_any (|
                               M.read (|
                                 M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::result::Result::Err"
+                                      [ M.read (| __err |) ])
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.associated_in_trait
+                                          "serde::ser::Serializer"
+                                          []
+                                          []
+                                          __S
+                                          "Ok";
+                                        Ty.associated_in_trait
+                                          "serde::ser::Serializer"
+                                          []
+                                          []
+                                          __S
+                                          "Error"
+                                      ])
                                 |)
                               |)
                             |)))
@@ -2801,24 +3257,43 @@ Module annotated_value.
                             [ Ty.path "move_core_types::annotated_value::MoveTypeLayout" ]
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
-                            |);
-                            mk_str (| "layout" |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_core_types::annotated_value::MoveFieldLayout",
-                                    "layout"
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "serde::ser::Serializer"
+                                    []
+                                    []
+                                    __S
+                                    "SerializeStruct"
+                                ]);
+                            M.value_with_ty
+                              (mk_str (| "layout" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "move_core_types::annotated_value::MoveFieldLayout",
+                                      "layout"
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "move_core_types::annotated_value::MoveTypeLayout" ])
                           ]
                         |)
                       |),
@@ -2849,24 +3324,27 @@ Module annotated_value.
                             M.never_to_any (|
                               M.read (|
                                 M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::result::Result::Err"
+                                      [ M.read (| __err |) ])
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.associated_in_trait
+                                          "serde::ser::Serializer"
+                                          []
+                                          []
+                                          __S
+                                          "Ok";
+                                        Ty.associated_in_trait
+                                          "serde::ser::Serializer"
+                                          []
+                                          []
+                                          __S
+                                          "Error"
+                                      ])
                                 |)
                               |)
                             |)))
@@ -2897,7 +3375,16 @@ Module annotated_value.
                         [],
                         []
                       |),
-                      [ M.read (| __serde_state |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| __serde_state |))
+                          (Ty.associated_in_trait
+                            "serde::ser::Serializer"
+                            []
+                            []
+                            __S
+                            "SerializeStruct")
+                      ]
                     |)
                   |)
                 |)))
@@ -2940,40 +3427,52 @@ Module annotated_value.
                 [ Ty.path "move_core_types::annotated_value::_'1::deserialize::__Visitor" ]
               |),
               [
-                M.read (| __deserializer |);
-                mk_str (| "MoveFieldLayout" |);
-                M.read (|
-                  get_constant (|
-                    "move_core_types::annotated_value::_'1::deserialize::FIELDS",
-                    Ty.apply
-                      (Ty.path "&")
-                      []
+                M.value_with_ty (M.read (| __deserializer |)) __D;
+                M.value_with_ty
+                  (mk_str (| "MoveFieldLayout" |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.read (|
+                    get_constant (|
+                      "move_core_types::annotated_value::_'1::deserialize::FIELDS",
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ]
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "slice") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                    ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.mkStructRecord
+                      "move_core_types::annotated_value::_'1::deserialize::__Visitor"
                       [
-                        Ty.apply
-                          (Ty.path "slice")
-                          []
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      ]
-                  |)
-                |);
-                Value.mkStructRecord
-                  "move_core_types::annotated_value::_'1::deserialize::__Visitor"
-                  []
-                  []
-                  [
-                    ("marker",
-                      Value.StructTuple
-                        "core::marker::PhantomData"
-                        []
-                        [ Ty.path "move_core_types::annotated_value::MoveFieldLayout" ]
-                        []);
-                    ("lifetime",
-                      Value.StructTuple
-                        "core::marker::PhantomData"
-                        []
-                        [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
-                        [])
-                  ]
+                        ("marker",
+                          M.value_with_ty
+                            (Value.StructTuple "core::marker::PhantomData" [])
+                            (Ty.apply
+                              (Ty.path "core::marker::PhantomData")
+                              []
+                              [ Ty.path "move_core_types::annotated_value::MoveFieldLayout" ]));
+                        ("lifetime",
+                          M.value_with_ty
+                            (Value.StructTuple "core::marker::PhantomData" [])
+                            (Ty.apply
+                              (Ty.path "core::marker::PhantomData")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]))
+                      ])
+                    (Ty.path "move_core_types::annotated_value::_'1::deserialize::__Visitor"))
+                  (Ty.path "move_core_types::annotated_value::_'1::deserialize::__Visitor")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3054,23 +3553,27 @@ Module annotated_value.
                             []
                           |),
                           [
-                            M.read (| __serializer |);
-                            mk_str (| "MoveStructLayout" |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              BinOp.Wrap.add,
-                              [
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.add,
-                                  [
-                                    M.cast (Ty.path "usize") (Value.Bool false);
-                                    Value.Integer IntegerKind.Usize 1
-                                  ]
-                                |);
-                                Value.Integer IntegerKind.Usize 1
-                              ]
-                            |)
+                            M.value_with_ty (M.read (| __serializer |)) __S;
+                            M.value_with_ty
+                              (mk_str (| "MoveStructLayout" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                BinOp.Wrap.add,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [
+                                      M.cast (Ty.path "usize") (Value.Bool false);
+                                      Value.Integer IntegerKind.Usize 1
+                                    ]
+                                  |);
+                                  Value.Integer IntegerKind.Usize 1
+                                ]
+                              |))
+                              (Ty.path "usize")
                           ]
                         |)
                       |),
@@ -3110,24 +3613,27 @@ Module annotated_value.
                             M.never_to_any (|
                               M.read (|
                                 M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::result::Result::Err"
+                                      [ M.read (| __err |) ])
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.associated_in_trait
+                                          "serde::ser::Serializer"
+                                          []
+                                          []
+                                          __S
+                                          "Ok";
+                                        Ty.associated_in_trait
+                                          "serde::ser::Serializer"
+                                          []
+                                          []
+                                          __S
+                                          "Error"
+                                      ])
                                 |)
                               |)
                             |)))
@@ -3167,24 +3673,43 @@ Module annotated_value.
                             [ Ty.path "move_core_types::language_storage::StructTag" ]
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
-                            |);
-                            mk_str (| "type_" |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_core_types::annotated_value::MoveStructLayout",
-                                    "type_"
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "serde::ser::Serializer"
+                                    []
+                                    []
+                                    __S
+                                    "SerializeStruct"
+                                ]);
+                            M.value_with_ty
+                              (mk_str (| "type_" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "move_core_types::annotated_value::MoveStructLayout",
+                                      "type_"
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "move_core_types::language_storage::StructTag" ])
                           ]
                         |)
                       |),
@@ -3215,24 +3740,27 @@ Module annotated_value.
                             M.never_to_any (|
                               M.read (|
                                 M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::result::Result::Err"
+                                      [ M.read (| __err |) ])
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.associated_in_trait
+                                          "serde::ser::Serializer"
+                                          []
+                                          []
+                                          __S
+                                          "Ok";
+                                        Ty.associated_in_trait
+                                          "serde::ser::Serializer"
+                                          []
+                                          []
+                                          __S
+                                          "Error"
+                                      ])
                                 |)
                               |)
                             |)))
@@ -3280,24 +3808,51 @@ Module annotated_value.
                             ]
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
-                            |);
-                            mk_str (| "fields" |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_core_types::annotated_value::MoveStructLayout",
-                                    "fields"
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (| M.borrow (| Pointer.Kind.MutRef, __serde_state |) |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "serde::ser::Serializer"
+                                    []
+                                    []
+                                    __S
+                                    "SerializeStruct"
+                                ]);
+                            M.value_with_ty
+                              (mk_str (| "fields" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "move_core_types::annotated_value::MoveStructLayout",
+                                      "fields"
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::vec::Vec")
+                                    []
+                                    [
+                                      Ty.path "move_core_types::annotated_value::MoveFieldLayout";
+                                      Ty.path "alloc::alloc::Global"
+                                    ]
+                                ])
                           ]
                         |)
                       |),
@@ -3328,24 +3883,27 @@ Module annotated_value.
                             M.never_to_any (|
                               M.read (|
                                 M.return_ (|
-                                  Value.StructTuple
-                                    "core::result::Result::Err"
-                                    []
-                                    [
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Ok";
-                                      Ty.associated_in_trait
-                                        "serde::ser::Serializer"
-                                        []
-                                        []
-                                        __S
-                                        "Error"
-                                    ]
-                                    [ M.read (| __err |) ]
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::result::Result::Err"
+                                      [ M.read (| __err |) ])
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.associated_in_trait
+                                          "serde::ser::Serializer"
+                                          []
+                                          []
+                                          __S
+                                          "Ok";
+                                        Ty.associated_in_trait
+                                          "serde::ser::Serializer"
+                                          []
+                                          []
+                                          __S
+                                          "Error"
+                                      ])
                                 |)
                               |)
                             |)))
@@ -3376,7 +3934,16 @@ Module annotated_value.
                         [],
                         []
                       |),
-                      [ M.read (| __serde_state |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| __serde_state |))
+                          (Ty.associated_in_trait
+                            "serde::ser::Serializer"
+                            []
+                            []
+                            __S
+                            "SerializeStruct")
+                      ]
                     |)
                   |)
                 |)))
@@ -3419,40 +3986,52 @@ Module annotated_value.
                 [ Ty.path "move_core_types::annotated_value::_'3::deserialize::__Visitor" ]
               |),
               [
-                M.read (| __deserializer |);
-                mk_str (| "MoveStructLayout" |);
-                M.read (|
-                  get_constant (|
-                    "move_core_types::annotated_value::_'3::deserialize::FIELDS",
-                    Ty.apply
-                      (Ty.path "&")
-                      []
+                M.value_with_ty (M.read (| __deserializer |)) __D;
+                M.value_with_ty
+                  (mk_str (| "MoveStructLayout" |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.read (|
+                    get_constant (|
+                      "move_core_types::annotated_value::_'3::deserialize::FIELDS",
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ]
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "slice") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                    ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.mkStructRecord
+                      "move_core_types::annotated_value::_'3::deserialize::__Visitor"
                       [
-                        Ty.apply
-                          (Ty.path "slice")
-                          []
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      ]
-                  |)
-                |);
-                Value.mkStructRecord
-                  "move_core_types::annotated_value::_'3::deserialize::__Visitor"
-                  []
-                  []
-                  [
-                    ("marker",
-                      Value.StructTuple
-                        "core::marker::PhantomData"
-                        []
-                        [ Ty.path "move_core_types::annotated_value::MoveStructLayout" ]
-                        []);
-                    ("lifetime",
-                      Value.StructTuple
-                        "core::marker::PhantomData"
-                        []
-                        [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
-                        [])
-                  ]
+                        ("marker",
+                          M.value_with_ty
+                            (Value.StructTuple "core::marker::PhantomData" [])
+                            (Ty.apply
+                              (Ty.path "core::marker::PhantomData")
+                              []
+                              [ Ty.path "move_core_types::annotated_value::MoveStructLayout" ]));
+                        ("lifetime",
+                          M.value_with_ty
+                            (Value.StructTuple "core::marker::PhantomData" [])
+                            (Ty.apply
+                              (Ty.path "core::marker::PhantomData")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]))
+                      ])
+                    (Ty.path "move_core_types::annotated_value::_'3::deserialize::__Visitor"))
+                  (Ty.path "move_core_types::annotated_value::_'3::deserialize::__Visitor")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3518,10 +4097,14 @@ Module annotated_value.
                         []
                       |),
                       [
-                        M.read (| __serializer |);
-                        mk_str (| "MoveTypeLayout" |);
-                        Value.Integer IntegerKind.U32 0;
-                        mk_str (| "bool" |)
+                        M.value_with_ty (M.read (| __serializer |)) __S;
+                        M.value_with_ty
+                          (mk_str (| "MoveTypeLayout" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty (Value.Integer IntegerKind.U32 0) (Ty.path "u32");
+                        M.value_with_ty
+                          (mk_str (| "bool" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)));
                 fun γ =>
@@ -3549,10 +4132,14 @@ Module annotated_value.
                         []
                       |),
                       [
-                        M.read (| __serializer |);
-                        mk_str (| "MoveTypeLayout" |);
-                        Value.Integer IntegerKind.U32 1;
-                        mk_str (| "u8" |)
+                        M.value_with_ty (M.read (| __serializer |)) __S;
+                        M.value_with_ty
+                          (mk_str (| "MoveTypeLayout" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty (Value.Integer IntegerKind.U32 1) (Ty.path "u32");
+                        M.value_with_ty
+                          (mk_str (| "u8" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)));
                 fun γ =>
@@ -3580,10 +4167,14 @@ Module annotated_value.
                         []
                       |),
                       [
-                        M.read (| __serializer |);
-                        mk_str (| "MoveTypeLayout" |);
-                        Value.Integer IntegerKind.U32 2;
-                        mk_str (| "u64" |)
+                        M.value_with_ty (M.read (| __serializer |)) __S;
+                        M.value_with_ty
+                          (mk_str (| "MoveTypeLayout" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty (Value.Integer IntegerKind.U32 2) (Ty.path "u32");
+                        M.value_with_ty
+                          (mk_str (| "u64" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)));
                 fun γ =>
@@ -3611,10 +4202,14 @@ Module annotated_value.
                         []
                       |),
                       [
-                        M.read (| __serializer |);
-                        mk_str (| "MoveTypeLayout" |);
-                        Value.Integer IntegerKind.U32 3;
-                        mk_str (| "u128" |)
+                        M.value_with_ty (M.read (| __serializer |)) __S;
+                        M.value_with_ty
+                          (mk_str (| "MoveTypeLayout" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty (Value.Integer IntegerKind.U32 3) (Ty.path "u32");
+                        M.value_with_ty
+                          (mk_str (| "u128" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)));
                 fun γ =>
@@ -3642,10 +4237,14 @@ Module annotated_value.
                         []
                       |),
                       [
-                        M.read (| __serializer |);
-                        mk_str (| "MoveTypeLayout" |);
-                        Value.Integer IntegerKind.U32 4;
-                        mk_str (| "address" |)
+                        M.value_with_ty (M.read (| __serializer |)) __S;
+                        M.value_with_ty
+                          (mk_str (| "MoveTypeLayout" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty (Value.Integer IntegerKind.U32 4) (Ty.path "u32");
+                        M.value_with_ty
+                          (mk_str (| "address" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)));
                 fun γ =>
@@ -3698,11 +4297,28 @@ Module annotated_value.
                         ]
                       |),
                       [
-                        M.read (| __serializer |);
-                        mk_str (| "MoveTypeLayout" |);
-                        Value.Integer IntegerKind.U32 5;
-                        mk_str (| "vector" |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __field0 |) |) |)
+                        M.value_with_ty (M.read (| __serializer |)) __S;
+                        M.value_with_ty
+                          (mk_str (| "MoveTypeLayout" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty (Value.Integer IntegerKind.U32 5) (Ty.path "u32");
+                        M.value_with_ty
+                          (mk_str (| "vector" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __field0 |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::boxed::Box")
+                                []
+                                [
+                                  Ty.path "move_core_types::annotated_value::MoveTypeLayout";
+                                  Ty.path "alloc::alloc::Global"
+                                ]
+                            ])
                       ]
                     |)));
                 fun γ =>
@@ -3739,11 +4355,20 @@ Module annotated_value.
                         [ Ty.path "move_core_types::annotated_value::MoveStructLayout" ]
                       |),
                       [
-                        M.read (| __serializer |);
-                        mk_str (| "MoveTypeLayout" |);
-                        Value.Integer IntegerKind.U32 6;
-                        mk_str (| "struct" |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __field0 |) |) |)
+                        M.value_with_ty (M.read (| __serializer |)) __S;
+                        M.value_with_ty
+                          (mk_str (| "MoveTypeLayout" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty (Value.Integer IntegerKind.U32 6) (Ty.path "u32");
+                        M.value_with_ty
+                          (mk_str (| "struct" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __field0 |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.path "move_core_types::annotated_value::MoveStructLayout" ])
                       ]
                     |)));
                 fun γ =>
@@ -3771,10 +4396,14 @@ Module annotated_value.
                         []
                       |),
                       [
-                        M.read (| __serializer |);
-                        mk_str (| "MoveTypeLayout" |);
-                        Value.Integer IntegerKind.U32 7;
-                        mk_str (| "signer" |)
+                        M.value_with_ty (M.read (| __serializer |)) __S;
+                        M.value_with_ty
+                          (mk_str (| "MoveTypeLayout" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty (Value.Integer IntegerKind.U32 7) (Ty.path "u32");
+                        M.value_with_ty
+                          (mk_str (| "signer" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)));
                 fun γ =>
@@ -3802,10 +4431,14 @@ Module annotated_value.
                         []
                       |),
                       [
-                        M.read (| __serializer |);
-                        mk_str (| "MoveTypeLayout" |);
-                        Value.Integer IntegerKind.U32 8;
-                        mk_str (| "u16" |)
+                        M.value_with_ty (M.read (| __serializer |)) __S;
+                        M.value_with_ty
+                          (mk_str (| "MoveTypeLayout" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty (Value.Integer IntegerKind.U32 8) (Ty.path "u32");
+                        M.value_with_ty
+                          (mk_str (| "u16" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)));
                 fun γ =>
@@ -3833,10 +4466,14 @@ Module annotated_value.
                         []
                       |),
                       [
-                        M.read (| __serializer |);
-                        mk_str (| "MoveTypeLayout" |);
-                        Value.Integer IntegerKind.U32 9;
-                        mk_str (| "u32" |)
+                        M.value_with_ty (M.read (| __serializer |)) __S;
+                        M.value_with_ty
+                          (mk_str (| "MoveTypeLayout" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty (Value.Integer IntegerKind.U32 9) (Ty.path "u32");
+                        M.value_with_ty
+                          (mk_str (| "u32" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)));
                 fun γ =>
@@ -3864,10 +4501,14 @@ Module annotated_value.
                         []
                       |),
                       [
-                        M.read (| __serializer |);
-                        mk_str (| "MoveTypeLayout" |);
-                        Value.Integer IntegerKind.U32 10;
-                        mk_str (| "u256" |)
+                        M.value_with_ty (M.read (| __serializer |)) __S;
+                        M.value_with_ty
+                          (mk_str (| "MoveTypeLayout" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty (Value.Integer IntegerKind.U32 10) (Ty.path "u32");
+                        M.value_with_ty
+                          (mk_str (| "u256" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)))
               ]
@@ -3910,40 +4551,52 @@ Module annotated_value.
                 [ Ty.path "move_core_types::annotated_value::_'5::deserialize::__Visitor" ]
               |),
               [
-                M.read (| __deserializer |);
-                mk_str (| "MoveTypeLayout" |);
-                M.read (|
-                  get_constant (|
-                    "move_core_types::annotated_value::_'5::deserialize::VARIANTS",
-                    Ty.apply
-                      (Ty.path "&")
-                      []
+                M.value_with_ty (M.read (| __deserializer |)) __D;
+                M.value_with_ty
+                  (mk_str (| "MoveTypeLayout" |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.read (|
+                    get_constant (|
+                      "move_core_types::annotated_value::_'5::deserialize::VARIANTS",
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ]
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "slice") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                    ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.mkStructRecord
+                      "move_core_types::annotated_value::_'5::deserialize::__Visitor"
                       [
-                        Ty.apply
-                          (Ty.path "slice")
-                          []
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      ]
-                  |)
-                |);
-                Value.mkStructRecord
-                  "move_core_types::annotated_value::_'5::deserialize::__Visitor"
-                  []
-                  []
-                  [
-                    ("marker",
-                      Value.StructTuple
-                        "core::marker::PhantomData"
-                        []
-                        [ Ty.path "move_core_types::annotated_value::MoveTypeLayout" ]
-                        []);
-                    ("lifetime",
-                      Value.StructTuple
-                        "core::marker::PhantomData"
-                        []
-                        [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]
-                        [])
-                  ]
+                        ("marker",
+                          M.value_with_ty
+                            (Value.StructTuple "core::marker::PhantomData" [])
+                            (Ty.apply
+                              (Ty.path "core::marker::PhantomData")
+                              []
+                              [ Ty.path "move_core_types::annotated_value::MoveTypeLayout" ]));
+                        ("lifetime",
+                          M.value_with_ty
+                            (Value.StructTuple "core::marker::PhantomData" [])
+                            (Ty.apply
+                              (Ty.path "core::marker::PhantomData")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ]))
+                      ])
+                    (Ty.path "move_core_types::annotated_value::_'5::deserialize::__Visitor"))
+                  (Ty.path "move_core_types::annotated_value::_'5::deserialize::__Visitor")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3975,11 +4628,11 @@ Module annotated_value.
           (let name := M.alloc (| Ty.path "move_core_types::identifier::Identifier", name |) in
           let layout :=
             M.alloc (| Ty.path "move_core_types::annotated_value::MoveTypeLayout", layout |) in
-          Value.mkStructRecord
-            "move_core_types::annotated_value::MoveFieldLayout"
-            []
-            []
-            [ ("name", M.read (| name |)); ("layout", M.read (| layout |)) ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "move_core_types::annotated_value::MoveFieldLayout"
+              [ ("name", M.read (| name |)); ("layout", M.read (| layout |)) ])
+            (Ty.path "move_core_types::annotated_value::MoveFieldLayout")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -4037,90 +4690,102 @@ Module annotated_value.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MoveStructLayout" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "type_" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.path "move_core_types::language_storage::StructTag" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "move_core_types::annotated_value::MoveStructLayout",
-                          "type_"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MoveStructLayout" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "type_" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "move_core_types::language_storage::StructTag" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "move_core_types::annotated_value::MoveStructLayout",
+                            "type_"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "fields" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "alloc::vec::Vec")
-                            []
-                            [
-                              Ty.path "move_core_types::annotated_value::MoveFieldLayout";
-                              Ty.path "alloc::alloc::Global"
-                            ]
-                        ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "alloc::vec::Vec")
-                                []
-                                [
-                                  Ty.path "move_core_types::annotated_value::MoveFieldLayout";
-                                  Ty.path "alloc::alloc::Global"
-                                ]
-                            ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "move_core_types::annotated_value::MoveStructLayout",
-                              "fields"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "fields" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [
+                                Ty.path "move_core_types::annotated_value::MoveFieldLayout";
+                                Ty.path "alloc::alloc::Global"
+                              ]
+                          ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
+                                  []
+                                  [
+                                    Ty.path "move_core_types::annotated_value::MoveFieldLayout";
+                                    Ty.path "alloc::alloc::Global"
+                                  ]
+                              ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "move_core_types::annotated_value::MoveStructLayout",
+                                "fields"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4151,50 +4816,45 @@ Module annotated_value.
                 [ Ty.path "move_core_types::annotated_value::MoveStructLayout" ],
               self
             |) in
-          Value.mkStructRecord
-            "move_core_types::annotated_value::MoveStructLayout"
-            []
-            []
-            [
-              ("type_",
-                M.call_closure (|
-                  Ty.path "move_core_types::language_storage::StructTag",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "move_core_types::annotated_value::MoveStructLayout"
+              [
+                ("type_",
+                  M.call_closure (|
                     Ty.path "move_core_types::language_storage::StructTag",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "move_core_types::annotated_value::MoveStructLayout",
-                            "type_"
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("fields",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
-                    []
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "move_core_types::language_storage::StructTag",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
                     [
-                      Ty.path "move_core_types::annotated_value::MoveFieldLayout";
-                      Ty.path "alloc::alloc::Global"
-                    ],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "move_core_types::annotated_value::MoveStructLayout",
+                                "type_"
+                              |)
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_core_types::language_storage::StructTag" ])
+                    ]
+                  |));
+                ("fields",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "alloc::vec::Vec")
                       []
@@ -4202,29 +4862,52 @@ Module annotated_value.
                         Ty.path "move_core_types::annotated_value::MoveFieldLayout";
                         Ty.path "alloc::alloc::Global"
                       ],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [
+                          Ty.path "move_core_types::annotated_value::MoveFieldLayout";
+                          Ty.path "alloc::alloc::Global"
+                        ],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "move_core_types::annotated_value::MoveStructLayout",
-                            "fields"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "move_core_types::annotated_value::MoveStructLayout",
+                                "fields"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [
+                                Ty.path "move_core_types::annotated_value::MoveFieldLayout";
+                                Ty.path "alloc::alloc::Global"
+                              ]
+                          ])
+                    ]
+                  |))
+              ])
+            (Ty.path "move_core_types::annotated_value::MoveStructLayout")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -4372,8 +5055,12 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Bool" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Bool" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -4396,8 +5083,12 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U8" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U8" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -4420,8 +5111,12 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U64" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U64" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -4444,8 +5139,12 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U128" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U128" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -4468,8 +5167,12 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Address" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Address" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -4509,40 +5212,46 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Vector" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "alloc::boxed::Box")
-                                    []
-                                    [
-                                      Ty.path "move_core_types::annotated_value::MoveTypeLayout";
-                                      Ty.path "alloc::alloc::Global"
-                                    ]
-                                ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Vector" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::boxed::Box")
+                                      []
+                                      [
+                                        Ty.path "move_core_types::annotated_value::MoveTypeLayout";
+                                        Ty.path "alloc::alloc::Global"
+                                      ]
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -4574,32 +5283,38 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Struct" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "move_core_types::annotated_value::MoveStructLayout" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Struct" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "move_core_types::annotated_value::MoveStructLayout" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -4622,8 +5337,12 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Signer" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Signer" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -4646,8 +5365,12 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U16" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U16" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -4670,8 +5393,12 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U32" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U32" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -4694,8 +5421,12 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U256" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "U256" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)))
             ]
@@ -4740,11 +5471,9 @@ Module annotated_value.
                       γ,
                       "move_core_types::annotated_value::MoveTypeLayout::Bool"
                     |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveTypeLayout::Bool"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::annotated_value::MoveTypeLayout::Bool" [])
+                    (Ty.path "move_core_types::annotated_value::MoveTypeLayout")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -4753,11 +5482,9 @@ Module annotated_value.
                       γ,
                       "move_core_types::annotated_value::MoveTypeLayout::U8"
                     |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveTypeLayout::U8"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::annotated_value::MoveTypeLayout::U8" [])
+                    (Ty.path "move_core_types::annotated_value::MoveTypeLayout")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -4766,11 +5493,9 @@ Module annotated_value.
                       γ,
                       "move_core_types::annotated_value::MoveTypeLayout::U64"
                     |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveTypeLayout::U64"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::annotated_value::MoveTypeLayout::U64" [])
+                    (Ty.path "move_core_types::annotated_value::MoveTypeLayout")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -4779,11 +5504,9 @@ Module annotated_value.
                       γ,
                       "move_core_types::annotated_value::MoveTypeLayout::U128"
                     |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveTypeLayout::U128"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::annotated_value::MoveTypeLayout::U128" [])
+                    (Ty.path "move_core_types::annotated_value::MoveTypeLayout")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -4792,11 +5515,11 @@ Module annotated_value.
                       γ,
                       "move_core_types::annotated_value::MoveTypeLayout::Address"
                     |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveTypeLayout::Address"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::annotated_value::MoveTypeLayout::Address"
+                      [])
+                    (Ty.path "move_core_types::annotated_value::MoveTypeLayout")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -4822,21 +5545,11 @@ Module annotated_value.
                         ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveTypeLayout::Vector"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [
-                            Ty.path "move_core_types::annotated_value::MoveTypeLayout";
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::annotated_value::MoveTypeLayout::Vector"
+                      [
+                        M.call_closure (|
                           Ty.apply
                             (Ty.path "alloc::boxed::Box")
                             []
@@ -4844,15 +5557,40 @@ Module annotated_value.
                               Ty.path "move_core_types::annotated_value::MoveTypeLayout";
                               Ty.path "alloc::alloc::Global"
                             ],
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.apply
+                              (Ty.path "alloc::boxed::Box")
+                              []
+                              [
+                                Ty.path "move_core_types::annotated_value::MoveTypeLayout";
+                                Ty.path "alloc::alloc::Global"
+                              ],
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::boxed::Box")
+                                    []
+                                    [
+                                      Ty.path "move_core_types::annotated_value::MoveTypeLayout";
+                                      Ty.path "alloc::alloc::Global"
+                                    ]
+                                ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "move_core_types::annotated_value::MoveTypeLayout")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -4870,25 +5608,32 @@ Module annotated_value.
                         [ Ty.path "move_core_types::annotated_value::MoveStructLayout" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveTypeLayout::Struct"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "move_core_types::annotated_value::MoveStructLayout",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::annotated_value::MoveTypeLayout::Struct"
+                      [
+                        M.call_closure (|
                           Ty.path "move_core_types::annotated_value::MoveStructLayout",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "move_core_types::annotated_value::MoveStructLayout",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "move_core_types::annotated_value::MoveStructLayout" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "move_core_types::annotated_value::MoveTypeLayout")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -4897,11 +5642,11 @@ Module annotated_value.
                       γ,
                       "move_core_types::annotated_value::MoveTypeLayout::Signer"
                     |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveTypeLayout::Signer"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::annotated_value::MoveTypeLayout::Signer"
+                      [])
+                    (Ty.path "move_core_types::annotated_value::MoveTypeLayout")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -4910,11 +5655,9 @@ Module annotated_value.
                       γ,
                       "move_core_types::annotated_value::MoveTypeLayout::U16"
                     |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveTypeLayout::U16"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::annotated_value::MoveTypeLayout::U16" [])
+                    (Ty.path "move_core_types::annotated_value::MoveTypeLayout")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -4923,11 +5666,9 @@ Module annotated_value.
                       γ,
                       "move_core_types::annotated_value::MoveTypeLayout::U32"
                     |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveTypeLayout::U32"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::annotated_value::MoveTypeLayout::U32" [])
+                    (Ty.path "move_core_types::annotated_value::MoveTypeLayout")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -4936,11 +5677,9 @@ Module annotated_value.
                       γ,
                       "move_core_types::annotated_value::MoveTypeLayout::U256"
                     |) in
-                  Value.StructTuple
-                    "move_core_types::annotated_value::MoveTypeLayout::U256"
-                    []
-                    []
-                    []))
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::annotated_value::MoveTypeLayout::U256" [])
+                    (Ty.path "move_core_types::annotated_value::MoveTypeLayout")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4988,25 +5727,13 @@ Module annotated_value.
               []
               [ Ty.path "move_core_types::annotated_value::MoveValue"; Ty.path "anyhow::Error" ]) (|
             ltac:(M.monadic
-              (Value.StructTuple
-                "core::result::Result::Ok"
-                []
-                [ Ty.path "move_core_types::annotated_value::MoveValue"; Ty.path "anyhow::Error" ]
-                [
-                  M.match_operator (|
-                    Ty.path "move_core_types::annotated_value::MoveValue",
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::ops::control_flow::ControlFlow")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [ Ty.path "core::convert::Infallible"; Ty.path "bcs::error::Error" ];
-                          Ty.path "move_core_types::annotated_value::MoveValue"
-                        ],
-                      M.call_closure (|
+              (M.value_with_ty
+                (Value.StructTuple
+                  "core::result::Result::Ok"
+                  [
+                    M.match_operator (|
+                      Ty.path "move_core_types::annotated_value::MoveValue",
+                      M.alloc (|
                         Ty.apply
                           (Ty.path "core::ops::control_flow::ControlFlow")
                           []
@@ -5017,23 +5744,20 @@ Module annotated_value.
                               [ Ty.path "core::convert::Infallible"; Ty.path "bcs::error::Error" ];
                             Ty.path "move_core_types::annotated_value::MoveValue"
                           ],
-                        M.get_trait_method (|
-                          "core::ops::try_trait::Try",
+                        M.call_closure (|
                           Ty.apply
-                            (Ty.path "core::result::Result")
+                            (Ty.path "core::ops::control_flow::ControlFlow")
                             []
                             [
-                              Ty.path "move_core_types::annotated_value::MoveValue";
-                              Ty.path "bcs::error::Error"
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "core::convert::Infallible"; Ty.path "bcs::error::Error"
+                                ];
+                              Ty.path "move_core_types::annotated_value::MoveValue"
                             ],
-                          [],
-                          [],
-                          "branch",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
+                          M.get_trait_method (|
+                            "core::ops::try_trait::Try",
                             Ty.apply
                               (Ty.path "core::result::Result")
                               []
@@ -5041,55 +5765,83 @@ Module annotated_value.
                                 Ty.path "move_core_types::annotated_value::MoveValue";
                                 Ty.path "bcs::error::Error"
                               ],
-                            M.get_function (|
-                              "bcs::de::from_bytes_seed",
-                              [],
-                              [
+                            [],
+                            [],
+                            "branch",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.apply
-                                  (Ty.path "&")
+                                  (Ty.path "core::result::Result")
                                   []
-                                  [ Ty.path "move_core_types::annotated_value::MoveTypeLayout" ]
-                              ]
-                            |),
-                            [
-                              M.read (| ty |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| blob |) |) |)
-                            ]
-                          |)
-                        ]
-                      |)
-                    |),
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::ops::control_flow::ControlFlow::Break",
-                              0
-                            |) in
-                          let residual :=
-                            M.copy (|
-                              Ty.apply
+                                  [
+                                    Ty.path "move_core_types::annotated_value::MoveValue";
+                                    Ty.path "bcs::error::Error"
+                                  ],
+                                M.get_function (|
+                                  "bcs::de::from_bytes_seed",
+                                  [],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "move_core_types::annotated_value::MoveTypeLayout" ]
+                                  ]
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| ty |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "move_core_types::annotated_value::MoveTypeLayout"
+                                      ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| blob |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                ]
+                              |))
+                              (Ty.apply
                                 (Ty.path "core::result::Result")
                                 []
-                                [ Ty.path "core::convert::Infallible"; Ty.path "bcs::error::Error"
-                                ],
-                              γ0_0
-                            |) in
-                          M.never_to_any (|
-                            M.read (|
-                              M.return_ (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::result::Result")
-                                    []
-                                    [
-                                      Ty.path "move_core_types::annotated_value::MoveValue";
-                                      Ty.path "anyhow::Error"
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::ops::try_trait::FromResidual",
+                                [
+                                  Ty.path "move_core_types::annotated_value::MoveValue";
+                                  Ty.path "bcs::error::Error"
+                                ])
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::ops::control_flow::ControlFlow::Break",
+                                0
+                              |) in
+                            let residual :=
+                              M.copy (|
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.path "core::convert::Infallible"; Ty.path "bcs::error::Error"
+                                  ],
+                                γ0_0
+                              |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  M.call_closure (|
                                     Ty.apply
                                       (Ty.path "core::result::Result")
                                       []
@@ -5097,42 +5849,66 @@ Module annotated_value.
                                         Ty.path "move_core_types::annotated_value::MoveValue";
                                         Ty.path "anyhow::Error"
                                       ],
-                                    [],
-                                    [
+                                    M.get_trait_method (|
+                                      "core::ops::try_trait::FromResidual",
                                       Ty.apply
                                         (Ty.path "core::result::Result")
                                         []
                                         [
-                                          Ty.path "core::convert::Infallible";
-                                          Ty.path "bcs::error::Error"
-                                        ]
-                                    ],
-                                    "from_residual",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| residual |) ]
+                                          Ty.path "move_core_types::annotated_value::MoveValue";
+                                          Ty.path "anyhow::Error"
+                                        ],
+                                      [],
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.path "core::convert::Infallible";
+                                            Ty.path "bcs::error::Error"
+                                          ]
+                                      ],
+                                      "from_residual",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| residual |))
+                                        (Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.path "core::convert::Infallible";
+                                            Ty.path "bcs::error::Error"
+                                          ])
+                                    ]
+                                  |)
                                 |)
                               |)
-                            |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::ops::control_flow::ControlFlow::Continue",
-                              0
-                            |) in
-                          let val :=
-                            M.copy (|
-                              Ty.path "move_core_types::annotated_value::MoveValue",
-                              γ0_0
-                            |) in
-                          M.read (| val |)))
-                    ]
-                  |)
-                ]))
+                            |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::ops::control_flow::ControlFlow::Continue",
+                                0
+                              |) in
+                            let val :=
+                              M.copy (|
+                                Ty.path "move_core_types::annotated_value::MoveValue",
+                                γ0_0
+                              |) in
+                            M.read (| val |)))
+                      ]
+                    |)
+                  ])
+                (Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [ Ty.path "move_core_types::annotated_value::MoveValue"; Ty.path "anyhow::Error"
+                  ])))
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -5280,8 +6056,60 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "move_core_types::annotated_visitor::Visitor"
+                                    []
+                                    []
+                                    V
+                                    "Value";
+                                  Ty.associated_in_trait
+                                    "move_core_types::annotated_visitor::Visitor"
+                                    []
+                                    []
+                                    V
+                                    "Error"
+                                ],
+                              M.get_function (|
+                                "move_core_types::annotated_visitor::visit_value",
+                                [],
+                                [ V ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.borrow (| Pointer.Kind.MutRef, blob |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ty |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_core_types::annotated_value::MoveTypeLayout" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| visitor |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ V ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
@@ -5297,21 +6125,7 @@ Module annotated_value.
                                   []
                                   V
                                   "Error"
-                              ],
-                            M.get_function (|
-                              "move_core_types::annotated_visitor::visit_value",
-                              [],
-                              [ V ]
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (| M.borrow (| Pointer.Kind.MutRef, blob |) |)
-                              |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ty |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| visitor |) |) |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -5389,7 +6203,22 @@ Module annotated_value.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.associated_in_trait
+                                            "move_core_types::annotated_visitor::Visitor"
+                                            []
+                                            []
+                                            V
+                                            "Error"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -5457,76 +6286,97 @@ Module annotated_value.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| blob |) |) |)
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| blob |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                   ]
                                 |)
                               |)) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          Value.StructTuple
-                            "core::result::Result::Ok"
-                            []
-                            [
-                              Ty.associated_in_trait
-                                "move_core_types::annotated_visitor::Visitor"
-                                []
-                                []
-                                V
-                                "Value";
-                              Ty.path "anyhow::Error"
-                            ]
-                            [ M.read (| res |) ]));
+                          M.value_with_ty
+                            (Value.StructTuple "core::result::Result::Ok" [ M.read (| res |) ])
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.associated_in_trait
+                                  "move_core_types::annotated_visitor::Visitor"
+                                  []
+                                  []
+                                  V
+                                  "Value";
+                                Ty.path "anyhow::Error"
+                              ])));
                       fun γ =>
                         ltac:(M.monadic
-                          (Value.StructTuple
-                            "core::result::Result::Err"
-                            []
-                            [
-                              Ty.associated_in_trait
-                                "move_core_types::annotated_visitor::Visitor"
-                                []
-                                []
-                                V
-                                "Value";
-                              Ty.path "anyhow::Error"
-                            ]
-                            [
-                              M.call_closure (|
-                                Ty.path "anyhow::Error",
-                                M.get_trait_method (|
-                                  "core::convert::Into",
-                                  Ty.path "move_core_types::annotated_visitor::Error",
-                                  [],
-                                  [ Ty.path "anyhow::Error" ],
-                                  "into",
-                                  [],
+                          (M.value_with_ty
+                            (Value.StructTuple
+                              "core::result::Result::Err"
+                              [
+                                M.call_closure (|
+                                  Ty.path "anyhow::Error",
+                                  M.get_trait_method (|
+                                    "core::convert::Into",
+                                    Ty.path "move_core_types::annotated_visitor::Error",
+                                    [],
+                                    [ Ty.path "anyhow::Error" ],
+                                    "into",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple
+                                          "move_core_types::annotated_visitor::Error::TrailingBytes"
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                                "len",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| blob |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                    ])
+                                              ]
+                                            |)
+                                          ])
+                                        (Ty.path "move_core_types::annotated_visitor::Error"))
+                                      (Ty.path "move_core_types::annotated_visitor::Error")
+                                  ]
+                                |)
+                              ])
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.associated_in_trait
+                                  "move_core_types::annotated_visitor::Visitor"
                                   []
-                                |),
-                                [
-                                  Value.StructTuple
-                                    "move_core_types::annotated_visitor::Error::TrailingBytes"
-                                    []
-                                    []
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                          "len",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| blob |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                ]
-                              |)
-                            ]))
+                                  []
+                                  V
+                                  "Value";
+                                Ty.path "anyhow::Error"
+                              ])))
                     ]
                   |)
                 |)
@@ -5580,8 +6430,33 @@ Module annotated_value.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
+                      Ty.path "bcs::error::Error"
+                    ],
+                  M.get_function (|
+                    "bcs::ser::to_bytes",
+                    [],
+                    [ Ty.path "move_core_types::annotated_value::MoveValue" ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "move_core_types::annotated_value::MoveValue" ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::result::Result")
                   []
                   [
@@ -5590,14 +6465,7 @@ Module annotated_value.
                       []
                       [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
                     Ty.path "bcs::error::Error"
-                  ],
-                M.get_function (|
-                  "bcs::ser::to_bytes",
-                  [],
-                  [ Ty.path "move_core_types::annotated_value::MoveValue" ]
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-              |)
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5646,22 +6514,26 @@ Module annotated_value.
                     |) in
                   let s :=
                     M.copy (| Ty.path "move_core_types::annotated_value::MoveStruct", γ0_0 |) in
-                  Value.StructTuple
-                    "move_core_types::runtime_value::MoveValue::Struct"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "move_core_types::runtime_value::MoveStruct",
-                        M.get_associated_function (|
-                          Ty.path "move_core_types::annotated_value::MoveStruct",
-                          "undecorate",
-                          [],
-                          []
-                        |),
-                        [ M.read (| s |) ]
-                      |)
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::runtime_value::MoveValue::Struct"
+                      [
+                        M.call_closure (|
+                          Ty.path "move_core_types::runtime_value::MoveStruct",
+                          M.get_associated_function (|
+                            Ty.path "move_core_types::annotated_value::MoveStruct",
+                            "undecorate",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (| s |))
+                              (Ty.path "move_core_types::annotated_value::MoveStruct")
+                          ]
+                        |)
+                      ])
+                    (Ty.path "move_core_types::runtime_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
@@ -5681,52 +6553,20 @@ Module annotated_value.
                         ],
                       γ0_0
                     |) in
-                  Value.StructTuple
-                    "move_core_types::runtime_value::MoveValue::Vector"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "alloc::vec::Vec")
-                          []
-                          [
-                            Ty.path "move_core_types::runtime_value::MoveValue";
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        M.get_trait_method (|
-                          "core::iter::traits::iterator::Iterator",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::runtime_value::MoveValue::Vector"
+                      [
+                        M.call_closure (|
                           Ty.apply
-                            (Ty.path "core::iter::adapters::map::Map")
+                            (Ty.path "alloc::vec::Vec")
                             []
                             [
-                              Ty.apply
-                                (Ty.path "alloc::vec::into_iter::IntoIter")
-                                []
-                                [
-                                  Ty.path "move_core_types::annotated_value::MoveValue";
-                                  Ty.path "alloc::alloc::Global"
-                                ];
-                              Ty.function
-                                [ Ty.path "move_core_types::annotated_value::MoveValue" ]
-                                (Ty.path "move_core_types::runtime_value::MoveValue")
+                              Ty.path "move_core_types::runtime_value::MoveValue";
+                              Ty.path "alloc::alloc::Global"
                             ],
-                          [],
-                          [],
-                          "collect",
-                          [],
-                          [
-                            Ty.apply
-                              (Ty.path "alloc::vec::Vec")
-                              []
-                              [
-                                Ty.path "move_core_types::runtime_value::MoveValue";
-                                Ty.path "alloc::alloc::Global"
-                              ]
-                          ]
-                        |),
-                        [
-                          M.call_closure (|
+                          M.get_trait_method (|
+                            "core::iter::traits::iterator::Iterator",
                             Ty.apply
                               (Ty.path "core::iter::adapters::map::Map")
                               []
@@ -5742,39 +6582,42 @@ Module annotated_value.
                                   [ Ty.path "move_core_types::annotated_value::MoveValue" ]
                                   (Ty.path "move_core_types::runtime_value::MoveValue")
                               ],
-                            M.get_trait_method (|
-                              "core::iter::traits::iterator::Iterator",
+                            [],
+                            [],
+                            "collect",
+                            [],
+                            [
                               Ty.apply
-                                (Ty.path "alloc::vec::into_iter::IntoIter")
+                                (Ty.path "alloc::vec::Vec")
                                 []
                                 [
-                                  Ty.path "move_core_types::annotated_value::MoveValue";
+                                  Ty.path "move_core_types::runtime_value::MoveValue";
                                   Ty.path "alloc::alloc::Global"
-                                ],
-                              [],
-                              [],
-                              "map",
-                              [],
-                              [
-                                Ty.path "move_core_types::runtime_value::MoveValue";
-                                Ty.function
-                                  [ Ty.path "move_core_types::annotated_value::MoveValue" ]
-                                  (Ty.path "move_core_types::runtime_value::MoveValue")
-                              ]
-                            |),
-                            [
-                              M.call_closure (|
+                                ]
+                            ]
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.apply
-                                  (Ty.path "alloc::vec::into_iter::IntoIter")
+                                  (Ty.path "core::iter::adapters::map::Map")
                                   []
                                   [
-                                    Ty.path "move_core_types::annotated_value::MoveValue";
-                                    Ty.path "alloc::alloc::Global"
+                                    Ty.apply
+                                      (Ty.path "alloc::vec::into_iter::IntoIter")
+                                      []
+                                      [
+                                        Ty.path "move_core_types::annotated_value::MoveValue";
+                                        Ty.path "alloc::alloc::Global"
+                                      ];
+                                    Ty.function
+                                      [ Ty.path "move_core_types::annotated_value::MoveValue" ]
+                                      (Ty.path "move_core_types::runtime_value::MoveValue")
                                   ],
                                 M.get_trait_method (|
-                                  "core::iter::traits::collect::IntoIterator",
+                                  "core::iter::traits::iterator::Iterator",
                                   Ty.apply
-                                    (Ty.path "alloc::vec::Vec")
+                                    (Ty.path "alloc::vec::into_iter::IntoIter")
                                     []
                                     [
                                       Ty.path "move_core_types::annotated_value::MoveValue";
@@ -5782,23 +6625,90 @@ Module annotated_value.
                                     ],
                                   [],
                                   [],
-                                  "into_iter",
+                                  "map",
                                   [],
-                                  []
+                                  [
+                                    Ty.path "move_core_types::runtime_value::MoveValue";
+                                    Ty.function
+                                      [ Ty.path "move_core_types::annotated_value::MoveValue" ]
+                                      (Ty.path "move_core_types::runtime_value::MoveValue")
+                                  ]
                                 |),
-                                [ M.read (| vals |) ]
-                              |);
-                              M.get_associated_function (|
-                                Ty.path "move_core_types::annotated_value::MoveValue",
-                                "undecorate",
-                                [],
+                                [
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "alloc::vec::into_iter::IntoIter")
+                                        []
+                                        [
+                                          Ty.path "move_core_types::annotated_value::MoveValue";
+                                          Ty.path "alloc::alloc::Global"
+                                        ],
+                                      M.get_trait_method (|
+                                        "core::iter::traits::collect::IntoIterator",
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [
+                                            Ty.path "move_core_types::annotated_value::MoveValue";
+                                            Ty.path "alloc::alloc::Global"
+                                          ],
+                                        [],
+                                        [],
+                                        "into_iter",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.read (| vals |))
+                                          (Ty.apply
+                                            (Ty.path "alloc::vec::Vec")
+                                            []
+                                            [
+                                              Ty.path "move_core_types::annotated_value::MoveValue";
+                                              Ty.path "alloc::alloc::Global"
+                                            ])
+                                      ]
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "alloc::vec::into_iter::IntoIter")
+                                      []
+                                      [
+                                        Ty.path "move_core_types::annotated_value::MoveValue";
+                                        Ty.path "alloc::alloc::Global"
+                                      ]);
+                                  M.value_with_ty
+                                    (M.get_associated_function (|
+                                      Ty.path "move_core_types::annotated_value::MoveValue",
+                                      "undecorate",
+                                      [],
+                                      []
+                                    |))
+                                    (Ty.function
+                                      [ Ty.path "move_core_types::annotated_value::MoveValue" ]
+                                      (Ty.path "move_core_types::runtime_value::MoveValue"))
+                                ]
+                              |))
+                              (Ty.apply
+                                (Ty.path "core::iter::adapters::map::Map")
                                 []
-                              |)
-                            ]
-                          |)
-                        ]
-                      |)
-                    ]));
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                                    []
+                                    [
+                                      Ty.path "move_core_types::annotated_value::MoveValue";
+                                      Ty.path "alloc::alloc::Global"
+                                    ];
+                                  Ty.function
+                                    [ Ty.path "move_core_types::annotated_value::MoveValue" ]
+                                    (Ty.path "move_core_types::runtime_value::MoveValue")
+                                ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "move_core_types::runtime_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
@@ -5808,11 +6718,11 @@ Module annotated_value.
                       0
                     |) in
                   let u := M.copy (| Ty.path "u8", γ0_0 |) in
-                  Value.StructTuple
-                    "move_core_types::runtime_value::MoveValue::U8"
-                    []
-                    []
-                    [ M.read (| u |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::runtime_value::MoveValue::U8"
+                      [ M.read (| u |) ])
+                    (Ty.path "move_core_types::runtime_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
@@ -5822,11 +6732,11 @@ Module annotated_value.
                       0
                     |) in
                   let u := M.copy (| Ty.path "u64", γ0_0 |) in
-                  Value.StructTuple
-                    "move_core_types::runtime_value::MoveValue::U64"
-                    []
-                    []
-                    [ M.read (| u |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::runtime_value::MoveValue::U64"
+                      [ M.read (| u |) ])
+                    (Ty.path "move_core_types::runtime_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
@@ -5836,11 +6746,11 @@ Module annotated_value.
                       0
                     |) in
                   let u := M.copy (| Ty.path "u128", γ0_0 |) in
-                  Value.StructTuple
-                    "move_core_types::runtime_value::MoveValue::U128"
-                    []
-                    []
-                    [ M.read (| u |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::runtime_value::MoveValue::U128"
+                      [ M.read (| u |) ])
+                    (Ty.path "move_core_types::runtime_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
@@ -5850,11 +6760,11 @@ Module annotated_value.
                       0
                     |) in
                   let b := M.copy (| Ty.path "bool", γ0_0 |) in
-                  Value.StructTuple
-                    "move_core_types::runtime_value::MoveValue::Bool"
-                    []
-                    []
-                    [ M.read (| b |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::runtime_value::MoveValue::Bool"
+                      [ M.read (| b |) ])
+                    (Ty.path "move_core_types::runtime_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
@@ -5865,11 +6775,11 @@ Module annotated_value.
                     |) in
                   let a :=
                     M.copy (| Ty.path "move_core_types::account_address::AccountAddress", γ0_0 |) in
-                  Value.StructTuple
-                    "move_core_types::runtime_value::MoveValue::Address"
-                    []
-                    []
-                    [ M.read (| a |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::runtime_value::MoveValue::Address"
+                      [ M.read (| a |) ])
+                    (Ty.path "move_core_types::runtime_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
@@ -5880,11 +6790,11 @@ Module annotated_value.
                     |) in
                   let s :=
                     M.copy (| Ty.path "move_core_types::account_address::AccountAddress", γ0_0 |) in
-                  Value.StructTuple
-                    "move_core_types::runtime_value::MoveValue::Signer"
-                    []
-                    []
-                    [ M.read (| s |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::runtime_value::MoveValue::Signer"
+                      [ M.read (| s |) ])
+                    (Ty.path "move_core_types::runtime_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
@@ -5894,11 +6804,11 @@ Module annotated_value.
                       0
                     |) in
                   let u := M.copy (| Ty.path "u16", γ0_0 |) in
-                  Value.StructTuple
-                    "move_core_types::runtime_value::MoveValue::U16"
-                    []
-                    []
-                    [ M.read (| u |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::runtime_value::MoveValue::U16"
+                      [ M.read (| u |) ])
+                    (Ty.path "move_core_types::runtime_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
@@ -5908,11 +6818,11 @@ Module annotated_value.
                       0
                     |) in
                   let u := M.copy (| Ty.path "u32", γ0_0 |) in
-                  Value.StructTuple
-                    "move_core_types::runtime_value::MoveValue::U32"
-                    []
-                    []
-                    [ M.read (| u |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::runtime_value::MoveValue::U32"
+                      [ M.read (| u |) ])
+                    (Ty.path "move_core_types::runtime_value::MoveValue")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
@@ -5922,11 +6832,11 @@ Module annotated_value.
                       0
                     |) in
                   let u := M.copy (| Ty.path "move_core_types::u256::U256", γ0_0 |) in
-                  Value.StructTuple
-                    "move_core_types::runtime_value::MoveValue::U256"
-                    []
-                    []
-                    [ M.read (| u |) ]))
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::runtime_value::MoveValue::U256"
+                      [ M.read (| u |) ])
+                    (Ty.path "move_core_types::runtime_value::MoveValue")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -6009,8 +6919,207 @@ Module annotated_value.
             ]
           |),
           [
-            M.call_closure (|
-              Ty.apply
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::iter::adapters::map::Map")
+                  []
+                  [
+                    Ty.associated_in_trait
+                      "core::iter::traits::collect::IntoIterator"
+                      []
+                      []
+                      I
+                      "IntoIter";
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_core_types::annotated_value::MoveValue" ]
+                      ]
+                      (Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ])
+                  ],
+                M.get_trait_method (|
+                  "core::iter::traits::iterator::Iterator",
+                  Ty.associated_in_trait
+                    "core::iter::traits::collect::IntoIterator"
+                    []
+                    []
+                    I
+                    "IntoIter",
+                  [],
+                  [],
+                  "map",
+                  [],
+                  [
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
+                    Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_core_types::annotated_value::MoveValue" ]
+                      ]
+                      (Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ])
+                  ]
+                |),
+                [
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.associated_in_trait
+                        "core::iter::traits::collect::IntoIterator"
+                        []
+                        []
+                        I
+                        "IntoIter",
+                      M.get_trait_method (|
+                        "core::iter::traits::collect::IntoIterator",
+                        I,
+                        [],
+                        [],
+                        "into_iter",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.read (| vals |)) I ]
+                    |))
+                    (Ty.associated_in_trait
+                      "core::iter::traits::collect::IntoIterator"
+                      []
+                      []
+                      I
+                      "IntoIter");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
+                                  []
+                                  [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_core_types::annotated_value::MoveValue" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let val :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "move_core_types::annotated_value::MoveValue"
+                                            ],
+                                          γ
+                                        |) in
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::vec::Vec")
+                                                []
+                                                [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                            ],
+                                          "expect",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::vec::Vec")
+                                                    []
+                                                    [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                                ],
+                                              M.get_associated_function (|
+                                                Ty.path
+                                                  "move_core_types::annotated_value::MoveValue",
+                                                "simple_serialize",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| val |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "move_core_types::annotated_value::MoveValue"
+                                                    ])
+                                              ]
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::vec::Vec")
+                                                  []
+                                                  [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                              ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                mk_str (| "serialization should succeed" |)
+                                              |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_core_types::annotated_value::MoveValue" ]
+                      ]
+                      (Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]))
+                ]
+              |))
+              (Ty.apply
                 (Ty.path "core::iter::adapters::map::Map")
                 []
                 [
@@ -6031,140 +7140,7 @@ Module annotated_value.
                       (Ty.path "alloc::vec::Vec")
                       []
                       [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ])
-                ],
-              M.get_trait_method (|
-                "core::iter::traits::iterator::Iterator",
-                Ty.associated_in_trait
-                  "core::iter::traits::collect::IntoIterator"
-                  []
-                  []
-                  I
-                  "IntoIter",
-                [],
-                [],
-                "map",
-                [],
-                [
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
-                    []
-                    [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ];
-                  Ty.function
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.path "move_core_types::annotated_value::MoveValue" ]
-                    ]
-                    (Ty.apply
-                      (Ty.path "alloc::vec::Vec")
-                      []
-                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ])
-                ]
-              |),
-              [
-                M.call_closure (|
-                  Ty.associated_in_trait
-                    "core::iter::traits::collect::IntoIterator"
-                    []
-                    []
-                    I
-                    "IntoIter",
-                  M.get_trait_method (|
-                    "core::iter::traits::collect::IntoIterator",
-                    I,
-                    [],
-                    [],
-                    "into_iter",
-                    [],
-                    []
-                  |),
-                  [ M.read (| vals |) ]
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.apply
-                              (Ty.path "alloc::vec::Vec")
-                              []
-                              [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "move_core_types::annotated_value::MoveValue" ],
-                              α0
-                            |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let val :=
-                                    M.copy (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.path "move_core_types::annotated_value::MoveValue" ],
-                                      γ
-                                    |) in
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "alloc::vec::Vec")
-                                      []
-                                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::option::Option")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "alloc::vec::Vec")
-                                            []
-                                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
-                                        ],
-                                      "expect",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "alloc::vec::Vec")
-                                              []
-                                              [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
-                                          ],
-                                        M.get_associated_function (|
-                                          Ty.path "move_core_types::annotated_value::MoveValue",
-                                          "simple_serialize",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| val |) |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| mk_str (| "serialization should succeed" |) |)
-                                      |)
-                                    ]
-                                  |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
-              ]
-            |)
+                ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6204,11 +7180,11 @@ Module annotated_value.
                 ],
               fields
             |) in
-          Value.mkStructRecord
-            "move_core_types::annotated_value::MoveStruct"
-            []
-            []
-            [ ("type_", M.read (| type_ |)); ("fields", M.read (| fields |)) ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "move_core_types::annotated_value::MoveStruct"
+              [ ("type_", M.read (| type_ |)); ("fields", M.read (| fields |)) ])
+            (Ty.path "move_core_types::annotated_value::MoveStruct")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -6245,25 +7221,13 @@ Module annotated_value.
               [ Ty.path "move_core_types::annotated_value::MoveStruct"; Ty.path "anyhow::Error"
               ]) (|
             ltac:(M.monadic
-              (Value.StructTuple
-                "core::result::Result::Ok"
-                []
-                [ Ty.path "move_core_types::annotated_value::MoveStruct"; Ty.path "anyhow::Error" ]
-                [
-                  M.match_operator (|
-                    Ty.path "move_core_types::annotated_value::MoveStruct",
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::ops::control_flow::ControlFlow")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [ Ty.path "core::convert::Infallible"; Ty.path "bcs::error::Error" ];
-                          Ty.path "move_core_types::annotated_value::MoveStruct"
-                        ],
-                      M.call_closure (|
+              (M.value_with_ty
+                (Value.StructTuple
+                  "core::result::Result::Ok"
+                  [
+                    M.match_operator (|
+                      Ty.path "move_core_types::annotated_value::MoveStruct",
+                      M.alloc (|
                         Ty.apply
                           (Ty.path "core::ops::control_flow::ControlFlow")
                           []
@@ -6274,23 +7238,20 @@ Module annotated_value.
                               [ Ty.path "core::convert::Infallible"; Ty.path "bcs::error::Error" ];
                             Ty.path "move_core_types::annotated_value::MoveStruct"
                           ],
-                        M.get_trait_method (|
-                          "core::ops::try_trait::Try",
+                        M.call_closure (|
                           Ty.apply
-                            (Ty.path "core::result::Result")
+                            (Ty.path "core::ops::control_flow::ControlFlow")
                             []
                             [
-                              Ty.path "move_core_types::annotated_value::MoveStruct";
-                              Ty.path "bcs::error::Error"
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "core::convert::Infallible"; Ty.path "bcs::error::Error"
+                                ];
+                              Ty.path "move_core_types::annotated_value::MoveStruct"
                             ],
-                          [],
-                          [],
-                          "branch",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
+                          M.get_trait_method (|
+                            "core::ops::try_trait::Try",
                             Ty.apply
                               (Ty.path "core::result::Result")
                               []
@@ -6298,55 +7259,84 @@ Module annotated_value.
                                 Ty.path "move_core_types::annotated_value::MoveStruct";
                                 Ty.path "bcs::error::Error"
                               ],
-                            M.get_function (|
-                              "bcs::de::from_bytes_seed",
-                              [],
-                              [
+                            [],
+                            [],
+                            "branch",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.apply
-                                  (Ty.path "&")
+                                  (Ty.path "core::result::Result")
                                   []
-                                  [ Ty.path "move_core_types::annotated_value::MoveStructLayout" ]
-                              ]
-                            |),
-                            [
-                              M.read (| ty |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| blob |) |) |)
-                            ]
-                          |)
-                        ]
-                      |)
-                    |),
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::ops::control_flow::ControlFlow::Break",
-                              0
-                            |) in
-                          let residual :=
-                            M.copy (|
-                              Ty.apply
+                                  [
+                                    Ty.path "move_core_types::annotated_value::MoveStruct";
+                                    Ty.path "bcs::error::Error"
+                                  ],
+                                M.get_function (|
+                                  "bcs::de::from_bytes_seed",
+                                  [],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "move_core_types::annotated_value::MoveStructLayout"
+                                      ]
+                                  ]
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| ty |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "move_core_types::annotated_value::MoveStructLayout"
+                                      ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| blob |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                ]
+                              |))
+                              (Ty.apply
                                 (Ty.path "core::result::Result")
                                 []
-                                [ Ty.path "core::convert::Infallible"; Ty.path "bcs::error::Error"
-                                ],
-                              γ0_0
-                            |) in
-                          M.never_to_any (|
-                            M.read (|
-                              M.return_ (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::result::Result")
-                                    []
-                                    [
-                                      Ty.path "move_core_types::annotated_value::MoveStruct";
-                                      Ty.path "anyhow::Error"
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::ops::try_trait::FromResidual",
+                                [
+                                  Ty.path "move_core_types::annotated_value::MoveStruct";
+                                  Ty.path "bcs::error::Error"
+                                ])
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::ops::control_flow::ControlFlow::Break",
+                                0
+                              |) in
+                            let residual :=
+                              M.copy (|
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.path "core::convert::Infallible"; Ty.path "bcs::error::Error"
+                                  ],
+                                γ0_0
+                              |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  M.call_closure (|
                                     Ty.apply
                                       (Ty.path "core::result::Result")
                                       []
@@ -6354,42 +7344,66 @@ Module annotated_value.
                                         Ty.path "move_core_types::annotated_value::MoveStruct";
                                         Ty.path "anyhow::Error"
                                       ],
-                                    [],
-                                    [
+                                    M.get_trait_method (|
+                                      "core::ops::try_trait::FromResidual",
                                       Ty.apply
                                         (Ty.path "core::result::Result")
                                         []
                                         [
-                                          Ty.path "core::convert::Infallible";
-                                          Ty.path "bcs::error::Error"
-                                        ]
-                                    ],
-                                    "from_residual",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| residual |) ]
+                                          Ty.path "move_core_types::annotated_value::MoveStruct";
+                                          Ty.path "anyhow::Error"
+                                        ],
+                                      [],
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.path "core::convert::Infallible";
+                                            Ty.path "bcs::error::Error"
+                                          ]
+                                      ],
+                                      "from_residual",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| residual |))
+                                        (Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.path "core::convert::Infallible";
+                                            Ty.path "bcs::error::Error"
+                                          ])
+                                    ]
+                                  |)
                                 |)
                               |)
-                            |)
-                          |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::ops::control_flow::ControlFlow::Continue",
-                              0
-                            |) in
-                          let val :=
-                            M.copy (|
-                              Ty.path "move_core_types::annotated_value::MoveStruct",
-                              γ0_0
-                            |) in
-                          M.read (| val |)))
-                    ]
-                  |)
-                ]))
+                            |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::ops::control_flow::ControlFlow::Continue",
+                                0
+                              |) in
+                            let val :=
+                              M.copy (|
+                                Ty.path "move_core_types::annotated_value::MoveStruct",
+                                γ0_0
+                              |) in
+                            M.read (| val |)))
+                      ]
+                    |)
+                  ])
+                (Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [ Ty.path "move_core_types::annotated_value::MoveStruct"; Ty.path "anyhow::Error"
+                  ])))
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -6537,8 +7551,61 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "move_core_types::annotated_visitor::Visitor"
+                                    []
+                                    []
+                                    V
+                                    "Value";
+                                  Ty.associated_in_trait
+                                    "move_core_types::annotated_visitor::Visitor"
+                                    []
+                                    []
+                                    V
+                                    "Error"
+                                ],
+                              M.get_function (|
+                                "move_core_types::annotated_visitor::visit_struct",
+                                [],
+                                [ V ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.borrow (| Pointer.Kind.MutRef, blob |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ty |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_core_types::annotated_value::MoveStructLayout"
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| visitor |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ V ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
@@ -6554,21 +7621,7 @@ Module annotated_value.
                                   []
                                   V
                                   "Error"
-                              ],
-                            M.get_function (|
-                              "move_core_types::annotated_visitor::visit_struct",
-                              [],
-                              [ V ]
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (| M.borrow (| Pointer.Kind.MutRef, blob |) |)
-                              |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ty |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| visitor |) |) |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -6646,7 +7699,22 @@ Module annotated_value.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.associated_in_trait
+                                            "move_core_types::annotated_visitor::Visitor"
+                                            []
+                                            []
+                                            V
+                                            "Error"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -6714,76 +7782,97 @@ Module annotated_value.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| blob |) |) |)
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| blob |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                   ]
                                 |)
                               |)) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          Value.StructTuple
-                            "core::result::Result::Ok"
-                            []
-                            [
-                              Ty.associated_in_trait
-                                "move_core_types::annotated_visitor::Visitor"
-                                []
-                                []
-                                V
-                                "Value";
-                              Ty.path "anyhow::Error"
-                            ]
-                            [ M.read (| res |) ]));
+                          M.value_with_ty
+                            (Value.StructTuple "core::result::Result::Ok" [ M.read (| res |) ])
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.associated_in_trait
+                                  "move_core_types::annotated_visitor::Visitor"
+                                  []
+                                  []
+                                  V
+                                  "Value";
+                                Ty.path "anyhow::Error"
+                              ])));
                       fun γ =>
                         ltac:(M.monadic
-                          (Value.StructTuple
-                            "core::result::Result::Err"
-                            []
-                            [
-                              Ty.associated_in_trait
-                                "move_core_types::annotated_visitor::Visitor"
-                                []
-                                []
-                                V
-                                "Value";
-                              Ty.path "anyhow::Error"
-                            ]
-                            [
-                              M.call_closure (|
-                                Ty.path "anyhow::Error",
-                                M.get_trait_method (|
-                                  "core::convert::Into",
-                                  Ty.path "move_core_types::annotated_visitor::Error",
-                                  [],
-                                  [ Ty.path "anyhow::Error" ],
-                                  "into",
-                                  [],
+                          (M.value_with_ty
+                            (Value.StructTuple
+                              "core::result::Result::Err"
+                              [
+                                M.call_closure (|
+                                  Ty.path "anyhow::Error",
+                                  M.get_trait_method (|
+                                    "core::convert::Into",
+                                    Ty.path "move_core_types::annotated_visitor::Error",
+                                    [],
+                                    [ Ty.path "anyhow::Error" ],
+                                    "into",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple
+                                          "move_core_types::annotated_visitor::Error::TrailingBytes"
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                                "len",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| blob |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                    ])
+                                              ]
+                                            |)
+                                          ])
+                                        (Ty.path "move_core_types::annotated_visitor::Error"))
+                                      (Ty.path "move_core_types::annotated_visitor::Error")
+                                  ]
+                                |)
+                              ])
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.associated_in_trait
+                                  "move_core_types::annotated_visitor::Visitor"
                                   []
-                                |),
-                                [
-                                  Value.StructTuple
-                                    "move_core_types::annotated_visitor::Error::TrailingBytes"
-                                    []
-                                    []
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                          "len",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| blob |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                ]
-                              |)
-                            ]))
+                                  []
+                                  V
+                                  "Value";
+                                Ty.path "anyhow::Error"
+                              ])))
                     ]
                   |)
                 |)
@@ -6857,8 +7946,173 @@ Module annotated_value.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::iter::adapters::map::Map")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::vec::into_iter::IntoIter")
+                        []
+                        [
+                          Ty.tuple
+                            [
+                              Ty.path "move_core_types::identifier::Identifier";
+                              Ty.path "move_core_types::annotated_value::MoveValue"
+                            ];
+                          Ty.path "alloc::alloc::Global"
+                        ];
+                      Ty.function
+                        [
+                          Ty.tuple
+                            [
+                              Ty.path "move_core_types::identifier::Identifier";
+                              Ty.path "move_core_types::annotated_value::MoveValue"
+                            ]
+                        ]
+                        (Ty.path "move_core_types::annotated_value::MoveValue")
+                    ],
+                  M.get_trait_method (|
+                    "core::iter::traits::iterator::Iterator",
+                    Ty.apply
+                      (Ty.path "alloc::vec::into_iter::IntoIter")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.path "move_core_types::identifier::Identifier";
+                            Ty.path "move_core_types::annotated_value::MoveValue"
+                          ];
+                        Ty.path "alloc::alloc::Global"
+                      ],
+                    [],
+                    [],
+                    "map",
+                    [],
+                    [
+                      Ty.path "move_core_types::annotated_value::MoveValue";
+                      Ty.function
+                        [
+                          Ty.tuple
+                            [
+                              Ty.path "move_core_types::identifier::Identifier";
+                              Ty.path "move_core_types::annotated_value::MoveValue"
+                            ]
+                        ]
+                        (Ty.path "move_core_types::annotated_value::MoveValue")
+                    ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "alloc::vec::into_iter::IntoIter")
+                          []
+                          [
+                            Ty.tuple
+                              [
+                                Ty.path "move_core_types::identifier::Identifier";
+                                Ty.path "move_core_types::annotated_value::MoveValue"
+                              ];
+                            Ty.path "alloc::alloc::Global"
+                          ],
+                        M.get_trait_method (|
+                          "core::iter::traits::collect::IntoIterator",
+                          Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [
+                              Ty.tuple
+                                [
+                                  Ty.path "move_core_types::identifier::Identifier";
+                                  Ty.path "move_core_types::annotated_value::MoveValue"
+                                ];
+                              Ty.path "alloc::alloc::Global"
+                            ],
+                          [],
+                          [],
+                          "into_iter",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                self,
+                                "move_core_types::annotated_value::MoveStruct",
+                                "fields"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.path "move_core_types::identifier::Identifier";
+                                    Ty.path "move_core_types::annotated_value::MoveValue"
+                                  ];
+                                Ty.path "alloc::alloc::Global"
+                              ])
+                        ]
+                      |))
+                      (Ty.apply
+                        (Ty.path "alloc::vec::into_iter::IntoIter")
+                        []
+                        [
+                          Ty.tuple
+                            [
+                              Ty.path "move_core_types::identifier::Identifier";
+                              Ty.path "move_core_types::annotated_value::MoveValue"
+                            ];
+                          Ty.path "alloc::alloc::Global"
+                        ]);
+                    M.value_with_ty
+                      (M.closure
+                        (fun γ =>
+                          ltac:(M.monadic
+                            match γ with
+                            | [ α0 ] =>
+                              ltac:(M.monadic
+                                (M.match_operator (|
+                                  Ty.path "move_core_types::annotated_value::MoveValue",
+                                  M.alloc (|
+                                    Ty.tuple
+                                      [
+                                        Ty.path "move_core_types::identifier::Identifier";
+                                        Ty.path "move_core_types::annotated_value::MoveValue"
+                                      ],
+                                    α0
+                                  |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                                        let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                        let f :=
+                                          M.copy (|
+                                            Ty.path "move_core_types::annotated_value::MoveValue",
+                                            γ0_1
+                                          |) in
+                                        M.read (| f |)))
+                                  ]
+                                |)))
+                            | _ => M.impossible "wrong number of arguments"
+                            end)))
+                      (Ty.function
+                        [
+                          Ty.tuple
+                            [
+                              Ty.path "move_core_types::identifier::Identifier";
+                              Ty.path "move_core_types::annotated_value::MoveValue"
+                            ]
+                        ]
+                        (Ty.path "move_core_types::annotated_value::MoveValue"))
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::iter::adapters::map::Map")
                   []
                   [
@@ -6882,112 +8136,7 @@ Module annotated_value.
                           ]
                       ]
                       (Ty.path "move_core_types::annotated_value::MoveValue")
-                  ],
-                M.get_trait_method (|
-                  "core::iter::traits::iterator::Iterator",
-                  Ty.apply
-                    (Ty.path "alloc::vec::into_iter::IntoIter")
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.path "move_core_types::identifier::Identifier";
-                          Ty.path "move_core_types::annotated_value::MoveValue"
-                        ];
-                      Ty.path "alloc::alloc::Global"
-                    ],
-                  [],
-                  [],
-                  "map",
-                  [],
-                  [
-                    Ty.path "move_core_types::annotated_value::MoveValue";
-                    Ty.function
-                      [
-                        Ty.tuple
-                          [
-                            Ty.path "move_core_types::identifier::Identifier";
-                            Ty.path "move_core_types::annotated_value::MoveValue"
-                          ]
-                      ]
-                      (Ty.path "move_core_types::annotated_value::MoveValue")
-                  ]
-                |),
-                [
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "alloc::vec::into_iter::IntoIter")
-                      []
-                      [
-                        Ty.tuple
-                          [
-                            Ty.path "move_core_types::identifier::Identifier";
-                            Ty.path "move_core_types::annotated_value::MoveValue"
-                          ];
-                        Ty.path "alloc::alloc::Global"
-                      ],
-                    M.get_trait_method (|
-                      "core::iter::traits::collect::IntoIterator",
-                      Ty.apply
-                        (Ty.path "alloc::vec::Vec")
-                        []
-                        [
-                          Ty.tuple
-                            [
-                              Ty.path "move_core_types::identifier::Identifier";
-                              Ty.path "move_core_types::annotated_value::MoveValue"
-                            ];
-                          Ty.path "alloc::alloc::Global"
-                        ],
-                      [],
-                      [],
-                      "into_iter",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          self,
-                          "move_core_types::annotated_value::MoveStruct",
-                          "fields"
-                        |)
-                      |)
-                    ]
-                  |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "move_core_types::annotated_value::MoveValue",
-                              M.alloc (|
-                                Ty.tuple
-                                  [
-                                    Ty.path "move_core_types::identifier::Identifier";
-                                    Ty.path "move_core_types::annotated_value::MoveValue"
-                                  ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                                    let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                                    let f :=
-                                      M.copy (|
-                                        Ty.path "move_core_types::annotated_value::MoveValue",
-                                        γ0_1
-                                      |) in
-                                    M.read (| f |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
-                ]
-              |)
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -7013,52 +8162,20 @@ Module annotated_value.
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.path "move_core_types::annotated_value::MoveStruct", self |) in
-          Value.StructTuple
-            "move_core_types::runtime_value::MoveStruct"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::vec::Vec")
-                  []
-                  [
-                    Ty.path "move_core_types::runtime_value::MoveValue";
-                    Ty.path "alloc::alloc::Global"
-                  ],
-                M.get_trait_method (|
-                  "core::iter::traits::iterator::Iterator",
+          M.value_with_ty
+            (Value.StructTuple
+              "move_core_types::runtime_value::MoveStruct"
+              [
+                M.call_closure (|
                   Ty.apply
-                    (Ty.path "core::iter::adapters::map::Map")
+                    (Ty.path "alloc::vec::Vec")
                     []
                     [
-                      Ty.apply
-                        (Ty.path "alloc::vec::into_iter::IntoIter")
-                        []
-                        [
-                          Ty.path "move_core_types::annotated_value::MoveValue";
-                          Ty.path "alloc::alloc::Global"
-                        ];
-                      Ty.function
-                        [ Ty.path "move_core_types::annotated_value::MoveValue" ]
-                        (Ty.path "move_core_types::runtime_value::MoveValue")
+                      Ty.path "move_core_types::runtime_value::MoveValue";
+                      Ty.path "alloc::alloc::Global"
                     ],
-                  [],
-                  [],
-                  "collect",
-                  [],
-                  [
-                    Ty.apply
-                      (Ty.path "alloc::vec::Vec")
-                      []
-                      [
-                        Ty.path "move_core_types::runtime_value::MoveValue";
-                        Ty.path "alloc::alloc::Global"
-                      ]
-                  ]
-                |),
-                [
-                  M.call_closure (|
+                  M.get_trait_method (|
+                    "core::iter::traits::iterator::Iterator",
                     Ty.apply
                       (Ty.path "core::iter::adapters::map::Map")
                       []
@@ -7074,39 +8191,42 @@ Module annotated_value.
                           [ Ty.path "move_core_types::annotated_value::MoveValue" ]
                           (Ty.path "move_core_types::runtime_value::MoveValue")
                       ],
-                    M.get_trait_method (|
-                      "core::iter::traits::iterator::Iterator",
+                    [],
+                    [],
+                    "collect",
+                    [],
+                    [
                       Ty.apply
-                        (Ty.path "alloc::vec::into_iter::IntoIter")
+                        (Ty.path "alloc::vec::Vec")
                         []
                         [
-                          Ty.path "move_core_types::annotated_value::MoveValue";
+                          Ty.path "move_core_types::runtime_value::MoveValue";
                           Ty.path "alloc::alloc::Global"
-                        ],
-                      [],
-                      [],
-                      "map",
-                      [],
-                      [
-                        Ty.path "move_core_types::runtime_value::MoveValue";
-                        Ty.function
-                          [ Ty.path "move_core_types::annotated_value::MoveValue" ]
-                          (Ty.path "move_core_types::runtime_value::MoveValue")
-                      ]
-                    |),
-                    [
-                      M.call_closure (|
+                        ]
+                    ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.apply
-                          (Ty.path "alloc::vec::into_iter::IntoIter")
+                          (Ty.path "core::iter::adapters::map::Map")
                           []
                           [
-                            Ty.path "move_core_types::annotated_value::MoveValue";
-                            Ty.path "alloc::alloc::Global"
+                            Ty.apply
+                              (Ty.path "alloc::vec::into_iter::IntoIter")
+                              []
+                              [
+                                Ty.path "move_core_types::annotated_value::MoveValue";
+                                Ty.path "alloc::alloc::Global"
+                              ];
+                            Ty.function
+                              [ Ty.path "move_core_types::annotated_value::MoveValue" ]
+                              (Ty.path "move_core_types::runtime_value::MoveValue")
                           ],
                         M.get_trait_method (|
-                          "core::iter::traits::collect::IntoIterator",
+                          "core::iter::traits::iterator::Iterator",
                           Ty.apply
-                            (Ty.path "alloc::vec::Vec")
+                            (Ty.path "alloc::vec::into_iter::IntoIter")
                             []
                             [
                               Ty.path "move_core_types::annotated_value::MoveValue";
@@ -7114,40 +8234,109 @@ Module annotated_value.
                             ],
                           [],
                           [],
-                          "into_iter",
+                          "map",
                           [],
-                          []
+                          [
+                            Ty.path "move_core_types::runtime_value::MoveValue";
+                            Ty.function
+                              [ Ty.path "move_core_types::annotated_value::MoveValue" ]
+                              (Ty.path "move_core_types::runtime_value::MoveValue")
+                          ]
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "alloc::vec::Vec")
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "alloc::vec::into_iter::IntoIter")
+                                []
+                                [
+                                  Ty.path "move_core_types::annotated_value::MoveValue";
+                                  Ty.path "alloc::alloc::Global"
+                                ],
+                              M.get_trait_method (|
+                                "core::iter::traits::collect::IntoIterator",
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
+                                  []
+                                  [
+                                    Ty.path "move_core_types::annotated_value::MoveValue";
+                                    Ty.path "alloc::alloc::Global"
+                                  ],
+                                [],
+                                [],
+                                "into_iter",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "alloc::vec::Vec")
+                                      []
+                                      [
+                                        Ty.path "move_core_types::annotated_value::MoveValue";
+                                        Ty.path "alloc::alloc::Global"
+                                      ],
+                                    M.get_associated_function (|
+                                      Ty.path "move_core_types::annotated_value::MoveStruct",
+                                      "into_fields",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| self |))
+                                        (Ty.path "move_core_types::annotated_value::MoveStruct")
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "alloc::vec::Vec")
+                                    []
+                                    [
+                                      Ty.path "move_core_types::annotated_value::MoveValue";
+                                      Ty.path "alloc::alloc::Global"
+                                    ])
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "alloc::vec::into_iter::IntoIter")
                               []
                               [
                                 Ty.path "move_core_types::annotated_value::MoveValue";
                                 Ty.path "alloc::alloc::Global"
-                              ],
-                            M.get_associated_function (|
-                              Ty.path "move_core_types::annotated_value::MoveStruct",
-                              "into_fields",
+                              ]);
+                          M.value_with_ty
+                            (M.get_associated_function (|
+                              Ty.path "move_core_types::annotated_value::MoveValue",
+                              "undecorate",
                               [],
                               []
-                            |),
-                            [ M.read (| self |) ]
-                          |)
+                            |))
+                            (Ty.function
+                              [ Ty.path "move_core_types::annotated_value::MoveValue" ]
+                              (Ty.path "move_core_types::runtime_value::MoveValue"))
                         ]
-                      |);
-                      M.get_associated_function (|
-                        Ty.path "move_core_types::annotated_value::MoveValue",
-                        "undecorate",
-                        [],
+                      |))
+                      (Ty.apply
+                        (Ty.path "core::iter::adapters::map::Map")
                         []
-                      |)
-                    ]
-                  |)
-                ]
-              |)
-            ]))
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::vec::into_iter::IntoIter")
+                            []
+                            [
+                              Ty.path "move_core_types::annotated_value::MoveValue";
+                              Ty.path "alloc::alloc::Global"
+                            ];
+                          Ty.function
+                            [ Ty.path "move_core_types::annotated_value::MoveValue" ]
+                            (Ty.path "move_core_types::runtime_value::MoveValue")
+                        ])
+                  ]
+                |)
+              ])
+            (Ty.path "move_core_types::runtime_value::MoveStruct")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -7182,11 +8371,11 @@ Module annotated_value.
                 ],
               fields
             |) in
-          Value.mkStructRecord
-            "move_core_types::annotated_value::MoveStructLayout"
-            []
-            []
-            [ ("type_", M.read (| type_ |)); ("fields", M.read (| fields |)) ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "move_core_types::annotated_value::MoveStructLayout"
+              [ ("type_", M.read (| type_ |)); ("fields", M.read (| fields |)) ])
+            (Ty.path "move_core_types::annotated_value::MoveStructLayout")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -7245,8 +8434,132 @@ Module annotated_value.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::iter::adapters::map::Map")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::vec::into_iter::IntoIter")
+                        []
+                        [
+                          Ty.path "move_core_types::annotated_value::MoveFieldLayout";
+                          Ty.path "alloc::alloc::Global"
+                        ];
+                      Ty.function
+                        [ Ty.path "move_core_types::annotated_value::MoveFieldLayout" ]
+                        (Ty.path "move_core_types::annotated_value::MoveTypeLayout")
+                    ],
+                  M.get_trait_method (|
+                    "core::iter::traits::iterator::Iterator",
+                    Ty.apply
+                      (Ty.path "alloc::vec::into_iter::IntoIter")
+                      []
+                      [
+                        Ty.path "move_core_types::annotated_value::MoveFieldLayout";
+                        Ty.path "alloc::alloc::Global"
+                      ],
+                    [],
+                    [],
+                    "map",
+                    [],
+                    [
+                      Ty.path "move_core_types::annotated_value::MoveTypeLayout";
+                      Ty.function
+                        [ Ty.path "move_core_types::annotated_value::MoveFieldLayout" ]
+                        (Ty.path "move_core_types::annotated_value::MoveTypeLayout")
+                    ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "alloc::vec::into_iter::IntoIter")
+                          []
+                          [
+                            Ty.path "move_core_types::annotated_value::MoveFieldLayout";
+                            Ty.path "alloc::alloc::Global"
+                          ],
+                        M.get_trait_method (|
+                          "core::iter::traits::collect::IntoIterator",
+                          Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [
+                              Ty.path "move_core_types::annotated_value::MoveFieldLayout";
+                              Ty.path "alloc::alloc::Global"
+                            ],
+                          [],
+                          [],
+                          "into_iter",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                self,
+                                "move_core_types::annotated_value::MoveStructLayout",
+                                "fields"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [
+                                Ty.path "move_core_types::annotated_value::MoveFieldLayout";
+                                Ty.path "alloc::alloc::Global"
+                              ])
+                        ]
+                      |))
+                      (Ty.apply
+                        (Ty.path "alloc::vec::into_iter::IntoIter")
+                        []
+                        [
+                          Ty.path "move_core_types::annotated_value::MoveFieldLayout";
+                          Ty.path "alloc::alloc::Global"
+                        ]);
+                    M.value_with_ty
+                      (M.closure
+                        (fun γ =>
+                          ltac:(M.monadic
+                            match γ with
+                            | [ α0 ] =>
+                              ltac:(M.monadic
+                                (M.match_operator (|
+                                  Ty.path "move_core_types::annotated_value::MoveTypeLayout",
+                                  M.alloc (|
+                                    Ty.path "move_core_types::annotated_value::MoveFieldLayout",
+                                    α0
+                                  |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let f :=
+                                          M.copy (|
+                                            Ty.path
+                                              "move_core_types::annotated_value::MoveFieldLayout",
+                                            γ
+                                          |) in
+                                        M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            f,
+                                            "move_core_types::annotated_value::MoveFieldLayout",
+                                            "layout"
+                                          |)
+                                        |)))
+                                  ]
+                                |)))
+                            | _ => M.impossible "wrong number of arguments"
+                            end)))
+                      (Ty.function
+                        [ Ty.path "move_core_types::annotated_value::MoveFieldLayout" ]
+                        (Ty.path "move_core_types::annotated_value::MoveTypeLayout"))
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::iter::adapters::map::Map")
                   []
                   [
@@ -7260,94 +8573,7 @@ Module annotated_value.
                     Ty.function
                       [ Ty.path "move_core_types::annotated_value::MoveFieldLayout" ]
                       (Ty.path "move_core_types::annotated_value::MoveTypeLayout")
-                  ],
-                M.get_trait_method (|
-                  "core::iter::traits::iterator::Iterator",
-                  Ty.apply
-                    (Ty.path "alloc::vec::into_iter::IntoIter")
-                    []
-                    [
-                      Ty.path "move_core_types::annotated_value::MoveFieldLayout";
-                      Ty.path "alloc::alloc::Global"
-                    ],
-                  [],
-                  [],
-                  "map",
-                  [],
-                  [
-                    Ty.path "move_core_types::annotated_value::MoveTypeLayout";
-                    Ty.function
-                      [ Ty.path "move_core_types::annotated_value::MoveFieldLayout" ]
-                      (Ty.path "move_core_types::annotated_value::MoveTypeLayout")
-                  ]
-                |),
-                [
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "alloc::vec::into_iter::IntoIter")
-                      []
-                      [
-                        Ty.path "move_core_types::annotated_value::MoveFieldLayout";
-                        Ty.path "alloc::alloc::Global"
-                      ],
-                    M.get_trait_method (|
-                      "core::iter::traits::collect::IntoIterator",
-                      Ty.apply
-                        (Ty.path "alloc::vec::Vec")
-                        []
-                        [
-                          Ty.path "move_core_types::annotated_value::MoveFieldLayout";
-                          Ty.path "alloc::alloc::Global"
-                        ],
-                      [],
-                      [],
-                      "into_iter",
-                      [],
-                      []
-                    |),
-                    [
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          self,
-                          "move_core_types::annotated_value::MoveStructLayout",
-                          "fields"
-                        |)
-                      |)
-                    ]
-                  |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "move_core_types::annotated_value::MoveTypeLayout",
-                              M.alloc (|
-                                Ty.path "move_core_types::annotated_value::MoveFieldLayout",
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let f :=
-                                      M.copy (|
-                                        Ty.path "move_core_types::annotated_value::MoveFieldLayout",
-                                        γ
-                                      |) in
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        f,
-                                        "move_core_types::annotated_value::MoveFieldLayout",
-                                        "layout"
-                                      |)
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
-                ]
-              |)
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -7466,29 +8692,39 @@ Module annotated_value.
                           ]
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "bool";
+                                  Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
+                                ],
+                              M.get_trait_method (|
+                                "serde::de::Deserialize",
+                                Ty.path "bool",
+                                [],
+                                [],
+                                "deserialize",
+                                [],
+                                [ D ]
+                              |),
+                              [ M.value_with_ty (M.read (| deserializer |)) D ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
                                 Ty.path "bool";
                                 Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
-                              ],
-                            M.get_trait_method (|
-                              "serde::de::Deserialize",
-                              Ty.path "bool",
-                              [],
-                              [],
-                              "deserialize",
-                              [],
-                              [ D ]
-                            |),
-                            [ M.read (| deserializer |) ]
-                          |);
-                          M.constructor_as_closure
-                            "move_core_types::annotated_value::MoveValue::Bool"
-                            []
-                            []
+                              ]);
+                          M.value_with_ty
+                            (M.constructor_as_closure
+                              "move_core_types::annotated_value::MoveValue::Bool")
+                            (Ty.function
+                              [ Ty.path "bool" ]
+                              (Ty.path "move_core_types::annotated_value::MoveValue"))
                         ]
                       |)));
                   fun γ =>
@@ -7525,29 +8761,39 @@ Module annotated_value.
                           ]
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "u8";
+                                  Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
+                                ],
+                              M.get_trait_method (|
+                                "serde::de::Deserialize",
+                                Ty.path "u8",
+                                [],
+                                [],
+                                "deserialize",
+                                [],
+                                [ D ]
+                              |),
+                              [ M.value_with_ty (M.read (| deserializer |)) D ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
                                 Ty.path "u8";
                                 Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
-                              ],
-                            M.get_trait_method (|
-                              "serde::de::Deserialize",
-                              Ty.path "u8",
-                              [],
-                              [],
-                              "deserialize",
-                              [],
-                              [ D ]
-                            |),
-                            [ M.read (| deserializer |) ]
-                          |);
-                          M.constructor_as_closure
-                            "move_core_types::annotated_value::MoveValue::U8"
-                            []
-                            []
+                              ]);
+                          M.value_with_ty
+                            (M.constructor_as_closure
+                              "move_core_types::annotated_value::MoveValue::U8")
+                            (Ty.function
+                              [ Ty.path "u8" ]
+                              (Ty.path "move_core_types::annotated_value::MoveValue"))
                         ]
                       |)));
                   fun γ =>
@@ -7584,29 +8830,39 @@ Module annotated_value.
                           ]
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "u16";
+                                  Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
+                                ],
+                              M.get_trait_method (|
+                                "serde::de::Deserialize",
+                                Ty.path "u16",
+                                [],
+                                [],
+                                "deserialize",
+                                [],
+                                [ D ]
+                              |),
+                              [ M.value_with_ty (M.read (| deserializer |)) D ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
                                 Ty.path "u16";
                                 Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
-                              ],
-                            M.get_trait_method (|
-                              "serde::de::Deserialize",
-                              Ty.path "u16",
-                              [],
-                              [],
-                              "deserialize",
-                              [],
-                              [ D ]
-                            |),
-                            [ M.read (| deserializer |) ]
-                          |);
-                          M.constructor_as_closure
-                            "move_core_types::annotated_value::MoveValue::U16"
-                            []
-                            []
+                              ]);
+                          M.value_with_ty
+                            (M.constructor_as_closure
+                              "move_core_types::annotated_value::MoveValue::U16")
+                            (Ty.function
+                              [ Ty.path "u16" ]
+                              (Ty.path "move_core_types::annotated_value::MoveValue"))
                         ]
                       |)));
                   fun γ =>
@@ -7643,29 +8899,39 @@ Module annotated_value.
                           ]
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "u32";
+                                  Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
+                                ],
+                              M.get_trait_method (|
+                                "serde::de::Deserialize",
+                                Ty.path "u32",
+                                [],
+                                [],
+                                "deserialize",
+                                [],
+                                [ D ]
+                              |),
+                              [ M.value_with_ty (M.read (| deserializer |)) D ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
                                 Ty.path "u32";
                                 Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
-                              ],
-                            M.get_trait_method (|
-                              "serde::de::Deserialize",
-                              Ty.path "u32",
-                              [],
-                              [],
-                              "deserialize",
-                              [],
-                              [ D ]
-                            |),
-                            [ M.read (| deserializer |) ]
-                          |);
-                          M.constructor_as_closure
-                            "move_core_types::annotated_value::MoveValue::U32"
-                            []
-                            []
+                              ]);
+                          M.value_with_ty
+                            (M.constructor_as_closure
+                              "move_core_types::annotated_value::MoveValue::U32")
+                            (Ty.function
+                              [ Ty.path "u32" ]
+                              (Ty.path "move_core_types::annotated_value::MoveValue"))
                         ]
                       |)));
                   fun γ =>
@@ -7702,29 +8968,39 @@ Module annotated_value.
                           ]
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "u64";
+                                  Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
+                                ],
+                              M.get_trait_method (|
+                                "serde::de::Deserialize",
+                                Ty.path "u64",
+                                [],
+                                [],
+                                "deserialize",
+                                [],
+                                [ D ]
+                              |),
+                              [ M.value_with_ty (M.read (| deserializer |)) D ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
                                 Ty.path "u64";
                                 Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
-                              ],
-                            M.get_trait_method (|
-                              "serde::de::Deserialize",
-                              Ty.path "u64",
-                              [],
-                              [],
-                              "deserialize",
-                              [],
-                              [ D ]
-                            |),
-                            [ M.read (| deserializer |) ]
-                          |);
-                          M.constructor_as_closure
-                            "move_core_types::annotated_value::MoveValue::U64"
-                            []
-                            []
+                              ]);
+                          M.value_with_ty
+                            (M.constructor_as_closure
+                              "move_core_types::annotated_value::MoveValue::U64")
+                            (Ty.function
+                              [ Ty.path "u64" ]
+                              (Ty.path "move_core_types::annotated_value::MoveValue"))
                         ]
                       |)));
                   fun γ =>
@@ -7761,29 +9037,39 @@ Module annotated_value.
                           ]
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "u128";
+                                  Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
+                                ],
+                              M.get_trait_method (|
+                                "serde::de::Deserialize",
+                                Ty.path "u128",
+                                [],
+                                [],
+                                "deserialize",
+                                [],
+                                [ D ]
+                              |),
+                              [ M.value_with_ty (M.read (| deserializer |)) D ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
                                 Ty.path "u128";
                                 Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
-                              ],
-                            M.get_trait_method (|
-                              "serde::de::Deserialize",
-                              Ty.path "u128",
-                              [],
-                              [],
-                              "deserialize",
-                              [],
-                              [ D ]
-                            |),
-                            [ M.read (| deserializer |) ]
-                          |);
-                          M.constructor_as_closure
-                            "move_core_types::annotated_value::MoveValue::U128"
-                            []
-                            []
+                              ]);
+                          M.value_with_ty
+                            (M.constructor_as_closure
+                              "move_core_types::annotated_value::MoveValue::U128")
+                            (Ty.function
+                              [ Ty.path "u128" ]
+                              (Ty.path "move_core_types::annotated_value::MoveValue"))
                         ]
                       |)));
                   fun γ =>
@@ -7820,29 +9106,39 @@ Module annotated_value.
                           ]
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "move_core_types::u256::U256";
+                                  Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
+                                ],
+                              M.get_trait_method (|
+                                "serde::de::Deserialize",
+                                Ty.path "move_core_types::u256::U256",
+                                [],
+                                [],
+                                "deserialize",
+                                [],
+                                [ D ]
+                              |),
+                              [ M.value_with_ty (M.read (| deserializer |)) D ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
                                 Ty.path "move_core_types::u256::U256";
                                 Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
-                              ],
-                            M.get_trait_method (|
-                              "serde::de::Deserialize",
-                              Ty.path "move_core_types::u256::U256",
-                              [],
-                              [],
-                              "deserialize",
-                              [],
-                              [ D ]
-                            |),
-                            [ M.read (| deserializer |) ]
-                          |);
-                          M.constructor_as_closure
-                            "move_core_types::annotated_value::MoveValue::U256"
-                            []
-                            []
+                              ]);
+                          M.value_with_ty
+                            (M.constructor_as_closure
+                              "move_core_types::annotated_value::MoveValue::U256")
+                            (Ty.function
+                              [ Ty.path "move_core_types::u256::U256" ]
+                              (Ty.path "move_core_types::annotated_value::MoveValue"))
                         ]
                       |)));
                   fun γ =>
@@ -7879,29 +9175,39 @@ Module annotated_value.
                           ]
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "move_core_types::account_address::AccountAddress";
+                                  Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
+                                ],
+                              M.get_trait_method (|
+                                "serde::de::Deserialize",
+                                Ty.path "move_core_types::account_address::AccountAddress",
+                                [],
+                                [],
+                                "deserialize",
+                                [],
+                                [ D ]
+                              |),
+                              [ M.value_with_ty (M.read (| deserializer |)) D ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
                                 Ty.path "move_core_types::account_address::AccountAddress";
                                 Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
-                              ],
-                            M.get_trait_method (|
-                              "serde::de::Deserialize",
-                              Ty.path "move_core_types::account_address::AccountAddress",
-                              [],
-                              [],
-                              "deserialize",
-                              [],
-                              [ D ]
-                            |),
-                            [ M.read (| deserializer |) ]
-                          |);
-                          M.constructor_as_closure
-                            "move_core_types::annotated_value::MoveValue::Address"
-                            []
-                            []
+                              ]);
+                          M.value_with_ty
+                            (M.constructor_as_closure
+                              "move_core_types::annotated_value::MoveValue::Address")
+                            (Ty.function
+                              [ Ty.path "move_core_types::account_address::AccountAddress" ]
+                              (Ty.path "move_core_types::annotated_value::MoveValue"))
                         ]
                       |)));
                   fun γ =>
@@ -7938,29 +9244,39 @@ Module annotated_value.
                           ]
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "move_core_types::account_address::AccountAddress";
+                                  Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
+                                ],
+                              M.get_trait_method (|
+                                "serde::de::Deserialize",
+                                Ty.path "move_core_types::account_address::AccountAddress",
+                                [],
+                                [],
+                                "deserialize",
+                                [],
+                                [ D ]
+                              |),
+                              [ M.value_with_ty (M.read (| deserializer |)) D ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
                                 Ty.path "move_core_types::account_address::AccountAddress";
                                 Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
-                              ],
-                            M.get_trait_method (|
-                              "serde::de::Deserialize",
-                              Ty.path "move_core_types::account_address::AccountAddress",
-                              [],
-                              [],
-                              "deserialize",
-                              [],
-                              [ D ]
-                            |),
-                            [ M.read (| deserializer |) ]
-                          |);
-                          M.constructor_as_closure
-                            "move_core_types::annotated_value::MoveValue::Signer"
-                            []
-                            []
+                              ]);
+                          M.value_with_ty
+                            (M.constructor_as_closure
+                              "move_core_types::annotated_value::MoveValue::Signer")
+                            (Ty.function
+                              [ Ty.path "move_core_types::account_address::AccountAddress" ]
+                              (Ty.path "move_core_types::annotated_value::MoveValue"))
                         ]
                       |)));
                   fun γ =>
@@ -7980,130 +9296,21 @@ Module annotated_value.
                             [ Ty.path "move_core_types::annotated_value::MoveStructLayout" ],
                           γ1_0
                         |) in
-                      Value.StructTuple
-                        "core::result::Result::Ok"
-                        []
-                        [
-                          Ty.path "move_core_types::annotated_value::MoveValue";
-                          Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
-                        ]
-                        [
-                          Value.StructTuple
-                            "move_core_types::annotated_value::MoveValue::Struct"
-                            []
-                            []
-                            [
-                              M.match_operator (|
-                                Ty.path "move_core_types::annotated_value::MoveStruct",
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "core::ops::control_flow::ControlFlow")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
-                                        [
-                                          Ty.path "core::convert::Infallible";
-                                          Ty.associated_in_trait
-                                            "serde::de::Deserializer"
-                                            []
-                                            []
-                                            D
-                                            "Error"
-                                        ];
-                                      Ty.path "move_core_types::annotated_value::MoveStruct"
-                                    ],
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.associated_in_trait
-                                              "serde::de::Deserializer"
-                                              []
-                                              []
-                                              D
-                                              "Error"
-                                          ];
-                                        Ty.path "move_core_types::annotated_value::MoveStruct"
-                                      ],
-                                    M.get_trait_method (|
-                                      "core::ops::try_trait::Try",
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
-                                        [
-                                          Ty.path "move_core_types::annotated_value::MoveStruct";
-                                          Ty.associated_in_trait
-                                            "serde::de::Deserializer"
-                                            []
-                                            []
-                                            D
-                                            "Error"
-                                        ],
-                                      [],
-                                      [],
-                                      "branch",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "move_core_types::annotated_value::MoveStruct";
-                                            Ty.associated_in_trait
-                                              "serde::de::Deserializer"
-                                              []
-                                              []
-                                              D
-                                              "Error"
-                                          ],
-                                        M.get_trait_method (|
-                                          "serde::de::DeserializeSeed",
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.path
-                                                "move_core_types::annotated_value::MoveStructLayout"
-                                            ],
-                                          [],
-                                          [],
-                                          "deserialize",
-                                          [],
-                                          [ D ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| ty |) |)
-                                          |);
-                                          M.read (| deserializer |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                |),
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::result::Result::Ok"
+                          [
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "move_core_types::annotated_value::MoveValue::Struct"
                                 [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ0_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ,
-                                          "core::ops::control_flow::ControlFlow::Break",
-                                          0
-                                        |) in
-                                      let residual :=
-                                        M.copy (|
+                                  M.match_operator (|
+                                    Ty.path "move_core_types::annotated_value::MoveStruct",
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "core::ops::control_flow::ControlFlow")
+                                        []
+                                        [
                                           Ty.apply
                                             (Ty.path "core::result::Result")
                                             []
@@ -8115,19 +9322,58 @@ Module annotated_value.
                                                 []
                                                 D
                                                 "Error"
+                                            ];
+                                          Ty.path "move_core_types::annotated_value::MoveStruct"
+                                        ],
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [
+                                                Ty.path "core::convert::Infallible";
+                                                Ty.associated_in_trait
+                                                  "serde::de::Deserializer"
+                                                  []
+                                                  []
+                                                  D
+                                                  "Error"
+                                              ];
+                                            Ty.path "move_core_types::annotated_value::MoveStruct"
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path
+                                                "move_core_types::annotated_value::MoveStruct";
+                                              Ty.associated_in_trait
+                                                "serde::de::Deserializer"
+                                                []
+                                                []
+                                                D
+                                                "Error"
                                             ],
-                                          γ0_0
-                                        |) in
-                                      M.never_to_any (|
-                                        M.read (|
-                                          M.return_ (|
-                                            M.call_closure (|
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply
                                                 (Ty.path "core::result::Result")
                                                 []
                                                 [
                                                   Ty.path
-                                                    "move_core_types::annotated_value::MoveValue";
+                                                    "move_core_types::annotated_value::MoveStruct";
                                                   Ty.associated_in_trait
                                                     "serde::de::Deserializer"
                                                     []
@@ -8136,62 +9382,175 @@ Module annotated_value.
                                                     "Error"
                                                 ],
                                               M.get_trait_method (|
-                                                "core::ops::try_trait::FromResidual",
+                                                "serde::de::DeserializeSeed",
                                                 Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                  (Ty.path "&")
                                                   []
                                                   [
                                                     Ty.path
-                                                      "move_core_types::annotated_value::MoveValue";
-                                                    Ty.associated_in_trait
-                                                      "serde::de::Deserializer"
-                                                      []
-                                                      []
-                                                      D
-                                                      "Error"
+                                                      "move_core_types::annotated_value::MoveStructLayout"
                                                   ],
                                                 [],
+                                                [],
+                                                "deserialize",
+                                                [],
+                                                [ D ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| ty |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "move_core_types::annotated_value::MoveStructLayout"
+                                                    ]);
+                                                M.value_with_ty (M.read (| deserializer |)) D
+                                              ]
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [
+                                                Ty.path
+                                                  "move_core_types::annotated_value::MoveStruct";
+                                                Ty.associated_in_trait
+                                                  "serde::de::Deserializer"
+                                                  []
+                                                  []
+                                                  D
+                                                  "Error"
+                                              ])
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
                                                 [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.associated_in_trait
+                                                    "serde::de::Deserializer"
+                                                    []
+                                                    []
+                                                    D
+                                                    "Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [
-                                                      Ty.path "core::convert::Infallible";
+                                                      Ty.path
+                                                        "move_core_types::annotated_value::MoveValue";
                                                       Ty.associated_in_trait
                                                         "serde::de::Deserializer"
                                                         []
                                                         []
                                                         D
                                                         "Error"
-                                                    ]
-                                                ],
-                                                "from_residual",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| residual |) ]
+                                                    ],
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
+                                                    Ty.apply
+                                                      (Ty.path "core::result::Result")
+                                                      []
+                                                      [
+                                                        Ty.path
+                                                          "move_core_types::annotated_value::MoveValue";
+                                                        Ty.associated_in_trait
+                                                          "serde::de::Deserializer"
+                                                          []
+                                                          []
+                                                          D
+                                                          "Error"
+                                                      ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.associated_in_trait
+                                                            "serde::de::Deserializer"
+                                                            []
+                                                            []
+                                                            D
+                                                            "Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.read (| residual |))
+                                                      (Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.associated_in_trait
+                                                            "serde::de::Deserializer"
+                                                            []
+                                                            []
+                                                            D
+                                                            "Error"
+                                                        ])
+                                                  ]
+                                                |)
+                                              |)
                                             |)
-                                          |)
-                                        |)
-                                      |)));
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ0_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ,
-                                          "core::ops::control_flow::ControlFlow::Continue",
-                                          0
-                                        |) in
-                                      let val :=
-                                        M.copy (|
-                                          Ty.path "move_core_types::annotated_value::MoveStruct",
-                                          γ0_0
-                                        |) in
-                                      M.read (| val |)))
-                                ]
-                              |)
-                            ]
-                        ]));
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val :=
+                                            M.copy (|
+                                              Ty.path
+                                                "move_core_types::annotated_value::MoveStruct",
+                                              γ0_0
+                                            |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |)
+                                ])
+                              (Ty.path "move_core_types::annotated_value::MoveValue")
+                          ])
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.path "move_core_types::annotated_value::MoveValue";
+                            Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
+                          ])));
                   fun γ =>
                     ltac:(M.monadic
                       (let γ := M.deref (| M.read (| γ |) |) in
@@ -8217,166 +9576,27 @@ Module annotated_value.
                             ],
                           γ1_0
                         |) in
-                      Value.StructTuple
-                        "core::result::Result::Ok"
-                        []
-                        [
-                          Ty.path "move_core_types::annotated_value::MoveValue";
-                          Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
-                        ]
-                        [
-                          Value.StructTuple
-                            "move_core_types::annotated_value::MoveValue::Vector"
-                            []
-                            []
-                            [
-                              M.match_operator (|
-                                Ty.apply
-                                  (Ty.path "alloc::vec::Vec")
-                                  []
-                                  [
-                                    Ty.path "move_core_types::annotated_value::MoveValue";
-                                    Ty.path "alloc::alloc::Global"
-                                  ],
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "core::ops::control_flow::ControlFlow")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::result::Result")
-                                        []
-                                        [
-                                          Ty.path "core::convert::Infallible";
-                                          Ty.associated_in_trait
-                                            "serde::de::Deserializer"
-                                            []
-                                            []
-                                            D
-                                            "Error"
-                                        ];
-                                      Ty.apply
-                                        (Ty.path "alloc::vec::Vec")
-                                        []
-                                        [
-                                          Ty.path "move_core_types::annotated_value::MoveValue";
-                                          Ty.path "alloc::alloc::Global"
-                                        ]
-                                    ],
-                                  M.call_closure (|
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::result::Result::Ok"
+                          [
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "move_core_types::annotated_value::MoveValue::Vector"
+                                [
+                                  M.match_operator (|
                                     Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
+                                      (Ty.path "alloc::vec::Vec")
                                       []
                                       [
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.path "core::convert::Infallible";
-                                            Ty.associated_in_trait
-                                              "serde::de::Deserializer"
-                                              []
-                                              []
-                                              D
-                                              "Error"
-                                          ];
-                                        Ty.apply
-                                          (Ty.path "alloc::vec::Vec")
-                                          []
-                                          [
-                                            Ty.path "move_core_types::annotated_value::MoveValue";
-                                            Ty.path "alloc::alloc::Global"
-                                          ]
+                                        Ty.path "move_core_types::annotated_value::MoveValue";
+                                        Ty.path "alloc::alloc::Global"
                                       ],
-                                    M.get_trait_method (|
-                                      "core::ops::try_trait::Try",
+                                    M.alloc (|
                                       Ty.apply
-                                        (Ty.path "core::result::Result")
+                                        (Ty.path "core::ops::control_flow::ControlFlow")
                                         []
                                         [
-                                          Ty.apply
-                                            (Ty.path "alloc::vec::Vec")
-                                            []
-                                            [
-                                              Ty.path "move_core_types::annotated_value::MoveValue";
-                                              Ty.path "alloc::alloc::Global"
-                                            ];
-                                          Ty.associated_in_trait
-                                            "serde::de::Deserializer"
-                                            []
-                                            []
-                                            D
-                                            "Error"
-                                        ],
-                                      [],
-                                      [],
-                                      "branch",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::result::Result")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "alloc::vec::Vec")
-                                              []
-                                              [
-                                                Ty.path
-                                                  "move_core_types::annotated_value::MoveValue";
-                                                Ty.path "alloc::alloc::Global"
-                                              ];
-                                            Ty.associated_in_trait
-                                              "serde::de::Deserializer"
-                                              []
-                                              []
-                                              D
-                                              "Error"
-                                          ],
-                                        M.get_trait_method (|
-                                          "serde::de::Deserializer",
-                                          D,
-                                          [],
-                                          [],
-                                          "deserialize_seq",
-                                          [],
-                                          [
-                                            Ty.path
-                                              "move_core_types::annotated_value::VectorElementVisitor"
-                                          ]
-                                        |),
-                                        [
-                                          M.read (| deserializer |);
-                                          Value.StructTuple
-                                            "move_core_types::annotated_value::VectorElementVisitor"
-                                            []
-                                            []
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.read (| M.deref (| M.read (| layout |) |) |)
-                                                |)
-                                              |)
-                                            ]
-                                        ]
-                                      |)
-                                    ]
-                                  |)
-                                |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ0_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ,
-                                          "core::ops::control_flow::ControlFlow::Break",
-                                          0
-                                        |) in
-                                      let residual :=
-                                        M.copy (|
                                           Ty.apply
                                             (Ty.path "core::result::Result")
                                             []
@@ -8388,19 +9608,83 @@ Module annotated_value.
                                                 []
                                                 D
                                                 "Error"
-                                            ],
-                                          γ0_0
-                                        |) in
-                                      M.never_to_any (|
-                                        M.read (|
-                                          M.return_ (|
-                                            M.call_closure (|
+                                            ];
+                                          Ty.apply
+                                            (Ty.path "alloc::vec::Vec")
+                                            []
+                                            [
+                                              Ty.path "move_core_types::annotated_value::MoveValue";
+                                              Ty.path "alloc::alloc::Global"
+                                            ]
+                                        ],
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::ops::control_flow::ControlFlow")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [
+                                                Ty.path "core::convert::Infallible";
+                                                Ty.associated_in_trait
+                                                  "serde::de::Deserializer"
+                                                  []
+                                                  []
+                                                  D
+                                                  "Error"
+                                              ];
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::Vec")
+                                              []
+                                              [
+                                                Ty.path
+                                                  "move_core_types::annotated_value::MoveValue";
+                                                Ty.path "alloc::alloc::Global"
+                                              ]
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::Try",
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
                                               Ty.apply
-                                                (Ty.path "core::result::Result")
+                                                (Ty.path "alloc::vec::Vec")
                                                 []
                                                 [
                                                   Ty.path
                                                     "move_core_types::annotated_value::MoveValue";
+                                                  Ty.path "alloc::alloc::Global"
+                                                ];
+                                              Ty.associated_in_trait
+                                                "serde::de::Deserializer"
+                                                []
+                                                []
+                                                D
+                                                "Error"
+                                            ],
+                                          [],
+                                          [],
+                                          "branch",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::vec::Vec")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "move_core_types::annotated_value::MoveValue";
+                                                      Ty.path "alloc::alloc::Global"
+                                                    ];
                                                   Ty.associated_in_trait
                                                     "serde::de::Deserializer"
                                                     []
@@ -8409,68 +9693,190 @@ Module annotated_value.
                                                     "Error"
                                                 ],
                                               M.get_trait_method (|
-                                                "core::ops::try_trait::FromResidual",
+                                                "serde::de::Deserializer",
+                                                D,
+                                                [],
+                                                [],
+                                                "deserialize_seq",
+                                                [],
+                                                [
+                                                  Ty.path
+                                                    "move_core_types::annotated_value::VectorElementVisitor"
+                                                ]
+                                              |),
+                                              [
+                                                M.value_with_ty (M.read (| deserializer |)) D;
+                                                M.value_with_ty
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "move_core_types::annotated_value::VectorElementVisitor"
+                                                      [
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.read (|
+                                                              M.deref (| M.read (| layout |) |)
+                                                            |)
+                                                          |)
+                                                        |)
+                                                      ])
+                                                    (Ty.path
+                                                      "move_core_types::annotated_value::VectorElementVisitor"))
+                                                  (Ty.path
+                                                    "move_core_types::annotated_value::VectorElementVisitor")
+                                              ]
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [
                                                 Ty.apply
-                                                  (Ty.path "core::result::Result")
+                                                  (Ty.path "alloc::vec::Vec")
                                                   []
                                                   [
                                                     Ty.path
                                                       "move_core_types::annotated_value::MoveValue";
-                                                    Ty.associated_in_trait
-                                                      "serde::de::Deserializer"
-                                                      []
-                                                      []
-                                                      D
-                                                      "Error"
-                                                  ],
-                                                [],
+                                                    Ty.path "alloc::alloc::Global"
+                                                  ];
+                                                Ty.associated_in_trait
+                                                  "serde::de::Deserializer"
+                                                  []
+                                                  []
+                                                  D
+                                                  "Error"
+                                              ])
+                                        ]
+                                      |)
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Break",
+                                              0
+                                            |) in
+                                          let residual :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
                                                 [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.associated_in_trait
+                                                    "serde::de::Deserializer"
+                                                    []
+                                                    []
+                                                    D
+                                                    "Error"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.never_to_any (|
+                                            M.read (|
+                                              M.return_ (|
+                                                M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [
-                                                      Ty.path "core::convert::Infallible";
+                                                      Ty.path
+                                                        "move_core_types::annotated_value::MoveValue";
                                                       Ty.associated_in_trait
                                                         "serde::de::Deserializer"
                                                         []
                                                         []
                                                         D
                                                         "Error"
-                                                    ]
-                                                ],
-                                                "from_residual",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| residual |) ]
+                                                    ],
+                                                  M.get_trait_method (|
+                                                    "core::ops::try_trait::FromResidual",
+                                                    Ty.apply
+                                                      (Ty.path "core::result::Result")
+                                                      []
+                                                      [
+                                                        Ty.path
+                                                          "move_core_types::annotated_value::MoveValue";
+                                                        Ty.associated_in_trait
+                                                          "serde::de::Deserializer"
+                                                          []
+                                                          []
+                                                          D
+                                                          "Error"
+                                                      ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.associated_in_trait
+                                                            "serde::de::Deserializer"
+                                                            []
+                                                            []
+                                                            D
+                                                            "Error"
+                                                        ]
+                                                    ],
+                                                    "from_residual",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.read (| residual |))
+                                                      (Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path "core::convert::Infallible";
+                                                          Ty.associated_in_trait
+                                                            "serde::de::Deserializer"
+                                                            []
+                                                            []
+                                                            D
+                                                            "Error"
+                                                        ])
+                                                  ]
+                                                |)
+                                              |)
                                             |)
-                                          |)
-                                        |)
-                                      |)));
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ0_0 :=
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          γ,
-                                          "core::ops::control_flow::ControlFlow::Continue",
-                                          0
-                                        |) in
-                                      let val :=
-                                        M.copy (|
-                                          Ty.apply
-                                            (Ty.path "alloc::vec::Vec")
-                                            []
-                                            [
-                                              Ty.path "move_core_types::annotated_value::MoveValue";
-                                              Ty.path "alloc::alloc::Global"
-                                            ],
-                                          γ0_0
-                                        |) in
-                                      M.read (| val |)))
-                                ]
-                              |)
-                            ]
-                        ]))
+                                          |)));
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let γ0_0 :=
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              γ,
+                                              "core::ops::control_flow::ControlFlow::Continue",
+                                              0
+                                            |) in
+                                          let val :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "alloc::vec::Vec")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "move_core_types::annotated_value::MoveValue";
+                                                  Ty.path "alloc::alloc::Global"
+                                                ],
+                                              γ0_0
+                                            |) in
+                                          M.read (| val |)))
+                                    ]
+                                  |)
+                                ])
+                              (Ty.path "move_core_types::annotated_value::MoveValue")
+                          ])
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.path "move_core_types::annotated_value::MoveValue";
+                            Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
+                          ])))
                 ]
               |)))
           |)))
@@ -8536,8 +9942,12 @@ Module annotated_value.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| formatter |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Vector" |) |) |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| formatter |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Vector" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -8708,8 +10118,65 @@ Module annotated_value.
                                               []
                                             |),
                                             [
-                                              M.call_closure (|
-                                                Ty.apply
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::option::Option")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_core_types::annotated_value::MoveValue"
+                                                        ];
+                                                      Ty.associated_in_trait
+                                                        "serde::de::SeqAccess"
+                                                        []
+                                                        []
+                                                        A
+                                                        "Error"
+                                                    ],
+                                                  M.get_trait_method (|
+                                                    "serde::de::SeqAccess",
+                                                    A,
+                                                    [],
+                                                    [],
+                                                    "next_element_seed",
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_core_types::annotated_value::MoveTypeLayout"
+                                                        ]
+                                                    ]
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.MutRef, seq |))
+                                                      (Ty.apply (Ty.path "&mut") [] [ A ]);
+                                                    M.value_with_ty
+                                                      (M.read (|
+                                                        M.SubPointer.get_struct_tuple_field (|
+                                                          self,
+                                                          "move_core_types::annotated_value::VectorElementVisitor",
+                                                          0
+                                                        |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_core_types::annotated_value::MoveTypeLayout"
+                                                        ])
+                                                  ]
+                                                |))
+                                                (Ty.apply
                                                   (Ty.path "core::result::Result")
                                                   []
                                                   [
@@ -8726,35 +10193,7 @@ Module annotated_value.
                                                       []
                                                       A
                                                       "Error"
-                                                  ],
-                                                M.get_trait_method (|
-                                                  "serde::de::SeqAccess",
-                                                  A,
-                                                  [],
-                                                  [],
-                                                  "next_element_seed",
-                                                  [],
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "&")
-                                                      []
-                                                      [
-                                                        Ty.path
-                                                          "move_core_types::annotated_value::MoveTypeLayout"
-                                                      ]
-                                                  ]
-                                                |),
-                                                [
-                                                  M.borrow (| Pointer.Kind.MutRef, seq |);
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_tuple_field (|
-                                                      self,
-                                                      "move_core_types::annotated_value::VectorElementVisitor",
-                                                      0
-                                                    |)
-                                                  |)
-                                                ]
-                                              |)
+                                                  ])
                                             ]
                                           |)
                                         |),
@@ -8846,7 +10285,22 @@ Module annotated_value.
                                                         [],
                                                         []
                                                       |),
-                                                      [ M.read (| residual |) ]
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| residual |))
+                                                          (Ty.apply
+                                                            (Ty.path "core::result::Result")
+                                                            []
+                                                            [
+                                                              Ty.path "core::convert::Infallible";
+                                                              Ty.associated_in_trait
+                                                                "serde::de::SeqAccess"
+                                                                []
+                                                                []
+                                                                A
+                                                                "Error"
+                                                            ])
+                                                      ]
                                                     |)
                                                   |)
                                                 |)
@@ -8899,7 +10353,26 @@ Module annotated_value.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.MutRef, vals |); M.read (| elem |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.MutRef, vals |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::Vec")
+                                              []
+                                              [
+                                                Ty.path
+                                                  "move_core_types::annotated_value::MoveValue";
+                                                Ty.path "alloc::alloc::Global"
+                                              ]
+                                          ]);
+                                      M.value_with_ty
+                                        (M.read (| elem |))
+                                        (Ty.path "move_core_types::annotated_value::MoveValue")
+                                    ]
                                   |)));
                               fun γ =>
                                 ltac:(M.monadic
@@ -8929,20 +10402,21 @@ Module annotated_value.
                         ];
                       Ty.associated_in_trait "serde::de::SeqAccess" [] [] A "Error"
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "alloc::vec::Vec")
-                        []
-                        [
-                          Ty.path "move_core_types::annotated_value::MoveValue";
-                          Ty.path "alloc::alloc::Global"
-                        ];
-                      Ty.associated_in_trait "serde::de::SeqAccess" [] [] A "Error"
-                    ]
-                    [ M.read (| vals |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ M.read (| vals |) ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [
+                            Ty.path "move_core_types::annotated_value::MoveValue";
+                            Ty.path "alloc::alloc::Global"
+                          ];
+                        Ty.associated_in_trait "serde::de::SeqAccess" [] [] A "Error"
+                      ])
                 |)
               |)))
           |)))
@@ -9029,8 +10503,12 @@ Module annotated_value.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| formatter |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Struct" |) |) |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| formatter |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Struct" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -9164,8 +10642,95 @@ Module annotated_value.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::iter::adapters::enumerate::Enumerate")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::slice::iter::Iter")
+                                          []
+                                          [
+                                            Ty.path
+                                              "move_core_types::annotated_value::MoveFieldLayout"
+                                          ]
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::iter::traits::iterator::Iterator",
+                                      Ty.apply
+                                        (Ty.path "core::slice::iter::Iter")
+                                        []
+                                        [
+                                          Ty.path
+                                            "move_core_types::annotated_value::MoveFieldLayout"
+                                        ],
+                                      [],
+                                      [],
+                                      "enumerate",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::slice::iter::Iter")
+                                            []
+                                            [
+                                              Ty.path
+                                                "move_core_types::annotated_value::MoveFieldLayout"
+                                            ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "slice")
+                                              []
+                                              [
+                                                Ty.path
+                                                  "move_core_types::annotated_value::MoveFieldLayout"
+                                              ],
+                                            "iter",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.read (|
+                                                    M.SubPointer.get_struct_tuple_field (|
+                                                      self,
+                                                      "move_core_types::annotated_value::DecoratedStructFieldVisitor",
+                                                      0
+                                                    |)
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "slice")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "move_core_types::annotated_value::MoveFieldLayout"
+                                                    ]
+                                                ])
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "core::slice::iter::Iter")
+                                          []
+                                          [
+                                            Ty.path
+                                              "move_core_types::annotated_value::MoveFieldLayout"
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.apply
                                     (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                     []
                                     [
@@ -9176,58 +10741,7 @@ Module annotated_value.
                                           Ty.path
                                             "move_core_types::annotated_value::MoveFieldLayout"
                                         ]
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::iter::traits::iterator::Iterator",
-                                    Ty.apply
-                                      (Ty.path "core::slice::iter::Iter")
-                                      []
-                                      [ Ty.path "move_core_types::annotated_value::MoveFieldLayout"
-                                      ],
-                                    [],
-                                    [],
-                                    "enumerate",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "core::slice::iter::Iter")
-                                        []
-                                        [
-                                          Ty.path
-                                            "move_core_types::annotated_value::MoveFieldLayout"
-                                        ],
-                                      M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path "slice")
-                                          []
-                                          [
-                                            Ty.path
-                                              "move_core_types::annotated_value::MoveFieldLayout"
-                                          ],
-                                        "iter",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.read (|
-                                              M.SubPointer.get_struct_tuple_field (|
-                                                self,
-                                                "move_core_types::annotated_value::DecoratedStructFieldVisitor",
-                                                0
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
+                                    ])
                               ]
                             |)
                           |),
@@ -9311,12 +10825,31 @@ Module annotated_value.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::iter::adapters::enumerate::Enumerate")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "core::slice::iter::Iter")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "move_core_types::annotated_value::MoveFieldLayout"
+                                                            ]
+                                                        ]
+                                                    ])
                                               ]
                                             |)
                                           |),
@@ -9476,8 +11009,71 @@ Module annotated_value.
                                                             []
                                                           |),
                                                           [
-                                                            M.call_closure (|
-                                                              Ty.apply
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path "core::result::Result")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "core::option::Option")
+                                                                      []
+                                                                      [
+                                                                        Ty.tuple
+                                                                          [
+                                                                            Ty.path
+                                                                              "move_core_types::identifier::Identifier";
+                                                                            Ty.path
+                                                                              "move_core_types::annotated_value::MoveValue"
+                                                                          ]
+                                                                      ];
+                                                                    Ty.associated_in_trait
+                                                                      "serde::de::SeqAccess"
+                                                                      []
+                                                                      []
+                                                                      A
+                                                                      "Error"
+                                                                  ],
+                                                                M.get_trait_method (|
+                                                                  "serde::de::SeqAccess",
+                                                                  A,
+                                                                  [],
+                                                                  [],
+                                                                  "next_element_seed",
+                                                                  [],
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "move_core_types::annotated_value::MoveFieldLayout"
+                                                                      ]
+                                                                  ]
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      seq
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [ A ]);
+                                                                  M.value_with_ty
+                                                                    (M.read (| layout |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "move_core_types::annotated_value::MoveFieldLayout"
+                                                                      ])
+                                                                ]
+                                                              |))
+                                                              (Ty.apply
                                                                 (Ty.path "core::result::Result")
                                                                 []
                                                                 [
@@ -9499,32 +11095,7 @@ Module annotated_value.
                                                                     []
                                                                     A
                                                                     "Error"
-                                                                ],
-                                                              M.get_trait_method (|
-                                                                "serde::de::SeqAccess",
-                                                                A,
-                                                                [],
-                                                                [],
-                                                                "next_element_seed",
-                                                                [],
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path "&")
-                                                                    []
-                                                                    [
-                                                                      Ty.path
-                                                                        "move_core_types::annotated_value::MoveFieldLayout"
-                                                                    ]
-                                                                ]
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  seq
-                                                                |);
-                                                                M.read (| layout |)
-                                                              ]
-                                                            |)
+                                                                ])
                                                           ]
                                                         |)
                                                       |),
@@ -9635,7 +11206,24 @@ Module annotated_value.
                                                                       [],
                                                                       []
                                                                     |),
-                                                                    [ M.read (| residual |) ]
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.read (| residual |))
+                                                                        (Ty.apply
+                                                                          (Ty.path
+                                                                            "core::result::Result")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "core::convert::Infallible";
+                                                                            Ty.associated_in_trait
+                                                                              "serde::de::SeqAccess"
+                                                                              []
+                                                                              []
+                                                                              A
+                                                                              "Error"
+                                                                          ])
+                                                                    ]
                                                                   |)
                                                                 |)
                                                               |)
@@ -9709,25 +11297,13 @@ Module annotated_value.
                                                             []
                                                           |),
                                                           [
-                                                            M.borrow (|
-                                                              Pointer.Kind.MutRef,
-                                                              vals
-                                                            |);
-                                                            M.read (| elem |)
-                                                          ]
-                                                        |)));
-                                                    fun γ =>
-                                                      ltac:(M.monadic
-                                                        (let _ :=
-                                                          M.is_struct_tuple (|
-                                                            γ,
-                                                            "core::option::Option::None"
-                                                          |) in
-                                                        M.never_to_any (|
-                                                          M.read (|
-                                                            M.return_ (|
-                                                              Value.StructTuple
-                                                                "core::result::Result::Err"
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                vals
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&mut")
                                                                 []
                                                                 [
                                                                   Ty.apply
@@ -9742,58 +11318,101 @@ Module annotated_value.
                                                                             "move_core_types::annotated_value::MoveValue"
                                                                         ];
                                                                       Ty.path "alloc::alloc::Global"
-                                                                    ];
-                                                                  Ty.associated_in_trait
-                                                                    "serde::de::SeqAccess"
-                                                                    []
-                                                                    []
-                                                                    A
-                                                                    "Error"
-                                                                ]
+                                                                    ]
+                                                                ]);
+                                                            M.value_with_ty
+                                                              (M.read (| elem |))
+                                                              (Ty.tuple
                                                                 [
-                                                                  M.call_closure (|
-                                                                    Ty.associated_in_trait
-                                                                      "serde::de::SeqAccess"
-                                                                      []
-                                                                      []
-                                                                      A
-                                                                      "Error",
-                                                                    M.get_trait_method (|
-                                                                      "serde::de::Error",
+                                                                  Ty.path
+                                                                    "move_core_types::identifier::Identifier";
+                                                                  Ty.path
+                                                                    "move_core_types::annotated_value::MoveValue"
+                                                                ])
+                                                          ]
+                                                        |)));
+                                                    fun γ =>
+                                                      ltac:(M.monadic
+                                                        (let _ :=
+                                                          M.is_struct_tuple (|
+                                                            γ,
+                                                            "core::option::Option::None"
+                                                          |) in
+                                                        M.never_to_any (|
+                                                          M.read (|
+                                                            M.return_ (|
+                                                              M.value_with_ty
+                                                                (Value.StructTuple
+                                                                  "core::result::Result::Err"
+                                                                  [
+                                                                    M.call_closure (|
                                                                       Ty.associated_in_trait
                                                                         "serde::de::SeqAccess"
                                                                         []
                                                                         []
                                                                         A
                                                                         "Error",
-                                                                      [],
-                                                                      [],
-                                                                      "invalid_length",
-                                                                      [],
-                                                                      []
-                                                                    |),
-                                                                    [
-                                                                      M.read (| i |);
-                                                                      M.call_closure (|
-                                                                        Ty.apply
-                                                                          (Ty.path "&")
+                                                                      M.get_trait_method (|
+                                                                        "serde::de::Error",
+                                                                        Ty.associated_in_trait
+                                                                          "serde::de::SeqAccess"
                                                                           []
-                                                                          [
-                                                                            Ty.dyn
+                                                                          []
+                                                                          A
+                                                                          "Error",
+                                                                        [],
+                                                                        [],
+                                                                        "invalid_length",
+                                                                        [],
+                                                                        []
+                                                                      |),
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (M.read (| i |))
+                                                                          (Ty.path "usize");
+                                                                        M.value_with_ty
+                                                                          (M.call_closure (|
+                                                                            Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
                                                                               [
-                                                                                ("serde::de::Expected::Trait",
-                                                                                  [])
-                                                                              ]
-                                                                          ],
-                                                                        M.pointer_coercion
-                                                                          M.PointerCoercion.Unsize
-                                                                          (Ty.apply
-                                                                            (Ty.path "&")
-                                                                            []
+                                                                                Ty.dyn
+                                                                                  [
+                                                                                    ("serde::de::Expected::Trait",
+                                                                                      [])
+                                                                                  ]
+                                                                              ],
+                                                                            M.pointer_coercion
+                                                                              M.PointerCoercion.Unsize
+                                                                              (Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "move_core_types::annotated_value::DecoratedStructFieldVisitor"
+                                                                                ])
+                                                                              (Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.dyn
+                                                                                    [
+                                                                                      ("serde::de::Expected::Trait",
+                                                                                        [])
+                                                                                    ]
+                                                                                ]),
                                                                             [
-                                                                              Ty.path
-                                                                                "move_core_types::annotated_value::DecoratedStructFieldVisitor"
-                                                                            ])
+                                                                              M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.deref (|
+                                                                                  M.borrow (|
+                                                                                    Pointer.Kind.Ref,
+                                                                                    self
+                                                                                  |)
+                                                                                |)
+                                                                              |)
+                                                                            ]
+                                                                          |))
                                                                           (Ty.apply
                                                                             (Ty.path "&")
                                                                             []
@@ -9803,22 +11422,35 @@ Module annotated_value.
                                                                                   ("serde::de::Expected::Trait",
                                                                                     [])
                                                                                 ]
-                                                                            ]),
-                                                                        [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.Ref,
-                                                                            M.deref (|
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.Ref,
-                                                                                self
-                                                                              |)
-                                                                            |)
-                                                                          |)
-                                                                        ]
-                                                                      |)
-                                                                    ]
-                                                                  |)
-                                                                ]
+                                                                            ])
+                                                                      ]
+                                                                    |)
+                                                                  ])
+                                                                (Ty.apply
+                                                                  (Ty.path "core::result::Result")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "alloc::vec::Vec")
+                                                                      []
+                                                                      [
+                                                                        Ty.tuple
+                                                                          [
+                                                                            Ty.path
+                                                                              "move_core_types::identifier::Identifier";
+                                                                            Ty.path
+                                                                              "move_core_types::annotated_value::MoveValue"
+                                                                          ];
+                                                                        Ty.path
+                                                                          "alloc::alloc::Global"
+                                                                      ];
+                                                                    Ty.associated_in_trait
+                                                                      "serde::de::SeqAccess"
+                                                                      []
+                                                                      []
+                                                                      A
+                                                                      "Error"
+                                                                  ])
                                                             |)
                                                           |)
                                                         |)))
@@ -9851,24 +11483,25 @@ Module annotated_value.
                         ];
                       Ty.associated_in_trait "serde::de::SeqAccess" [] [] A "Error"
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "alloc::vec::Vec")
-                        []
-                        [
-                          Ty.tuple
-                            [
-                              Ty.path "move_core_types::identifier::Identifier";
-                              Ty.path "move_core_types::annotated_value::MoveValue"
-                            ];
-                          Ty.path "alloc::alloc::Global"
-                        ];
-                      Ty.associated_in_trait "serde::de::SeqAccess" [] [] A "Error"
-                    ]
-                    [ M.read (| vals |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ M.read (| vals |) ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [
+                            Ty.tuple
+                              [
+                                Ty.path "move_core_types::identifier::Identifier";
+                                Ty.path "move_core_types::annotated_value::MoveValue"
+                              ];
+                            Ty.path "alloc::alloc::Global"
+                          ];
+                        Ty.associated_in_trait "serde::de::SeqAccess" [] [] A "Error"
+                      ])
                 |)
               |)))
           |)))
@@ -9939,59 +11572,42 @@ Module annotated_value.
                 Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
               ]) (|
             ltac:(M.monadic
-              (Value.StructTuple
-                "core::result::Result::Ok"
-                []
-                [
-                  Ty.tuple
-                    [
-                      Ty.path "move_core_types::identifier::Identifier";
-                      Ty.path "move_core_types::annotated_value::MoveValue"
-                    ];
-                  Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
-                ]
-                [
-                  Value.Tuple
-                    [
-                      M.call_closure (|
-                        Ty.path "move_core_types::identifier::Identifier",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+              (M.value_with_ty
+                (Value.StructTuple
+                  "core::result::Result::Ok"
+                  [
+                    Value.Tuple
+                      [
+                        M.call_closure (|
                           Ty.path "move_core_types::identifier::Identifier",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "move_core_types::annotated_value::MoveFieldLayout",
-                              "name"
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.match_operator (|
-                        Ty.path "move_core_types::annotated_value::MoveValue",
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "core::ops::control_flow::ControlFlow")
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "move_core_types::identifier::Identifier",
+                            [],
+                            [],
+                            "clone",
+                            [],
                             []
-                            [
-                              Ty.apply
-                                (Ty.path "core::result::Result")
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "move_core_types::annotated_value::MoveFieldLayout",
+                                  "name"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
                                 []
-                                [
-                                  Ty.path "core::convert::Infallible";
-                                  Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
-                                ];
-                              Ty.path "move_core_types::annotated_value::MoveValue"
-                            ],
-                          M.call_closure (|
+                                [ Ty.path "move_core_types::identifier::Identifier" ])
+                          ]
+                        |);
+                        M.match_operator (|
+                          Ty.path "move_core_types::annotated_value::MoveValue",
+                          M.alloc (|
                             Ty.apply
                               (Ty.path "core::ops::control_flow::ControlFlow")
                               []
@@ -10005,68 +11621,11 @@ Module annotated_value.
                                   ];
                                 Ty.path "move_core_types::annotated_value::MoveValue"
                               ],
-                            M.get_trait_method (|
-                              "core::ops::try_trait::Try",
+                            M.call_closure (|
                               Ty.apply
-                                (Ty.path "core::result::Result")
+                                (Ty.path "core::ops::control_flow::ControlFlow")
                                 []
                                 [
-                                  Ty.path "move_core_types::annotated_value::MoveValue";
-                                  Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
-                                ],
-                              [],
-                              [],
-                              "branch",
-                              [],
-                              []
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "core::result::Result")
-                                  []
-                                  [
-                                    Ty.path "move_core_types::annotated_value::MoveValue";
-                                    Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
-                                  ],
-                                M.get_trait_method (|
-                                  "serde::de::DeserializeSeed",
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.path "move_core_types::annotated_value::MoveTypeLayout" ],
-                                  [],
-                                  [],
-                                  "deserialize",
-                                  [],
-                                  [ D ]
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "move_core_types::annotated_value::MoveFieldLayout",
-                                      "layout"
-                                    |)
-                                  |);
-                                  M.read (| deserializer |)
-                                ]
-                              |)
-                            ]
-                          |)
-                        |),
-                        [
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let γ0_0 :=
-                                M.SubPointer.get_struct_tuple_field (|
-                                  γ,
-                                  "core::ops::control_flow::ControlFlow::Break",
-                                  0
-                                |) in
-                              let residual :=
-                                M.copy (|
                                   Ty.apply
                                     (Ty.path "core::result::Result")
                                     []
@@ -10078,31 +11637,116 @@ Module annotated_value.
                                         []
                                         D
                                         "Error"
-                                    ],
-                                  γ0_0
-                                |) in
-                              M.never_to_any (|
-                                M.read (|
-                                  M.return_ (|
-                                    M.call_closure (|
+                                    ];
+                                  Ty.path "move_core_types::annotated_value::MoveValue"
+                                ],
+                              M.get_trait_method (|
+                                "core::ops::try_trait::Try",
+                                Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.path "move_core_types::annotated_value::MoveValue";
+                                    Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
+                                  ],
+                                [],
+                                [],
+                                "branch",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "move_core_types::annotated_value::MoveValue";
+                                        Ty.associated_in_trait
+                                          "serde::de::Deserializer"
+                                          []
+                                          []
+                                          D
+                                          "Error"
+                                      ],
+                                    M.get_trait_method (|
+                                      "serde::de::DeserializeSeed",
                                       Ty.apply
-                                        (Ty.path "core::result::Result")
+                                        (Ty.path "&")
                                         []
-                                        [
-                                          Ty.tuple
-                                            [
-                                              Ty.path "move_core_types::identifier::Identifier";
-                                              Ty.path "move_core_types::annotated_value::MoveValue"
-                                            ];
-                                          Ty.associated_in_trait
-                                            "serde::de::Deserializer"
-                                            []
-                                            []
-                                            D
-                                            "Error"
+                                        [ Ty.path "move_core_types::annotated_value::MoveTypeLayout"
                                         ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::FromResidual",
+                                      [],
+                                      [],
+                                      "deserialize",
+                                      [],
+                                      [ D ]
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "move_core_types::annotated_value::MoveFieldLayout",
+                                            "layout"
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.path
+                                              "move_core_types::annotated_value::MoveTypeLayout"
+                                          ]);
+                                      M.value_with_ty (M.read (| deserializer |)) D
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "move_core_types::annotated_value::MoveValue";
+                                      Ty.associated_in_trait
+                                        "serde::de::Deserializer"
+                                        []
+                                        []
+                                        D
+                                        "Error"
+                                    ])
+                              ]
+                            |)
+                          |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let γ0_0 :=
+                                  M.SubPointer.get_struct_tuple_field (|
+                                    γ,
+                                    "core::ops::control_flow::ControlFlow::Break",
+                                    0
+                                  |) in
+                                let residual :=
+                                  M.copy (|
+                                    Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.associated_in_trait
+                                          "serde::de::Deserializer"
+                                          []
+                                          []
+                                          D
+                                          "Error"
+                                      ],
+                                    γ0_0
+                                  |) in
+                                M.never_to_any (|
+                                  M.read (|
+                                    M.return_ (|
+                                      M.call_closure (|
                                         Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
@@ -10120,48 +11764,93 @@ Module annotated_value.
                                               D
                                               "Error"
                                           ],
-                                        [],
-                                        [
+                                        M.get_trait_method (|
+                                          "core::ops::try_trait::FromResidual",
                                           Ty.apply
                                             (Ty.path "core::result::Result")
                                             []
                                             [
-                                              Ty.path "core::convert::Infallible";
+                                              Ty.tuple
+                                                [
+                                                  Ty.path "move_core_types::identifier::Identifier";
+                                                  Ty.path
+                                                    "move_core_types::annotated_value::MoveValue"
+                                                ];
                                               Ty.associated_in_trait
                                                 "serde::de::Deserializer"
                                                 []
                                                 []
                                                 D
                                                 "Error"
-                                            ]
-                                        ],
-                                        "from_residual",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| residual |) ]
+                                            ],
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [
+                                                Ty.path "core::convert::Infallible";
+                                                Ty.associated_in_trait
+                                                  "serde::de::Deserializer"
+                                                  []
+                                                  []
+                                                  D
+                                                  "Error"
+                                              ]
+                                          ],
+                                          "from_residual",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| residual |))
+                                            (Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [
+                                                Ty.path "core::convert::Infallible";
+                                                Ty.associated_in_trait
+                                                  "serde::de::Deserializer"
+                                                  []
+                                                  []
+                                                  D
+                                                  "Error"
+                                              ])
+                                        ]
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |)));
-                          fun γ =>
-                            ltac:(M.monadic
-                              (let γ0_0 :=
-                                M.SubPointer.get_struct_tuple_field (|
-                                  γ,
-                                  "core::ops::control_flow::ControlFlow::Continue",
-                                  0
-                                |) in
-                              let val :=
-                                M.copy (|
-                                  Ty.path "move_core_types::annotated_value::MoveValue",
-                                  γ0_0
-                                |) in
-                              M.read (| val |)))
-                        ]
-                      |)
-                    ]
-                ]))
+                                |)));
+                            fun γ =>
+                              ltac:(M.monadic
+                                (let γ0_0 :=
+                                  M.SubPointer.get_struct_tuple_field (|
+                                    γ,
+                                    "core::ops::control_flow::ControlFlow::Continue",
+                                    0
+                                  |) in
+                                let val :=
+                                  M.copy (|
+                                    Ty.path "move_core_types::annotated_value::MoveValue",
+                                    γ0_0
+                                  |) in
+                                M.read (| val |)))
+                          ]
+                        |)
+                      ]
+                  ])
+                (Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [
+                    Ty.tuple
+                      [
+                        Ty.path "move_core_types::identifier::Identifier";
+                        Ty.path "move_core_types::annotated_value::MoveValue"
+                      ];
+                    Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
+                  ])))
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -10325,8 +12014,158 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::vec::Vec")
+                                    []
+                                    [
+                                      Ty.tuple
+                                        [
+                                          Ty.path "move_core_types::identifier::Identifier";
+                                          Ty.path "move_core_types::annotated_value::MoveValue"
+                                        ];
+                                      Ty.path "alloc::alloc::Global"
+                                    ];
+                                  Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
+                                ],
+                              M.get_trait_method (|
+                                "serde::de::Deserializer",
+                                D,
+                                [],
+                                [],
+                                "deserialize_tuple",
+                                [],
+                                [
+                                  Ty.path
+                                    "move_core_types::annotated_value::DecoratedStructFieldVisitor"
+                                ]
+                              |),
+                              [
+                                M.value_with_ty (M.read (| deserializer |)) D;
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "alloc::vec::Vec")
+                                        []
+                                        [
+                                          Ty.path
+                                            "move_core_types::annotated_value::MoveFieldLayout";
+                                          Ty.path "alloc::alloc::Global"
+                                        ],
+                                      "len",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "move_core_types::annotated_value::MoveStructLayout",
+                                            "fields"
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::Vec")
+                                              []
+                                              [
+                                                Ty.path
+                                                  "move_core_types::annotated_value::MoveFieldLayout";
+                                                Ty.path "alloc::alloc::Global"
+                                              ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.path "usize");
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.StructTuple
+                                      "move_core_types::annotated_value::DecoratedStructFieldVisitor"
+                                      [
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "slice")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "move_core_types::annotated_value::MoveFieldLayout"
+                                                    ]
+                                                ],
+                                              M.get_trait_method (|
+                                                "core::ops::deref::Deref",
+                                                Ty.apply
+                                                  (Ty.path "alloc::vec::Vec")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "move_core_types::annotated_value::MoveFieldLayout";
+                                                    Ty.path "alloc::alloc::Global"
+                                                  ],
+                                                [],
+                                                [],
+                                                "deref",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "move_core_types::annotated_value::MoveStructLayout",
+                                                          "fields"
+                                                        |)
+                                                      |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "alloc::vec::Vec")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_core_types::annotated_value::MoveFieldLayout";
+                                                          Ty.path "alloc::alloc::Global"
+                                                        ]
+                                                    ])
+                                              ]
+                                            |)
+                                          |)
+                                        |)
+                                      ])
+                                    (Ty.path
+                                      "move_core_types::annotated_value::DecoratedStructFieldVisitor"))
+                                  (Ty.path
+                                    "move_core_types::annotated_value::DecoratedStructFieldVisitor")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
@@ -10342,104 +12181,7 @@ Module annotated_value.
                                     Ty.path "alloc::alloc::Global"
                                   ];
                                 Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
-                              ],
-                            M.get_trait_method (|
-                              "serde::de::Deserializer",
-                              D,
-                              [],
-                              [],
-                              "deserialize_tuple",
-                              [],
-                              [
-                                Ty.path
-                                  "move_core_types::annotated_value::DecoratedStructFieldVisitor"
-                              ]
-                            |),
-                            [
-                              M.read (| deserializer |);
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "alloc::vec::Vec")
-                                    []
-                                    [
-                                      Ty.path "move_core_types::annotated_value::MoveFieldLayout";
-                                      Ty.path "alloc::alloc::Global"
-                                    ],
-                                  "len",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "move_core_types::annotated_value::MoveStructLayout",
-                                      "fields"
-                                    |)
-                                  |)
-                                ]
-                              |);
-                              Value.StructTuple
-                                "move_core_types::annotated_value::DecoratedStructFieldVisitor"
-                                []
-                                []
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "slice")
-                                              []
-                                              [
-                                                Ty.path
-                                                  "move_core_types::annotated_value::MoveFieldLayout"
-                                              ]
-                                          ],
-                                        M.get_trait_method (|
-                                          "core::ops::deref::Deref",
-                                          Ty.apply
-                                            (Ty.path "alloc::vec::Vec")
-                                            []
-                                            [
-                                              Ty.path
-                                                "move_core_types::annotated_value::MoveFieldLayout";
-                                              Ty.path "alloc::alloc::Global"
-                                            ],
-                                          [],
-                                          [],
-                                          "deref",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_core_types::annotated_value::MoveStructLayout",
-                                                  "fields"
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -10512,7 +12254,22 @@ Module annotated_value.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.associated_in_trait
+                                            "serde::de::Deserializer"
+                                            []
+                                            []
+                                            D
+                                            "Error"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -10551,45 +12308,53 @@ Module annotated_value.
                       Ty.path "move_core_types::annotated_value::MoveStruct";
                       Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "move_core_types::annotated_value::MoveStruct";
-                      Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
-                    ]
-                    [
-                      Value.mkStructRecord
-                        "move_core_types::annotated_value::MoveStruct"
-                        []
-                        []
-                        [
-                          ("type_",
-                            M.call_closure (|
-                              Ty.path "move_core_types::language_storage::StructTag",
-                              M.get_trait_method (|
-                                "core::clone::Clone",
-                                Ty.path "move_core_types::language_storage::StructTag",
-                                [],
-                                [],
-                                "clone",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_core_types::annotated_value::MoveStructLayout",
-                                    "type_"
-                                  |)
-                                |)
-                              ]
-                            |));
-                          ("fields", M.read (| fields |))
-                        ]
-                    ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "move_core_types::annotated_value::MoveStruct"
+                            [
+                              ("type_",
+                                M.call_closure (|
+                                  Ty.path "move_core_types::language_storage::StructTag",
+                                  M.get_trait_method (|
+                                    "core::clone::Clone",
+                                    Ty.path "move_core_types::language_storage::StructTag",
+                                    [],
+                                    [],
+                                    "clone",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_core_types::annotated_value::MoveStructLayout",
+                                          "type_"
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "move_core_types::language_storage::StructTag" ])
+                                  ]
+                                |));
+                              ("fields", M.read (| fields |))
+                            ])
+                          (Ty.path "move_core_types::annotated_value::MoveStruct")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "move_core_types::annotated_value::MoveStruct";
+                        Ty.associated_in_trait "serde::de::Deserializer" [] [] D "Error"
+                      ])
                 |)
               |)))
           |)))
@@ -10696,8 +12461,13 @@ Module annotated_value.
                           [ S ]
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |);
-                          M.read (| serializer |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "move_core_types::annotated_value::MoveStruct" ]);
+                          M.value_with_ty (M.read (| serializer |)) S
                         ]
                       |)));
                   fun γ =>
@@ -10727,7 +12497,12 @@ Module annotated_value.
                           [],
                           []
                         |),
-                        [ M.read (| serializer |); M.read (| M.deref (| M.read (| b |) |) |) ]
+                        [
+                          M.value_with_ty (M.read (| serializer |)) S;
+                          M.value_with_ty
+                            (M.read (| M.deref (| M.read (| b |) |) |))
+                            (Ty.path "bool")
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -10756,7 +12531,10 @@ Module annotated_value.
                           [],
                           []
                         |),
-                        [ M.read (| serializer |); M.read (| M.deref (| M.read (| i |) |) |) ]
+                        [
+                          M.value_with_ty (M.read (| serializer |)) S;
+                          M.value_with_ty (M.read (| M.deref (| M.read (| i |) |) |)) (Ty.path "u8")
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -10785,7 +12563,12 @@ Module annotated_value.
                           [],
                           []
                         |),
-                        [ M.read (| serializer |); M.read (| M.deref (| M.read (| i |) |) |) ]
+                        [
+                          M.value_with_ty (M.read (| serializer |)) S;
+                          M.value_with_ty
+                            (M.read (| M.deref (| M.read (| i |) |) |))
+                            (Ty.path "u16")
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -10814,7 +12597,12 @@ Module annotated_value.
                           [],
                           []
                         |),
-                        [ M.read (| serializer |); M.read (| M.deref (| M.read (| i |) |) |) ]
+                        [
+                          M.value_with_ty (M.read (| serializer |)) S;
+                          M.value_with_ty
+                            (M.read (| M.deref (| M.read (| i |) |) |))
+                            (Ty.path "u32")
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -10843,7 +12631,12 @@ Module annotated_value.
                           [],
                           []
                         |),
-                        [ M.read (| serializer |); M.read (| M.deref (| M.read (| i |) |) |) ]
+                        [
+                          M.value_with_ty (M.read (| serializer |)) S;
+                          M.value_with_ty
+                            (M.read (| M.deref (| M.read (| i |) |) |))
+                            (Ty.path "u64")
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -10872,7 +12665,12 @@ Module annotated_value.
                           [],
                           []
                         |),
-                        [ M.read (| serializer |); M.read (| M.deref (| M.read (| i |) |) |) ]
+                        [
+                          M.value_with_ty (M.read (| serializer |)) S;
+                          M.value_with_ty
+                            (M.read (| M.deref (| M.read (| i |) |) |))
+                            (Ty.path "u128")
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -10906,8 +12704,10 @@ Module annotated_value.
                           [ S ]
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| i |) |) |);
-                          M.read (| serializer |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| i |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::u256::U256" ]);
+                          M.value_with_ty (M.read (| serializer |)) S
                         ]
                       |)));
                   fun γ =>
@@ -10945,8 +12745,13 @@ Module annotated_value.
                           [ S ]
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| a |) |) |);
-                          M.read (| serializer |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| a |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "move_core_types::account_address::AccountAddress" ]);
+                          M.value_with_ty (M.read (| serializer |)) S
                         ]
                       |)));
                   fun γ =>
@@ -10984,8 +12789,13 @@ Module annotated_value.
                           [ S ]
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| a |) |) |);
-                          M.read (| serializer |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| a |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "move_core_types::account_address::AccountAddress" ]);
+                          M.value_with_ty (M.read (| serializer |)) S
                         ]
                       |)));
                   fun γ =>
@@ -11097,8 +12907,89 @@ Module annotated_value.
                                   []
                                 |),
                                 [
-                                  M.call_closure (|
-                                    Ty.apply
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.associated_in_trait
+                                            "serde::ser::Serializer"
+                                            []
+                                            []
+                                            S
+                                            "SerializeSeq";
+                                          Ty.associated_in_trait
+                                            "serde::ser::Serializer"
+                                            []
+                                            []
+                                            S
+                                            "Error"
+                                        ],
+                                      M.get_trait_method (|
+                                        "serde::ser::Serializer",
+                                        S,
+                                        [],
+                                        [],
+                                        "serialize_seq",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty (M.read (| serializer |)) S;
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple
+                                              "core::option::Option::Some"
+                                              [
+                                                M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_associated_function (|
+                                                    Ty.apply
+                                                      (Ty.path "alloc::vec::Vec")
+                                                      []
+                                                      [
+                                                        Ty.path
+                                                          "move_core_types::annotated_value::MoveValue";
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ],
+                                                    "len",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| v |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "alloc::vec::Vec")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "move_core_types::annotated_value::MoveValue";
+                                                              Ty.path "alloc::alloc::Global"
+                                                            ]
+                                                        ])
+                                                  ]
+                                                |)
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "usize" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "usize" ])
+                                      ]
+                                    |))
+                                    (Ty.apply
                                       (Ty.path "core::result::Result")
                                       []
                                       [
@@ -11114,48 +13005,7 @@ Module annotated_value.
                                           []
                                           S
                                           "Error"
-                                      ],
-                                    M.get_trait_method (|
-                                      "serde::ser::Serializer",
-                                      S,
-                                      [],
-                                      [],
-                                      "serialize_seq",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.read (| serializer |);
-                                      Value.StructTuple
-                                        "core::option::Option::Some"
-                                        []
-                                        [ Ty.path "usize" ]
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "alloc::vec::Vec")
-                                                []
-                                                [
-                                                  Ty.path
-                                                    "move_core_types::annotated_value::MoveValue";
-                                                  Ty.path "alloc::alloc::Global"
-                                                ],
-                                              "len",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| v |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                    ]
-                                  |)
+                                      ])
                                 ]
                               |)
                             |),
@@ -11243,7 +13093,22 @@ Module annotated_value.
                                             [],
                                             []
                                           |),
-                                          [ M.read (| residual |) ]
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| residual |))
+                                              (Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.associated_in_trait
+                                                    "serde::ser::Serializer"
+                                                    []
+                                                    []
+                                                    S
+                                                    "Error"
+                                                ])
+                                          ]
                                         |)
                                       |)
                                     |)
@@ -11307,7 +13172,23 @@ Module annotated_value.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| v |) ]
+                                      [
+                                        M.value_with_ty
+                                          (M.read (| v |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::vec::Vec")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "move_core_types::annotated_value::MoveValue";
+                                                  Ty.path "alloc::alloc::Global"
+                                                ]
+                                            ])
+                                      ]
                                     |)
                                   |),
                                   [
@@ -11371,12 +13252,28 @@ Module annotated_value.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.deref (|
-                                                            M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                          |)
-                                                        |)
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.deref (|
+                                                              M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                iter
+                                                              |)
+                                                            |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "core::slice::iter::Iter")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "move_core_types::annotated_value::MoveValue"
+                                                                ]
+                                                            ])
                                                       ]
                                                     |)
                                                   |),
@@ -11480,8 +13377,72 @@ Module annotated_value.
                                                                     []
                                                                   |),
                                                                   [
-                                                                    M.call_closure (|
-                                                                      Ty.apply
+                                                                    M.value_with_ty
+                                                                      (M.call_closure (|
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "core::result::Result")
+                                                                          []
+                                                                          [
+                                                                            Ty.tuple [];
+                                                                            Ty.associated_in_trait
+                                                                              "serde::ser::Serializer"
+                                                                              []
+                                                                              []
+                                                                              S
+                                                                              "Error"
+                                                                          ],
+                                                                        M.get_trait_method (|
+                                                                          "serde::ser::SerializeSeq",
+                                                                          Ty.associated_in_trait
+                                                                            "serde::ser::Serializer"
+                                                                            []
+                                                                            []
+                                                                            S
+                                                                            "SerializeSeq",
+                                                                          [],
+                                                                          [],
+                                                                          "serialize_element",
+                                                                          [],
+                                                                          [
+                                                                            Ty.path
+                                                                              "move_core_types::annotated_value::MoveValue"
+                                                                          ]
+                                                                        |),
+                                                                        [
+                                                                          M.value_with_ty
+                                                                            (M.borrow (|
+                                                                              Pointer.Kind.MutRef,
+                                                                              t
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "&mut")
+                                                                              []
+                                                                              [
+                                                                                Ty.associated_in_trait
+                                                                                  "serde::ser::Serializer"
+                                                                                  []
+                                                                                  []
+                                                                                  S
+                                                                                  "SerializeSeq"
+                                                                              ]);
+                                                                          M.value_with_ty
+                                                                            (M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              M.deref (|
+                                                                                M.read (| val |)
+                                                                              |)
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "move_core_types::annotated_value::MoveValue"
+                                                                              ])
+                                                                        ]
+                                                                      |))
+                                                                      (Ty.apply
                                                                         (Ty.path
                                                                           "core::result::Result")
                                                                         []
@@ -11493,37 +13454,7 @@ Module annotated_value.
                                                                             []
                                                                             S
                                                                             "Error"
-                                                                        ],
-                                                                      M.get_trait_method (|
-                                                                        "serde::ser::SerializeSeq",
-                                                                        Ty.associated_in_trait
-                                                                          "serde::ser::Serializer"
-                                                                          []
-                                                                          []
-                                                                          S
-                                                                          "SerializeSeq",
-                                                                        [],
-                                                                        [],
-                                                                        "serialize_element",
-                                                                        [],
-                                                                        [
-                                                                          Ty.path
-                                                                            "move_core_types::annotated_value::MoveValue"
-                                                                        ]
-                                                                      |),
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.MutRef,
-                                                                          t
-                                                                        |);
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.read (| val |)
-                                                                          |)
-                                                                        |)
-                                                                      ]
-                                                                    |)
+                                                                        ])
                                                                   ]
                                                                 |)
                                                               |),
@@ -11617,7 +13548,25 @@ Module annotated_value.
                                                                               [],
                                                                               []
                                                                             |),
-                                                                            [ M.read (| residual |)
+                                                                            [
+                                                                              M.value_with_ty
+                                                                                (M.read (|
+                                                                                  residual
+                                                                                |))
+                                                                                (Ty.apply
+                                                                                  (Ty.path
+                                                                                    "core::result::Result")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.path
+                                                                                      "core::convert::Infallible";
+                                                                                    Ty.associated_in_trait
+                                                                                      "serde::ser::Serializer"
+                                                                                      []
+                                                                                      []
+                                                                                      S
+                                                                                      "Error"
+                                                                                  ])
                                                                             ]
                                                                           |)
                                                                         |)
@@ -11680,7 +13629,16 @@ Module annotated_value.
                               [],
                               []
                             |),
-                            [ M.read (| t |) ]
+                            [
+                              M.value_with_ty
+                                (M.read (| t |))
+                                (Ty.associated_in_trait
+                                  "serde::ser::Serializer"
+                                  []
+                                  []
+                                  S
+                                  "SerializeSeq")
+                            ]
                           |)
                         |)
                       |)))
@@ -11808,8 +13766,97 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "serde::ser::Serializer"
+                                    []
+                                    []
+                                    S
+                                    "SerializeMap";
+                                  Ty.associated_in_trait "serde::ser::Serializer" [] [] S "Error"
+                                ],
+                              M.get_trait_method (|
+                                "serde::ser::Serializer",
+                                S,
+                                [],
+                                [],
+                                "serialize_map",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty (M.read (| serializer |)) S;
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.StructTuple
+                                      "core::option::Option::Some"
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "slice")
+                                              []
+                                              [
+                                                Ty.tuple
+                                                  [
+                                                    Ty.path
+                                                      "move_core_types::identifier::Identifier";
+                                                    Ty.path
+                                                      "move_core_types::annotated_value::MoveValue"
+                                                  ]
+                                              ],
+                                            "len",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.read (|
+                                                    M.SubPointer.get_struct_tuple_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "move_core_types::annotated_value::MoveFields",
+                                                      0
+                                                    |)
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "slice")
+                                                    []
+                                                    [
+                                                      Ty.tuple
+                                                        [
+                                                          Ty.path
+                                                            "move_core_types::identifier::Identifier";
+                                                          Ty.path
+                                                            "move_core_types::annotated_value::MoveValue"
+                                                        ]
+                                                    ]
+                                                ])
+                                          ]
+                                        |)
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "usize" ]))
+                                  (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
@@ -11820,58 +13867,7 @@ Module annotated_value.
                                   S
                                   "SerializeMap";
                                 Ty.associated_in_trait "serde::ser::Serializer" [] [] S "Error"
-                              ],
-                            M.get_trait_method (|
-                              "serde::ser::Serializer",
-                              S,
-                              [],
-                              [],
-                              "serialize_map",
-                              [],
-                              []
-                            |),
-                            [
-                              M.read (| serializer |);
-                              Value.StructTuple
-                                "core::option::Option::Some"
-                                []
-                                [ Ty.path "usize" ]
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "slice")
-                                        []
-                                        [
-                                          Ty.tuple
-                                            [
-                                              Ty.path "move_core_types::identifier::Identifier";
-                                              Ty.path "move_core_types::annotated_value::MoveValue"
-                                            ]
-                                        ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.read (|
-                                            M.SubPointer.get_struct_tuple_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "move_core_types::annotated_value::MoveFields",
-                                              0
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -11949,7 +13945,22 @@ Module annotated_value.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.associated_in_trait
+                                            "serde::ser::Serializer"
+                                            []
+                                            []
+                                            S
+                                            "Error"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -12023,20 +14034,10 @@ Module annotated_value.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::slice::iter::Iter")
-                                    []
-                                    [
-                                      Ty.tuple
-                                        [
-                                          Ty.path "move_core_types::identifier::Identifier";
-                                          Ty.path "move_core_types::annotated_value::MoveValue"
-                                        ]
-                                    ],
-                                  M.get_associated_function (|
+                                M.value_with_ty
+                                  (M.call_closure (|
                                     Ty.apply
-                                      (Ty.path "slice")
+                                      (Ty.path "core::slice::iter::Iter")
                                       []
                                       [
                                         Ty.tuple
@@ -12045,25 +14046,64 @@ Module annotated_value.
                                             Ty.path "move_core_types::annotated_value::MoveValue"
                                           ]
                                       ],
-                                    "iter",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.read (|
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "move_core_types::annotated_value::MoveFields",
-                                            0
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [
+                                          Ty.tuple
+                                            [
+                                              Ty.path "move_core_types::identifier::Identifier";
+                                              Ty.path "move_core_types::annotated_value::MoveValue"
+                                            ]
+                                        ],
+                                      "iter",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.read (|
+                                              M.SubPointer.get_struct_tuple_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "move_core_types::annotated_value::MoveFields",
+                                                0
+                                              |)
+                                            |)
                                           |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "slice")
+                                              []
+                                              [
+                                                Ty.tuple
+                                                  [
+                                                    Ty.path
+                                                      "move_core_types::identifier::Identifier";
+                                                    Ty.path
+                                                      "move_core_types::annotated_value::MoveValue"
+                                                  ]
+                                              ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::slice::iter::Iter")
+                                    []
+                                    [
+                                      Ty.tuple
+                                        [
+                                          Ty.path "move_core_types::identifier::Identifier";
+                                          Ty.path "move_core_types::annotated_value::MoveValue"
+                                        ]
+                                    ])
                               ]
                             |)
                           |),
@@ -12146,12 +14186,30 @@ Module annotated_value.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::slice::iter::Iter")
+                                                        []
+                                                        [
+                                                          Ty.tuple
+                                                            [
+                                                              Ty.path
+                                                                "move_core_types::identifier::Identifier";
+                                                              Ty.path
+                                                                "move_core_types::annotated_value::MoveValue"
+                                                            ]
+                                                        ]
+                                                    ])
                                               ]
                                             |)
                                           |),
@@ -12265,8 +14323,83 @@ Module annotated_value.
                                                             []
                                                           |),
                                                           [
-                                                            M.call_closure (|
-                                                              Ty.apply
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path "core::result::Result")
+                                                                  []
+                                                                  [
+                                                                    Ty.tuple [];
+                                                                    Ty.associated_in_trait
+                                                                      "serde::ser::Serializer"
+                                                                      []
+                                                                      []
+                                                                      S
+                                                                      "Error"
+                                                                  ],
+                                                                M.get_trait_method (|
+                                                                  "serde::ser::SerializeMap",
+                                                                  Ty.associated_in_trait
+                                                                    "serde::ser::Serializer"
+                                                                    []
+                                                                    []
+                                                                    S
+                                                                    "SerializeMap",
+                                                                  [],
+                                                                  [],
+                                                                  "serialize_entry",
+                                                                  [],
+                                                                  [
+                                                                    Ty.path
+                                                                      "move_core_types::identifier::Identifier";
+                                                                    Ty.path
+                                                                      "move_core_types::annotated_value::MoveValue"
+                                                                  ]
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      t
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [
+                                                                        Ty.associated_in_trait
+                                                                          "serde::ser::Serializer"
+                                                                          []
+                                                                          []
+                                                                          S
+                                                                          "SerializeMap"
+                                                                      ]);
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (| M.read (| f |) |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "move_core_types::identifier::Identifier"
+                                                                      ]);
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (| M.read (| v |) |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "move_core_types::annotated_value::MoveValue"
+                                                                      ])
+                                                                ]
+                                                              |))
+                                                              (Ty.apply
                                                                 (Ty.path "core::result::Result")
                                                                 []
                                                                 [
@@ -12277,41 +14410,7 @@ Module annotated_value.
                                                                     []
                                                                     S
                                                                     "Error"
-                                                                ],
-                                                              M.get_trait_method (|
-                                                                "serde::ser::SerializeMap",
-                                                                Ty.associated_in_trait
-                                                                  "serde::ser::Serializer"
-                                                                  []
-                                                                  []
-                                                                  S
-                                                                  "SerializeMap",
-                                                                [],
-                                                                [],
-                                                                "serialize_entry",
-                                                                [],
-                                                                [
-                                                                  Ty.path
-                                                                    "move_core_types::identifier::Identifier";
-                                                                  Ty.path
-                                                                    "move_core_types::annotated_value::MoveValue"
-                                                                ]
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  t
-                                                                |);
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| M.read (| f |) |)
-                                                                |);
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| M.read (| v |) |)
-                                                                |)
-                                                              ]
-                                                            |)
+                                                                ])
                                                           ]
                                                         |)
                                                       |),
@@ -12404,7 +14503,24 @@ Module annotated_value.
                                                                       [],
                                                                       []
                                                                     |),
-                                                                    [ M.read (| residual |) ]
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.read (| residual |))
+                                                                        (Ty.apply
+                                                                          (Ty.path
+                                                                            "core::result::Result")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "core::convert::Infallible";
+                                                                            Ty.associated_in_trait
+                                                                              "serde::ser::Serializer"
+                                                                              []
+                                                                              []
+                                                                              S
+                                                                              "Error"
+                                                                          ])
+                                                                    ]
                                                                   |)
                                                                 |)
                                                               |)
@@ -12458,7 +14574,11 @@ Module annotated_value.
                       [],
                       []
                     |),
-                    [ M.read (| t |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| t |))
+                        (Ty.associated_in_trait "serde::ser::Serializer" [] [] S "SerializeMap")
+                    ]
                   |)
                 |)
               |)))
@@ -12570,8 +14690,45 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "serde::ser::Serializer"
+                                    []
+                                    []
+                                    S
+                                    "SerializeStruct";
+                                  Ty.associated_in_trait "serde::ser::Serializer" [] [] S "Error"
+                                ],
+                              M.get_trait_method (|
+                                "serde::ser::Serializer",
+                                S,
+                                [],
+                                [],
+                                "serialize_struct",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty (M.read (| serializer |)) S;
+                                M.value_with_ty
+                                  (M.read (|
+                                    get_constant (|
+                                      "move_core_types::annotated_value::MOVE_STRUCT_NAME",
+                                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                                    |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                M.value_with_ty
+                                  (Value.Integer IntegerKind.Usize 2)
+                                  (Ty.path "usize")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
@@ -12582,27 +14739,7 @@ Module annotated_value.
                                   S
                                   "SerializeStruct";
                                 Ty.associated_in_trait "serde::ser::Serializer" [] [] S "Error"
-                              ],
-                            M.get_trait_method (|
-                              "serde::ser::Serializer",
-                              S,
-                              [],
-                              [],
-                              "serialize_struct",
-                              [],
-                              []
-                            |),
-                            [
-                              M.read (| serializer |);
-                              M.read (|
-                                get_constant (|
-                                  "move_core_types::annotated_value::MOVE_STRUCT_NAME",
-                                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                |)
-                              |);
-                              Value.Integer IntegerKind.Usize 2
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -12680,7 +14817,22 @@ Module annotated_value.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.associated_in_trait
+                                            "serde::ser::Serializer"
+                                            []
+                                            []
+                                            S
+                                            "Error"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -12753,71 +14905,104 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.tuple [];
+                                  Ty.associated_in_trait "serde::ser::Serializer" [] [] S "Error"
+                                ],
+                              M.get_trait_method (|
+                                "serde::ser::SerializeStruct",
+                                Ty.associated_in_trait
+                                  "serde::ser::Serializer"
+                                  []
+                                  []
+                                  S
+                                  "SerializeStruct",
+                                [],
+                                [],
+                                "serialize_field",
+                                [],
+                                [ Ty.path "alloc::string::String" ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, t |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        S
+                                        "SerializeStruct"
+                                    ]);
+                                M.value_with_ty
+                                  (M.read (|
+                                    get_constant (|
+                                      "move_core_types::annotated_value::MOVE_STRUCT_TYPE",
+                                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                                    |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.path "alloc::string::String",
+                                          M.call_closure (|
+                                            Ty.path "alloc::string::String",
+                                            M.get_trait_method (|
+                                              "alloc::string::ToString",
+                                              Ty.path
+                                                "move_core_types::language_storage::StructTag",
+                                              [],
+                                              [],
+                                              "to_string",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "move_core_types::annotated_value::MoveStruct",
+                                                    "type_"
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "move_core_types::language_storage::StructTag"
+                                                  ])
+                                            ]
+                                          |)
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
                                 Ty.tuple [];
                                 Ty.associated_in_trait "serde::ser::Serializer" [] [] S "Error"
-                              ],
-                            M.get_trait_method (|
-                              "serde::ser::SerializeStruct",
-                              Ty.associated_in_trait
-                                "serde::ser::Serializer"
-                                []
-                                []
-                                S
-                                "SerializeStruct",
-                              [],
-                              [],
-                              "serialize_field",
-                              [],
-                              [ Ty.path "alloc::string::String" ]
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.MutRef, t |);
-                              M.read (|
-                                get_constant (|
-                                  "move_core_types::annotated_value::MOVE_STRUCT_TYPE",
-                                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.path "alloc::string::String",
-                                      M.call_closure (|
-                                        Ty.path "alloc::string::String",
-                                        M.get_trait_method (|
-                                          "alloc::string::ToString",
-                                          Ty.path "move_core_types::language_storage::StructTag",
-                                          [],
-                                          [],
-                                          "to_string",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "move_core_types::annotated_value::MoveStruct",
-                                              "type_"
-                                            |)
-                                          |)
-                                        ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -12895,7 +15080,22 @@ Module annotated_value.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.associated_in_trait
+                                            "serde::ser::Serializer"
+                                            []
+                                            []
+                                            S
+                                            "Error"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -12959,115 +15159,161 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.tuple [];
+                                  Ty.associated_in_trait "serde::ser::Serializer" [] [] S "Error"
+                                ],
+                              M.get_trait_method (|
+                                "serde::ser::SerializeStruct",
+                                Ty.associated_in_trait
+                                  "serde::ser::Serializer"
+                                  []
+                                  []
+                                  S
+                                  "SerializeStruct",
+                                [],
+                                [],
+                                "serialize_field",
+                                [],
+                                [ Ty.path "move_core_types::annotated_value::MoveFields" ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, t |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "serde::ser::Serializer"
+                                        []
+                                        []
+                                        S
+                                        "SerializeStruct"
+                                    ]);
+                                M.value_with_ty
+                                  (M.read (|
+                                    get_constant (|
+                                      "move_core_types::annotated_value::MOVE_STRUCT_FIELDS",
+                                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                                    |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.path "move_core_types::annotated_value::MoveFields",
+                                          M.value_with_ty
+                                            (Value.StructTuple
+                                              "move_core_types::annotated_value::MoveFields"
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "slice")
+                                                            []
+                                                            [
+                                                              Ty.tuple
+                                                                [
+                                                                  Ty.path
+                                                                    "move_core_types::identifier::Identifier";
+                                                                  Ty.path
+                                                                    "move_core_types::annotated_value::MoveValue"
+                                                                ]
+                                                            ]
+                                                        ],
+                                                      M.get_trait_method (|
+                                                        "core::ops::deref::Deref",
+                                                        Ty.apply
+                                                          (Ty.path "alloc::vec::Vec")
+                                                          []
+                                                          [
+                                                            Ty.tuple
+                                                              [
+                                                                Ty.path
+                                                                  "move_core_types::identifier::Identifier";
+                                                                Ty.path
+                                                                  "move_core_types::annotated_value::MoveValue"
+                                                              ];
+                                                            Ty.path "alloc::alloc::Global"
+                                                          ],
+                                                        [],
+                                                        [],
+                                                        "deref",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (|
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  M.deref (| M.read (| self |) |),
+                                                                  "move_core_types::annotated_value::MoveStruct",
+                                                                  "fields"
+                                                                |)
+                                                              |)
+                                                            |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "alloc::vec::Vec")
+                                                                []
+                                                                [
+                                                                  Ty.tuple
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_core_types::identifier::Identifier";
+                                                                      Ty.path
+                                                                        "move_core_types::annotated_value::MoveValue"
+                                                                    ];
+                                                                  Ty.path "alloc::alloc::Global"
+                                                                ]
+                                                            ])
+                                                      ]
+                                                    |)
+                                                  |)
+                                                |)
+                                              ])
+                                            (Ty.path "move_core_types::annotated_value::MoveFields")
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_core_types::annotated_value::MoveFields" ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
                                 Ty.tuple [];
                                 Ty.associated_in_trait "serde::ser::Serializer" [] [] S "Error"
-                              ],
-                            M.get_trait_method (|
-                              "serde::ser::SerializeStruct",
-                              Ty.associated_in_trait
-                                "serde::ser::Serializer"
-                                []
-                                []
-                                S
-                                "SerializeStruct",
-                              [],
-                              [],
-                              "serialize_field",
-                              [],
-                              [ Ty.path "move_core_types::annotated_value::MoveFields" ]
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.MutRef, t |);
-                              M.read (|
-                                get_constant (|
-                                  "move_core_types::annotated_value::MOVE_STRUCT_FIELDS",
-                                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.path "move_core_types::annotated_value::MoveFields",
-                                      Value.StructTuple
-                                        "move_core_types::annotated_value::MoveFields"
-                                        []
-                                        []
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "slice")
-                                                      []
-                                                      [
-                                                        Ty.tuple
-                                                          [
-                                                            Ty.path
-                                                              "move_core_types::identifier::Identifier";
-                                                            Ty.path
-                                                              "move_core_types::annotated_value::MoveValue"
-                                                          ]
-                                                      ]
-                                                  ],
-                                                M.get_trait_method (|
-                                                  "core::ops::deref::Deref",
-                                                  Ty.apply
-                                                    (Ty.path "alloc::vec::Vec")
-                                                    []
-                                                    [
-                                                      Ty.tuple
-                                                        [
-                                                          Ty.path
-                                                            "move_core_types::identifier::Identifier";
-                                                          Ty.path
-                                                            "move_core_types::annotated_value::MoveValue"
-                                                        ];
-                                                      Ty.path "alloc::alloc::Global"
-                                                    ],
-                                                  [],
-                                                  [],
-                                                  "deref",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "move_core_types::annotated_value::MoveStruct",
-                                                          "fields"
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  |)
-                                                ]
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -13145,7 +15391,22 @@ Module annotated_value.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.associated_in_trait
+                                            "serde::ser::Serializer"
+                                            []
+                                            []
+                                            S
+                                            "Error"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -13187,7 +15448,11 @@ Module annotated_value.
                       [],
                       []
                     |),
-                    [ M.read (| t |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| t |))
+                        (Ty.associated_in_trait "serde::ser::Serializer" [] [] S "SerializeStruct")
+                    ]
                   |)
                 |)
               |)))
@@ -13268,33 +15533,47 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "bool" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "bool" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -13317,33 +15596,47 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "u8" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "u8" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -13366,33 +15659,47 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "u16" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "u16" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -13415,33 +15722,47 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "u32" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "u32" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -13464,33 +15785,47 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "u64" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "u64" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -13513,33 +15848,47 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "u128" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "u128" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -13562,33 +15911,47 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "u256" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "u256" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -13611,33 +15974,47 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "address" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "address" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -13660,33 +16037,47 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "signer" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "signer" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -13725,7 +16116,11 @@ Module annotated_value.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Formatter" ])
+                        ]
                       |)
                     |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -13741,37 +16136,68 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1_formatted",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1_formatted",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.apply
-                                  (Ty.path "slice")
+                                  (Ty.path "&")
                                   []
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                              ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]),
                                 [
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                ])
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 2 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array [ mk_str (| "vector<" |); mk_str (| ">" |) ]
+                                        |)
+                                      |)
+                                    |)
+                                  |)
+                                ]
+                              |))
                               (Ty.apply
                                 (Ty.path "&")
                                 []
@@ -13780,9 +16206,288 @@ Module annotated_value.
                                     (Ty.path "slice")
                                     []
                                     [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                ]),
+                                ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.path "core::fmt::rt::Argument" ]
+                                  ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ]),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "alloc::boxed::Box")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "move_core_types::annotated_value::MoveTypeLayout";
+                                                            Ty.path "alloc::alloc::Global"
+                                                          ]
+                                                      ]
+                                                  ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.Ref, typ |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "alloc::boxed::Box")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "move_core_types::annotated_value::MoveTypeLayout";
+                                                                Ty.path "alloc::alloc::Global"
+                                                              ]
+                                                          ]
+                                                      ])
+                                                ]
+                                              |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |)
+                                ]
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.path "core::fmt::rt::Placeholder" ]
+                                  ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.path "core::fmt::rt::Placeholder" ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.path "core::fmt::rt::Placeholder" ]
+                                    ]),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.path "core::fmt::rt::Placeholder" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Placeholder",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Placeholder",
+                                                  "new",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (Value.Integer IntegerKind.Usize 0)
+                                                    (Ty.path "usize");
+                                                  M.value_with_ty
+                                                    (Value.UnicodeChar 32)
+                                                    (Ty.path "char");
+                                                  M.value_with_ty
+                                                    (M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "core::fmt::rt::Alignment::Unknown"
+                                                        [])
+                                                      (Ty.path "core::fmt::rt::Alignment"))
+                                                    (Ty.path "core::fmt::rt::Alignment");
+                                                  M.value_with_ty
+                                                    (Value.Integer IntegerKind.U32 4)
+                                                    (Ty.path "u32");
+                                                  M.value_with_ty
+                                                    (M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "core::fmt::rt::Count::Implied"
+                                                        [])
+                                                      (Ty.path "core::fmt::rt::Count"))
+                                                    (Ty.path "core::fmt::rt::Count");
+                                                  M.value_with_ty
+                                                    (M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "core::fmt::rt::Count::Implied"
+                                                        [])
+                                                      (Ty.path "core::fmt::rt::Count"))
+                                                    (Ty.path "core::fmt::rt::Count")
+                                                ]
+                                              |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |)
+                                ]
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.path "core::fmt::rt::Placeholder" ]
+                                ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "core::fmt::rt::UnsafeArg",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::UnsafeArg",
+                                  "new",
+                                  [],
+                                  []
+                                |),
+                                []
+                              |))
+                              (Ty.path "core::fmt::rt::UnsafeArg")
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (let γ := M.deref (| M.read (| γ |) |) in
+                  let γ1_0 :=
+                    M.SubPointer.get_struct_tuple_field (|
+                      γ,
+                      "move_core_types::annotated_value::MoveTypeLayout::Vector",
+                      0
+                    |) in
+                  let typ :=
+                    M.alloc (|
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::boxed::Box")
+                            []
                             [
-                              M.borrow (|
+                              Ty.path "move_core_types::annotated_value::MoveTypeLayout";
+                              Ty.path "alloc::alloc::Global"
+                            ]
+                        ],
+                      γ1_0
+                    |) in
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_fmt",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
                                 M.deref (|
                                   M.borrow (|
@@ -13796,37 +16501,18 @@ Module annotated_value.
                                     |)
                                   |)
                                 |)
-                              |)
-                            ]
-                          |);
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ]
-                              ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
+                              |))
                               (Ty.apply
                                 (Ty.path "&")
                                 []
                                 [
                                   Ty.apply
                                     (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ]
-                                ])
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "slice")
-                                    []
-                                    [ Ty.path "core::fmt::rt::Argument" ]
-                                ]),
-                            [
-                              M.borrow (|
+                                    [ Value.Integer IntegerKind.Usize 2 ]
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
                                 M.deref (|
                                   M.borrow (|
@@ -13861,222 +16547,48 @@ Module annotated_value.
                                               ]
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, typ |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |);
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "slice")
-                                  []
-                                  [ Ty.path "core::fmt::rt::Placeholder" ]
-                              ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Placeholder" ]
-                                ])
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "slice")
-                                    []
-                                    [ Ty.path "core::fmt::rt::Placeholder" ]
-                                ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.path "core::fmt::rt::Placeholder" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Placeholder",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Placeholder",
-                                              "new",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              Value.Integer IntegerKind.Usize 0;
-                                              Value.UnicodeChar 32;
-                                              Value.StructTuple
-                                                "core::fmt::rt::Alignment::Unknown"
-                                                []
-                                                []
-                                                [];
-                                              Value.Integer IntegerKind.U32 4;
-                                              Value.StructTuple
-                                                "core::fmt::rt::Count::Implied"
-                                                []
-                                                []
-                                                [];
-                                              Value.StructTuple
-                                                "core::fmt::rt::Count::Implied"
-                                                []
-                                                []
-                                                []
-                                            ]
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |);
-                          M.call_closure (|
-                            Ty.path "core::fmt::rt::UnsafeArg",
-                            M.get_associated_function (|
-                              Ty.path "core::fmt::rt::UnsafeArg",
-                              "new",
-                              [],
-                              []
-                            |),
-                            []
-                          |)
-                        ]
-                      |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (let γ := M.deref (| M.read (| γ |) |) in
-                  let γ1_0 :=
-                    M.SubPointer.get_struct_tuple_field (|
-                      γ,
-                      "move_core_types::annotated_value::MoveTypeLayout::Vector",
-                      0
-                    |) in
-                  let typ :=
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "alloc::boxed::Box")
-                            []
-                            [
-                              Ty.path "move_core_types::annotated_value::MoveTypeLayout";
-                              Ty.path "alloc::alloc::Global"
-                            ]
-                        ],
-                      γ1_0
-                    |) in
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "write_fmt",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "vector<" |); mk_str (| ">" |) ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "alloc::boxed::Box")
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, typ |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
                                                   []
                                                   [
-                                                    Ty.path
-                                                      "move_core_types::annotated_value::MoveTypeLayout";
-                                                    Ty.path "alloc::alloc::Global"
-                                                  ]
-                                              ]
-                                          ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, typ |) |)
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "alloc::boxed::Box")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "move_core_types::annotated_value::MoveTypeLayout";
+                                                            Ty.path "alloc::alloc::Global"
+                                                          ]
+                                                      ]
+                                                  ])
+                                            ]
                                           |)
                                         ]
-                                      |)
-                                    ]
+                                    |)
+                                  |)
                                 |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -14107,7 +16619,11 @@ Module annotated_value.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Formatter" ])
+                        ]
                       |)
                     |) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -14123,81 +16639,68 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1_formatted",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1_formatted",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.apply
-                                  (Ty.path "slice")
+                                  (Ty.path "&")
                                   []
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                              ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                ])
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "slice")
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&")
                                     []
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array [ mk_str (| "" |) ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array [ mk_str (| "" |) ]
+                                        |)
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |)
-                            ]
-                          |);
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ]
-                              ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ]
-                                ])
+                                ]
+                              |))
                               (Ty.apply
                                 (Ty.path "&")
                                 []
@@ -14205,72 +16708,198 @@ Module annotated_value.
                                   Ty.apply
                                     (Ty.path "slice")
                                     []
-                                    [ Ty.path "core::fmt::rt::Argument" ]
-                                ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.path "core::fmt::rt::Argument" ]
+                                  ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.path
-                                                      "move_core_types::annotated_value::MoveStructLayout"
-                                                  ]
-                                              ]
-                                            |),
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ]),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          Value.Array
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, s |) |)
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.path
+                                                          "move_core_types::annotated_value::MoveStructLayout"
+                                                      ]
+                                                  ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.Ref, s |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "move_core_types::annotated_value::MoveStructLayout"
+                                                          ]
+                                                      ])
+                                                ]
                                               |)
                                             ]
-                                          |)
-                                        ]
+                                        |)
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |)
-                            ]
-                          |);
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "slice")
-                                  []
-                                  [ Ty.path "core::fmt::rt::Placeholder" ]
-                              ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
+                                ]
+                              |))
                               (Ty.apply
                                 (Ty.path "&")
                                 []
                                 [
                                   Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Placeholder" ]
-                                ])
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.path "core::fmt::rt::Placeholder" ]
+                                  ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.path "core::fmt::rt::Placeholder" ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.path "core::fmt::rt::Placeholder" ]
+                                    ]),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.path "core::fmt::rt::Placeholder" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Placeholder",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Placeholder",
+                                                  "new",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (Value.Integer IntegerKind.Usize 0)
+                                                    (Ty.path "usize");
+                                                  M.value_with_ty
+                                                    (Value.UnicodeChar 32)
+                                                    (Ty.path "char");
+                                                  M.value_with_ty
+                                                    (M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "core::fmt::rt::Alignment::Unknown"
+                                                        [])
+                                                      (Ty.path "core::fmt::rt::Alignment"))
+                                                    (Ty.path "core::fmt::rt::Alignment");
+                                                  M.value_with_ty
+                                                    (Value.Integer IntegerKind.U32 4)
+                                                    (Ty.path "u32");
+                                                  M.value_with_ty
+                                                    (M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "core::fmt::rt::Count::Implied"
+                                                        [])
+                                                      (Ty.path "core::fmt::rt::Count"))
+                                                    (Ty.path "core::fmt::rt::Count");
+                                                  M.value_with_ty
+                                                    (M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "core::fmt::rt::Count::Implied"
+                                                        [])
+                                                      (Ty.path "core::fmt::rt::Count"))
+                                                    (Ty.path "core::fmt::rt::Count")
+                                                ]
+                                              |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |)
+                                ]
+                              |))
                               (Ty.apply
                                 (Ty.path "&")
                                 []
@@ -14279,68 +16908,22 @@ Module annotated_value.
                                     (Ty.path "slice")
                                     []
                                     [ Ty.path "core::fmt::rt::Placeholder" ]
-                                ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.path "core::fmt::rt::Placeholder" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Placeholder",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Placeholder",
-                                              "new",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              Value.Integer IntegerKind.Usize 0;
-                                              Value.UnicodeChar 32;
-                                              Value.StructTuple
-                                                "core::fmt::rt::Alignment::Unknown"
-                                                []
-                                                []
-                                                [];
-                                              Value.Integer IntegerKind.U32 4;
-                                              Value.StructTuple
-                                                "core::fmt::rt::Count::Implied"
-                                                []
-                                                []
-                                                [];
-                                              Value.StructTuple
-                                                "core::fmt::rt::Count::Implied"
-                                                []
-                                                []
-                                                []
-                                            ]
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |);
-                          M.call_closure (|
-                            Ty.path "core::fmt::rt::UnsafeArg",
-                            M.get_associated_function (|
-                              Ty.path "core::fmt::rt::UnsafeArg",
-                              "new",
-                              [],
-                              []
-                            |),
-                            []
-                          |)
-                        ]
-                      |)
+                                ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "core::fmt::rt::UnsafeArg",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::UnsafeArg",
+                                  "new",
+                                  [],
+                                  []
+                                |),
+                                []
+                              |))
+                              (Ty.path "core::fmt::rt::UnsafeArg")
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -14372,73 +16955,111 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "" |) ]
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "" |) ]
+                                    |)
+                                  |)
                                 |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.path
-                                                  "move_core_types::annotated_value::MoveStructLayout"
-                                              ]
-                                          ]
-                                        |),
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      Value.Array
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, s |) |)
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "move_core_types::annotated_value::MoveStructLayout"
+                                                  ]
+                                              ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, s |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.path
+                                                          "move_core_types::annotated_value::MoveStructLayout"
+                                                      ]
+                                                  ])
+                                            ]
                                           |)
                                         ]
-                                      |)
-                                    ]
+                                    |)
+                                  |)
                                 |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)))
             ]
@@ -14512,7 +17133,11 @@ Module annotated_value.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Formatter" ])
+                          ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -14528,37 +17153,68 @@ Module annotated_value.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1_formatted",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1_formatted",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.apply
-                                  (Ty.path "slice")
+                                  (Ty.path "&")
                                   []
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                              ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]),
                                 [
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                ])
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array [ mk_str (| "" |) ]
+                                        |)
+                                      |)
+                                    |)
+                                  |)
+                                ]
+                              |))
                               (Ty.apply
                                 (Ty.path "&")
                                 []
@@ -14567,9 +17223,244 @@ Module annotated_value.
                                     (Ty.path "slice")
                                     []
                                     [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                ]),
-                            [
-                              M.borrow (|
+                                ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.path "core::fmt::rt::Argument" ]
+                                  ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ]),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ T ] ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.SubPointer.get_struct_tuple_field (|
+                                                            M.deref (| M.read (| self |) |),
+                                                            "move_core_types::annotated_value::DebugAsDisplay",
+                                                            0
+                                                          |)
+                                                        |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.apply (Ty.path "&") [] [ T ] ])
+                                                ]
+                                              |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |)
+                                ]
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.path "core::fmt::rt::Placeholder" ]
+                                  ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.path "core::fmt::rt::Placeholder" ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.path "core::fmt::rt::Placeholder" ]
+                                    ]),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.path "core::fmt::rt::Placeholder" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Placeholder",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Placeholder",
+                                                  "new",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (Value.Integer IntegerKind.Usize 0)
+                                                    (Ty.path "usize");
+                                                  M.value_with_ty
+                                                    (Value.UnicodeChar 32)
+                                                    (Ty.path "char");
+                                                  M.value_with_ty
+                                                    (M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "core::fmt::rt::Alignment::Unknown"
+                                                        [])
+                                                      (Ty.path "core::fmt::rt::Alignment"))
+                                                    (Ty.path "core::fmt::rt::Alignment");
+                                                  M.value_with_ty
+                                                    (Value.Integer IntegerKind.U32 4)
+                                                    (Ty.path "u32");
+                                                  M.value_with_ty
+                                                    (M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "core::fmt::rt::Count::Implied"
+                                                        [])
+                                                      (Ty.path "core::fmt::rt::Count"))
+                                                    (Ty.path "core::fmt::rt::Count");
+                                                  M.value_with_ty
+                                                    (M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "core::fmt::rt::Count::Implied"
+                                                        [])
+                                                      (Ty.path "core::fmt::rt::Count"))
+                                                    (Ty.path "core::fmt::rt::Count")
+                                                ]
+                                              |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |)
+                                ]
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.path "core::fmt::rt::Placeholder" ]
+                                ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "core::fmt::rt::UnsafeArg",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::rt::UnsafeArg",
+                                  "new",
+                                  [],
+                                  []
+                                |),
+                                []
+                              |))
+                              (Ty.path "core::fmt::rt::UnsafeArg")
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
+                    ]
+                  |)));
+              fun γ =>
+                ltac:(M.monadic
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Formatter",
+                      "write_fmt",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "core::fmt::Arguments",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
                                 M.deref (|
                                   M.borrow (|
@@ -14583,17 +17474,7 @@ Module annotated_value.
                                     |)
                                   |)
                                 |)
-                              |)
-                            ]
-                          |);
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ]
-                              ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
+                              |))
                               (Ty.apply
                                 (Ty.path "&")
                                 []
@@ -14601,19 +17482,10 @@ Module annotated_value.
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ]
-                                ])
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "slice")
-                                    []
-                                    [ Ty.path "core::fmt::rt::Argument" ]
-                                ]),
-                            [
-                              M.borrow (|
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
                                 M.deref (|
                                   M.borrow (|
@@ -14634,40 +17506,31 @@ Module annotated_value.
                                               [ Ty.apply (Ty.path "&") [] [ T ] ]
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.SubPointer.get_struct_tuple_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "move_core_types::annotated_value::DebugAsDisplay",
-                                                      0
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.SubPointer.get_struct_tuple_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "move_core_types::annotated_value::DebugAsDisplay",
+                                                        0
+                                                      |)
                                                     |)
                                                   |)
-                                                |)
-                                              |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&") [] [ T ] ])
                                             ]
                                           |)
                                         ]
                                     |)
                                   |)
                                 |)
-                              |)
-                            ]
-                          |);
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "slice")
-                                  []
-                                  [ Ty.path "core::fmt::rt::Placeholder" ]
-                              ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
+                              |))
                               (Ty.apply
                                 (Ty.path "&")
                                 []
@@ -14675,162 +17538,11 @@ Module annotated_value.
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Placeholder" ]
+                                    [ Ty.path "core::fmt::rt::Argument" ]
                                 ])
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "slice")
-                                    []
-                                    [ Ty.path "core::fmt::rt::Placeholder" ]
-                                ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.path "core::fmt::rt::Placeholder" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Placeholder",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Placeholder",
-                                              "new",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              Value.Integer IntegerKind.Usize 0;
-                                              Value.UnicodeChar 32;
-                                              Value.StructTuple
-                                                "core::fmt::rt::Alignment::Unknown"
-                                                []
-                                                []
-                                                [];
-                                              Value.Integer IntegerKind.U32 4;
-                                              Value.StructTuple
-                                                "core::fmt::rt::Count::Implied"
-                                                []
-                                                []
-                                                [];
-                                              Value.StructTuple
-                                                "core::fmt::rt::Count::Implied"
-                                                []
-                                                []
-                                                []
-                                            ]
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |);
-                          M.call_closure (|
-                            Ty.path "core::fmt::rt::UnsafeArg",
-                            M.get_associated_function (|
-                              Ty.path "core::fmt::rt::UnsafeArg",
-                              "new",
-                              [],
-                              []
-                            |),
-                            []
-                          |)
-                        ]
-                      |)
-                    ]
-                  |)));
-              fun γ =>
-                ltac:(M.monadic
-                  (M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::result::Result")
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "write_fmt",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "" |) ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.apply (Ty.path "&") [] [ T ] ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_tuple_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_core_types::annotated_value::DebugAsDisplay",
-                                                  0
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)))
             ]
@@ -14922,47 +17634,66 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Formatter",
+                                "write_fmt",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "core::fmt::Arguments",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new_const",
+                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                                Value.Array [ mk_str (| "struct " |) ]
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.path "core::fmt::Arguments")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
-                              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                            M.get_associated_function (|
-                              Ty.path "core::fmt::Formatter",
-                              "write_fmt",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                              M.call_closure (|
-                                Ty.path "core::fmt::Arguments",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::Arguments",
-                                  "new_const",
-                                  [ Value.Integer IntegerKind.Usize 1 ],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array [ mk_str (| "struct " |) ]
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            ]
-                          |)
+                              [ Ty.tuple []; Ty.path "core::fmt::Error" ])
                         ]
                       |)
                     |),
@@ -15011,7 +17742,17 @@ Module annotated_value.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::fmt::Error"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -15066,94 +17807,131 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Formatter",
+                                "write_fmt",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "core::fmt::Arguments",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new_v1",
+                                      [
+                                        Value.Integer IntegerKind.Usize 2;
+                                        Value.Integer IntegerKind.Usize 1
+                                      ],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 2 ]
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                                Value.Array [ mk_str (| "" |); mk_str (| " " |) ]
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 2 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                          ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.path "core::fmt::rt::Argument" ],
+                                                Value.Array
+                                                  [
+                                                    M.call_closure (|
+                                                      Ty.path "core::fmt::rt::Argument",
+                                                      M.get_associated_function (|
+                                                        Ty.path "core::fmt::rt::Argument",
+                                                        "new_display",
+                                                        [],
+                                                        [
+                                                          Ty.path
+                                                            "move_core_types::language_storage::StructTag"
+                                                        ]
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (|
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  M.deref (| M.read (| self |) |),
+                                                                  "move_core_types::annotated_value::MoveStructLayout",
+                                                                  "type_"
+                                                                |)
+                                                              |)
+                                                            |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "move_core_types::language_storage::StructTag"
+                                                            ])
+                                                      ]
+                                                    |)
+                                                  ]
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.path "core::fmt::rt::Argument" ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.path "core::fmt::Arguments")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
-                              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                            M.get_associated_function (|
-                              Ty.path "core::fmt::Formatter",
-                              "write_fmt",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                              M.call_closure (|
-                                Ty.path "core::fmt::Arguments",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::Arguments",
-                                  "new_v1",
-                                  [
-                                    Value.Integer IntegerKind.Usize 2;
-                                    Value.Integer IntegerKind.Usize 1
-                                  ],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 2 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array [ mk_str (| "" |); mk_str (| " " |) ]
-                                        |)
-                                      |)
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.path "core::fmt::rt::Argument" ],
-                                          Value.Array
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::rt::Argument",
-                                                  "new_display",
-                                                  [],
-                                                  [
-                                                    Ty.path
-                                                      "move_core_types::language_storage::StructTag"
-                                                  ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| self |) |),
-                                                          "move_core_types::annotated_value::MoveStructLayout",
-                                                          "type_"
-                                                        |)
-                                                      |)
-                                                    |)
-                                                  |)
-                                                ]
-                                              |)
-                                            ]
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            ]
-                          |)
+                              [ Ty.tuple []; Ty.path "core::fmt::Error" ])
                         ]
                       |)
                     |),
@@ -15202,7 +17980,17 @@ Module annotated_value.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::fmt::Error"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -15228,7 +18016,11 @@ Module annotated_value.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
+                    ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.read (|
@@ -15268,14 +18060,28 @@ Module annotated_value.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_core_types::annotated_value::MoveStructLayout",
-                                    "fields"
-                                  |)
-                                |)
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "move_core_types::annotated_value::MoveStructLayout",
+                                      "fields"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::vec::Vec")
+                                        []
+                                        [
+                                          Ty.path
+                                            "move_core_types::annotated_value::MoveFieldLayout";
+                                          Ty.path "alloc::alloc::Global"
+                                        ]
+                                    ])
                               ]
                             |)
                           |),
@@ -15338,12 +18144,25 @@ Module annotated_value.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::slice::iter::Iter")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_core_types::annotated_value::MoveFieldLayout"
+                                                        ]
+                                                    ])
                                               ]
                                             |)
                                           |),
@@ -15394,159 +18213,201 @@ Module annotated_value.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (| Pointer.Kind.MutRef, map |);
-                                                        M.call_closure (|
-                                                          Ty.apply
-                                                            (Ty.path "&")
+                                                        M.value_with_ty
+                                                          (M.borrow (| Pointer.Kind.MutRef, map |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
                                                             []
                                                             [
-                                                              Ty.dyn
-                                                                [ ("core::fmt::Debug::Trait", []) ]
-                                                            ],
-                                                          M.pointer_coercion
-                                                            M.PointerCoercion.Unsize
-                                                            (Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path
-                                                                    "move_core_types::annotated_value::DebugAsDisplay")
-                                                                  []
-                                                                  [
-                                                                    Ty.path
-                                                                      "move_core_types::identifier::Identifier"
-                                                                  ]
-                                                              ])
-                                                            (Ty.apply
+                                                              Ty.path
+                                                                "core::fmt::builders::DebugMap"
+                                                            ]);
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
+                                                            Ty.apply
                                                               (Ty.path "&")
                                                               []
                                                               [
                                                                 Ty.dyn
                                                                   [ ("core::fmt::Debug::Trait", [])
                                                                   ]
-                                                              ]),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.alloc (|
-                                                                    Ty.apply
-                                                                      (Ty.path
-                                                                        "move_core_types::annotated_value::DebugAsDisplay")
-                                                                      []
-                                                                      [
-                                                                        Ty.path
-                                                                          "move_core_types::identifier::Identifier"
-                                                                      ],
-                                                                    Value.StructTuple
-                                                                      "move_core_types::annotated_value::DebugAsDisplay"
-                                                                      []
-                                                                      [
-                                                                        Ty.path
-                                                                          "move_core_types::identifier::Identifier"
-                                                                      ]
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
+                                                              ],
+                                                            M.pointer_coercion
+                                                              M.PointerCoercion.Unsize
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "move_core_types::annotated_value::DebugAsDisplay")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_core_types::identifier::Identifier"
+                                                                    ]
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.dyn
+                                                                    [
+                                                                      ("core::fmt::Debug::Trait",
+                                                                        [])
+                                                                    ]
+                                                                ]),
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.alloc (|
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "move_core_types::annotated_value::DebugAsDisplay")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "move_core_types::identifier::Identifier"
+                                                                        ],
+                                                                      M.value_with_ty
+                                                                        (Value.StructTuple
+                                                                          "move_core_types::annotated_value::DebugAsDisplay"
+                                                                          [
                                                                             M.borrow (|
                                                                               Pointer.Kind.Ref,
-                                                                              M.SubPointer.get_struct_record_field (|
-                                                                                M.deref (|
-                                                                                  M.read (| field |)
-                                                                                |),
-                                                                                "move_core_types::annotated_value::MoveFieldLayout",
-                                                                                "name"
+                                                                              M.deref (|
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  M.SubPointer.get_struct_record_field (|
+                                                                                    M.deref (|
+                                                                                      M.read (|
+                                                                                        field
+                                                                                      |)
+                                                                                    |),
+                                                                                    "move_core_types::annotated_value::MoveFieldLayout",
+                                                                                    "name"
+                                                                                  |)
+                                                                                |)
                                                                               |)
                                                                             |)
-                                                                          |)
-                                                                        |)
-                                                                      ]
+                                                                          ])
+                                                                        (Ty.apply
+                                                                          (Ty.path
+                                                                            "move_core_types::annotated_value::DebugAsDisplay")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "move_core_types::identifier::Identifier"
+                                                                          ])
+                                                                    |)
                                                                   |)
                                                                 |)
                                                               |)
-                                                            |)
-                                                          ]
-                                                        |);
-                                                        M.call_closure (|
-                                                          Ty.apply
+                                                            ]
+                                                          |))
+                                                          (Ty.apply
                                                             (Ty.path "&")
                                                             []
                                                             [
                                                               Ty.dyn
                                                                 [ ("core::fmt::Debug::Trait", []) ]
-                                                            ],
-                                                          M.pointer_coercion
-                                                            M.PointerCoercion.Unsize
-                                                            (Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path
-                                                                    "move_core_types::annotated_value::DebugAsDisplay")
-                                                                  []
-                                                                  [
-                                                                    Ty.path
-                                                                      "move_core_types::annotated_value::MoveTypeLayout"
-                                                                  ]
-                                                              ])
-                                                            (Ty.apply
+                                                            ]);
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
+                                                            Ty.apply
                                                               (Ty.path "&")
                                                               []
                                                               [
                                                                 Ty.dyn
                                                                   [ ("core::fmt::Debug::Trait", [])
                                                                   ]
-                                                              ]),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.alloc (|
-                                                                    Ty.apply
-                                                                      (Ty.path
-                                                                        "move_core_types::annotated_value::DebugAsDisplay")
-                                                                      []
-                                                                      [
-                                                                        Ty.path
-                                                                          "move_core_types::annotated_value::MoveTypeLayout"
-                                                                      ],
-                                                                    Value.StructTuple
-                                                                      "move_core_types::annotated_value::DebugAsDisplay"
-                                                                      []
-                                                                      [
-                                                                        Ty.path
-                                                                          "move_core_types::annotated_value::MoveTypeLayout"
-                                                                      ]
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
+                                                              ],
+                                                            M.pointer_coercion
+                                                              M.PointerCoercion.Unsize
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "move_core_types::annotated_value::DebugAsDisplay")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_core_types::annotated_value::MoveTypeLayout"
+                                                                    ]
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.dyn
+                                                                    [
+                                                                      ("core::fmt::Debug::Trait",
+                                                                        [])
+                                                                    ]
+                                                                ]),
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.alloc (|
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "move_core_types::annotated_value::DebugAsDisplay")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "move_core_types::annotated_value::MoveTypeLayout"
+                                                                        ],
+                                                                      M.value_with_ty
+                                                                        (Value.StructTuple
+                                                                          "move_core_types::annotated_value::DebugAsDisplay"
+                                                                          [
                                                                             M.borrow (|
                                                                               Pointer.Kind.Ref,
-                                                                              M.SubPointer.get_struct_record_field (|
-                                                                                M.deref (|
-                                                                                  M.read (| field |)
-                                                                                |),
-                                                                                "move_core_types::annotated_value::MoveFieldLayout",
-                                                                                "layout"
+                                                                              M.deref (|
+                                                                                M.borrow (|
+                                                                                  Pointer.Kind.Ref,
+                                                                                  M.SubPointer.get_struct_record_field (|
+                                                                                    M.deref (|
+                                                                                      M.read (|
+                                                                                        field
+                                                                                      |)
+                                                                                    |),
+                                                                                    "move_core_types::annotated_value::MoveFieldLayout",
+                                                                                    "layout"
+                                                                                  |)
+                                                                                |)
                                                                               |)
                                                                             |)
-                                                                          |)
-                                                                        |)
-                                                                      ]
+                                                                          ])
+                                                                        (Ty.apply
+                                                                          (Ty.path
+                                                                            "move_core_types::annotated_value::DebugAsDisplay")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "move_core_types::annotated_value::MoveTypeLayout"
+                                                                          ])
+                                                                    |)
                                                                   |)
                                                                 |)
                                                               |)
-                                                            |)
-                                                          ]
-                                                        |)
+                                                            ]
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.dyn
+                                                                [ ("core::fmt::Debug::Trait", []) ]
+                                                            ])
                                                       ]
                                                     |) in
                                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -15576,7 +18437,11 @@ Module annotated_value.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.MutRef, map |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, map |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugMap" ])
+                    ]
                   |)
                 |)
               |)))
@@ -15640,11 +18505,9 @@ Module annotated_value.
                       γ,
                       "move_core_types::annotated_value::MoveTypeLayout::Address"
                     |) in
-                  Value.StructTuple
-                    "move_core_types::language_storage::TypeTag::Address"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::language_storage::TypeTag::Address" [])
+                    (Ty.path "move_core_types::language_storage::TypeTag")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -15653,7 +18516,9 @@ Module annotated_value.
                       γ,
                       "move_core_types::annotated_value::MoveTypeLayout::Bool"
                     |) in
-                  Value.StructTuple "move_core_types::language_storage::TypeTag::Bool" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::language_storage::TypeTag::Bool" [])
+                    (Ty.path "move_core_types::language_storage::TypeTag")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -15662,7 +18527,9 @@ Module annotated_value.
                       γ,
                       "move_core_types::annotated_value::MoveTypeLayout::U8"
                     |) in
-                  Value.StructTuple "move_core_types::language_storage::TypeTag::U8" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::language_storage::TypeTag::U8" [])
+                    (Ty.path "move_core_types::language_storage::TypeTag")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -15671,7 +18538,9 @@ Module annotated_value.
                       γ,
                       "move_core_types::annotated_value::MoveTypeLayout::U16"
                     |) in
-                  Value.StructTuple "move_core_types::language_storage::TypeTag::U16" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::language_storage::TypeTag::U16" [])
+                    (Ty.path "move_core_types::language_storage::TypeTag")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -15680,7 +18549,9 @@ Module annotated_value.
                       γ,
                       "move_core_types::annotated_value::MoveTypeLayout::U32"
                     |) in
-                  Value.StructTuple "move_core_types::language_storage::TypeTag::U32" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::language_storage::TypeTag::U32" [])
+                    (Ty.path "move_core_types::language_storage::TypeTag")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -15689,7 +18560,9 @@ Module annotated_value.
                       γ,
                       "move_core_types::annotated_value::MoveTypeLayout::U64"
                     |) in
-                  Value.StructTuple "move_core_types::language_storage::TypeTag::U64" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::language_storage::TypeTag::U64" [])
+                    (Ty.path "move_core_types::language_storage::TypeTag")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -15698,7 +18571,9 @@ Module annotated_value.
                       γ,
                       "move_core_types::annotated_value::MoveTypeLayout::U128"
                     |) in
-                  Value.StructTuple "move_core_types::language_storage::TypeTag::U128" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::language_storage::TypeTag::U128" [])
+                    (Ty.path "move_core_types::language_storage::TypeTag")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -15707,7 +18582,9 @@ Module annotated_value.
                       γ,
                       "move_core_types::annotated_value::MoveTypeLayout::U256"
                     |) in
-                  Value.StructTuple "move_core_types::language_storage::TypeTag::U256" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::language_storage::TypeTag::U256" [])
+                    (Ty.path "move_core_types::language_storage::TypeTag")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -15716,7 +18593,9 @@ Module annotated_value.
                       γ,
                       "move_core_types::annotated_value::MoveTypeLayout::Signer"
                     |) in
-                  Value.StructTuple "move_core_types::language_storage::TypeTag::Signer" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "move_core_types::language_storage::TypeTag::Signer" [])
+                    (Ty.path "move_core_types::language_storage::TypeTag")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -15754,20 +18633,11 @@ Module annotated_value.
                       |) in
                     M.alloc (|
                       Ty.path "move_core_types::language_storage::TypeTag",
-                      Value.StructTuple
-                        "move_core_types::language_storage::TypeTag::Vector"
-                        []
-                        []
-                        [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "alloc::boxed::Box")
-                              []
-                              [
-                                Ty.path "move_core_types::language_storage::TypeTag";
-                                Ty.path "alloc::alloc::Global"
-                              ],
-                            M.get_associated_function (|
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "move_core_types::language_storage::TypeTag::Vector"
+                          [
+                            M.call_closure (|
                               Ty.apply
                                 (Ty.path "alloc::boxed::Box")
                                 []
@@ -15775,35 +18645,55 @@ Module annotated_value.
                                   Ty.path "move_core_types::language_storage::TypeTag";
                                   Ty.path "alloc::alloc::Global"
                                 ],
-                              "new",
-                              [],
-                              []
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.path "move_core_types::language_storage::TypeTag",
-                                M.get_trait_method (|
-                                  "core::convert::Into",
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.path "move_core_types::annotated_value::MoveTypeLayout" ],
-                                  [],
-                                  [ Ty.path "move_core_types::language_storage::TypeTag" ],
-                                  "into",
-                                  [],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "alloc::boxed::Box")
                                   []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.read (| inner_type |) |)
-                                  |)
-                                ]
-                              |)
-                            ]
-                          |)
-                        ]
+                                  [
+                                    Ty.path "move_core_types::language_storage::TypeTag";
+                                    Ty.path "alloc::alloc::Global"
+                                  ],
+                                "new",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "move_core_types::language_storage::TypeTag",
+                                    M.get_trait_method (|
+                                      "core::convert::Into",
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "move_core_types::annotated_value::MoveTypeLayout"
+                                        ],
+                                      [],
+                                      [ Ty.path "move_core_types::language_storage::TypeTag" ],
+                                      "into",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| inner_type |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.path
+                                              "move_core_types::annotated_value::MoveTypeLayout"
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.path "move_core_types::language_storage::TypeTag")
+                              ]
+                            |)
+                          ])
+                        (Ty.path "move_core_types::language_storage::TypeTag")
                     |)
                   |)));
               fun γ =>
@@ -15823,20 +18713,11 @@ Module annotated_value.
                         [ Ty.path "move_core_types::annotated_value::MoveStructLayout" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "move_core_types::language_storage::TypeTag::Struct"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "alloc::boxed::Box")
-                          []
-                          [
-                            Ty.path "move_core_types::language_storage::StructTag";
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        M.get_associated_function (|
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "move_core_types::language_storage::TypeTag::Struct"
+                      [
+                        M.call_closure (|
                           Ty.apply
                             (Ty.path "alloc::boxed::Box")
                             []
@@ -15844,30 +18725,50 @@ Module annotated_value.
                               Ty.path "move_core_types::language_storage::StructTag";
                               Ty.path "alloc::alloc::Global"
                             ],
-                          "new",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
-                            Ty.path "move_core_types::language_storage::StructTag",
-                            M.get_trait_method (|
-                              "core::convert::Into",
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "move_core_types::annotated_value::MoveStructLayout" ],
-                              [],
-                              [ Ty.path "move_core_types::language_storage::StructTag" ],
-                              "into",
-                              [],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "alloc::boxed::Box")
                               []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |) ]
-                          |)
-                        ]
-                      |)
-                    ]))
+                              [
+                                Ty.path "move_core_types::language_storage::StructTag";
+                                Ty.path "alloc::alloc::Global"
+                              ],
+                            "new",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "move_core_types::language_storage::StructTag",
+                                M.get_trait_method (|
+                                  "core::convert::Into",
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_core_types::annotated_value::MoveStructLayout"
+                                    ],
+                                  [],
+                                  [ Ty.path "move_core_types::language_storage::StructTag" ],
+                                  "into",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "move_core_types::annotated_value::MoveStructLayout"
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "move_core_types::language_storage::StructTag")
+                          ]
+                        |)
+                      ])
+                    (Ty.path "move_core_types::language_storage::TypeTag")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -15915,14 +18816,19 @@ Module annotated_value.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| val |) |),
-                  "move_core_types::annotated_value::MoveStructLayout",
-                  "type_"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| val |) |),
+                    "move_core_types::annotated_value::MoveStructLayout",
+                    "type_"
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "move_core_types::language_storage::StructTag" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -16014,66 +18920,100 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
-                              ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_v1",
+                                [
+                                  Value.Integer IntegerKind.Usize 2;
+                                  Value.Integer IntegerKind.Usize 1
+                                ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 2 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array [ mk_str (| "" |); mk_str (| "u8" |) ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array [ mk_str (| "" |); mk_str (| "u8" |) ]
-                                    |)
-                                  |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.Ref, u |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]
+                                                      ])
+                                                ]
+                                              |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, u |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)));
                   fun γ =>
@@ -16098,66 +19038,100 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
-                              ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_v1",
+                                [
+                                  Value.Integer IntegerKind.Usize 2;
+                                  Value.Integer IntegerKind.Usize 1
+                                ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 2 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array [ mk_str (| "" |); mk_str (| "u16" |) ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array [ mk_str (| "" |); mk_str (| "u16" |) ]
-                                    |)
-                                  |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.Ref, u |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ]
+                                                      ])
+                                                ]
+                                              |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, u |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)));
                   fun γ =>
@@ -16182,66 +19156,100 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
-                              ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_v1",
+                                [
+                                  Value.Integer IntegerKind.Usize 2;
+                                  Value.Integer IntegerKind.Usize 1
+                                ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 2 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array [ mk_str (| "" |); mk_str (| "u32" |) ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array [ mk_str (| "" |); mk_str (| "u32" |) ]
-                                    |)
-                                  |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.Ref, u |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ]
+                                                      ])
+                                                ]
+                                              |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, u |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)));
                   fun γ =>
@@ -16266,66 +19274,100 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
-                              ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_v1",
+                                [
+                                  Value.Integer IntegerKind.Usize 2;
+                                  Value.Integer IntegerKind.Usize 1
+                                ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 2 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array [ mk_str (| "" |); mk_str (| "u64" |) ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array [ mk_str (| "" |); mk_str (| "u64" |) ]
-                                    |)
-                                  |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.Ref, u |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]
+                                                      ])
+                                                ]
+                                              |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, u |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)));
                   fun γ =>
@@ -16350,66 +19392,100 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
-                              ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_v1",
+                                [
+                                  Value.Integer IntegerKind.Usize 2;
+                                  Value.Integer IntegerKind.Usize 1
+                                ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 2 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array [ mk_str (| "" |); mk_str (| "u128" |) ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array [ mk_str (| "" |); mk_str (| "u128" |) ]
-                                    |)
-                                  |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.Ref, u |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ]
+                                                      ])
+                                                ]
+                                              |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, u |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)));
                   fun γ =>
@@ -16438,71 +19514,109 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
-                              ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_v1",
+                                [
+                                  Value.Integer IntegerKind.Usize 2;
+                                  Value.Integer IntegerKind.Usize 1
+                                ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 2 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array [ mk_str (| "" |); mk_str (| "u256" |) ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array [ mk_str (| "" |); mk_str (| "u256" |) ]
-                                    |)
-                                  |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.path "move_core_types::u256::U256" ]
+                                                  ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.Ref, u |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [ Ty.path "move_core_types::u256::U256" ]
+                                                      ])
+                                                ]
+                                              |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [ Ty.path "move_core_types::u256::U256" ]
-                                              ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, u |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)));
                   fun γ =>
@@ -16528,33 +19642,47 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_const",
-                              [ Value.Integer IntegerKind.Usize 1 ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_const",
+                                [ Value.Integer IntegerKind.Usize 1 ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array [ mk_str (| "false" |) ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array [ mk_str (| "false" |) ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)));
                   fun γ =>
@@ -16580,33 +19708,47 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_const",
-                              [ Value.Integer IntegerKind.Usize 1 ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_const",
+                                [ Value.Integer IntegerKind.Usize 1 ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array [ mk_str (| "true" |) ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array [ mk_str (| "true" |) ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)));
                   fun γ =>
@@ -16638,89 +19780,128 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1
-                              ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_v1",
+                                [
+                                  Value.Integer IntegerKind.Usize 1;
+                                  Value.Integer IntegerKind.Usize 1
+                                ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array [ mk_str (| "" |) ]
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array [ mk_str (| "" |) ]
+                                        |)
+                                      |)
                                     |)
-                                  |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.path "alloc::string::String" ]
-                                            |),
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          Value.Array
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.path "alloc::string::String",
-                                                      M.call_closure (|
-                                                        Ty.path "alloc::string::String",
-                                                        M.get_associated_function (|
-                                                          Ty.path
-                                                            "move_core_types::account_address::AccountAddress",
-                                                          "to_hex_literal",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| a |) |)
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.path "alloc::string::String" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.alloc (|
+                                                            Ty.path "alloc::string::String",
+                                                            M.call_closure (|
+                                                              Ty.path "alloc::string::String",
+                                                              M.get_associated_function (|
+                                                                Ty.path
+                                                                  "move_core_types::account_address::AccountAddress",
+                                                                "to_hex_literal",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (| M.read (| a |) |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_core_types::account_address::AccountAddress"
+                                                                    ])
+                                                              ]
+                                                            |)
                                                           |)
-                                                        ]
+                                                        |)
                                                       |)
-                                                    |)
-                                                  |)
-                                                |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.path "alloc::string::String" ])
+                                                ]
                                               |)
                                             ]
-                                          |)
-                                        ]
+                                        |)
+                                      |)
                                     |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)));
                   fun γ =>
@@ -16752,89 +19933,128 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
-                              ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_v1",
+                                [
+                                  Value.Integer IntegerKind.Usize 2;
+                                  Value.Integer IntegerKind.Usize 1
+                                ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 2 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array [ mk_str (| "signer(" |); mk_str (| ")" |) ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array [ mk_str (| "signer(" |); mk_str (| ")" |) ]
-                                    |)
-                                  |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.path "alloc::string::String" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.alloc (|
+                                                            Ty.path "alloc::string::String",
+                                                            M.call_closure (|
+                                                              Ty.path "alloc::string::String",
+                                                              M.get_associated_function (|
+                                                                Ty.path
+                                                                  "move_core_types::account_address::AccountAddress",
+                                                                "to_hex_literal",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (| M.read (| a |) |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_core_types::account_address::AccountAddress"
+                                                                    ])
+                                                              ]
+                                                            |)
+                                                          |)
+                                                        |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.path "alloc::string::String" ])
+                                                ]
+                                              |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.path "alloc::string::String" ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.path "alloc::string::String",
-                                                      M.call_closure (|
-                                                        Ty.path "alloc::string::String",
-                                                        M.get_associated_function (|
-                                                          Ty.path
-                                                            "move_core_types::account_address::AccountAddress",
-                                                          "to_hex_literal",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| a |) |)
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    |)
-                                                  |)
-                                                |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)));
                   fun γ =>
@@ -16907,50 +20127,78 @@ Module annotated_value.
                                   []
                                 |),
                                 [
-                                  M.call_closure (|
-                                    Ty.apply
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::Formatter",
+                                        "write_fmt",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.read (| f |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [ Ty.path "core::fmt::Formatter" ]);
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.path "core::fmt::Arguments",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Arguments",
+                                              "new_const",
+                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "str" ]
+                                                          ],
+                                                        Value.Array [ mk_str (| "vector" |) ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                                                      ]
+                                                  ])
+                                            ]
+                                          |))
+                                          (Ty.path "core::fmt::Arguments")
+                                      ]
+                                    |))
+                                    (Ty.apply
                                       (Ty.path "core::result::Result")
                                       []
-                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::Formatter",
-                                      "write_fmt",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| f |) |)
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::Arguments",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::Arguments",
-                                          "new_const",
-                                          [ Value.Integer IntegerKind.Usize 1 ],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.alloc (|
-                                                  Ty.apply
-                                                    (Ty.path "array")
-                                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                                  Value.Array [ mk_str (| "vector" |) ]
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
+                                      [ Ty.tuple []; Ty.path "core::fmt::Error" ])
                                 ]
                               |)
                             |),
@@ -17002,7 +20250,17 @@ Module annotated_value.
                                             [],
                                             []
                                           |),
-                                          [ M.read (| residual |) ]
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| residual |))
+                                              (Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "core::convert::Infallible";
+                                                  Ty.path "core::fmt::Error"
+                                                ])
+                                          ]
                                         |)
                                       |)
                                     |)
@@ -17028,7 +20286,11 @@ Module annotated_value.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
+                            ]
                           |) in
                         let~ _ : Ty.tuple [] :=
                           M.read (|
@@ -17068,7 +20330,23 @@ Module annotated_value.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| v |) ]
+                                      [
+                                        M.value_with_ty
+                                          (M.read (| v |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::vec::Vec")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "move_core_types::annotated_value::MoveValue";
+                                                  Ty.path "alloc::alloc::Global"
+                                                ]
+                                            ])
+                                      ]
                                     |)
                                   |),
                                   [
@@ -17132,12 +20410,28 @@ Module annotated_value.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.deref (|
-                                                            M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                          |)
-                                                        |)
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.deref (|
+                                                              M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                iter
+                                                              |)
+                                                            |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "core::slice::iter::Iter")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "move_core_types::annotated_value::MoveValue"
+                                                                ]
+                                                            ])
                                                       ]
                                                     |)
                                                   |),
@@ -17196,37 +20490,21 @@ Module annotated_value.
                                                                 []
                                                               |),
                                                               [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  list
-                                                                |);
-                                                                M.call_closure (|
-                                                                  Ty.apply
-                                                                    (Ty.path "&")
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    list
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&mut")
                                                                     []
                                                                     [
-                                                                      Ty.dyn
-                                                                        [
-                                                                          ("core::fmt::Debug::Trait",
-                                                                            [])
-                                                                        ]
-                                                                    ],
-                                                                  M.pointer_coercion
-                                                                    M.PointerCoercion.Unsize
-                                                                    (Ty.apply
-                                                                      (Ty.path "&")
-                                                                      []
-                                                                      [
-                                                                        Ty.apply
-                                                                          (Ty.path
-                                                                            "move_core_types::annotated_value::DebugAsDisplay")
-                                                                          []
-                                                                          [
-                                                                            Ty.path
-                                                                              "move_core_types::annotated_value::MoveValue"
-                                                                          ]
-                                                                      ])
-                                                                    (Ty.apply
+                                                                      Ty.path
+                                                                        "core::fmt::builders::DebugList"
+                                                                    ]);
+                                                                M.value_with_ty
+                                                                  (M.call_closure (|
+                                                                    Ty.apply
                                                                       (Ty.path "&")
                                                                       []
                                                                       [
@@ -17235,43 +20513,84 @@ Module annotated_value.
                                                                             ("core::fmt::Debug::Trait",
                                                                               [])
                                                                           ]
-                                                                      ]),
-                                                                  [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.deref (|
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.alloc (|
-                                                                            Ty.apply
-                                                                              (Ty.path
-                                                                                "move_core_types::annotated_value::DebugAsDisplay")
-                                                                              []
-                                                                              [
-                                                                                Ty.path
-                                                                                  "move_core_types::annotated_value::MoveValue"
-                                                                              ],
-                                                                            Value.StructTuple
-                                                                              "move_core_types::annotated_value::DebugAsDisplay"
-                                                                              []
-                                                                              [
-                                                                                Ty.path
-                                                                                  "move_core_types::annotated_value::MoveValue"
-                                                                              ]
-                                                                              [
-                                                                                M.borrow (|
-                                                                                  Pointer.Kind.Ref,
-                                                                                  M.deref (|
-                                                                                    M.read (| val |)
-                                                                                  |)
-                                                                                |)
-                                                                              ]
+                                                                      ],
+                                                                    M.pointer_coercion
+                                                                      M.PointerCoercion.Unsize
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "move_core_types::annotated_value::DebugAsDisplay")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "move_core_types::annotated_value::MoveValue"
+                                                                            ]
+                                                                        ])
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.dyn
+                                                                            [
+                                                                              ("core::fmt::Debug::Trait",
+                                                                                [])
+                                                                            ]
+                                                                        ]),
+                                                                    [
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.alloc (|
+                                                                              Ty.apply
+                                                                                (Ty.path
+                                                                                  "move_core_types::annotated_value::DebugAsDisplay")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "move_core_types::annotated_value::MoveValue"
+                                                                                ],
+                                                                              M.value_with_ty
+                                                                                (Value.StructTuple
+                                                                                  "move_core_types::annotated_value::DebugAsDisplay"
+                                                                                  [
+                                                                                    M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          val
+                                                                                        |)
+                                                                                      |)
+                                                                                    |)
+                                                                                  ])
+                                                                                (Ty.apply
+                                                                                  (Ty.path
+                                                                                    "move_core_types::annotated_value::DebugAsDisplay")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.path
+                                                                                      "move_core_types::annotated_value::MoveValue"
+                                                                                  ])
+                                                                            |)
                                                                           |)
                                                                         |)
                                                                       |)
-                                                                    |)
-                                                                  ]
-                                                                |)
+                                                                    ]
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.dyn
+                                                                        [
+                                                                          ("core::fmt::Debug::Trait",
+                                                                            [])
+                                                                        ]
+                                                                    ])
                                                               ]
                                                             |) in
                                                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -17301,7 +20620,14 @@ Module annotated_value.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.MutRef, list |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.MutRef, list |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.path "core::fmt::builders::DebugList" ])
+                            ]
                           |)
                         |)
                       |)));
@@ -17337,8 +20663,15 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "move_core_types::annotated_value::MoveStruct" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                         ]
                       |)))
                 ]
@@ -17427,37 +20760,49 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                              M.get_trait_method (|
+                                "core::fmt::Display",
+                                Ty.path "move_core_types::language_storage::StructTag",
+                                [],
+                                [],
+                                "fmt",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_core_types::annotated_value::MoveStruct",
+                                          "type_"
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_core_types::language_storage::StructTag" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
-                              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                            M.get_trait_method (|
-                              "core::fmt::Display",
-                              Ty.path "move_core_types::language_storage::StructTag",
-                              [],
-                              [],
-                              "fmt",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "move_core_types::annotated_value::MoveStruct",
-                                      "type_"
-                                    |)
-                                  |)
-                                |)
-                              |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
-                            ]
-                          |)
+                              [ Ty.tuple []; Ty.path "core::fmt::Error" ])
                         ]
                       |)
                     |),
@@ -17506,7 +20851,17 @@ Module annotated_value.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::fmt::Error"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -17561,47 +20916,66 @@ Module annotated_value.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "core::fmt::Error" ],
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Formatter",
+                                "write_fmt",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "core::fmt::Arguments",
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new_const",
+                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                                Value.Array [ mk_str (| " " |) ]
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.path "core::fmt::Arguments")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
-                              [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                            M.get_associated_function (|
-                              Ty.path "core::fmt::Formatter",
-                              "write_fmt",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                              M.call_closure (|
-                                Ty.path "core::fmt::Arguments",
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::Arguments",
-                                  "new_const",
-                                  [ Value.Integer IntegerKind.Usize 1 ],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 1 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array [ mk_str (| " " |) ]
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            ]
-                          |)
+                              [ Ty.tuple []; Ty.path "core::fmt::Error" ])
                         ]
                       |)
                     |),
@@ -17650,7 +21024,17 @@ Module annotated_value.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "core::fmt::Error"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -17676,7 +21060,11 @@ Module annotated_value.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
+                    ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.read (|
@@ -17732,14 +21120,31 @@ Module annotated_value.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "move_core_types::annotated_value::MoveStruct",
-                                    "fields"
-                                  |)
-                                |)
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "move_core_types::annotated_value::MoveStruct",
+                                      "fields"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::vec::Vec")
+                                        []
+                                        [
+                                          Ty.tuple
+                                            [
+                                              Ty.path "move_core_types::identifier::Identifier";
+                                              Ty.path "move_core_types::annotated_value::MoveValue"
+                                            ];
+                                          Ty.path "alloc::alloc::Global"
+                                        ]
+                                    ])
                               ]
                             |)
                           |),
@@ -17822,12 +21227,30 @@ Module annotated_value.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::slice::iter::Iter")
+                                                        []
+                                                        [
+                                                          Ty.tuple
+                                                            [
+                                                              Ty.path
+                                                                "move_core_types::identifier::Identifier";
+                                                              Ty.path
+                                                                "move_core_types::annotated_value::MoveValue"
+                                                            ]
+                                                        ]
+                                                    ])
                                               ]
                                             |)
                                           |),
@@ -17894,141 +21317,179 @@ Module annotated_value.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (| Pointer.Kind.MutRef, map |);
-                                                        M.call_closure (|
-                                                          Ty.apply
-                                                            (Ty.path "&")
+                                                        M.value_with_ty
+                                                          (M.borrow (| Pointer.Kind.MutRef, map |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
                                                             []
                                                             [
-                                                              Ty.dyn
-                                                                [ ("core::fmt::Debug::Trait", []) ]
-                                                            ],
-                                                          M.pointer_coercion
-                                                            M.PointerCoercion.Unsize
-                                                            (Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path
-                                                                    "move_core_types::annotated_value::DebugAsDisplay")
-                                                                  []
-                                                                  [
-                                                                    Ty.path
-                                                                      "move_core_types::identifier::Identifier"
-                                                                  ]
-                                                              ])
-                                                            (Ty.apply
+                                                              Ty.path
+                                                                "core::fmt::builders::DebugMap"
+                                                            ]);
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
+                                                            Ty.apply
                                                               (Ty.path "&")
                                                               []
                                                               [
                                                                 Ty.dyn
                                                                   [ ("core::fmt::Debug::Trait", [])
                                                                   ]
-                                                              ]),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.alloc (|
-                                                                    Ty.apply
-                                                                      (Ty.path
-                                                                        "move_core_types::annotated_value::DebugAsDisplay")
-                                                                      []
-                                                                      [
-                                                                        Ty.path
-                                                                          "move_core_types::identifier::Identifier"
-                                                                      ],
-                                                                    Value.StructTuple
-                                                                      "move_core_types::annotated_value::DebugAsDisplay"
-                                                                      []
-                                                                      [
-                                                                        Ty.path
-                                                                          "move_core_types::identifier::Identifier"
-                                                                      ]
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.read (| field |)
-                                                                          |)
-                                                                        |)
-                                                                      ]
+                                                              ],
+                                                            M.pointer_coercion
+                                                              M.PointerCoercion.Unsize
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "move_core_types::annotated_value::DebugAsDisplay")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_core_types::identifier::Identifier"
+                                                                    ]
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.dyn
+                                                                    [
+                                                                      ("core::fmt::Debug::Trait",
+                                                                        [])
+                                                                    ]
+                                                                ]),
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.alloc (|
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "move_core_types::annotated_value::DebugAsDisplay")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "move_core_types::identifier::Identifier"
+                                                                        ],
+                                                                      M.value_with_ty
+                                                                        (Value.StructTuple
+                                                                          "move_core_types::annotated_value::DebugAsDisplay"
+                                                                          [
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              M.deref (|
+                                                                                M.read (| field |)
+                                                                              |)
+                                                                            |)
+                                                                          ])
+                                                                        (Ty.apply
+                                                                          (Ty.path
+                                                                            "move_core_types::annotated_value::DebugAsDisplay")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "move_core_types::identifier::Identifier"
+                                                                          ])
+                                                                    |)
                                                                   |)
                                                                 |)
                                                               |)
-                                                            |)
-                                                          ]
-                                                        |);
-                                                        M.call_closure (|
-                                                          Ty.apply
+                                                            ]
+                                                          |))
+                                                          (Ty.apply
                                                             (Ty.path "&")
                                                             []
                                                             [
                                                               Ty.dyn
                                                                 [ ("core::fmt::Debug::Trait", []) ]
-                                                            ],
-                                                          M.pointer_coercion
-                                                            M.PointerCoercion.Unsize
-                                                            (Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path
-                                                                    "move_core_types::annotated_value::DebugAsDisplay")
-                                                                  []
-                                                                  [
-                                                                    Ty.path
-                                                                      "move_core_types::annotated_value::MoveValue"
-                                                                  ]
-                                                              ])
-                                                            (Ty.apply
+                                                            ]);
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
+                                                            Ty.apply
                                                               (Ty.path "&")
                                                               []
                                                               [
                                                                 Ty.dyn
                                                                   [ ("core::fmt::Debug::Trait", [])
                                                                   ]
-                                                              ]),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.alloc (|
-                                                                    Ty.apply
-                                                                      (Ty.path
-                                                                        "move_core_types::annotated_value::DebugAsDisplay")
-                                                                      []
-                                                                      [
-                                                                        Ty.path
-                                                                          "move_core_types::annotated_value::MoveValue"
-                                                                      ],
-                                                                    Value.StructTuple
-                                                                      "move_core_types::annotated_value::DebugAsDisplay"
-                                                                      []
-                                                                      [
-                                                                        Ty.path
-                                                                          "move_core_types::annotated_value::MoveValue"
-                                                                      ]
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.read (| value |)
-                                                                          |)
-                                                                        |)
-                                                                      ]
+                                                              ],
+                                                            M.pointer_coercion
+                                                              M.PointerCoercion.Unsize
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "move_core_types::annotated_value::DebugAsDisplay")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_core_types::annotated_value::MoveValue"
+                                                                    ]
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.dyn
+                                                                    [
+                                                                      ("core::fmt::Debug::Trait",
+                                                                        [])
+                                                                    ]
+                                                                ]),
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.alloc (|
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "move_core_types::annotated_value::DebugAsDisplay")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "move_core_types::annotated_value::MoveValue"
+                                                                        ],
+                                                                      M.value_with_ty
+                                                                        (Value.StructTuple
+                                                                          "move_core_types::annotated_value::DebugAsDisplay"
+                                                                          [
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              M.deref (|
+                                                                                M.read (| value |)
+                                                                              |)
+                                                                            |)
+                                                                          ])
+                                                                        (Ty.apply
+                                                                          (Ty.path
+                                                                            "move_core_types::annotated_value::DebugAsDisplay")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "move_core_types::annotated_value::MoveValue"
+                                                                          ])
+                                                                    |)
                                                                   |)
                                                                 |)
                                                               |)
-                                                            |)
-                                                          ]
-                                                        |)
+                                                            ]
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.dyn
+                                                                [ ("core::fmt::Debug::Trait", []) ]
+                                                            ])
                                                       ]
                                                     |) in
                                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -18058,7 +21519,11 @@ Module annotated_value.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.MutRef, map |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, map |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugMap" ])
+                    ]
                   |)
                 |)
               |)))

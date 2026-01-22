@@ -28,17 +28,17 @@ Module TransactionType.
     φ x :=
       match x with
       | Legacy =>
-          Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Legacy" [] [] []
+          Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Legacy" []
       | Eip2930 =>
-          Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930" [] [] []
+          Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930" []
       | Eip1559 =>
-          Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559" [] [] []
+          Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559" []
       | Eip4844 =>
-          Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844" [] [] []
+          Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844" []
       | Eip7702 =>
-          Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702" [] [] []
+          Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702" []
       | Custom =>
-          Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Custom" [] [] []
+          Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Custom" []
       end
   }.
 
@@ -49,84 +49,84 @@ Module TransactionType.
   }.
 
   Instance IsOfValueWith_Legacy :
-    OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Legacy" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Legacy" []) :=
   {
     value := Legacy;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Legacy :
-    OfValue.C (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Legacy" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Legacy" []) :=
   {
     value := Legacy;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Eip2930 :
-    OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930" []) :=
   {
     value := Eip2930;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Eip2930 :
-    OfValue.C (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930" []) :=
   {
     value := Eip2930;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Eip1559 :
-    OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559" []) :=
   {
     value := Eip1559;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Eip1559 :
-    OfValue.C (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559" []) :=
   {
     value := Eip1559;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Eip4844 :
-    OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844" []) :=
   {
     value := Eip4844;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Eip4844 :
-    OfValue.C (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844" []) :=
   {
     value := Eip4844;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Eip7702 :
-    OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702" []) :=
   {
     value := Eip7702;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Eip7702 :
-    OfValue.C (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702" []) :=
   {
     value := Eip7702;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Custom :
-    OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Custom" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Custom" []) :=
   {
     value := Custom;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Custom :
-    OfValue.C (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Custom" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_context_interface::transaction::transaction_type::TransactionType::Custom" []) :=
   {
     value := Custom;
     eq := eq_refl;

@@ -194,9 +194,11 @@ Module num.
                                           Ty.path "never",
                                           M.get_function (| "core::panicking::panic", [], [] |),
                                           [
-                                            mk_str (|
-                                              "assertion failed: v <= Self::MAX_MANTISSA_FAST_PATH"
-                                            |)
+                                            M.value_with_ty
+                                              (mk_str (|
+                                                "assertion failed: v <= Self::MAX_MANTISSA_FAST_PATH"
+                                              |))
+                                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                           ]
                                         |)
                                       |)));
@@ -227,13 +229,15 @@ Module num.
                 Ty.path "f32",
                 M.get_associated_function (| Ty.path "f32", "from_bits", [], [] |),
                 [
-                  M.cast
+                  M.value_with_ty
+                    (M.cast
+                      (Ty.path "u32")
+                      (M.call_closure (|
+                        Ty.path "u64",
+                        BinOp.Wrap.bit_and,
+                        [ M.read (| v |); Value.Integer IntegerKind.U64 4294967295 ]
+                      |)))
                     (Ty.path "u32")
-                    (M.call_closure (|
-                      Ty.path "u64",
-                      BinOp.Wrap.bit_and,
-                      [ M.read (| v |); Value.Integer IntegerKind.U64 4294967295 ]
-                    |))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -293,7 +297,7 @@ Module num.
                   M.call_closure (|
                     Ty.path "u32",
                     M.get_associated_function (| Ty.path "f32", "to_bits", [], [] |),
-                    [ M.read (| self |) ]
+                    [ M.value_with_ty (M.read (| self |)) (Ty.path "f32") ]
                   |) in
                 let~ sign : Ty.path "i8" :=
                   M.match_operator (|
@@ -430,7 +434,7 @@ Module num.
               M.call_closure (|
                 Ty.path "core::num::FpCategory",
                 M.get_associated_function (| Ty.path "f32", "classify", [], [] |),
-                [ M.read (| self |) ]
+                [ M.value_with_ty (M.read (| self |)) (Ty.path "f32") ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
@@ -656,9 +660,11 @@ Module num.
                                           Ty.path "never",
                                           M.get_function (| "core::panicking::panic", [], [] |),
                                           [
-                                            mk_str (|
-                                              "assertion failed: v <= Self::MAX_MANTISSA_FAST_PATH"
-                                            |)
+                                            M.value_with_ty
+                                              (mk_str (|
+                                                "assertion failed: v <= Self::MAX_MANTISSA_FAST_PATH"
+                                              |))
+                                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                           ]
                                         |)
                                       |)));
@@ -688,7 +694,7 @@ Module num.
               M.call_closure (|
                 Ty.path "f64",
                 M.get_associated_function (| Ty.path "f64", "from_bits", [], [] |),
-                [ M.read (| v |) ]
+                [ M.value_with_ty (M.read (| v |)) (Ty.path "u64") ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
@@ -751,7 +757,7 @@ Module num.
                   M.call_closure (|
                     Ty.path "u64",
                     M.get_associated_function (| Ty.path "f64", "to_bits", [], [] |),
-                    [ M.read (| self |) ]
+                    [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
                   |) in
                 let~ sign : Ty.path "i8" :=
                   M.match_operator (|
@@ -885,7 +891,7 @@ Module num.
               M.call_closure (|
                 Ty.path "core::num::FpCategory",
                 M.get_associated_function (| Ty.path "f64", "classify", [], [] |),
-                [ M.read (| self |) ]
+                [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.

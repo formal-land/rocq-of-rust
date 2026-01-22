@@ -34,7 +34,14 @@ Module special.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, self |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                ]
               |);
               Value.Integer IntegerKind.Usize 1
             ]
@@ -76,19 +83,28 @@ Module special.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "checked_next_power_of_two",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (| self |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::option::Option")
                   []
-                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "checked_next_power_of_two",
-                  [],
-                  []
-                |),
-                [ M.read (| self |) ]
-              |)
+                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -149,7 +165,11 @@ Module special.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| self |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| self |))
+                                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                                  ]
                                 |)
                               |)) in
                           let _ :=
@@ -157,11 +177,14 @@ Module special.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::option::Option::Some"
-                                  []
-                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                  [ M.read (| self |) ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::option::Option::Some"
+                                    [ M.read (| self |) ])
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                               |)
                             |)
                           |)));
@@ -177,7 +200,14 @@ Module special.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, self |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                    ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -201,11 +231,12 @@ Module special.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::option::Option::None"
-                                  []
-                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                  []
+                                M.value_with_ty
+                                  (Value.StructTuple "core::option::Option::None" [])
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                               |)
                             |)
                           |)));
@@ -217,37 +248,43 @@ Module special.
                     (Ty.path "core::option::Option")
                     []
                     [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                    [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                        M.get_trait_method (|
-                          "core::ops::bit::Shl",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.call_closure (|
                           Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                          [],
-                          [ Ty.path "usize" ],
-                          "shl",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
+                          M.get_trait_method (|
+                            "core::ops::bit::Shl",
                             Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                              "from",
-                              [],
-                              [ Ty.path "i32" ]
-                            |),
-                            [ Value.Integer IntegerKind.I32 1 ]
-                          |);
-                          M.read (| exp |)
-                        ]
-                      |)
-                    ]
+                            [],
+                            [ Ty.path "usize" ],
+                            "shl",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                  "from",
+                                  [],
+                                  [ Ty.path "i32" ]
+                                |),
+                                [ M.value_with_ty (Value.Integer IntegerKind.I32 1) (Ty.path "i32")
+                                ]
+                              |))
+                              (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                            M.value_with_ty (M.read (| exp |)) (Ty.path "usize")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                 |)
               |)))
           |)))
@@ -294,19 +331,31 @@ Module special.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                        "checked_next_multiple_of",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.read (| self |))
+                          (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                        M.value_with_ty
+                          (M.read (| rhs |))
+                          (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                      ]
+                    |))
+                    (Ty.apply
                       (Ty.path "core::option::Option")
                       []
-                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                      "checked_next_multiple_of",
-                      [],
-                      []
-                    |),
-                    [ M.read (| self |); M.read (| rhs |) ]
-                  |)
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                 ]
               |) in
             M.alloc (|
@@ -315,7 +364,11 @@ Module special.
                 M.call_closure (|
                   Ty.path "never",
                   M.get_function (| "core::panicking::panic", [], [] |),
-                  [ mk_str (| "not yet implemented" |) ]
+                  [
+                    M.value_with_ty
+                      (mk_str (| "not yet implemented" |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                  ]
                 |)
               |)
             |)
@@ -384,15 +437,25 @@ Module special.
                                     []
                                   |),
                                   [
-                                    M.borrow (| Pointer.Kind.Ref, rhs |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      get_associated_constant (|
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        "ZERO",
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                      |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, rhs |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        get_associated_constant (|
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                          "ZERO",
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                   ]
                                 |)
                               |)) in
@@ -401,11 +464,12 @@ Module special.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::option::Option::None"
-                                  []
-                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                                  []
+                                M.value_with_ty
+                                  (Value.StructTuple "core::option::Option::None" [])
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                               |)
                             |)
                           |)));
@@ -440,7 +504,14 @@ Module special.
                           [],
                           []
                         |),
-                        [ M.read (| self |); M.read (| rhs |) ]
+                        [
+                          M.value_with_ty
+                            (M.read (| self |))
+                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                          M.value_with_ty
+                            (M.read (| rhs |))
+                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                        ]
                       |)
                     |),
                     [
@@ -487,21 +558,41 @@ Module special.
                                                 []
                                               |),
                                               [
-                                                M.borrow (| Pointer.Kind.Ref, r |);
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  get_associated_constant (|
-                                                    Ty.apply
-                                                      (Ty.path "ruint::Uint")
-                                                      [ BITS; LIMBS ]
-                                                      [],
-                                                    "ZERO",
-                                                    Ty.apply
-                                                      (Ty.path "ruint::Uint")
-                                                      [ BITS; LIMBS ]
-                                                      []
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (| Pointer.Kind.Ref, r |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        []
+                                                    ]);
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    get_associated_constant (|
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        [],
+                                                      "ZERO",
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        []
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        []
+                                                    ])
                                               ]
                                             |)
                                           |)) in
@@ -513,12 +604,19 @@ Module special.
                                       M.never_to_any (|
                                         M.read (|
                                           M.return_ (|
-                                            Value.StructTuple
-                                              "core::option::Option::Some"
-                                              []
-                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                              ]
-                                              [ M.read (| self |) ]
+                                            M.value_with_ty
+                                              (Value.StructTuple
+                                                "core::option::Option::Some"
+                                                [ M.read (| self |) ])
+                                              (Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    []
+                                                ])
                                           |)
                                         |)
                                       |)));
@@ -563,31 +661,47 @@ Module special.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                            "checked_add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| q |))
+                                              (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    [],
+                                                  "from",
+                                                  [],
+                                                  [ Ty.path "i32" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (Value.Integer IntegerKind.I32 1)
+                                                    (Ty.path "i32")
+                                                ]
+                                              |))
+                                              (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                                          ]
+                                        |))
+                                        (Ty.apply
                                           (Ty.path "core::option::Option")
                                           []
-                                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                                        M.get_associated_function (|
-                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          "checked_add",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.read (| q |);
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            M.get_associated_function (|
-                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                              "from",
-                                              [],
-                                              [ Ty.path "i32" ]
-                                            |),
-                                            [ Value.Integer IntegerKind.I32 1 ]
-                                          |)
-                                        ]
-                                      |)
+                                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                     ]
                                   |)
                                 |),
@@ -643,7 +757,14 @@ Module special.
                                                 [],
                                                 []
                                               |),
-                                              [ M.read (| residual |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| residual |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [ Ty.path "core::convert::Infallible" ])
+                                              ]
                                             |)
                                           |)
                                         |)
@@ -680,7 +801,14 @@ Module special.
                                   [],
                                   []
                                 |),
-                                [ M.read (| q |); M.read (| rhs |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| q |))
+                                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                                  M.value_with_ty
+                                    (M.read (| rhs |))
+                                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                                ]
                               |)
                             |)
                           |)))

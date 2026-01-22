@@ -31,26 +31,29 @@ Module collections.
           | [], [], [ iter ] =>
             ltac:(M.monadic
               (let iter := M.alloc (| I, iter |) in
-              Value.mkStructRecord
-                "alloc::collections::btree::dedup_sorted_iter::DedupSortedIter"
-                []
-                [ K; V; I ]
-                [
-                  ("iter",
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::iter::adapters::peekable::Peekable") [] [ I ],
-                      M.get_trait_method (|
-                        "core::iter::traits::iterator::Iterator",
-                        I,
-                        [],
-                        [],
-                        "peekable",
-                        [],
-                        []
-                      |),
-                      [ M.read (| iter |) ]
-                    |))
-                ]))
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "alloc::collections::btree::dedup_sorted_iter::DedupSortedIter"
+                  [
+                    ("iter",
+                      M.call_closure (|
+                        Ty.apply (Ty.path "core::iter::adapters::peekable::Peekable") [] [ I ],
+                        M.get_trait_method (|
+                          "core::iter::traits::iterator::Iterator",
+                          I,
+                          [],
+                          [],
+                          "peekable",
+                          [],
+                          []
+                        |),
+                        [ M.value_with_ty (M.read (| iter |)) I ]
+                      |))
+                  ])
+                (Ty.apply
+                  (Ty.path "alloc::collections::btree::dedup_sorted_iter::DedupSortedIter")
+                  []
+                  [ K; V; I ])))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -138,14 +141,24 @@ Module collections.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "alloc::collections::btree::dedup_sorted_iter::DedupSortedIter",
-                                        "iter"
-                                      |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::collections::btree::dedup_sorted_iter::DedupSortedIter",
+                                          "iter"
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::iter::adapters::peekable::Peekable")
+                                            []
+                                            [ I ]
+                                        ])
                                   ]
                                 |)
                               |),
@@ -167,11 +180,12 @@ Module collections.
                                     M.never_to_any (|
                                       M.read (|
                                         M.return_ (|
-                                          Value.StructTuple
-                                            "core::option::Option::None"
-                                            []
-                                            [ Ty.tuple [ K; V ] ]
-                                            []
+                                          M.value_with_ty
+                                            (Value.StructTuple "core::option::Option::None" [])
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.tuple [ K; V ] ])
                                         |)
                                       |)
                                     |)))
@@ -200,14 +214,24 @@ Module collections.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "alloc::collections::btree::dedup_sorted_iter::DedupSortedIter",
-                                        "iter"
-                                      |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::collections::btree::dedup_sorted_iter::DedupSortedIter",
+                                          "iter"
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::iter::adapters::peekable::Peekable")
+                                            []
+                                            [ I ]
+                                        ])
                                   ]
                                 |)
                               |),
@@ -233,11 +257,14 @@ Module collections.
                                     M.never_to_any (|
                                       M.read (|
                                         M.return_ (|
-                                          Value.StructTuple
-                                            "core::option::Option::Some"
-                                            []
-                                            [ Ty.tuple [ K; V ] ]
-                                            [ M.read (| next |) ]
+                                          M.value_with_ty
+                                            (Value.StructTuple
+                                              "core::option::Option::Some"
+                                              [ M.read (| next |) ])
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.tuple [ K; V ] ])
                                         |)
                                       |)
                                     |)))
@@ -267,17 +294,21 @@ Module collections.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_tuple_field (| next, 0 |)
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_tuple_field (|
-                                                  M.deref (| M.read (| peeked |) |),
-                                                  0
-                                                |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_tuple_field (| next, 0 |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ K ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_tuple_field (|
+                                                    M.deref (| M.read (| peeked |) |),
+                                                    0
+                                                  |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ K ])
                                             ]
                                           |)
                                         |)) in
@@ -289,11 +320,14 @@ Module collections.
                                     M.never_to_any (|
                                       M.read (|
                                         M.return_ (|
-                                          Value.StructTuple
-                                            "core::option::Option::Some"
-                                            []
-                                            [ Ty.tuple [ K; V ] ]
-                                            [ M.read (| next |) ]
+                                          M.value_with_ty
+                                            (Value.StructTuple
+                                              "core::option::Option::Some"
+                                              [ M.read (| next |) ])
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.tuple [ K; V ] ])
                                         |)
                                       |)
                                     |)));

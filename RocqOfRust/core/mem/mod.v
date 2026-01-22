@@ -24,7 +24,7 @@ Module mem.
                 [],
                 []
               |),
-              [ M.read (| t |) ]
+              [ M.value_with_ty (M.read (| t |)) T ]
             |)
           |),
           [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
@@ -49,7 +49,7 @@ Module mem.
         M.call_closure (|
           Ty.tuple [],
           M.get_function (| "core::intrinsics::forget", [], [ T ] |),
-          [ M.read (| t |) ]
+          [ M.value_with_ty (M.read (| t |)) T ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -94,7 +94,11 @@ Module mem.
         M.call_closure (|
           Ty.path "usize",
           M.get_function (| "core::intrinsics::size_of_val", [], [ T ] |),
-          [ M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| val |) |) |) ]
+          [
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| val |) |) |))
+              (Ty.apply (Ty.path "*const") [] [ T ])
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -118,7 +122,7 @@ Module mem.
         M.call_closure (|
           Ty.path "usize",
           M.get_function (| "core::intrinsics::size_of_val", [], [ T ] |),
-          [ M.read (| val |) ]
+          [ M.value_with_ty (M.read (| val |)) (Ty.apply (Ty.path "*const") [] [ T ]) ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -164,7 +168,11 @@ Module mem.
         M.call_closure (|
           Ty.path "usize",
           M.get_function (| "core::intrinsics::min_align_of_val", [], [ T ] |),
-          [ M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| val |) |) |) ]
+          [
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| val |) |) |))
+              (Ty.apply (Ty.path "*const") [] [ T ])
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -209,7 +217,11 @@ Module mem.
         M.call_closure (|
           Ty.path "usize",
           M.get_function (| "core::intrinsics::min_align_of_val", [], [ T ] |),
-          [ M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| val |) |) |) ]
+          [
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| val |) |) |))
+              (Ty.apply (Ty.path "*const") [] [ T ])
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -233,7 +245,7 @@ Module mem.
         M.call_closure (|
           Ty.path "usize",
           M.get_function (| "core::intrinsics::min_align_of_val", [], [ T ] |),
-          [ M.read (| val |) ]
+          [ M.value_with_ty (M.read (| val |)) (Ty.apply (Ty.path "*const") [] [ T ]) ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -296,16 +308,18 @@ Module mem.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                    "zeroed",
-                    [],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+                      "zeroed",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |)
+                  |))
+                  (Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ])
               ]
             |)
           |)
@@ -381,18 +395,35 @@ Module mem.
                             []
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply (Ty.path "*mut") [] [ T ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                                "as_mut_ptr",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.MutRef, val |) ]
-                            |);
-                            Value.Integer IntegerKind.U8 1;
-                            Value.Integer IntegerKind.Usize 1
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply (Ty.path "*mut") [] [ T ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [ T ],
+                                  "as_mut_ptr",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.MutRef, val |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ T ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.apply (Ty.path "*mut") [] [ T ]);
+                            M.value_with_ty (Value.Integer IntegerKind.U8 1) (Ty.path "u8");
+                            M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -410,7 +441,11 @@ Module mem.
                 [],
                 []
               |),
-              [ M.read (| val |) ]
+              [
+                M.value_with_ty
+                  (M.read (| val |))
+                  (Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ])
+              ]
             |)
           |)
         |)))
@@ -439,8 +474,12 @@ Module mem.
           Ty.tuple [],
           M.get_function (| "core::intrinsics::typed_swap", [], [ T ] |),
           [
-            M.borrow (| Pointer.Kind.MutPointer, M.deref (| M.read (| x |) |) |);
-            M.borrow (| Pointer.Kind.MutPointer, M.deref (| M.read (| y |) |) |)
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutPointer, M.deref (| M.read (| x |) |) |))
+              (Ty.apply (Ty.path "*mut") [] [ T ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutPointer, M.deref (| M.read (| y |) |) |))
+              (Ty.apply (Ty.path "*mut") [] [ T ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -464,12 +503,16 @@ Module mem.
           T,
           M.get_function (| "core::mem::replace", [], [ T ] |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| dest |) |) |);
-            M.call_closure (|
-              T,
-              M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-              []
-            |)
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| dest |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ T ]);
+            M.value_with_ty
+              (M.call_closure (|
+                T,
+                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                []
+              |))
+              T
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -506,15 +549,21 @@ Module mem.
             M.call_closure (|
               T,
               M.get_function (| "core::ptr::read", [], [ T ] |),
-              [ M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| dest |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| dest |) |) |))
+                  (Ty.apply (Ty.path "*const") [] [ T ])
+              ]
             |) in
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
               Ty.tuple [],
               M.get_function (| "core::ptr::write", [], [ T ] |),
               [
-                M.borrow (| Pointer.Kind.MutPointer, M.deref (| M.read (| dest |) |) |);
-                M.read (| src |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutPointer, M.deref (| M.read (| dest |) |) |))
+                  (Ty.apply (Ty.path "*mut") [] [ T ]);
+                M.value_with_ty (M.read (| src |)) T
               ]
             |) in
           result
@@ -624,37 +673,49 @@ Module mem.
                         Ty.path "never",
                         M.get_function (| "core::panicking::panic_fmt", [], [] |),
                         [
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_const",
-                              [ Value.Integer IntegerKind.Usize 1 ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_const",
+                                [ Value.Integer IntegerKind.Usize 1 ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array
+                                            [
+                                              mk_str (|
+                                                "cannot transmute_copy if Dst is larger than Src"
+                                              |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 1 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array
-                                        [
-                                          mk_str (|
-                                            "cannot transmute_copy if Dst is larger than Src"
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)
                     |)));
@@ -695,18 +756,20 @@ Module mem.
                       Dst,
                       M.get_function (| "core::ptr::read_unaligned", [], [ Dst ] |),
                       [
-                        M.cast
+                        M.value_with_ty
+                          (M.cast
+                            (Ty.apply (Ty.path "*const") [] [ Dst ])
+                            (M.read (|
+                              M.use
+                                (M.alloc (|
+                                  Ty.apply (Ty.path "*const") [] [ Src ],
+                                  M.borrow (|
+                                    Pointer.Kind.ConstPointer,
+                                    M.deref (| M.read (| src |) |)
+                                  |)
+                                |))
+                            |)))
                           (Ty.apply (Ty.path "*const") [] [ Dst ])
-                          (M.read (|
-                            M.use
-                              (M.alloc (|
-                                Ty.apply (Ty.path "*const") [] [ Src ],
-                                M.borrow (|
-                                  Pointer.Kind.ConstPointer,
-                                  M.deref (| M.read (| src |) |)
-                                |)
-                              |))
-                          |))
                       ]
                     |)));
                 fun γ =>
@@ -715,18 +778,20 @@ Module mem.
                       Dst,
                       M.get_function (| "core::ptr::read", [], [ Dst ] |),
                       [
-                        M.cast
+                        M.value_with_ty
+                          (M.cast
+                            (Ty.apply (Ty.path "*const") [] [ Dst ])
+                            (M.read (|
+                              M.use
+                                (M.alloc (|
+                                  Ty.apply (Ty.path "*const") [] [ Src ],
+                                  M.borrow (|
+                                    Pointer.Kind.ConstPointer,
+                                    M.deref (| M.read (| src |) |)
+                                  |)
+                                |))
+                            |)))
                           (Ty.apply (Ty.path "*const") [] [ Dst ])
-                          (M.read (|
-                            M.use
-                              (M.alloc (|
-                                Ty.apply (Ty.path "*const") [] [ Src ],
-                                M.borrow (|
-                                  Pointer.Kind.ConstPointer,
-                                  M.deref (| M.read (| src |) |)
-                                |)
-                              |))
-                          |))
                       ]
                     |)))
               ]
@@ -829,22 +894,34 @@ Module mem.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::mem::Discriminant",
-                  0
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| rhs |) |),
-                  "core::mem::Discriminant",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::mem::Discriminant",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::marker::DiscriminantKind" [] [] T "Discriminant"
+                  ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| rhs |) |),
+                    "core::mem::Discriminant",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.associated_in_trait "core::marker::DiscriminantKind" [] [] T "Discriminant"
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -906,15 +983,29 @@ Module mem.
                   [ H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::mem::Discriminant",
-                      0
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::mem::Discriminant",
+                        0
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.associated_in_trait
+                          "core::marker::DiscriminantKind"
+                          []
+                          []
+                          T
+                          "Discriminant"
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ H ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -964,79 +1055,101 @@ Module mem.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::builders::DebugTuple",
-                      "field",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.alloc (|
-                          Ty.path "core::fmt::builders::DebugTuple",
-                          M.call_closure (|
-                            Ty.path "core::fmt::builders::DebugTuple",
-                            M.get_associated_function (|
-                              Ty.path "core::fmt::Formatter",
-                              "debug_tuple",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| mk_str (| "Discriminant" |) |)
-                              |)
-                            ]
-                          |)
-                        |)
-                      |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.associated_in_trait
-                                "core::marker::DiscriminantKind"
-                                []
-                                []
-                                T
-                                "Discriminant"
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_tuple_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::mem::Discriminant",
-                                  0
-                                |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::builders::DebugTuple",
+                        "field",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.alloc (|
+                              Ty.path "core::fmt::builders::DebugTuple",
+                              M.call_closure (|
+                                Ty.path "core::fmt::builders::DebugTuple",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Formatter",
+                                  "debug_tuple",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| fmt |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.path "core::fmt::Formatter" ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| mk_str (| "Discriminant" |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                ]
                               |)
                             |)
-                          |)
-                        ]
-                      |)
-                    ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "core::marker::DiscriminantKind"
+                                    []
+                                    []
+                                    T
+                                    "Discriminant"
+                                ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_tuple_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::mem::Discriminant",
+                                      0
+                                    |)
+                                  |)
+                                |)
+                              |)
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1062,17 +1175,21 @@ Module mem.
     | [], [ T ], [ v ] =>
       ltac:(M.monadic
         (let v := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], v |) in
-        Value.StructTuple
-          "core::mem::Discriminant"
-          []
-          [ T ]
-          [
-            M.call_closure (|
-              Ty.associated_in_trait "core::marker::DiscriminantKind" [] [] T "Discriminant",
-              M.get_function (| "core::intrinsics::discriminant_value", [], [ T ] |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |) ]
-            |)
-          ]))
+        M.value_with_ty
+          (Value.StructTuple
+            "core::mem::Discriminant"
+            [
+              M.call_closure (|
+                Ty.associated_in_trait "core::marker::DiscriminantKind" [] [] T "Discriminant",
+                M.get_function (| "core::intrinsics::discriminant_value", [], [ T ] |),
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ T ])
+                ]
+              |)
+            ])
+          (Ty.apply (Ty.path "core::mem::Discriminant") [] [ T ])))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   

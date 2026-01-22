@@ -17,25 +17,25 @@ Module Impl_core_default_Default_for_constructors_return_value_AccountId.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.StructTuple
-          "constructors_return_value::AccountId"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.path "u128",
-              M.get_trait_method (|
-                "core::default::Default",
+        (M.value_with_ty
+          (Value.StructTuple
+            "constructors_return_value::AccountId"
+            [
+              M.call_closure (|
                 Ty.path "u128",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "u128",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
-          ]))
+              |)
+            ])
+          (Ty.path "constructors_return_value::AccountId")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -111,7 +111,11 @@ Module Impl_core_convert_From_array_Usize_32_u8_for_constructors_return_value_Ac
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -189,8 +193,12 @@ Module Impl_core_fmt_Debug_for_constructors_return_value_ConstructorError.
           Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.path "core::fmt::Error" ],
           M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ConstructorError" |) |) |)
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ConstructorError" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -230,7 +238,11 @@ Module Impl_constructors_return_value_ReturnFlags.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -257,7 +269,11 @@ Definition return_value (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
       M.call_closure (|
         Ty.path "never",
         M.get_function (| "core::panicking::panic", [], [] |),
-        [ mk_str (| "not implemented" |) ]
+        [
+          M.value_with_ty
+            (mk_str (| "not implemented" |))
+            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+        ]
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"
   end.
@@ -280,11 +296,11 @@ Module Impl_constructors_return_value_ConstructorsReturnValue.
     | [], [], [ init_value ] =>
       ltac:(M.monadic
         (let init_value := M.alloc (| Ty.path "bool", init_value |) in
-        Value.mkStructRecord
-          "constructors_return_value::ConstructorsReturnValue"
-          []
-          []
-          [ ("value", M.read (| init_value |)) ]))
+        M.value_with_ty
+          (Value.mkStructRecord
+            "constructors_return_value::ConstructorsReturnValue"
+            [ ("value", M.read (| init_value |)) ])
+          (Ty.path "constructors_return_value::ConstructorsReturnValue")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -320,35 +336,45 @@ Module Impl_constructors_return_value_ConstructorsReturnValue.
               ltac:(M.monadic
                 (let γ := M.use succeed in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [
-                    Ty.path "constructors_return_value::ConstructorsReturnValue";
-                    Ty.path "constructors_return_value::ConstructorError"
-                  ]
-                  [
-                    M.call_closure (|
-                      Ty.path "constructors_return_value::ConstructorsReturnValue",
-                      M.get_associated_function (|
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Ok"
+                    [
+                      M.call_closure (|
                         Ty.path "constructors_return_value::ConstructorsReturnValue",
-                        "new",
-                        [],
-                        []
-                      |),
-                      [ Value.Bool true ]
-                    |)
-                  ]));
+                        M.get_associated_function (|
+                          Ty.path "constructors_return_value::ConstructorsReturnValue",
+                          "new",
+                          [],
+                          []
+                        |),
+                        [ M.value_with_ty (Value.Bool true) (Ty.path "bool") ]
+                      |)
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.path "constructors_return_value::ConstructorsReturnValue";
+                      Ty.path "constructors_return_value::ConstructorError"
+                    ])));
             fun γ =>
               ltac:(M.monadic
-                (Value.StructTuple
-                  "core::result::Result::Err"
-                  []
-                  [
-                    Ty.path "constructors_return_value::ConstructorsReturnValue";
-                    Ty.path "constructors_return_value::ConstructorError"
-                  ]
-                  [ Value.StructTuple "constructors_return_value::ConstructorError" [] [] [] ]))
+                (M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Err"
+                    [
+                      M.value_with_ty
+                        (Value.StructTuple "constructors_return_value::ConstructorError" [])
+                        (Ty.path "constructors_return_value::ConstructorError")
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.path "constructors_return_value::ConstructorsReturnValue";
+                      Ty.path "constructors_return_value::ConstructorError"
+                    ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -388,65 +414,88 @@ Module Impl_constructors_return_value_ConstructorsReturnValue.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.path "constructors_return_value::ReturnFlags",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "constructors_return_value::ReturnFlags",
-                  "new_with_reverted",
-                  [],
-                  []
-                |),
-                [ Value.Bool true ]
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.alloc (|
-                      Ty.apply
-                        (Ty.path "core::result::Result")
-                        []
-                        [
-                          Ty.path "constructors_return_value::AccountId";
-                          Ty.path "constructors_return_value::LangError"
-                        ],
-                      Value.StructTuple
-                        "core::result::Result::Ok"
-                        []
-                        [
-                          Ty.path "constructors_return_value::AccountId";
-                          Ty.path "constructors_return_value::LangError"
-                        ]
-                        [
-                          M.call_closure (|
-                            Ty.path "constructors_return_value::AccountId",
-                            M.get_trait_method (|
-                              "core::convert::From",
-                              Ty.path "constructors_return_value::AccountId",
-                              [],
-                              [
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 32 ]
-                                  [ Ty.path "u8" ]
-                              ],
-                              "from",
-                              [],
-                              []
-                            |),
+                  M.get_associated_function (|
+                    Ty.path "constructors_return_value::ReturnFlags",
+                    "new_with_reverted",
+                    [],
+                    []
+                  |),
+                  [ M.value_with_ty (Value.Bool true) (Ty.path "bool") ]
+                |))
+                (Ty.path "constructors_return_value::ReturnFlags");
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.path "constructors_return_value::AccountId";
+                            Ty.path "constructors_return_value::LangError"
+                          ],
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "core::result::Result::Ok"
                             [
-                              lib.repeat (|
-                                Value.Integer IntegerKind.U8 0,
-                                Value.Integer IntegerKind.Usize 32
+                              M.call_closure (|
+                                Ty.path "constructors_return_value::AccountId",
+                                M.get_trait_method (|
+                                  "core::convert::From",
+                                  Ty.path "constructors_return_value::AccountId",
+                                  [],
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                      [ Ty.path "u8" ]
+                                  ],
+                                  "from",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (lib.repeat (|
+                                      Value.Integer IntegerKind.U8 0,
+                                      Value.Integer IntegerKind.Usize 32
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                      [ Ty.path "u8" ])
+                                ]
                               |)
-                            ]
-                          |)
-                        ]
+                            ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.path "constructors_return_value::AccountId";
+                              Ty.path "constructors_return_value::LangError"
+                            ])
+                      |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "constructors_return_value::AccountId";
+                        Ty.path "constructors_return_value::LangError"
+                      ]
+                  ])
             ]
           |)
         |)))
@@ -512,75 +561,89 @@ Module Impl_constructors_return_value_ConstructorsReturnValue.
                   ltac:(M.monadic
                     (let γ := M.use init_value in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "core::result::Result")
-                          []
-                          [
-                            Ty.path "constructors_return_value::AccountId";
-                            Ty.path "constructors_return_value::ConstructorError"
-                          ];
-                        Ty.path "constructors_return_value::LangError"
-                      ]
-                      [
-                        Value.StructTuple
-                          "core::result::Result::Ok"
-                          []
-                          [
-                            Ty.path "constructors_return_value::AccountId";
-                            Ty.path "constructors_return_value::ConstructorError"
-                          ]
-                          [
-                            M.call_closure (|
-                              Ty.path "constructors_return_value::AccountId",
-                              M.get_trait_method (|
-                                "core::convert::From",
-                                Ty.path "constructors_return_value::AccountId",
-                                [],
-                                [
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 32 ]
-                                    [ Ty.path "u8" ]
-                                ],
-                                "from",
-                                [],
-                                []
-                              |),
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Ok"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::result::Result::Ok"
                               [
-                                lib.repeat (|
-                                  Value.Integer IntegerKind.U8 0,
-                                  Value.Integer IntegerKind.Usize 32
+                                M.call_closure (|
+                                  Ty.path "constructors_return_value::AccountId",
+                                  M.get_trait_method (|
+                                    "core::convert::From",
+                                    Ty.path "constructors_return_value::AccountId",
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                        [ Ty.path "u8" ]
+                                    ],
+                                    "from",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (lib.repeat (|
+                                        Value.Integer IntegerKind.U8 0,
+                                        Value.Integer IntegerKind.Usize 32
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                        [ Ty.path "u8" ])
+                                  ]
                                 |)
-                              ]
-                            |)
-                          ]
-                      ]));
+                              ])
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "constructors_return_value::AccountId";
+                                Ty.path "constructors_return_value::ConstructorError"
+                              ])
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.path "constructors_return_value::AccountId";
+                              Ty.path "constructors_return_value::ConstructorError"
+                            ];
+                          Ty.path "constructors_return_value::LangError"
+                        ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "core::result::Result")
-                          []
-                          [
-                            Ty.path "constructors_return_value::AccountId";
-                            Ty.path "constructors_return_value::ConstructorError"
-                          ];
-                        Ty.path "constructors_return_value::LangError"
-                      ]
-                      [
-                        Value.StructTuple
-                          "constructors_return_value::LangError::CouldNotReadInput"
-                          []
-                          []
-                          []
-                      ]))
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Err"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "constructors_return_value::LangError::CouldNotReadInput"
+                              [])
+                            (Ty.path "constructors_return_value::LangError")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.path "constructors_return_value::AccountId";
+                              Ty.path "constructors_return_value::ConstructorError"
+                            ];
+                          Ty.path "constructors_return_value::LangError"
+                        ])))
               ]
             |) in
           M.alloc (|
@@ -614,20 +677,41 @@ Module Impl_constructors_return_value_ConstructorsReturnValue.
                   ]
                 |),
                 [
-                  M.call_closure (|
-                    Ty.path "constructors_return_value::ReturnFlags",
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.path "constructors_return_value::ReturnFlags",
-                      "new_with_reverted",
-                      [],
+                      M.get_associated_function (|
+                        Ty.path "constructors_return_value::ReturnFlags",
+                        "new_with_reverted",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (Value.Bool true) (Ty.path "bool") ]
+                    |))
+                    (Ty.path "constructors_return_value::ReturnFlags");
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, value |) |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
                       []
-                    |),
-                    [ Value.Bool true ]
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, value |) |)
-                  |)
+                      [
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "constructors_return_value::AccountId";
+                                Ty.path "constructors_return_value::ConstructorError"
+                              ];
+                            Ty.path "constructors_return_value::LangError"
+                          ]
+                      ])
                 ]
               |)
             |)

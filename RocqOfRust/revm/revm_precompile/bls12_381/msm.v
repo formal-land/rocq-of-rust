@@ -207,71 +207,80 @@ Module bls12_381.
                     Ty.path "usize",
                     M.get_function (| "core::cmp::min", [], [ Ty.path "usize" ] |),
                     [
-                      M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.sub,
-                        [ M.read (| k |); Value.Integer IntegerKind.Usize 1 ]
-                      |);
-                      M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.sub,
-                        [
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ],
-                              "len",
-                              [],
-                              []
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ] ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.Unsize
-                                  (Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 128 ]
-                                        [ Ty.path "u16" ]
-                                    ])
-                                  (Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ] ]),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.read (|
-                                        get_constant (|
-                                          "revm_precompile::bls12_381::msm::MSM_DISCOUNT_TABLE",
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          BinOp.Wrap.sub,
+                          [ M.read (| k |); Value.Integer IntegerKind.Usize 1 ]
+                        |))
+                        (Ty.path "usize");
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          BinOp.Wrap.sub,
+                          [
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ],
+                                "len",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ] ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.Unsize
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
                                           Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 128 ]
+                                            [ Ty.path "u16" ]
+                                        ])
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ] ]),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.read (|
+                                            get_constant (|
+                                              "revm_precompile::bls12_381::msm::MSM_DISCOUNT_TABLE",
                                               Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 128 ]
-                                                [ Ty.path "u16" ]
-                                            ]
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 128 ]
+                                                    [ Ty.path "u16" ]
+                                                ]
+                                            |)
+                                          |)
                                         |)
                                       |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            ]
-                          |);
-                          Value.Integer IntegerKind.Usize 1
-                        ]
-                      |)
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ] ])
+                              ]
+                            |);
+                            Value.Integer IntegerKind.Usize 1
+                          ]
+                        |))
+                        (Ty.path "usize")
                     ]
                   |) in
                 let~ discount : Ty.path "u64" :=

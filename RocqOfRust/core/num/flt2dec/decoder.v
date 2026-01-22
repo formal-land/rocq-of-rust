@@ -107,129 +107,153 @@ Module num.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Decoded" |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "mant" |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::num::flt2dec::decoder::Decoded",
-                              "mant"
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Decoded" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "mant" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::num::flt2dec::decoder::Decoded",
+                                "mant"
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "minus" |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::num::flt2dec::decoder::Decoded",
-                              "minus"
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "minus" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::num::flt2dec::decoder::Decoded",
+                                "minus"
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "plus" |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::num::flt2dec::decoder::Decoded",
-                              "plus"
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "plus" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::num::flt2dec::decoder::Decoded",
+                                "plus"
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "exp" |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply (Ty.path "&") [] [ Ty.path "i16" ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::num::flt2dec::decoder::Decoded",
-                              "exp"
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "exp" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "i16" ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::num::flt2dec::decoder::Decoded",
+                                "exp"
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "inclusive" |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::num::flt2dec::decoder::Decoded",
-                                  "inclusive"
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "inclusive" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::num::flt2dec::decoder::Decoded",
+                                    "inclusive"
+                                  |)
                                 |)
                               |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |)
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -569,8 +593,12 @@ Module num.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Nan" |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Nan" |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                         ]
                       |)));
                   fun γ =>
@@ -593,8 +621,12 @@ Module num.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Infinite" |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Infinite" |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                         ]
                       |)));
                   fun γ =>
@@ -617,8 +649,12 @@ Module num.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Zero" |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Zero" |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                         ]
                       |)));
                   fun γ =>
@@ -650,35 +686,44 @@ Module num.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Finite" |) |) |);
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Finite" |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "core::num::flt2dec::decoder::Decoded" ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                                |)
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.path "core::num::flt2dec::decoder::Decoded" ]
-                                ])
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                              |)
-                            ]
-                          |)
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                         ]
                       |)))
                 ]
@@ -734,7 +779,14 @@ Module num.
                       [],
                       [ Ty.path "core::num::flt2dec::decoder::FullDecoded" ]
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "core::num::flt2dec::decoder::FullDecoded" ])
+                    ]
                   |) in
                 let~ __arg1_discr : Ty.path "isize" :=
                   M.call_closure (|
@@ -744,7 +796,14 @@ Module num.
                       [],
                       [ Ty.path "core::num::flt2dec::decoder::FullDecoded" ]
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "core::num::flt2dec::decoder::FullDecoded" ])
+                    ]
                   |) in
                 M.alloc (|
                   Ty.path "bool",
@@ -826,8 +885,28 @@ Module num.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                  M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::num::flt2dec::decoder::Decoded" ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::num::flt2dec::decoder::Decoded" ]
+                                      ])
                                 ]
                               |)));
                           fun γ => ltac:(M.monadic (Value.Bool true))
@@ -1001,7 +1080,7 @@ Module num.
                     [],
                     []
                   |),
-                  [ M.read (| v |) ]
+                  [ M.value_with_ty (M.read (| v |)) T ]
                 |)
               |),
               [
@@ -1043,57 +1122,57 @@ Module num.
                                 [],
                                 []
                               |),
-                              [ M.read (| v |) ]
+                              [ M.value_with_ty (M.read (| v |)) T ]
                             |)
                           |),
                           [
                             fun γ =>
                               ltac:(M.monadic
                                 (let _ := M.is_struct_tuple (| γ, "core::num::FpCategory::Nan" |) in
-                                Value.StructTuple
-                                  "core::num::flt2dec::decoder::FullDecoded::Nan"
-                                  []
-                                  []
-                                  []));
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::num::flt2dec::decoder::FullDecoded::Nan"
+                                    [])
+                                  (Ty.path "core::num::flt2dec::decoder::FullDecoded")));
                             fun γ =>
                               ltac:(M.monadic
                                 (let _ :=
                                   M.is_struct_tuple (| γ, "core::num::FpCategory::Infinite" |) in
-                                Value.StructTuple
-                                  "core::num::flt2dec::decoder::FullDecoded::Infinite"
-                                  []
-                                  []
-                                  []));
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::num::flt2dec::decoder::FullDecoded::Infinite"
+                                    [])
+                                  (Ty.path "core::num::flt2dec::decoder::FullDecoded")));
                             fun γ =>
                               ltac:(M.monadic
                                 (let _ :=
                                   M.is_struct_tuple (| γ, "core::num::FpCategory::Zero" |) in
-                                Value.StructTuple
-                                  "core::num::flt2dec::decoder::FullDecoded::Zero"
-                                  []
-                                  []
-                                  []));
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::num::flt2dec::decoder::FullDecoded::Zero"
+                                    [])
+                                  (Ty.path "core::num::flt2dec::decoder::FullDecoded")));
                             fun γ =>
                               ltac:(M.monadic
                                 (let _ :=
                                   M.is_struct_tuple (| γ, "core::num::FpCategory::Subnormal" |) in
-                                Value.StructTuple
-                                  "core::num::flt2dec::decoder::FullDecoded::Finite"
-                                  []
-                                  []
-                                  [
-                                    Value.mkStructRecord
-                                      "core::num::flt2dec::decoder::Decoded"
-                                      []
-                                      []
-                                      [
-                                        ("mant", M.read (| mant |));
-                                        ("minus", Value.Integer IntegerKind.U64 1);
-                                        ("plus", Value.Integer IntegerKind.U64 1);
-                                        ("exp", M.read (| exp |));
-                                        ("inclusive", M.read (| even |))
-                                      ]
-                                  ]));
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::num::flt2dec::decoder::FullDecoded::Finite"
+                                    [
+                                      M.value_with_ty
+                                        (Value.mkStructRecord
+                                          "core::num::flt2dec::decoder::Decoded"
+                                          [
+                                            ("mant", M.read (| mant |));
+                                            ("minus", Value.Integer IntegerKind.U64 1);
+                                            ("plus", Value.Integer IntegerKind.U64 1);
+                                            ("exp", M.read (| exp |));
+                                            ("inclusive", M.read (| even |))
+                                          ])
+                                        (Ty.path "core::num::flt2dec::decoder::Decoded")
+                                    ])
+                                  (Ty.path "core::num::flt2dec::decoder::FullDecoded")));
                             fun γ =>
                               ltac:(M.monadic
                                 (let _ :=
@@ -1113,19 +1192,21 @@ Module num.
                                         []
                                       |),
                                       [
-                                        M.call_closure (|
-                                          T,
-                                          M.get_trait_method (|
-                                            "core::num::flt2dec::decoder::DecodableFloat",
+                                        M.value_with_ty
+                                          (M.call_closure (|
                                             T,
-                                            [],
-                                            [],
-                                            "min_pos_norm_value",
-                                            [],
+                                            M.get_trait_method (|
+                                              "core::num::flt2dec::decoder::DecodableFloat",
+                                              T,
+                                              [],
+                                              [],
+                                              "min_pos_norm_value",
+                                              [],
+                                              []
+                                            |),
                                             []
-                                          |),
-                                          []
-                                        |)
+                                          |))
+                                          T
                                       ]
                                     |) in
                                   M.alloc (|
@@ -1159,74 +1240,75 @@ Module num.
                                                 M.read (| γ |),
                                                 Value.Bool true
                                               |) in
-                                            Value.StructTuple
-                                              "core::num::flt2dec::decoder::FullDecoded::Finite"
-                                              []
-                                              []
-                                              [
-                                                Value.mkStructRecord
-                                                  "core::num::flt2dec::decoder::Decoded"
-                                                  []
-                                                  []
-                                                  [
-                                                    ("mant",
-                                                      M.call_closure (|
-                                                        Ty.path "u64",
-                                                        BinOp.Wrap.shl,
-                                                        [
-                                                          M.read (| mant |);
-                                                          Value.Integer IntegerKind.I32 2
-                                                        ]
-                                                      |));
-                                                    ("minus", Value.Integer IntegerKind.U64 1);
-                                                    ("plus", Value.Integer IntegerKind.U64 2);
-                                                    ("exp",
-                                                      M.call_closure (|
-                                                        Ty.path "i16",
-                                                        BinOp.Wrap.sub,
-                                                        [
-                                                          M.read (| exp |);
-                                                          Value.Integer IntegerKind.I16 2
-                                                        ]
-                                                      |));
-                                                    ("inclusive", M.read (| even |))
-                                                  ]
-                                              ]));
+                                            M.value_with_ty
+                                              (Value.StructTuple
+                                                "core::num::flt2dec::decoder::FullDecoded::Finite"
+                                                [
+                                                  M.value_with_ty
+                                                    (Value.mkStructRecord
+                                                      "core::num::flt2dec::decoder::Decoded"
+                                                      [
+                                                        ("mant",
+                                                          M.call_closure (|
+                                                            Ty.path "u64",
+                                                            BinOp.Wrap.shl,
+                                                            [
+                                                              M.read (| mant |);
+                                                              Value.Integer IntegerKind.I32 2
+                                                            ]
+                                                          |));
+                                                        ("minus", Value.Integer IntegerKind.U64 1);
+                                                        ("plus", Value.Integer IntegerKind.U64 2);
+                                                        ("exp",
+                                                          M.call_closure (|
+                                                            Ty.path "i16",
+                                                            BinOp.Wrap.sub,
+                                                            [
+                                                              M.read (| exp |);
+                                                              Value.Integer IntegerKind.I16 2
+                                                            ]
+                                                          |));
+                                                        ("inclusive", M.read (| even |))
+                                                      ])
+                                                    (Ty.path "core::num::flt2dec::decoder::Decoded")
+                                                ])
+                                              (Ty.path
+                                                "core::num::flt2dec::decoder::FullDecoded")));
                                         fun γ =>
                                           ltac:(M.monadic
-                                            (Value.StructTuple
-                                              "core::num::flt2dec::decoder::FullDecoded::Finite"
-                                              []
-                                              []
-                                              [
-                                                Value.mkStructRecord
-                                                  "core::num::flt2dec::decoder::Decoded"
-                                                  []
-                                                  []
-                                                  [
-                                                    ("mant",
-                                                      M.call_closure (|
-                                                        Ty.path "u64",
-                                                        BinOp.Wrap.shl,
-                                                        [
-                                                          M.read (| mant |);
-                                                          Value.Integer IntegerKind.I32 1
-                                                        ]
-                                                      |));
-                                                    ("minus", Value.Integer IntegerKind.U64 1);
-                                                    ("plus", Value.Integer IntegerKind.U64 1);
-                                                    ("exp",
-                                                      M.call_closure (|
-                                                        Ty.path "i16",
-                                                        BinOp.Wrap.sub,
-                                                        [
-                                                          M.read (| exp |);
-                                                          Value.Integer IntegerKind.I16 1
-                                                        ]
-                                                      |));
-                                                    ("inclusive", M.read (| even |))
-                                                  ]
-                                              ]))
+                                            (M.value_with_ty
+                                              (Value.StructTuple
+                                                "core::num::flt2dec::decoder::FullDecoded::Finite"
+                                                [
+                                                  M.value_with_ty
+                                                    (Value.mkStructRecord
+                                                      "core::num::flt2dec::decoder::Decoded"
+                                                      [
+                                                        ("mant",
+                                                          M.call_closure (|
+                                                            Ty.path "u64",
+                                                            BinOp.Wrap.shl,
+                                                            [
+                                                              M.read (| mant |);
+                                                              Value.Integer IntegerKind.I32 1
+                                                            ]
+                                                          |));
+                                                        ("minus", Value.Integer IntegerKind.U64 1);
+                                                        ("plus", Value.Integer IntegerKind.U64 1);
+                                                        ("exp",
+                                                          M.call_closure (|
+                                                            Ty.path "i16",
+                                                            BinOp.Wrap.sub,
+                                                            [
+                                                              M.read (| exp |);
+                                                              Value.Integer IntegerKind.I16 1
+                                                            ]
+                                                          |));
+                                                        ("inclusive", M.read (| even |))
+                                                      ])
+                                                    (Ty.path "core::num::flt2dec::decoder::Decoded")
+                                                ])
+                                              (Ty.path "core::num::flt2dec::decoder::FullDecoded")))
                                       ]
                                     |)
                                   |)

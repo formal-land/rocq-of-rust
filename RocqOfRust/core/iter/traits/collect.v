@@ -56,7 +56,12 @@ Module iter.
                       [],
                       [ I ]
                     |),
-                    [ M.borrow (| Pointer.Kind.MutRef, res |); M.read (| iter |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, res |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ A; B ] ]);
+                      M.value_with_ty (M.read (| iter |)) I
+                    ]
                   |) in
                 res
               |)))
@@ -143,8 +148,14 @@ Module iter.
                       [ Ty.apply (Ty.path "core::option::Option") [] [ A ] ]
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple "core::option::Option::Some" [] [ A ] [ M.read (| item |) ]
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Self ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::option::Option::Some" [ M.read (| item |) ])
+                          (Ty.apply (Ty.path "core::option::Option") [] [ A ]))
+                        (Ty.apply (Ty.path "core::option::Option") [] [ A ])
                     ]
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -205,8 +216,10 @@ Module iter.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                      M.read (| item |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Self ]);
+                      M.value_with_ty (M.read (| item |)) A
                     ]
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -253,25 +266,34 @@ Module iter.
                   [ Ty.function [ Ty.tuple [] ] (Ty.tuple []) ]
                 |),
                 [
-                  M.call_closure (|
-                    Ty.associated_in_trait
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.associated_in_trait
+                        "core::iter::traits::collect::IntoIterator"
+                        []
+                        []
+                        T
+                        "IntoIter",
+                      M.get_trait_method (|
+                        "core::iter::traits::collect::IntoIterator",
+                        T,
+                        [],
+                        [],
+                        "into_iter",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.read (| iter |)) T ]
+                    |))
+                    (Ty.associated_in_trait
                       "core::iter::traits::collect::IntoIterator"
                       []
                       []
                       T
-                      "IntoIter",
-                    M.get_trait_method (|
-                      "core::iter::traits::collect::IntoIterator",
-                      T,
-                      [],
-                      [],
-                      "into_iter",
-                      [],
-                      []
-                    |),
-                    [ M.read (| iter |) ]
-                  |);
-                  M.get_function (| "core::mem::drop", [], [ Ty.tuple [] ] |)
+                      "IntoIter");
+                  M.value_with_ty
+                    (M.get_function (| "core::mem::drop", [], [ Ty.tuple [] ] |))
+                    (Ty.function [ Ty.tuple [] ] (Ty.tuple []))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -362,7 +384,7 @@ Module iter.
                               [],
                               []
                             |),
-                            [ M.read (| into_iter |) ]
+                            [ M.value_with_ty (M.read (| into_iter |)) T ]
                           |) in
                         let~ _ : Ty.tuple [] :=
                           M.call_closure (|
@@ -382,9 +404,20 @@ Module iter.
                               []
                             |),
                             [
-                              M.read (| iter |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| a |) |) |);
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| b |) |) |)
+                              M.value_with_ty
+                                (M.read (| iter |))
+                                (Ty.associated_in_trait
+                                  "core::iter::traits::collect::IntoIterator"
+                                  []
+                                  []
+                                  T
+                                  "IntoIter");
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| a |) |) |))
+                                (Ty.apply (Ty.path "&mut") [] [ ExtendA ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| b |) |) |))
+                                (Ty.apply (Ty.path "&mut") [] [ ExtendB ])
                             ]
                           |) in
                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -430,11 +463,13 @@ Module iter.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
-                      |);
-                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ ExtendA ]);
+                      M.value_with_ty (M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)) A
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -450,11 +485,13 @@ Module iter.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
-                      |);
-                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ ExtendB ]);
+                      M.value_with_ty (M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)) B
                     ]
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -498,11 +535,13 @@ Module iter.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
-                      |);
-                      M.read (| additional |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ ExtendA ]);
+                      M.value_with_ty (M.read (| additional |)) (Ty.path "usize")
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -518,11 +557,13 @@ Module iter.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
-                      |);
-                      M.read (| additional |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ ExtendB ]);
+                      M.value_with_ty (M.read (| additional |)) (Ty.path "usize")
                     ]
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -569,11 +610,13 @@ Module iter.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
-                      |);
-                      M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 0 |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ ExtendA ]);
+                      M.value_with_ty (M.read (| M.SubPointer.get_tuple_field (| item, 0 |) |)) A
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -589,11 +632,13 @@ Module iter.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
-                      |);
-                      M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_tuple_field (| M.deref (| M.read (| self |) |), 1 |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ ExtendB ]);
+                      M.value_with_ty (M.read (| M.SubPointer.get_tuple_field (| item, 1 |) |)) B
                     ]
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -676,7 +721,11 @@ Module iter.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, iter |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, iter |))
+                      (Ty.apply (Ty.path "&") [] [ impl_Iterator_Item____A__B__ ])
+                  ]
                 |)
               |),
               [
@@ -725,11 +774,13 @@ Module iter.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.read (| a |) |)
-                                        |);
-                                        M.read (| lower_bound |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.read (| a |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&mut") [] [ ExtendA ]);
+                                        M.value_with_ty (M.read (| lower_bound |)) (Ty.path "usize")
                                       ]
                                     |) in
                                   let~ _ : Ty.tuple [] :=
@@ -745,11 +796,13 @@ Module iter.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.read (| b |) |)
-                                        |);
-                                        M.read (| lower_bound |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.read (| b |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&mut") [] [ ExtendB ]);
+                                        M.value_with_ty (M.read (| lower_bound |)) (Ty.path "usize")
                                       ]
                                     |) in
                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -770,20 +823,32 @@ Module iter.
                             [ Ty.tuple []; Ty.associated_unknown ]
                           |),
                           [
-                            M.read (| iter |);
-                            Value.Tuple [];
-                            M.call_closure (|
-                              Ty.associated_unknown,
-                              M.get_function (|
-                                "core::iter::traits::collect::default_extend_tuple.extend",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| a |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| b |) |) |)
-                              ]
-                            |)
+                            M.value_with_ty (M.read (| iter |)) impl_Iterator_Item____A__B__;
+                            M.value_with_ty (Value.Tuple []) (Ty.tuple []);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.associated_unknown,
+                                M.get_function (|
+                                  "core::iter::traits::collect::default_extend_tuple.extend",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| a |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&mut") [] [ ExtendA ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| b |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&mut") [] [ ExtendB ])
+                                ]
+                              |))
+                              Ty.associated_unknown
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -852,11 +917,13 @@ Module iter.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (| M.read (| a |) |)
-                                                |);
-                                                M.read (| t |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (| M.read (| a |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&mut") [] [ impl_Extend_A_ ]);
+                                                M.value_with_ty (M.read (| t |)) A
                                               ]
                                             |) in
                                           let~ _ : Ty.tuple [] :=
@@ -872,11 +939,13 @@ Module iter.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (| M.read (| b |) |)
-                                                |);
-                                                M.read (| u |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (| M.read (| b |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&mut") [] [ impl_Extend_B_ ]);
+                                                M.value_with_ty (M.read (| u |)) B
                                               ]
                                             |) in
                                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -930,9 +999,13 @@ Module iter.
                       [ A; B; ExtendA; ExtendB; Iter ]
                     |),
                     [
-                      M.read (| self |);
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| a |) |) |);
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| b |) |) |)
+                      M.value_with_ty (M.read (| self |)) Iter;
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| a |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ ExtendA ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| b |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ ExtendB ])
                     ]
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1021,7 +1094,11 @@ Module iter.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, self |))
+                            (Ty.apply (Ty.path "&") [] [ Iter ])
+                        ]
                       |)
                     |),
                     [
@@ -1058,7 +1135,19 @@ Module iter.
                                                 [],
                                                 []
                                               |),
-                                              [ M.borrow (| Pointer.Kind.Ref, upper_bound |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (| Pointer.Kind.Ref, upper_bound |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::option::Option")
+                                                        []
+                                                        [ Ty.path "usize" ]
+                                                    ])
+                                              ]
                                             |)
                                           |)) in
                                       let _ :=
@@ -1077,15 +1166,19 @@ Module iter.
                                                 [ A; B; ExtendA; ExtendB; Iter ]
                                               |),
                                               [
-                                                M.read (| self |);
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (| M.read (| a |) |)
-                                                |);
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (| M.read (| b |) |)
-                                                |)
+                                                M.value_with_ty (M.read (| self |)) Iter;
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (| M.read (| a |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&mut") [] [ ExtendA ]);
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (| M.read (| b |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&mut") [] [ ExtendB ])
                                               ]
                                             |) in
                                           M.return_ (| Value.Tuple [] |)
@@ -1133,11 +1226,15 @@ Module iter.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (| M.read (| a |) |)
-                                              |);
-                                              M.read (| lower_bound |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| a |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&mut") [] [ ExtendA ]);
+                                              M.value_with_ty
+                                                (M.read (| lower_bound |))
+                                                (Ty.path "usize")
                                             ]
                                           |) in
                                         let~ _ : Ty.tuple [] :=
@@ -1153,11 +1250,15 @@ Module iter.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (| M.read (| b |) |)
-                                              |);
-                                              M.read (| lower_bound |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| b |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&mut") [] [ ExtendB ]);
+                                              M.value_with_ty
+                                                (M.read (| lower_bound |))
+                                                (Ty.path "usize")
                                             ]
                                           |) in
                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1178,22 +1279,28 @@ Module iter.
                                   [ Ty.tuple []; Ty.associated_unknown ]
                                 |),
                                 [
-                                  M.read (| self |);
-                                  Value.Tuple [];
-                                  M.call_closure (|
-                                    Ty.associated_unknown,
-                                    M.get_associated_function (| Self, "extend.extend", [], [] |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| a |) |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| b |) |)
-                                      |)
-                                    ]
-                                  |)
+                                  M.value_with_ty (M.read (| self |)) Iter;
+                                  M.value_with_ty (Value.Tuple []) (Ty.tuple []);
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.associated_unknown,
+                                      M.get_associated_function (| Self, "extend.extend", [], [] |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.read (| a |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&mut") [] [ ExtendA ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.read (| b |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&mut") [] [ ExtendB ])
+                                      ]
+                                    |))
+                                    Ty.associated_unknown
                                 ]
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)

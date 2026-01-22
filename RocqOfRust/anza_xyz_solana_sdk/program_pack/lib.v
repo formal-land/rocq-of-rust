@@ -84,22 +84,34 @@ Module Pack.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Self; Ty.path "solana_program_error::ProgramError" ],
+                            M.get_trait_method (|
+                              "solana_program_pack::Pack",
+                              Self,
+                              [],
+                              [],
+                              "unpack_unchecked",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Self; Ty.path "solana_program_error::ProgramError" ],
-                          M.get_trait_method (|
-                            "solana_program_pack::Pack",
-                            Self,
-                            [],
-                            [],
-                            "unpack_unchecked",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |) ]
-                        |)
+                            [ Self; Ty.path "solana_program_error::ProgramError" ])
                       ]
                     |)
                   |),
@@ -151,7 +163,17 @@ Module Pack.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "solana_program_error::ProgramError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -197,28 +219,36 @@ Module Pack.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, value |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, value |))
+                                    (Ty.apply (Ty.path "&") [] [ Self ])
+                                ]
                               |)
                             |)) in
                         let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                        Value.StructTuple
-                          "core::result::Result::Ok"
-                          []
-                          [ Self; Ty.path "solana_program_error::ProgramError" ]
-                          [ M.read (| value |) ]));
+                        M.value_with_ty
+                          (Value.StructTuple "core::result::Result::Ok" [ M.read (| value |) ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Self; Ty.path "solana_program_error::ProgramError" ])));
                     fun γ =>
                       ltac:(M.monadic
-                        (Value.StructTuple
-                          "core::result::Result::Err"
-                          []
-                          [ Self; Ty.path "solana_program_error::ProgramError" ]
-                          [
-                            Value.StructTuple
-                              "solana_program_error::ProgramError::UninitializedAccount"
-                              []
-                              []
-                              []
-                          ]))
+                        (M.value_with_ty
+                          (Value.StructTuple
+                            "core::result::Result::Err"
+                            [
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "solana_program_error::ProgramError::UninitializedAccount"
+                                  [])
+                                (Ty.path "solana_program_error::ProgramError")
+                            ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Self; Ty.path "solana_program_error::ProgramError" ])))
                   ]
                 |)
               |)
@@ -273,10 +303,15 @@ Module Pack.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| input |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| input |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                     ]
                                   |);
                                   M.read (|
@@ -292,17 +327,20 @@ Module Pack.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Self; Ty.path "solana_program_error::ProgramError" ]
-                                [
-                                  Value.StructTuple
-                                    "solana_program_error::ProgramError::InvalidAccountData"
-                                    []
-                                    []
-                                    []
-                                ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "solana_program_error::ProgramError::InvalidAccountData"
+                                        [])
+                                      (Ty.path "solana_program_error::ProgramError")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Self; Ty.path "solana_program_error::ProgramError" ])
                             |)
                           |)
                         |)));
@@ -328,7 +366,11 @@ Module Pack.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                  ]
                 |)
               |)
             |)))
@@ -379,10 +421,15 @@ Module Pack.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| dst |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| dst |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                     ]
                                   |);
                                   M.read (|
@@ -398,17 +445,20 @@ Module Pack.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ]
-                                [
-                                  Value.StructTuple
-                                    "solana_program_error::ProgramError::InvalidAccountData"
-                                    []
-                                    []
-                                    []
-                                ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "solana_program_error::ProgramError::InvalidAccountData"
+                                        [])
+                                      (Ty.path "solana_program_error::ProgramError")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ])
                             |)
                           |)
                         |)));
@@ -428,8 +478,15 @@ Module Pack.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, src |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| dst |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, src |))
+                      (Ty.apply (Ty.path "&") [] [ Self ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| dst |) |) |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |) in
               M.alloc (|
@@ -437,11 +494,12 @@ Module Pack.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "solana_program_error::ProgramError" ])
               |)
             |)))
         |)))

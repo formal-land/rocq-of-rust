@@ -25,17 +25,22 @@ Module move_resource.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.read (|
-                    get_constant (|
-                      "move_core_types::move_resource::MoveStructType::MODULE_NAME",
-                      Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::identifier::IdentStr" ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.read (|
+                      get_constant (|
+                        "move_core_types::move_resource::MoveStructType::MODULE_NAME",
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_core_types::identifier::IdentStr" ]
+                      |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::identifier::IdentStr" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -67,17 +72,22 @@ Module move_resource.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.read (|
-                    get_constant (|
-                      "move_core_types::move_resource::MoveStructType::STRUCT_NAME",
-                      Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::identifier::IdentStr" ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.read (|
+                      get_constant (|
+                        "move_core_types::move_resource::MoveStructType::STRUCT_NAME",
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_core_types::identifier::IdentStr" ]
+                      |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "move_core_types::identifier::IdentStr" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -126,67 +136,67 @@ Module move_resource.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "move_core_types::language_storage::StructTag"
-            []
-            []
-            [
-              ("address",
-                M.read (|
-                  get_constant (|
-                    "move_core_types::move_resource::MoveStructType::ADDRESS",
-                    Ty.path "move_core_types::account_address::AccountAddress"
-                  |)
-                |));
-              ("name",
-                M.call_closure (|
-                  Ty.path "move_core_types::identifier::Identifier",
-                  M.get_trait_method (|
-                    "move_core_types::move_resource::MoveStructType",
-                    Self,
-                    [],
-                    [],
-                    "struct_identifier",
-                    [],
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "move_core_types::language_storage::StructTag"
+              [
+                ("address",
+                  M.read (|
+                    get_constant (|
+                      "move_core_types::move_resource::MoveStructType::ADDRESS",
+                      Ty.path "move_core_types::account_address::AccountAddress"
+                    |)
+                  |));
+                ("name",
+                  M.call_closure (|
+                    Ty.path "move_core_types::identifier::Identifier",
+                    M.get_trait_method (|
+                      "move_core_types::move_resource::MoveStructType",
+                      Self,
+                      [],
+                      [],
+                      "struct_identifier",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("module",
-                M.call_closure (|
-                  Ty.path "move_core_types::identifier::Identifier",
-                  M.get_trait_method (|
-                    "move_core_types::move_resource::MoveStructType",
-                    Self,
-                    [],
-                    [],
-                    "module_identifier",
-                    [],
+                  |));
+                ("module",
+                  M.call_closure (|
+                    Ty.path "move_core_types::identifier::Identifier",
+                    M.get_trait_method (|
+                      "move_core_types::move_resource::MoveStructType",
+                      Self,
+                      [],
+                      [],
+                      "module_identifier",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("type_params",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
+                  |));
+                ("type_params",
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [
+                        Ty.path "move_core_types::language_storage::TypeTag";
+                        Ty.path "alloc::alloc::Global"
+                      ],
+                    M.get_trait_method (|
+                      "move_core_types::move_resource::MoveStructType",
+                      Self,
+                      [],
+                      [],
+                      "type_params",
+                      [],
+                      []
+                    |),
                     []
-                    [
-                      Ty.path "move_core_types::language_storage::TypeTag";
-                      Ty.path "alloc::alloc::Global"
-                    ],
-                  M.get_trait_method (|
-                    "move_core_types::move_resource::MoveStructType",
-                    Self,
-                    [],
-                    [],
-                    "type_params",
-                    [],
-                    []
-                  |),
-                  []
-                |))
-            ]))
+                  |))
+              ])
+            (Ty.path "move_core_types::language_storage::StructTag")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -217,25 +227,30 @@ Module move_resource.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  Ty.path "move_core_types::language_storage::StructTag",
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     Ty.path "move_core_types::language_storage::StructTag",
-                    M.get_trait_method (|
-                      "move_core_types::move_resource::MoveStructType",
-                      Self,
-                      [],
-                      [],
-                      "struct_tag",
-                      [],
+                    M.call_closure (|
+                      Ty.path "move_core_types::language_storage::StructTag",
+                      M.get_trait_method (|
+                        "move_core_types::move_resource::MoveStructType",
+                        Self,
+                        [],
+                        [],
+                        "struct_tag",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.path "move_core_types::language_storage::StructTag" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

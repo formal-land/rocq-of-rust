@@ -79,36 +79,42 @@ Module loop_summary.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NodeId" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.deref (| M.read (| self |) |),
-                              "move_bytecode_verifier::loop_summary::NodeId",
-                              0
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NodeId" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "move_bytecode_verifier::loop_summary::NodeId",
+                                0
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -250,32 +256,36 @@ Module loop_summary.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "move_bytecode_verifier::loop_summary::NodeId",
-                      0
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "move_bytecode_verifier::loop_summary::NodeId",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| other |) |),
-                      "move_bytecode_verifier::loop_summary::NodeId",
-                      0
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| other |) |),
+                        "move_bytecode_verifier::loop_summary::NodeId",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -312,32 +322,36 @@ Module loop_summary.
             Ty.path "core::cmp::Ordering",
             M.get_trait_method (| "core::cmp::Ord", Ty.path "u16", [], [], "cmp", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "move_bytecode_verifier::loop_summary::NodeId",
-                      0
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "move_bytecode_verifier::loop_summary::NodeId",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| other |) |),
-                      "move_bytecode_verifier::loop_summary::NodeId",
-                      0
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| other |) |),
+                        "move_bytecode_verifier::loop_summary::NodeId",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -562,7 +576,14 @@ Module loop_summary.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| cfg |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| cfg |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "move_binary_format::control_flow_graph::VMControlFlowGraph" ])
+                  ]
                 |)) in
             let~ blocks :
                 Ty.apply
@@ -575,7 +596,10 @@ Module loop_summary.
                   []
                   [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
                 M.get_function (| "alloc::vec::from_elem", [], [ Ty.path "u16" ] |),
-                [ Value.Integer IntegerKind.U16 0; M.read (| num_blocks |) ]
+                [
+                  M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                  M.value_with_ty (M.read (| num_blocks |)) (Ty.path "usize")
+                ]
               |) in
             let~ descs :
                 Ty.apply
@@ -588,7 +612,10 @@ Module loop_summary.
                   []
                   [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
                 M.get_function (| "alloc::vec::from_elem", [], [ Ty.path "u16" ] |),
-                [ Value.Integer IntegerKind.U16 0; M.read (| num_blocks |) ]
+                [
+                  M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                  M.value_with_ty (M.read (| num_blocks |)) (Ty.path "usize")
+                ]
               |) in
             let~ backs :
                 Ty.apply
@@ -632,15 +659,8 @@ Module loop_summary.
                   ]
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "alloc::vec::Vec")
-                      []
-                      [
-                        Ty.path "move_bytecode_verifier::loop_summary::NodeId";
-                        Ty.path "alloc::alloc::Global"
-                      ],
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.apply
                         (Ty.path "alloc::vec::Vec")
                         []
@@ -648,13 +668,28 @@ Module loop_summary.
                           Ty.path "move_bytecode_verifier::loop_summary::NodeId";
                           Ty.path "alloc::alloc::Global"
                         ],
-                      "new",
-                      [],
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [
+                            Ty.path "move_bytecode_verifier::loop_summary::NodeId";
+                            Ty.path "alloc::alloc::Global"
+                          ],
+                        "new",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |);
-                  M.read (| num_blocks |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [
+                        Ty.path "move_bytecode_verifier::loop_summary::NodeId";
+                        Ty.path "alloc::alloc::Global"
+                      ]);
+                  M.value_with_ty (M.read (| num_blocks |)) (Ty.path "usize")
                 ]
               |) in
             let~ preds :
@@ -699,15 +734,8 @@ Module loop_summary.
                   ]
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "alloc::vec::Vec")
-                      []
-                      [
-                        Ty.path "move_bytecode_verifier::loop_summary::NodeId";
-                        Ty.path "alloc::alloc::Global"
-                      ],
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.apply
                         (Ty.path "alloc::vec::Vec")
                         []
@@ -715,21 +743,36 @@ Module loop_summary.
                           Ty.path "move_bytecode_verifier::loop_summary::NodeId";
                           Ty.path "alloc::alloc::Global"
                         ],
-                      "new",
-                      [],
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [
+                            Ty.path "move_bytecode_verifier::loop_summary::NodeId";
+                            Ty.path "alloc::alloc::Global"
+                          ],
+                        "new",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |);
-                  M.read (| num_blocks |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [
+                        Ty.path "move_bytecode_verifier::loop_summary::NodeId";
+                        Ty.path "alloc::alloc::Global"
+                      ]);
+                  M.value_with_ty (M.read (| num_blocks |)) (Ty.path "usize")
                 ]
               |) in
             let~ next_node : Ty.path "move_bytecode_verifier::loop_summary::NodeId" :=
-              Value.StructTuple
-                "move_bytecode_verifier::loop_summary::NodeId"
-                []
-                []
-                [ Value.Integer IntegerKind.U16 0 ] in
+              M.value_with_ty
+                (Value.StructTuple
+                  "move_bytecode_verifier::loop_summary::NodeId"
+                  [ Value.Integer IntegerKind.U16 0 ])
+                (Ty.path "move_bytecode_verifier::loop_summary::NodeId") in
             let~ root_block : Ty.path "u16" :=
               M.call_closure (|
                 Ty.path "u16",
@@ -742,7 +785,14 @@ Module loop_summary.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| cfg |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| cfg |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "move_binary_format::control_flow_graph::VMControlFlowGraph" ])
+                ]
               |) in
             let~ root_node : Ty.path "move_bytecode_verifier::loop_summary::NodeId" :=
               M.call_closure (|
@@ -753,7 +803,14 @@ Module loop_summary.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, next_node |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, next_node |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ])
+                ]
               |) in
             let~ exploration :
                 Ty.apply
@@ -806,20 +863,36 @@ Module loop_summary.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, blocks |);
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_trait_method (|
-                          "core::convert::From",
-                          Ty.path "usize",
-                          [],
-                          [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
-                          "from",
-                          [],
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, blocks |))
+                        (Ty.apply
+                          (Ty.path "&mut")
                           []
-                        |),
-                        [ M.read (| root_node |) ]
-                      |)
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ]
+                          ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          M.get_trait_method (|
+                            "core::convert::From",
+                            Ty.path "usize",
+                            [],
+                            [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
+                            "from",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (| root_node |))
+                              (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
+                          ]
+                        |))
+                        (Ty.path "usize")
                     ]
                   |)
                 |),
@@ -849,13 +922,29 @@ Module loop_summary.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, exploration |);
-                  M.read (| root_block |);
-                  Value.StructTuple
-                    "move_bytecode_verifier::loop_summary::new::Exploration::InProgress"
-                    []
-                    []
-                    [ M.read (| root_node |) ]
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, exploration |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::collections::btree::map::BTreeMap")
+                          []
+                          [
+                            Ty.path "u16";
+                            Ty.path "move_bytecode_verifier::loop_summary::new::Exploration";
+                            Ty.path "alloc::alloc::Global"
+                          ]
+                      ]);
+                  M.value_with_ty (M.read (| root_block |)) (Ty.path "u16");
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "move_bytecode_verifier::loop_summary::new::Exploration::InProgress"
+                        [ M.read (| root_node |) ])
+                      (Ty.path "move_bytecode_verifier::loop_summary::new::Exploration"))
+                    (Ty.path "move_bytecode_verifier::loop_summary::new::Exploration")
                 ]
               |) in
             let~ stack :
@@ -900,8 +989,169 @@ Module loop_summary.
                   ]
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::iter::adapters::map::Map")
+                        []
+                        [
+                          Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u16" ];
+                          Ty.function
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ]
+                            (Ty.path "move_bytecode_verifier::loop_summary::new::Frontier")
+                        ],
+                      M.get_trait_method (|
+                        "core::iter::traits::iterator::Iterator",
+                        Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u16" ],
+                        [],
+                        [],
+                        "map",
+                        [],
+                        [
+                          Ty.path "move_bytecode_verifier::loop_summary::new::Frontier";
+                          Ty.function
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ]
+                            (Ty.path "move_bytecode_verifier::loop_summary::new::Frontier")
+                        ]
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u16" ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ],
+                              "iter",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::deref::Deref",
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
+                                        [],
+                                        [],
+                                        "deref",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::vec::Vec")
+                                                      []
+                                                      [
+                                                        Ty.path "u16";
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ]
+                                                  ],
+                                                M.get_trait_method (|
+                                                  "move_binary_format::control_flow_graph::ControlFlowGraph",
+                                                  Ty.path
+                                                    "move_binary_format::control_flow_graph::VMControlFlowGraph",
+                                                  [],
+                                                  [],
+                                                  "successors",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| cfg |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.path
+                                                          "move_binary_format::control_flow_graph::VMControlFlowGraph"
+                                                      ]);
+                                                  M.value_with_ty
+                                                    (M.read (| root_block |))
+                                                    (Ty.path "u16")
+                                                ]
+                                              |)
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::vec::Vec")
+                                                []
+                                                [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ]
+                                            ])
+                                      ]
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ] ])
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u16" ]);
+                        M.value_with_ty
+                          (M.closure
+                            (fun γ =>
+                              ltac:(M.monadic
+                                match γ with
+                                | [ α0 ] =>
+                                  ltac:(M.monadic
+                                    (M.match_operator (|
+                                      Ty.path "move_bytecode_verifier::loop_summary::new::Frontier",
+                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], α0 |),
+                                      [
+                                        fun γ =>
+                                          ltac:(M.monadic
+                                            (let succ :=
+                                              M.copy (|
+                                                Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                                                γ
+                                              |) in
+                                            M.value_with_ty
+                                              (Value.mkStructRecord
+                                                "move_bytecode_verifier::loop_summary::new::Frontier::Visit"
+                                                [
+                                                  ("from_node", M.read (| root_node |));
+                                                  ("to_block",
+                                                    M.read (| M.deref (| M.read (| succ |) |) |))
+                                                ])
+                                              (Ty.path
+                                                "move_bytecode_verifier::loop_summary::new::Frontier")))
+                                      ]
+                                    |)))
+                                | _ => M.impossible "wrong number of arguments"
+                                end)))
+                          (Ty.function
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ]
+                            (Ty.path "move_bytecode_verifier::loop_summary::new::Frontier"))
+                      ]
+                    |))
+                    (Ty.apply
                       (Ty.path "core::iter::adapters::map::Map")
                       []
                       [
@@ -909,123 +1159,7 @@ Module loop_summary.
                         Ty.function
                           [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ]
                           (Ty.path "move_bytecode_verifier::loop_summary::new::Frontier")
-                      ],
-                    M.get_trait_method (|
-                      "core::iter::traits::iterator::Iterator",
-                      Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u16" ],
-                      [],
-                      [],
-                      "map",
-                      [],
-                      [
-                        Ty.path "move_bytecode_verifier::loop_summary::new::Frontier";
-                        Ty.function
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ]
-                          (Ty.path "move_bytecode_verifier::loop_summary::new::Frontier")
-                      ]
-                    |),
-                    [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u16" ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ],
-                          "iter",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ] ],
-                                M.get_trait_method (|
-                                  "core::ops::deref::Deref",
-                                  Ty.apply
-                                    (Ty.path "alloc::vec::Vec")
-                                    []
-                                    [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
-                                  [],
-                                  [],
-                                  "deref",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "alloc::vec::Vec")
-                                              []
-                                              [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ]
-                                          ],
-                                        M.get_trait_method (|
-                                          "move_binary_format::control_flow_graph::ControlFlowGraph",
-                                          Ty.path
-                                            "move_binary_format::control_flow_graph::VMControlFlowGraph",
-                                          [],
-                                          [],
-                                          "successors",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| cfg |) |)
-                                          |);
-                                          M.read (| root_block |)
-                                        ]
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.closure
-                        (fun γ =>
-                          ltac:(M.monadic
-                            match γ with
-                            | [ α0 ] =>
-                              ltac:(M.monadic
-                                (M.match_operator (|
-                                  Ty.path "move_bytecode_verifier::loop_summary::new::Frontier",
-                                  M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], α0 |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let succ :=
-                                          M.copy (|
-                                            Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
-                                            γ
-                                          |) in
-                                        Value.mkStructRecord
-                                          "move_bytecode_verifier::loop_summary::new::Frontier::Visit"
-                                          []
-                                          []
-                                          [
-                                            ("from_node", M.read (| root_node |));
-                                            ("to_block",
-                                              M.read (| M.deref (| M.read (| succ |) |) |))
-                                          ]))
-                                  ]
-                                |)))
-                            | _ => M.impossible "wrong number of arguments"
-                            end))
-                    ]
-                  |)
+                      ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -1069,7 +1203,23 @@ Module loop_summary.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.MutRef, stack |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.MutRef, stack |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::Vec")
+                                              []
+                                              [
+                                                Ty.path
+                                                  "move_bytecode_verifier::loop_summary::new::Frontier";
+                                                Ty.path "alloc::alloc::Global"
+                                              ]
+                                          ])
+                                    ]
                                   |)
                                 |) in
                               let γ0_0 :=
@@ -1138,23 +1288,43 @@ Module loop_summary.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (| Pointer.Kind.MutRef, descs |);
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    M.get_trait_method (|
-                                                      "core::convert::From",
-                                                      Ty.path "usize",
-                                                      [],
-                                                      [
-                                                        Ty.path
-                                                          "move_bytecode_verifier::loop_summary::NodeId"
-                                                      ],
-                                                      "from",
-                                                      [],
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.MutRef, descs |))
+                                                    (Ty.apply
+                                                      (Ty.path "&mut")
                                                       []
-                                                    |),
-                                                    [ M.read (| parent |) ]
-                                                  |)
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "alloc::vec::Vec")
+                                                          []
+                                                          [
+                                                            Ty.path "u16";
+                                                            Ty.path "alloc::alloc::Global"
+                                                          ]
+                                                      ]);
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
+                                                      Ty.path "usize",
+                                                      M.get_trait_method (|
+                                                        "core::convert::From",
+                                                        Ty.path "usize",
+                                                        [],
+                                                        [
+                                                          Ty.path
+                                                            "move_bytecode_verifier::loop_summary::NodeId"
+                                                        ],
+                                                        "from",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| parent |))
+                                                          (Ty.path
+                                                            "move_bytecode_verifier::loop_summary::NodeId")
+                                                      ]
+                                                    |))
+                                                    (Ty.path "usize")
                                                 ]
                                               |)
                                             |) in
@@ -1193,23 +1363,46 @@ Module loop_summary.
                                                             []
                                                           |),
                                                           [
-                                                            M.borrow (| Pointer.Kind.Ref, descs |);
-                                                            M.call_closure (|
-                                                              Ty.path "usize",
-                                                              M.get_trait_method (|
-                                                                "core::convert::From",
-                                                                Ty.path "usize",
-                                                                [],
-                                                                [
-                                                                  Ty.path
-                                                                    "move_bytecode_verifier::loop_summary::NodeId"
-                                                                ],
-                                                                "from",
-                                                                [],
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                descs
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
                                                                 []
-                                                              |),
-                                                              [ M.read (| node_id |) ]
-                                                            |)
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "alloc::vec::Vec")
+                                                                    []
+                                                                    [
+                                                                      Ty.path "u16";
+                                                                      Ty.path "alloc::alloc::Global"
+                                                                    ]
+                                                                ]);
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.path "usize",
+                                                                M.get_trait_method (|
+                                                                  "core::convert::From",
+                                                                  Ty.path "usize",
+                                                                  [],
+                                                                  [
+                                                                    Ty.path
+                                                                      "move_bytecode_verifier::loop_summary::NodeId"
+                                                                  ],
+                                                                  "from",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.read (| node_id |))
+                                                                    (Ty.path
+                                                                      "move_bytecode_verifier::loop_summary::NodeId")
+                                                                ]
+                                                              |))
+                                                              (Ty.path "usize")
                                                           ]
                                                         |)
                                                       |)
@@ -1248,8 +1441,70 @@ Module loop_summary.
                                                   []
                                                 |),
                                                 [
-                                                  M.call_closure (|
-                                                    Ty.apply
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "core::option::Option")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "move_bytecode_verifier::loop_summary::new::Exploration"
+                                                            ]
+                                                        ],
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::btree::map::BTreeMap")
+                                                          []
+                                                          [
+                                                            Ty.path "u16";
+                                                            Ty.path
+                                                              "move_bytecode_verifier::loop_summary::new::Exploration";
+                                                            Ty.path "alloc::alloc::Global"
+                                                          ],
+                                                        "get_mut",
+                                                        [],
+                                                        [ Ty.path "u16" ]
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            exploration
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "alloc::collections::btree::map::BTreeMap")
+                                                                []
+                                                                [
+                                                                  Ty.path "u16";
+                                                                  Ty.path
+                                                                    "move_bytecode_verifier::loop_summary::new::Exploration";
+                                                                  Ty.path "alloc::alloc::Global"
+                                                                ]
+                                                            ]);
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (|
+                                                              M.borrow (| Pointer.Kind.Ref, block |)
+                                                            |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "u16" ])
+                                                      ]
+                                                    |))
+                                                    (Ty.apply
                                                       (Ty.path "core::option::Option")
                                                       []
                                                       [
@@ -1260,43 +1515,16 @@ Module loop_summary.
                                                             Ty.path
                                                               "move_bytecode_verifier::loop_summary::new::Exploration"
                                                           ]
-                                                      ],
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path
-                                                          "alloc::collections::btree::map::BTreeMap")
-                                                        []
-                                                        [
-                                                          Ty.path "u16";
-                                                          Ty.path
-                                                            "move_bytecode_verifier::loop_summary::new::Exploration";
-                                                          Ty.path "alloc::alloc::Global"
-                                                        ],
-                                                      "get_mut",
-                                                      [],
-                                                      [ Ty.path "u16" ]
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        exploration
-                                                      |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.borrow (| Pointer.Kind.Ref, block |)
-                                                        |)
-                                                      |)
-                                                    ]
-                                                  |)
+                                                      ])
                                                 ]
                                               |)
                                             |),
-                                            Value.StructTuple
-                                              "move_bytecode_verifier::loop_summary::new::Exploration::Done"
-                                              []
-                                              []
-                                              [ M.read (| node_id |) ]
+                                            M.value_with_ty
+                                              (Value.StructTuple
+                                                "move_bytecode_verifier::loop_summary::new::Exploration::Done"
+                                                [ M.read (| node_id |) ])
+                                              (Ty.path
+                                                "move_bytecode_verifier::loop_summary::new::Exploration")
                                           |) in
                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                       |)));
@@ -1358,8 +1586,26 @@ Module loop_summary.
                                               []
                                             |),
                                             [
-                                              M.borrow (| Pointer.Kind.MutRef, exploration |);
-                                              M.read (| to_block |)
+                                              M.value_with_ty
+                                                (M.borrow (| Pointer.Kind.MutRef, exploration |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "alloc::collections::btree::map::BTreeMap")
+                                                      []
+                                                      [
+                                                        Ty.path "u16";
+                                                        Ty.path
+                                                          "move_bytecode_verifier::loop_summary::new::Exploration";
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ]
+                                                  ]);
+                                              M.value_with_ty
+                                                (M.read (| to_block |))
+                                                (Ty.path "u16")
                                             ]
                                           |)
                                         |),
@@ -1419,7 +1665,25 @@ Module loop_summary.
                                                       [],
                                                       []
                                                     |),
-                                                    [ M.borrow (| Pointer.Kind.Ref, entry |) ]
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (| Pointer.Kind.Ref, entry |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "alloc::collections::btree::map::entry::OccupiedEntry")
+                                                              []
+                                                              [
+                                                                Ty.path "u16";
+                                                                Ty.path
+                                                                  "move_bytecode_verifier::loop_summary::new::Exploration";
+                                                                Ty.path "alloc::alloc::Global"
+                                                              ]
+                                                          ])
+                                                    ]
                                                   |)
                                                 |),
                                                 [
@@ -1459,28 +1723,13 @@ Module loop_summary.
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            M.deref (|
-                                                              M.call_closure (|
-                                                                Ty.apply
-                                                                  (Ty.path "&mut")
-                                                                  []
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path "alloc::vec::Vec")
-                                                                      []
-                                                                      [
-                                                                        Ty.path
-                                                                          "move_bytecode_verifier::loop_summary::NodeId";
-                                                                        Ty.path
-                                                                          "alloc::alloc::Global"
-                                                                      ]
-                                                                  ],
-                                                                M.get_trait_method (|
-                                                                  "core::ops::index::IndexMut",
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.deref (|
+                                                                M.call_closure (|
                                                                   Ty.apply
-                                                                    (Ty.path "alloc::vec::Vec")
+                                                                    (Ty.path "&mut")
                                                                     []
                                                                     [
                                                                       Ty.apply
@@ -1491,47 +1740,110 @@ Module loop_summary.
                                                                             "move_bytecode_verifier::loop_summary::NodeId";
                                                                           Ty.path
                                                                             "alloc::alloc::Global"
-                                                                        ];
-                                                                      Ty.path "alloc::alloc::Global"
+                                                                        ]
                                                                     ],
-                                                                  [],
-                                                                  [ Ty.path "usize" ],
-                                                                  "index_mut",
-                                                                  [],
-                                                                  []
-                                                                |),
-                                                                [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.MutRef,
-                                                                    backs
-                                                                  |);
-                                                                  M.call_closure (|
-                                                                    Ty.path "usize",
-                                                                    M.get_trait_method (|
-                                                                      "core::convert::From",
-                                                                      Ty.path "usize",
-                                                                      [],
-                                                                      [
-                                                                        Ty.path
-                                                                          "move_bytecode_verifier::loop_summary::NodeId"
-                                                                      ],
-                                                                      "from",
-                                                                      [],
+                                                                  M.get_trait_method (|
+                                                                    "core::ops::index::IndexMut",
+                                                                    Ty.apply
+                                                                      (Ty.path "alloc::vec::Vec")
                                                                       []
-                                                                    |),
-                                                                    [
-                                                                      M.read (|
-                                                                        M.deref (|
-                                                                          M.read (| to_node |)
-                                                                        |)
-                                                                      |)
-                                                                    ]
-                                                                  |)
-                                                                ]
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "alloc::vec::Vec")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "move_bytecode_verifier::loop_summary::NodeId";
+                                                                            Ty.path
+                                                                              "alloc::alloc::Global"
+                                                                          ];
+                                                                        Ty.path
+                                                                          "alloc::alloc::Global"
+                                                                      ],
+                                                                    [],
+                                                                    [ Ty.path "usize" ],
+                                                                    "index_mut",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        backs
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&mut")
+                                                                        []
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "alloc::vec::Vec")
+                                                                            []
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path
+                                                                                  "alloc::vec::Vec")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "move_bytecode_verifier::loop_summary::NodeId";
+                                                                                  Ty.path
+                                                                                    "alloc::alloc::Global"
+                                                                                ];
+                                                                              Ty.path
+                                                                                "alloc::alloc::Global"
+                                                                            ]
+                                                                        ]);
+                                                                    M.value_with_ty
+                                                                      (M.call_closure (|
+                                                                        Ty.path "usize",
+                                                                        M.get_trait_method (|
+                                                                          "core::convert::From",
+                                                                          Ty.path "usize",
+                                                                          [],
+                                                                          [
+                                                                            Ty.path
+                                                                              "move_bytecode_verifier::loop_summary::NodeId"
+                                                                          ],
+                                                                          "from",
+                                                                          [],
+                                                                          []
+                                                                        |),
+                                                                        [
+                                                                          M.value_with_ty
+                                                                            (M.read (|
+                                                                              M.deref (|
+                                                                                M.read (| to_node |)
+                                                                              |)
+                                                                            |))
+                                                                            (Ty.path
+                                                                              "move_bytecode_verifier::loop_summary::NodeId")
+                                                                        ]
+                                                                      |))
+                                                                      (Ty.path "usize")
+                                                                  ]
+                                                                |)
                                                               |)
-                                                            |)
-                                                          |);
-                                                          M.read (| from_node |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "alloc::vec::Vec")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "move_bytecode_verifier::loop_summary::NodeId";
+                                                                    Ty.path "alloc::alloc::Global"
+                                                                  ]
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.read (| from_node |))
+                                                            (Ty.path
+                                                              "move_bytecode_verifier::loop_summary::NodeId")
                                                         ]
                                                       |)));
                                                   fun γ =>
@@ -1570,28 +1882,13 @@ Module loop_summary.
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            M.deref (|
-                                                              M.call_closure (|
-                                                                Ty.apply
-                                                                  (Ty.path "&mut")
-                                                                  []
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path "alloc::vec::Vec")
-                                                                      []
-                                                                      [
-                                                                        Ty.path
-                                                                          "move_bytecode_verifier::loop_summary::NodeId";
-                                                                        Ty.path
-                                                                          "alloc::alloc::Global"
-                                                                      ]
-                                                                  ],
-                                                                M.get_trait_method (|
-                                                                  "core::ops::index::IndexMut",
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.deref (|
+                                                                M.call_closure (|
                                                                   Ty.apply
-                                                                    (Ty.path "alloc::vec::Vec")
+                                                                    (Ty.path "&mut")
                                                                     []
                                                                     [
                                                                       Ty.apply
@@ -1602,47 +1899,110 @@ Module loop_summary.
                                                                             "move_bytecode_verifier::loop_summary::NodeId";
                                                                           Ty.path
                                                                             "alloc::alloc::Global"
-                                                                        ];
-                                                                      Ty.path "alloc::alloc::Global"
+                                                                        ]
                                                                     ],
-                                                                  [],
-                                                                  [ Ty.path "usize" ],
-                                                                  "index_mut",
-                                                                  [],
-                                                                  []
-                                                                |),
-                                                                [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.MutRef,
-                                                                    preds
-                                                                  |);
-                                                                  M.call_closure (|
-                                                                    Ty.path "usize",
-                                                                    M.get_trait_method (|
-                                                                      "core::convert::From",
-                                                                      Ty.path "usize",
-                                                                      [],
-                                                                      [
-                                                                        Ty.path
-                                                                          "move_bytecode_verifier::loop_summary::NodeId"
-                                                                      ],
-                                                                      "from",
-                                                                      [],
+                                                                  M.get_trait_method (|
+                                                                    "core::ops::index::IndexMut",
+                                                                    Ty.apply
+                                                                      (Ty.path "alloc::vec::Vec")
                                                                       []
-                                                                    |),
-                                                                    [
-                                                                      M.read (|
-                                                                        M.deref (|
-                                                                          M.read (| to_node |)
-                                                                        |)
-                                                                      |)
-                                                                    ]
-                                                                  |)
-                                                                ]
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "alloc::vec::Vec")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "move_bytecode_verifier::loop_summary::NodeId";
+                                                                            Ty.path
+                                                                              "alloc::alloc::Global"
+                                                                          ];
+                                                                        Ty.path
+                                                                          "alloc::alloc::Global"
+                                                                      ],
+                                                                    [],
+                                                                    [ Ty.path "usize" ],
+                                                                    "index_mut",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        preds
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&mut")
+                                                                        []
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "alloc::vec::Vec")
+                                                                            []
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path
+                                                                                  "alloc::vec::Vec")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "move_bytecode_verifier::loop_summary::NodeId";
+                                                                                  Ty.path
+                                                                                    "alloc::alloc::Global"
+                                                                                ];
+                                                                              Ty.path
+                                                                                "alloc::alloc::Global"
+                                                                            ]
+                                                                        ]);
+                                                                    M.value_with_ty
+                                                                      (M.call_closure (|
+                                                                        Ty.path "usize",
+                                                                        M.get_trait_method (|
+                                                                          "core::convert::From",
+                                                                          Ty.path "usize",
+                                                                          [],
+                                                                          [
+                                                                            Ty.path
+                                                                              "move_bytecode_verifier::loop_summary::NodeId"
+                                                                          ],
+                                                                          "from",
+                                                                          [],
+                                                                          []
+                                                                        |),
+                                                                        [
+                                                                          M.value_with_ty
+                                                                            (M.read (|
+                                                                              M.deref (|
+                                                                                M.read (| to_node |)
+                                                                              |)
+                                                                            |))
+                                                                            (Ty.path
+                                                                              "move_bytecode_verifier::loop_summary::NodeId")
+                                                                        ]
+                                                                      |))
+                                                                      (Ty.path "usize")
+                                                                  ]
+                                                                |)
                                                               |)
-                                                            |)
-                                                          |);
-                                                          M.read (| from_node |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "alloc::vec::Vec")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "move_bytecode_verifier::loop_summary::NodeId";
+                                                                    Ty.path "alloc::alloc::Global"
+                                                                  ]
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.read (| from_node |))
+                                                            (Ty.path
+                                                              "move_bytecode_verifier::loop_summary::NodeId")
                                                         ]
                                                       |)))
                                                 ]
@@ -1683,7 +2043,19 @@ Module loop_summary.
                                                       [],
                                                       []
                                                     |),
-                                                    [ M.borrow (| Pointer.Kind.MutRef, next_node |)
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.MutRef,
+                                                          next_node
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&mut")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "move_bytecode_verifier::loop_summary::NodeId"
+                                                          ])
                                                     ]
                                                   |) in
                                                 let~ _ :
@@ -1718,12 +2090,27 @@ Module loop_summary.
                                                       []
                                                     |),
                                                     [
-                                                      M.read (| entry |);
-                                                      Value.StructTuple
-                                                        "move_bytecode_verifier::loop_summary::new::Exploration::InProgress"
-                                                        []
-                                                        []
-                                                        [ M.read (| to_node |) ]
+                                                      M.value_with_ty
+                                                        (M.read (| entry |))
+                                                        (Ty.apply
+                                                          (Ty.path
+                                                            "alloc::collections::btree::map::entry::VacantEntry")
+                                                          []
+                                                          [
+                                                            Ty.path "u16";
+                                                            Ty.path
+                                                              "move_bytecode_verifier::loop_summary::new::Exploration";
+                                                            Ty.path "alloc::alloc::Global"
+                                                          ]);
+                                                      M.value_with_ty
+                                                        (M.value_with_ty
+                                                          (Value.StructTuple
+                                                            "move_bytecode_verifier::loop_summary::new::Exploration::InProgress"
+                                                            [ M.read (| to_node |) ])
+                                                          (Ty.path
+                                                            "move_bytecode_verifier::loop_summary::new::Exploration"))
+                                                        (Ty.path
+                                                          "move_bytecode_verifier::loop_summary::new::Exploration")
                                                     ]
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
@@ -1750,26 +2137,46 @@ Module loop_summary.
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            blocks
-                                                          |);
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            M.get_trait_method (|
-                                                              "core::convert::From",
-                                                              Ty.path "usize",
-                                                              [],
-                                                              [
-                                                                Ty.path
-                                                                  "move_bytecode_verifier::loop_summary::NodeId"
-                                                              ],
-                                                              "from",
-                                                              [],
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              blocks
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
                                                               []
-                                                            |),
-                                                            [ M.read (| to_node |) ]
-                                                          |)
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "alloc::vec::Vec")
+                                                                  []
+                                                                  [
+                                                                    Ty.path "u16";
+                                                                    Ty.path "alloc::alloc::Global"
+                                                                  ]
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              Ty.path "usize",
+                                                              M.get_trait_method (|
+                                                                "core::convert::From",
+                                                                Ty.path "usize",
+                                                                [],
+                                                                [
+                                                                  Ty.path
+                                                                    "move_bytecode_verifier::loop_summary::NodeId"
+                                                                ],
+                                                                "from",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.read (| to_node |))
+                                                                  (Ty.path
+                                                                    "move_bytecode_verifier::loop_summary::NodeId")
+                                                              ]
+                                                            |))
+                                                            (Ty.path "usize")
                                                         ]
                                                       |)
                                                     |),
@@ -1792,27 +2199,13 @@ Module loop_summary.
                                                       []
                                                     |),
                                                     [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.deref (|
-                                                          M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path "&mut")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "alloc::vec::Vec")
-                                                                  []
-                                                                  [
-                                                                    Ty.path
-                                                                      "move_bytecode_verifier::loop_summary::NodeId";
-                                                                    Ty.path "alloc::alloc::Global"
-                                                                  ]
-                                                              ],
-                                                            M.get_trait_method (|
-                                                              "core::ops::index::IndexMut",
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.MutRef,
+                                                          M.deref (|
+                                                            M.call_closure (|
                                                               Ty.apply
-                                                                (Ty.path "alloc::vec::Vec")
+                                                                (Ty.path "&mut")
                                                                 []
                                                                 [
                                                                   Ty.apply
@@ -1822,41 +2215,103 @@ Module loop_summary.
                                                                       Ty.path
                                                                         "move_bytecode_verifier::loop_summary::NodeId";
                                                                       Ty.path "alloc::alloc::Global"
-                                                                    ];
-                                                                  Ty.path "alloc::alloc::Global"
+                                                                    ]
                                                                 ],
-                                                              [],
-                                                              [ Ty.path "usize" ],
-                                                              "index_mut",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                preds
-                                                              |);
-                                                              M.call_closure (|
-                                                                Ty.path "usize",
-                                                                M.get_trait_method (|
-                                                                  "core::convert::From",
-                                                                  Ty.path "usize",
-                                                                  [],
-                                                                  [
-                                                                    Ty.path
-                                                                      "move_bytecode_verifier::loop_summary::NodeId"
-                                                                  ],
-                                                                  "from",
-                                                                  [],
+                                                              M.get_trait_method (|
+                                                                "core::ops::index::IndexMut",
+                                                                Ty.apply
+                                                                  (Ty.path "alloc::vec::Vec")
                                                                   []
-                                                                |),
-                                                                [ M.read (| to_node |) ]
-                                                              |)
-                                                            ]
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "alloc::vec::Vec")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "move_bytecode_verifier::loop_summary::NodeId";
+                                                                        Ty.path
+                                                                          "alloc::alloc::Global"
+                                                                      ];
+                                                                    Ty.path "alloc::alloc::Global"
+                                                                  ],
+                                                                [],
+                                                                [ Ty.path "usize" ],
+                                                                "index_mut",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    preds
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "alloc::vec::Vec")
+                                                                        []
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "alloc::vec::Vec")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "move_bytecode_verifier::loop_summary::NodeId";
+                                                                              Ty.path
+                                                                                "alloc::alloc::Global"
+                                                                            ];
+                                                                          Ty.path
+                                                                            "alloc::alloc::Global"
+                                                                        ]
+                                                                    ]);
+                                                                M.value_with_ty
+                                                                  (M.call_closure (|
+                                                                    Ty.path "usize",
+                                                                    M.get_trait_method (|
+                                                                      "core::convert::From",
+                                                                      Ty.path "usize",
+                                                                      [],
+                                                                      [
+                                                                        Ty.path
+                                                                          "move_bytecode_verifier::loop_summary::NodeId"
+                                                                      ],
+                                                                      "from",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.read (| to_node |))
+                                                                        (Ty.path
+                                                                          "move_bytecode_verifier::loop_summary::NodeId")
+                                                                    ]
+                                                                  |))
+                                                                  (Ty.path "usize")
+                                                              ]
+                                                            |)
                                                           |)
-                                                        |)
-                                                      |);
-                                                      M.read (| from_node |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&mut")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "alloc::vec::Vec")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "move_bytecode_verifier::loop_summary::NodeId";
+                                                                Ty.path "alloc::alloc::Global"
+                                                              ]
+                                                          ]);
+                                                      M.value_with_ty
+                                                        (M.read (| from_node |))
+                                                        (Ty.path
+                                                          "move_bytecode_verifier::loop_summary::NodeId")
                                                     ]
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
@@ -1876,16 +2331,34 @@ Module loop_summary.
                                                       []
                                                     |),
                                                     [
-                                                      M.borrow (| Pointer.Kind.MutRef, stack |);
-                                                      Value.mkStructRecord
-                                                        "move_bytecode_verifier::loop_summary::new::Frontier::Finish"
-                                                        []
-                                                        []
-                                                        [
-                                                          ("block", M.read (| to_block |));
-                                                          ("node_id", M.read (| to_node |));
-                                                          ("parent", M.read (| from_node |))
-                                                        ]
+                                                      M.value_with_ty
+                                                        (M.borrow (| Pointer.Kind.MutRef, stack |))
+                                                        (Ty.apply
+                                                          (Ty.path "&mut")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "alloc::vec::Vec")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "move_bytecode_verifier::loop_summary::new::Frontier";
+                                                                Ty.path "alloc::alloc::Global"
+                                                              ]
+                                                          ]);
+                                                      M.value_with_ty
+                                                        (M.value_with_ty
+                                                          (Value.mkStructRecord
+                                                            "move_bytecode_verifier::loop_summary::new::Frontier::Finish"
+                                                            [
+                                                              ("block", M.read (| to_block |));
+                                                              ("node_id", M.read (| to_node |));
+                                                              ("parent", M.read (| from_node |))
+                                                            ])
+                                                          (Ty.path
+                                                            "move_bytecode_verifier::loop_summary::new::Frontier"))
+                                                        (Ty.path
+                                                          "move_bytecode_verifier::loop_summary::new::Frontier")
                                                     ]
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
@@ -1930,9 +2403,275 @@ Module loop_summary.
                                                       ]
                                                     |),
                                                     [
-                                                      M.borrow (| Pointer.Kind.MutRef, stack |);
-                                                      M.call_closure (|
-                                                        Ty.apply
+                                                      M.value_with_ty
+                                                        (M.borrow (| Pointer.Kind.MutRef, stack |))
+                                                        (Ty.apply
+                                                          (Ty.path "&mut")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "alloc::vec::Vec")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "move_bytecode_verifier::loop_summary::new::Frontier";
+                                                                Ty.path "alloc::alloc::Global"
+                                                              ]
+                                                          ]);
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "core::iter::adapters::map::Map")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "core::slice::iter::Iter")
+                                                                []
+                                                                [ Ty.path "u16" ];
+                                                              Ty.function
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [ Ty.path "u16" ]
+                                                                ]
+                                                                (Ty.path
+                                                                  "move_bytecode_verifier::loop_summary::new::Frontier")
+                                                            ],
+                                                          M.get_trait_method (|
+                                                            "core::iter::traits::iterator::Iterator",
+                                                            Ty.apply
+                                                              (Ty.path "core::slice::iter::Iter")
+                                                              []
+                                                              [ Ty.path "u16" ],
+                                                            [],
+                                                            [],
+                                                            "map",
+                                                            [],
+                                                            [
+                                                              Ty.path
+                                                                "move_bytecode_verifier::loop_summary::new::Frontier";
+                                                              Ty.function
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [ Ty.path "u16" ]
+                                                                ]
+                                                                (Ty.path
+                                                                  "move_bytecode_verifier::loop_summary::new::Frontier")
+                                                            ]
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::slice::iter::Iter")
+                                                                  []
+                                                                  [ Ty.path "u16" ],
+                                                                M.get_associated_function (|
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [ Ty.path "u16" ],
+                                                                  "iter",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        M.call_closure (|
+                                                                          Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path "slice")
+                                                                                []
+                                                                                [ Ty.path "u16" ]
+                                                                            ],
+                                                                          M.get_trait_method (|
+                                                                            "core::ops::deref::Deref",
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "alloc::vec::Vec")
+                                                                              []
+                                                                              [
+                                                                                Ty.path "u16";
+                                                                                Ty.path
+                                                                                  "alloc::alloc::Global"
+                                                                              ],
+                                                                            [],
+                                                                            [],
+                                                                            "deref",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.deref (|
+                                                                                  M.call_closure (|
+                                                                                    Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "alloc::vec::Vec")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "u16";
+                                                                                            Ty.path
+                                                                                              "alloc::alloc::Global"
+                                                                                          ]
+                                                                                      ],
+                                                                                    M.get_trait_method (|
+                                                                                      "move_binary_format::control_flow_graph::ControlFlowGraph",
+                                                                                      Ty.path
+                                                                                        "move_binary_format::control_flow_graph::VMControlFlowGraph",
+                                                                                      [],
+                                                                                      [],
+                                                                                      "successors",
+                                                                                      [],
+                                                                                      []
+                                                                                    |),
+                                                                                    [
+                                                                                      M.value_with_ty
+                                                                                        (M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          M.deref (|
+                                                                                            M.read (|
+                                                                                              cfg
+                                                                                            |)
+                                                                                          |)
+                                                                                        |))
+                                                                                        (Ty.apply
+                                                                                          (Ty.path
+                                                                                            "&")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "move_binary_format::control_flow_graph::VMControlFlowGraph"
+                                                                                          ]);
+                                                                                      M.value_with_ty
+                                                                                        (M.read (|
+                                                                                          to_block
+                                                                                        |))
+                                                                                        (Ty.path
+                                                                                          "u16")
+                                                                                    ]
+                                                                                  |)
+                                                                                |)
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "alloc::vec::Vec")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.path "u16";
+                                                                                      Ty.path
+                                                                                        "alloc::alloc::Global"
+                                                                                    ]
+                                                                                ])
+                                                                          ]
+                                                                        |)
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "slice")
+                                                                          []
+                                                                          [ Ty.path "u16" ]
+                                                                      ])
+                                                                ]
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "core::slice::iter::Iter")
+                                                                []
+                                                                [ Ty.path "u16" ]);
+                                                            M.value_with_ty
+                                                              (M.closure
+                                                                (fun γ =>
+                                                                  ltac:(M.monadic
+                                                                    match γ with
+                                                                    | [ α0 ] =>
+                                                                      ltac:(M.monadic
+                                                                        (M.match_operator (|
+                                                                          Ty.path
+                                                                            "move_bytecode_verifier::loop_summary::new::Frontier",
+                                                                          M.alloc (|
+                                                                            Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [ Ty.path "u16" ],
+                                                                            α0
+                                                                          |),
+                                                                          [
+                                                                            fun γ =>
+                                                                              ltac:(M.monadic
+                                                                                (let succ :=
+                                                                                  M.copy (|
+                                                                                    Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "u16"
+                                                                                      ],
+                                                                                    γ
+                                                                                  |) in
+                                                                                M.value_with_ty
+                                                                                  (Value.mkStructRecord
+                                                                                    "move_bytecode_verifier::loop_summary::new::Frontier::Visit"
+                                                                                    [
+                                                                                      ("from_node",
+                                                                                        M.read (|
+                                                                                          to_node
+                                                                                        |));
+                                                                                      ("to_block",
+                                                                                        M.read (|
+                                                                                          M.deref (|
+                                                                                            M.read (|
+                                                                                              succ
+                                                                                            |)
+                                                                                          |)
+                                                                                        |))
+                                                                                    ])
+                                                                                  (Ty.path
+                                                                                    "move_bytecode_verifier::loop_summary::new::Frontier")))
+                                                                          ]
+                                                                        |)))
+                                                                    | _ =>
+                                                                      M.impossible
+                                                                        "wrong number of arguments"
+                                                                    end)))
+                                                              (Ty.function
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [ Ty.path "u16" ]
+                                                                ]
+                                                                (Ty.path
+                                                                  "move_bytecode_verifier::loop_summary::new::Frontier"))
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
                                                           (Ty.path "core::iter::adapters::map::Map")
                                                           []
                                                           [
@@ -1949,176 +2688,7 @@ Module loop_summary.
                                                               ]
                                                               (Ty.path
                                                                 "move_bytecode_verifier::loop_summary::new::Frontier")
-                                                          ],
-                                                        M.get_trait_method (|
-                                                          "core::iter::traits::iterator::Iterator",
-                                                          Ty.apply
-                                                            (Ty.path "core::slice::iter::Iter")
-                                                            []
-                                                            [ Ty.path "u16" ],
-                                                          [],
-                                                          [],
-                                                          "map",
-                                                          [],
-                                                          [
-                                                            Ty.path
-                                                              "move_bytecode_verifier::loop_summary::new::Frontier";
-                                                            Ty.function
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "&")
-                                                                  []
-                                                                  [ Ty.path "u16" ]
-                                                              ]
-                                                              (Ty.path
-                                                                "move_bytecode_verifier::loop_summary::new::Frontier")
-                                                          ]
-                                                        |),
-                                                        [
-                                                          M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path "core::slice::iter::Iter")
-                                                              []
-                                                              [ Ty.path "u16" ],
-                                                            M.get_associated_function (|
-                                                              Ty.apply
-                                                                (Ty.path "slice")
-                                                                []
-                                                                [ Ty.path "u16" ],
-                                                              "iter",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "&")
-                                                                      []
-                                                                      [
-                                                                        Ty.apply
-                                                                          (Ty.path "slice")
-                                                                          []
-                                                                          [ Ty.path "u16" ]
-                                                                      ],
-                                                                    M.get_trait_method (|
-                                                                      "core::ops::deref::Deref",
-                                                                      Ty.apply
-                                                                        (Ty.path "alloc::vec::Vec")
-                                                                        []
-                                                                        [
-                                                                          Ty.path "u16";
-                                                                          Ty.path
-                                                                            "alloc::alloc::Global"
-                                                                        ],
-                                                                      [],
-                                                                      [],
-                                                                      "deref",
-                                                                      [],
-                                                                      []
-                                                                    |),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.call_closure (|
-                                                                            Ty.apply
-                                                                              (Ty.path "&")
-                                                                              []
-                                                                              [
-                                                                                Ty.apply
-                                                                                  (Ty.path
-                                                                                    "alloc::vec::Vec")
-                                                                                  []
-                                                                                  [
-                                                                                    Ty.path "u16";
-                                                                                    Ty.path
-                                                                                      "alloc::alloc::Global"
-                                                                                  ]
-                                                                              ],
-                                                                            M.get_trait_method (|
-                                                                              "move_binary_format::control_flow_graph::ControlFlowGraph",
-                                                                              Ty.path
-                                                                                "move_binary_format::control_flow_graph::VMControlFlowGraph",
-                                                                              [],
-                                                                              [],
-                                                                              "successors",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [
-                                                                              M.borrow (|
-                                                                                Pointer.Kind.Ref,
-                                                                                M.deref (|
-                                                                                  M.read (| cfg |)
-                                                                                |)
-                                                                              |);
-                                                                              M.read (| to_block |)
-                                                                            ]
-                                                                          |)
-                                                                        |)
-                                                                      |)
-                                                                    ]
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            ]
-                                                          |);
-                                                          M.closure
-                                                            (fun γ =>
-                                                              ltac:(M.monadic
-                                                                match γ with
-                                                                | [ α0 ] =>
-                                                                  ltac:(M.monadic
-                                                                    (M.match_operator (|
-                                                                      Ty.path
-                                                                        "move_bytecode_verifier::loop_summary::new::Frontier",
-                                                                      M.alloc (|
-                                                                        Ty.apply
-                                                                          (Ty.path "&")
-                                                                          []
-                                                                          [ Ty.path "u16" ],
-                                                                        α0
-                                                                      |),
-                                                                      [
-                                                                        fun γ =>
-                                                                          ltac:(M.monadic
-                                                                            (let succ :=
-                                                                              M.copy (|
-                                                                                Ty.apply
-                                                                                  (Ty.path "&")
-                                                                                  []
-                                                                                  [ Ty.path "u16" ],
-                                                                                γ
-                                                                              |) in
-                                                                            Value.mkStructRecord
-                                                                              "move_bytecode_verifier::loop_summary::new::Frontier::Visit"
-                                                                              []
-                                                                              []
-                                                                              [
-                                                                                ("from_node",
-                                                                                  M.read (|
-                                                                                    to_node
-                                                                                  |));
-                                                                                ("to_block",
-                                                                                  M.read (|
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        succ
-                                                                                      |)
-                                                                                    |)
-                                                                                  |))
-                                                                              ]))
-                                                                      ]
-                                                                    |)))
-                                                                | _ =>
-                                                                  M.impossible
-                                                                    "wrong number of arguments"
-                                                                end))
-                                                        ]
-                                                      |)
+                                                          ])
                                                     ]
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2143,16 +2713,16 @@ Module loop_summary.
               |) in
             M.alloc (|
               Ty.path "move_bytecode_verifier::loop_summary::LoopSummary",
-              Value.mkStructRecord
-                "move_bytecode_verifier::loop_summary::LoopSummary"
-                []
-                []
-                [
-                  ("blocks", M.read (| blocks |));
-                  ("descs", M.read (| descs |));
-                  ("backs", M.read (| backs |));
-                  ("preds", M.read (| preds |))
-                ]
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "move_bytecode_verifier::loop_summary::LoopSummary"
+                  [
+                    ("blocks", M.read (| blocks |));
+                    ("descs", M.read (| descs |));
+                    ("backs", M.read (| backs |));
+                    ("preds", M.read (| preds |))
+                  ])
+                (Ty.path "move_bytecode_verifier::loop_summary::LoopSummary")
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2254,15 +2824,30 @@ Module loop_summary.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.SubPointer.get_struct_record_field (|
-                                                  M.deref (| M.read (| self |) |),
-                                                  "move_bytecode_verifier::loop_summary::LoopSummary",
-                                                  "descs"
-                                                |)
-                                              |);
-                                              M.cast (Ty.path "usize") (M.read (| ancestor |))
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "move_bytecode_verifier::loop_summary::LoopSummary",
+                                                    "descs"
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::vec::Vec")
+                                                      []
+                                                      [
+                                                        Ty.path "u16";
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ]
+                                                  ]);
+                                              M.value_with_ty
+                                                (M.cast (Ty.path "usize") (M.read (| ancestor |)))
+                                                (Ty.path "usize")
                                             ]
                                           |)
                                         |)
@@ -2328,58 +2913,74 @@ Module loop_summary.
               ]
             |),
             [
-              Value.mkStructRecord
-                "core::ops::range::Range"
-                []
-                [ Ty.path "usize" ]
-                [
-                  ("start", Value.Integer IntegerKind.Usize 0);
-                  ("end_",
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "alloc::vec::Vec")
-                          []
-                          [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
-                        "len",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "move_bytecode_verifier::loop_summary::LoopSummary",
-                            "blocks"
-                          |)
-                        |)
-                      ]
-                    |))
-                ];
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.path "move_bytecode_verifier::loop_summary::NodeId",
-                          M.alloc (| Ty.path "usize", α0 |),
+              M.value_with_ty
+                (M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::ops::range::Range"
+                    [
+                      ("start", Value.Integer IntegerKind.Usize 0);
+                      ("end_",
+                        M.call_closure (|
+                          Ty.path "usize",
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
+                            "len",
+                            [],
+                            []
+                          |),
                           [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let id := M.copy (| Ty.path "usize", γ |) in
-                                Value.StructTuple
-                                  "move_bytecode_verifier::loop_summary::NodeId"
-                                  []
-                                  []
-                                  [ M.cast (Ty.path "u16") (M.read (| id |)) ]))
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "move_bytecode_verifier::loop_summary::LoopSummary",
+                                  "blocks"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::vec::Vec")
+                                    []
+                                    [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ]
+                                ])
                           ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+                        |))
+                    ])
+                  (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]))
+                (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+              M.value_with_ty
+                (M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.path "move_bytecode_verifier::loop_summary::NodeId",
+                            M.alloc (| Ty.path "usize", α0 |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let id := M.copy (| Ty.path "usize", γ |) in
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "move_bytecode_verifier::loop_summary::NodeId"
+                                      [ M.cast (Ty.path "u16") (M.read (| id |)) ])
+                                    (Ty.path "move_bytecode_verifier::loop_summary::NodeId")))
+                            ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end)))
+                (Ty.function
+                  [ Ty.path "usize" ]
+                  (Ty.path "move_bytecode_verifier::loop_summary::NodeId"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2424,27 +3025,43 @@ Module loop_summary.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "move_bytecode_verifier::loop_summary::LoopSummary",
-                      "blocks"
-                    |)
-                  |);
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_trait_method (|
-                      "core::convert::From",
-                      Ty.path "usize",
-                      [],
-                      [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
-                      "from",
-                      [],
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "move_bytecode_verifier::loop_summary::LoopSummary",
+                        "blocks"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
                       []
-                    |),
-                    [ M.read (| l |) ]
-                  |)
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ]
+                      ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      M.get_trait_method (|
+                        "core::convert::From",
+                        Ty.path "usize",
+                        [],
+                        [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
+                        "from",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.read (| l |))
+                          (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
+                      ]
+                    |))
+                    (Ty.path "usize")
                 ]
               |)
             |)
@@ -2515,27 +3132,52 @@ Module loop_summary.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "move_bytecode_verifier::loop_summary::LoopSummary",
-                          "backs"
-                        |)
-                      |);
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_trait_method (|
-                          "core::convert::From",
-                          Ty.path "usize",
-                          [],
-                          [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
-                          "from",
-                          [],
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "move_bytecode_verifier::loop_summary::LoopSummary",
+                            "backs"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
                           []
-                        |),
-                        [ M.read (| l |) ]
-                      |)
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
+                                  []
+                                  [
+                                    Ty.path "move_bytecode_verifier::loop_summary::NodeId";
+                                    Ty.path "alloc::alloc::Global"
+                                  ];
+                                Ty.path "alloc::alloc::Global"
+                              ]
+                          ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          M.get_trait_method (|
+                            "core::convert::From",
+                            Ty.path "usize",
+                            [],
+                            [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
+                            "from",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (| l |))
+                              (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
+                          ]
+                        |))
+                        (Ty.path "usize")
                     ]
                   |)
                 |)
@@ -2609,27 +3251,52 @@ Module loop_summary.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "move_bytecode_verifier::loop_summary::LoopSummary",
-                          "preds"
-                        |)
-                      |);
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_trait_method (|
-                          "core::convert::From",
-                          Ty.path "usize",
-                          [],
-                          [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
-                          "from",
-                          [],
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "move_bytecode_verifier::loop_summary::LoopSummary",
+                            "preds"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
                           []
-                        |),
-                        [ M.read (| l |) ]
-                      |)
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
+                                  []
+                                  [
+                                    Ty.path "move_bytecode_verifier::loop_summary::NodeId";
+                                    Ty.path "alloc::alloc::Global"
+                                  ];
+                                Ty.path "alloc::alloc::Global"
+                              ]
+                          ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          M.get_trait_method (|
+                            "core::convert::From",
+                            Ty.path "usize",
+                            [],
+                            [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
+                            "from",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (| l |))
+                              (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
+                          ]
+                        |))
+                        (Ty.path "usize")
                     ]
                   |)
                 |)
@@ -2683,59 +3350,43 @@ Module loop_summary.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| summary |) |),
-                      "move_bytecode_verifier::loop_summary::LoopSummary",
-                      "blocks"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| summary |) |),
+                        "move_bytecode_verifier::loop_summary::LoopSummary",
+                        "blocks"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ]
+                      ])
                 ]
               |) in
             M.alloc (|
               Ty.path "move_bytecode_verifier::loop_summary::LoopPartition",
-              Value.mkStructRecord
-                "move_bytecode_verifier::loop_summary::LoopPartition"
-                []
-                []
-                [
-                  ("parents",
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "alloc::vec::Vec")
-                        []
-                        [
-                          Ty.path "move_bytecode_verifier::loop_summary::NodeId";
-                          Ty.path "alloc::alloc::Global"
-                        ],
-                      M.get_trait_method (|
-                        "core::iter::traits::iterator::Iterator",
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "move_bytecode_verifier::loop_summary::LoopPartition"
+                  [
+                    ("parents",
+                      M.call_closure (|
                         Ty.apply
-                          (Ty.path "core::iter::adapters::map::Map")
+                          (Ty.path "alloc::vec::Vec")
                           []
                           [
-                            Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ];
-                            Ty.function
-                              [ Ty.path "usize" ]
-                              (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
+                            Ty.path "move_bytecode_verifier::loop_summary::NodeId";
+                            Ty.path "alloc::alloc::Global"
                           ],
-                        [],
-                        [],
-                        "collect",
-                        [],
-                        [
-                          Ty.apply
-                            (Ty.path "alloc::vec::Vec")
-                            []
-                            [
-                              Ty.path "move_bytecode_verifier::loop_summary::NodeId";
-                              Ty.path "alloc::alloc::Global"
-                            ]
-                        ]
-                      |),
-                      [
-                        M.call_closure (|
+                        M.get_trait_method (|
+                          "core::iter::traits::iterator::Iterator",
                           Ty.apply
                             (Ty.path "core::iter::adapters::map::Map")
                             []
@@ -2745,65 +3396,122 @@ Module loop_summary.
                                 [ Ty.path "usize" ]
                                 (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
                             ],
-                          M.get_trait_method (|
-                            "core::iter::traits::iterator::Iterator",
-                            Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                            [],
-                            [],
-                            "map",
-                            [],
-                            [
-                              Ty.path "move_bytecode_verifier::loop_summary::NodeId";
-                              Ty.function
-                                [ Ty.path "usize" ]
-                                (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
-                            ]
-                          |),
+                          [],
+                          [],
+                          "collect",
+                          [],
                           [
-                            Value.mkStructRecord
-                              "core::ops::range::Range"
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
                               []
-                              [ Ty.path "usize" ]
                               [
-                                ("start", Value.Integer IntegerKind.Usize 0);
-                                ("end_", M.read (| num_blocks |))
-                              ];
-                            M.closure
-                              (fun γ =>
-                                ltac:(M.monadic
-                                  match γ with
-                                  | [ α0 ] =>
-                                    ltac:(M.monadic
-                                      (M.match_operator (|
-                                        Ty.path "move_bytecode_verifier::loop_summary::NodeId",
-                                        M.alloc (| Ty.path "usize", α0 |),
-                                        [
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (let id := M.copy (| Ty.path "usize", γ |) in
-                                              Value.StructTuple
-                                                "move_bytecode_verifier::loop_summary::NodeId"
-                                                []
-                                                []
-                                                [ M.cast (Ty.path "u16") (M.read (| id |)) ]))
-                                        ]
-                                      |)))
-                                  | _ => M.impossible "wrong number of arguments"
-                                  end))
+                                Ty.path "move_bytecode_verifier::loop_summary::NodeId";
+                                Ty.path "alloc::alloc::Global"
+                              ]
                           ]
-                        |)
-                      ]
-                    |));
-                  ("depths",
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "alloc::vec::Vec")
-                        []
-                        [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
-                      M.get_function (| "alloc::vec::from_elem", [], [ Ty.path "u16" ] |),
-                      [ Value.Integer IntegerKind.U16 0; M.read (| num_blocks |) ]
-                    |))
-                ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::iter::adapters::map::Map")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "usize" ];
+                                  Ty.function
+                                    [ Ty.path "usize" ]
+                                    (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
+                                ],
+                              M.get_trait_method (|
+                                "core::iter::traits::iterator::Iterator",
+                                Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                                [],
+                                [],
+                                "map",
+                                [],
+                                [
+                                  Ty.path "move_bytecode_verifier::loop_summary::NodeId";
+                                  Ty.function
+                                    [ Ty.path "usize" ]
+                                    (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
+                                ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.mkStructRecord
+                                      "core::ops::range::Range"
+                                      [
+                                        ("start", Value.Integer IntegerKind.Usize 0);
+                                        ("end_", M.read (| num_blocks |))
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ]))
+                                  (Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "usize" ]);
+                                M.value_with_ty
+                                  (M.closure
+                                    (fun γ =>
+                                      ltac:(M.monadic
+                                        match γ with
+                                        | [ α0 ] =>
+                                          ltac:(M.monadic
+                                            (M.match_operator (|
+                                              Ty.path
+                                                "move_bytecode_verifier::loop_summary::NodeId",
+                                              M.alloc (| Ty.path "usize", α0 |),
+                                              [
+                                                fun γ =>
+                                                  ltac:(M.monadic
+                                                    (let id := M.copy (| Ty.path "usize", γ |) in
+                                                    M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "move_bytecode_verifier::loop_summary::NodeId"
+                                                        [ M.cast (Ty.path "u16") (M.read (| id |))
+                                                        ])
+                                                      (Ty.path
+                                                        "move_bytecode_verifier::loop_summary::NodeId")))
+                                              ]
+                                            |)))
+                                        | _ => M.impossible "wrong number of arguments"
+                                        end)))
+                                  (Ty.function
+                                    [ Ty.path "usize" ]
+                                    (Ty.path "move_bytecode_verifier::loop_summary::NodeId"))
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "core::iter::adapters::map::Map")
+                              []
+                              [
+                                Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ];
+                                Ty.function
+                                  [ Ty.path "usize" ]
+                                  (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
+                              ])
+                        ]
+                      |));
+                    ("depths",
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ],
+                        M.get_function (| "alloc::vec::from_elem", [], [ Ty.path "u16" ] |),
+                        [
+                          M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                          M.value_with_ty (M.read (| num_blocks |)) (Ty.path "usize")
+                        ]
+                      |))
+                  ])
+                (Ty.path "move_bytecode_verifier::loop_summary::LoopPartition")
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2870,8 +3578,15 @@ Module loop_summary.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                      M.read (| child |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_bytecode_verifier::loop_summary::LoopPartition" ]);
+                      M.value_with_ty
+                        (M.read (| child |))
+                        (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
                     ]
                   |) in
                 let~ grandparent : Ty.path "move_bytecode_verifier::loop_summary::NodeId" :=
@@ -2884,8 +3599,15 @@ Module loop_summary.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                      M.read (| parent |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_bytecode_verifier::loop_summary::LoopPartition" ]);
+                      M.value_with_ty
+                        (M.read (| parent |))
+                        (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -2912,8 +3634,20 @@ Module loop_summary.
                                       []
                                     |),
                                     [
-                                      M.borrow (| Pointer.Kind.Ref, child |);
-                                      M.borrow (| Pointer.Kind.Ref, parent |)
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.Ref, child |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "move_bytecode_verifier::loop_summary::NodeId"
+                                          ]);
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.Ref, parent |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "move_bytecode_verifier::loop_summary::NodeId"
+                                          ])
                                     ]
                                   |),
                                   ltac:(M.monadic
@@ -2929,8 +3663,20 @@ Module loop_summary.
                                         []
                                       |),
                                       [
-                                        M.borrow (| Pointer.Kind.Ref, parent |);
-                                        M.borrow (| Pointer.Kind.Ref, grandparent |)
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, parent |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "move_bytecode_verifier::loop_summary::NodeId"
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, grandparent |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "move_bytecode_verifier::loop_summary::NodeId"
+                                            ])
                                       ]
                                     |)))
                                 |)
@@ -2991,7 +3737,25 @@ Module loop_summary.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.MutRef, descendants |); M.read (| child |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.MutRef, descendants |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::vec::Vec")
+                                      []
+                                      [
+                                        Ty.path "move_bytecode_verifier::loop_summary::NodeId";
+                                        Ty.path "alloc::alloc::Global"
+                                      ]
+                                  ]);
+                              M.value_with_ty
+                                (M.read (| child |))
+                                (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
+                            ]
                           |) in
                         let~ _ : Ty.tuple [] :=
                           M.match_operator (|
@@ -3016,11 +3780,21 @@ Module loop_summary.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      M.read (| grandparent |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.path
+                                              "move_bytecode_verifier::loop_summary::LoopPartition"
+                                          ]);
+                                      M.value_with_ty
+                                        (M.read (| grandparent |))
+                                        (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
                                     ]
                                   |)
                                 ]
@@ -3081,8 +3855,24 @@ Module loop_summary.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.Ref, parent |);
-                                            M.borrow (| Pointer.Kind.Ref, grandparent |)
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, parent |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "move_bytecode_verifier::loop_summary::NodeId"
+                                                ]);
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, grandparent |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "move_bytecode_verifier::loop_summary::NodeId"
+                                                ])
                                           ]
                                         |)
                                       |)) in
@@ -3136,7 +3926,17 @@ Module loop_summary.
                                 [],
                                 []
                               |),
-                              [ M.read (| descendants |) ]
+                              [
+                                M.value_with_ty
+                                  (M.read (| descendants |))
+                                  (Ty.apply
+                                    (Ty.path "alloc::vec::Vec")
+                                    []
+                                    [
+                                      Ty.path "move_bytecode_verifier::loop_summary::NodeId";
+                                      Ty.path "alloc::alloc::Global"
+                                    ])
+                              ]
                             |)
                           |),
                           [
@@ -3191,12 +3991,26 @@ Module loop_summary.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "alloc::vec::into_iter::IntoIter")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_bytecode_verifier::loop_summary::NodeId";
+                                                          Ty.path "alloc::alloc::Global"
+                                                        ]
+                                                    ])
                                               ]
                                             |)
                                           |),
@@ -3243,11 +4057,22 @@ Module loop_summary.
                                                             []
                                                           |),
                                                           [
-                                                            M.borrow (|
-                                                              Pointer.Kind.MutRef,
-                                                              M.deref (| M.read (| self |) |)
-                                                            |);
-                                                            M.read (| descendant |)
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                M.deref (| M.read (| self |) |)
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "move_bytecode_verifier::loop_summary::LoopPartition"
+                                                                ]);
+                                                            M.value_with_ty
+                                                              (M.read (| descendant |))
+                                                              (Ty.path
+                                                                "move_bytecode_verifier::loop_summary::NodeId")
                                                           ]
                                                         |)
                                                       |),
@@ -3363,11 +4188,21 @@ Module loop_summary.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |);
-                                          M.read (| head |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.path
+                                                  "move_bytecode_verifier::loop_summary::LoopPartition"
+                                              ]);
+                                          M.value_with_ty
+                                            (M.read (| head |))
+                                            (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
                                         ]
                                       |)
                                     |)
@@ -3425,14 +4260,30 @@ Module loop_summary.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| left_val |) |)
-                                                        |);
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| right_val |) |)
-                                                        |)
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| M.read (| left_val |) |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "move_bytecode_verifier::loop_summary::NodeId"
+                                                            ]);
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| M.read (| right_val |) |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "move_bytecode_verifier::loop_summary::NodeId"
+                                                            ])
                                                       ]
                                                     |)
                                                   ]
@@ -3446,11 +4297,11 @@ Module loop_summary.
                                           M.never_to_any (|
                                             M.read (|
                                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                                Value.StructTuple
-                                                  "core::panicking::AssertKind::Eq"
-                                                  []
-                                                  []
-                                                  [] in
+                                                M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::panicking::AssertKind::Eq"
+                                                    [])
+                                                  (Ty.path "core::panicking::AssertKind") in
                                               M.alloc (|
                                                 Ty.path "never",
                                                 M.call_closure (|
@@ -3466,30 +4317,56 @@ Module loop_summary.
                                                     ]
                                                   |),
                                                   [
-                                                    M.read (| kind |);
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| left_val |) |)
+                                                    M.value_with_ty
+                                                      (M.read (| kind |))
+                                                      (Ty.path "core::panicking::AssertKind");
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| M.read (| left_val |) |)
+                                                          |)
                                                         |)
-                                                      |)
-                                                    |);
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| right_val |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_bytecode_verifier::loop_summary::NodeId"
+                                                        ]);
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| M.read (| right_val |) |)
+                                                          |)
                                                         |)
-                                                      |)
-                                                    |);
-                                                    Value.StructTuple
-                                                      "core::option::Option::None"
-                                                      []
-                                                      [ Ty.path "core::fmt::Arguments" ]
-                                                      []
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_bytecode_verifier::loop_summary::NodeId"
+                                                        ]);
+                                                    M.value_with_ty
+                                                      (M.value_with_ty
+                                                        (Value.StructTuple
+                                                          "core::option::Option::None"
+                                                          [])
+                                                        (Ty.apply
+                                                          (Ty.path "core::option::Option")
+                                                          []
+                                                          [ Ty.path "core::fmt::Arguments" ]))
+                                                      (Ty.apply
+                                                        (Ty.path "core::option::Option")
+                                                        []
+                                                        [ Ty.path "core::fmt::Arguments" ])
                                                   ]
                                                 |)
                                               |)
@@ -3515,8 +4392,15 @@ Module loop_summary.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.read (| head |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "move_bytecode_verifier::loop_summary::LoopPartition" ]);
+                  M.value_with_ty
+                    (M.read (| head |))
+                    (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -3556,7 +4440,22 @@ Module loop_summary.
                             [],
                             []
                           |),
-                          [ M.read (| body |) ]
+                          [
+                            M.value_with_ty
+                              (M.read (| body |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::btree::set::BTreeSet")
+                                    []
+                                    [
+                                      Ty.path "move_bytecode_verifier::loop_summary::NodeId";
+                                      Ty.path "alloc::alloc::Global"
+                                    ]
+                                ])
+                          ]
                         |)
                       |),
                       [
@@ -3617,10 +4516,25 @@ Module loop_summary.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (|
+                                                  M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::collections::btree::set::Iter")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "move_bytecode_verifier::loop_summary::NodeId"
+                                                    ]
+                                                ])
                                           ]
                                         |)
                                       |),
@@ -3717,19 +4631,30 @@ Module loop_summary.
                                                                             []
                                                                           |),
                                                                           [
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.deref (|
-                                                                                M.read (| self |)
-                                                                              |)
-                                                                            |);
-                                                                            M.read (|
-                                                                              M.deref (|
-                                                                                M.read (|
-                                                                                  constituent
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.deref (|
+                                                                                  M.read (| self |)
                                                                                 |)
-                                                                              |)
-                                                                            |)
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "move_bytecode_verifier::loop_summary::LoopPartition"
+                                                                                ]);
+                                                                            M.value_with_ty
+                                                                              (M.read (|
+                                                                                M.deref (|
+                                                                                  M.read (|
+                                                                                    constituent
+                                                                                  |)
+                                                                                |)
+                                                                              |))
+                                                                              (Ty.path
+                                                                                "move_bytecode_verifier::loop_summary::NodeId")
                                                                           ]
                                                                         |)
                                                                       |)
@@ -3805,22 +4730,40 @@ Module loop_summary.
                                                                                           []
                                                                                         |),
                                                                                         [
-                                                                                          M.borrow (|
-                                                                                            Pointer.Kind.Ref,
-                                                                                            M.deref (|
-                                                                                              M.read (|
-                                                                                                left_val
+                                                                                          M.value_with_ty
+                                                                                            (M.borrow (|
+                                                                                              Pointer.Kind.Ref,
+                                                                                              M.deref (|
+                                                                                                M.read (|
+                                                                                                  left_val
+                                                                                                |)
                                                                                               |)
-                                                                                            |)
-                                                                                          |);
-                                                                                          M.borrow (|
-                                                                                            Pointer.Kind.Ref,
-                                                                                            M.deref (|
-                                                                                              M.read (|
-                                                                                                right_val
+                                                                                            |))
+                                                                                            (Ty.apply
+                                                                                              (Ty.path
+                                                                                                "&")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "move_bytecode_verifier::loop_summary::NodeId"
+                                                                                              ]);
+                                                                                          M.value_with_ty
+                                                                                            (M.borrow (|
+                                                                                              Pointer.Kind.Ref,
+                                                                                              M.deref (|
+                                                                                                M.read (|
+                                                                                                  right_val
+                                                                                                |)
                                                                                               |)
-                                                                                            |)
-                                                                                          |)
+                                                                                            |))
+                                                                                            (Ty.apply
+                                                                                              (Ty.path
+                                                                                                "&")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "move_bytecode_verifier::loop_summary::NodeId"
+                                                                                              ])
                                                                                         ]
                                                                                       |)
                                                                                     ]
@@ -3836,11 +4779,12 @@ Module loop_summary.
                                                                                 let~ kind :
                                                                                     Ty.path
                                                                                       "core::panicking::AssertKind" :=
-                                                                                  Value.StructTuple
-                                                                                    "core::panicking::AssertKind::Eq"
-                                                                                    []
-                                                                                    []
-                                                                                    [] in
+                                                                                  M.value_with_ty
+                                                                                    (Value.StructTuple
+                                                                                      "core::panicking::AssertKind::Eq"
+                                                                                      [])
+                                                                                    (Ty.path
+                                                                                      "core::panicking::AssertKind") in
                                                                                 M.alloc (|
                                                                                   Ty.path "never",
                                                                                   M.call_closure (|
@@ -3856,43 +4800,77 @@ Module loop_summary.
                                                                                       ]
                                                                                     |),
                                                                                     [
-                                                                                      M.read (|
-                                                                                        kind
-                                                                                      |);
-                                                                                      M.borrow (|
-                                                                                        Pointer.Kind.Ref,
-                                                                                        M.deref (|
-                                                                                          M.borrow (|
-                                                                                            Pointer.Kind.Ref,
-                                                                                            M.deref (|
-                                                                                              M.read (|
-                                                                                                left_val
+                                                                                      M.value_with_ty
+                                                                                        (M.read (|
+                                                                                          kind
+                                                                                        |))
+                                                                                        (Ty.path
+                                                                                          "core::panicking::AssertKind");
+                                                                                      M.value_with_ty
+                                                                                        (M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          M.deref (|
+                                                                                            M.borrow (|
+                                                                                              Pointer.Kind.Ref,
+                                                                                              M.deref (|
+                                                                                                M.read (|
+                                                                                                  left_val
+                                                                                                |)
                                                                                               |)
                                                                                             |)
                                                                                           |)
-                                                                                        |)
-                                                                                      |);
-                                                                                      M.borrow (|
-                                                                                        Pointer.Kind.Ref,
-                                                                                        M.deref (|
-                                                                                          M.borrow (|
-                                                                                            Pointer.Kind.Ref,
-                                                                                            M.deref (|
-                                                                                              M.read (|
-                                                                                                right_val
+                                                                                        |))
+                                                                                        (Ty.apply
+                                                                                          (Ty.path
+                                                                                            "&")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "move_bytecode_verifier::loop_summary::NodeId"
+                                                                                          ]);
+                                                                                      M.value_with_ty
+                                                                                        (M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          M.deref (|
+                                                                                            M.borrow (|
+                                                                                              Pointer.Kind.Ref,
+                                                                                              M.deref (|
+                                                                                                M.read (|
+                                                                                                  right_val
+                                                                                                |)
                                                                                               |)
                                                                                             |)
                                                                                           |)
-                                                                                        |)
-                                                                                      |);
-                                                                                      Value.StructTuple
-                                                                                        "core::option::Option::None"
-                                                                                        []
-                                                                                        [
-                                                                                          Ty.path
-                                                                                            "core::fmt::Arguments"
-                                                                                        ]
-                                                                                        []
+                                                                                        |))
+                                                                                        (Ty.apply
+                                                                                          (Ty.path
+                                                                                            "&")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "move_bytecode_verifier::loop_summary::NodeId"
+                                                                                          ]);
+                                                                                      M.value_with_ty
+                                                                                        (M.value_with_ty
+                                                                                          (Value.StructTuple
+                                                                                            "core::option::Option::None"
+                                                                                            [])
+                                                                                          (Ty.apply
+                                                                                            (Ty.path
+                                                                                              "core::option::Option")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "core::fmt::Arguments"
+                                                                                            ]))
+                                                                                        (Ty.apply
+                                                                                          (Ty.path
+                                                                                            "core::option::Option")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "core::fmt::Arguments"
+                                                                                          ])
                                                                                     ]
                                                                                   |)
                                                                                 |)
@@ -3929,13 +4907,24 @@ Module loop_summary.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.deref (| M.read (| self |) |)
-                                                        |);
-                                                        M.read (|
-                                                          M.deref (| M.read (| constituent |) |)
-                                                        |)
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.deref (| M.read (| self |) |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "move_bytecode_verifier::loop_summary::LoopPartition"
+                                                            ]);
+                                                        M.value_with_ty
+                                                          (M.read (|
+                                                            M.deref (| M.read (| constituent |) |)
+                                                          |))
+                                                          (Ty.path
+                                                            "move_bytecode_verifier::loop_summary::NodeId")
                                                       ]
                                                     |)
                                                   |),
@@ -3956,26 +4945,43 @@ Module loop_summary.
                                                       []
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.path "u16",
-                                                        M.get_associated_function (|
-                                                          Ty.path
-                                                            "move_bytecode_verifier::loop_summary::LoopPartition",
-                                                          "depth",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| self |) |)
-                                                          |);
-                                                          M.read (|
-                                                            M.deref (| M.read (| constituent |) |)
-                                                          |)
-                                                        ]
-                                                      |);
-                                                      M.read (| depth |)
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
+                                                          Ty.path "u16",
+                                                          M.get_associated_function (|
+                                                            Ty.path
+                                                              "move_bytecode_verifier::loop_summary::LoopPartition",
+                                                            "depth",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (| M.read (| self |) |)
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "move_bytecode_verifier::loop_summary::LoopPartition"
+                                                                ]);
+                                                            M.value_with_ty
+                                                              (M.read (|
+                                                                M.deref (|
+                                                                  M.read (| constituent |)
+                                                                |)
+                                                              |))
+                                                              (Ty.path
+                                                                "move_bytecode_verifier::loop_summary::NodeId")
+                                                          ]
+                                                        |))
+                                                        (Ty.path "u16");
+                                                      M.value_with_ty
+                                                        (M.read (| depth |))
+                                                        (Ty.path "u16")
                                                     ]
                                                   |)
                                                 |) in
@@ -4012,8 +5018,15 @@ Module loop_summary.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                      M.read (| head |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.path "move_bytecode_verifier::loop_summary::LoopPartition" ]);
+                      M.value_with_ty
+                        (M.read (| head |))
+                        (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
                     ]
                   |)
                 |),
@@ -4070,27 +5083,46 @@ Module loop_summary.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "move_bytecode_verifier::loop_summary::LoopPartition",
-                      "parents"
-                    |)
-                  |);
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_trait_method (|
-                      "core::convert::From",
-                      Ty.path "usize",
-                      [],
-                      [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
-                      "from",
-                      [],
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "move_bytecode_verifier::loop_summary::LoopPartition",
+                        "parents"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
                       []
-                    |),
-                    [ M.read (| l |) ]
-                  |)
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [
+                            Ty.path "move_bytecode_verifier::loop_summary::NodeId";
+                            Ty.path "alloc::alloc::Global"
+                          ]
+                      ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      M.get_trait_method (|
+                        "core::convert::From",
+                        Ty.path "usize",
+                        [],
+                        [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
+                        "from",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.read (| l |))
+                          (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
+                      ]
+                    |))
+                    (Ty.path "usize")
                 ]
               |)
             |)
@@ -4150,27 +5182,46 @@ Module loop_summary.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "move_bytecode_verifier::loop_summary::LoopPartition",
-                              "parents"
-                            |)
-                          |);
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_trait_method (|
-                              "core::convert::From",
-                              Ty.path "usize",
-                              [],
-                              [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
-                              "from",
-                              [],
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "move_bytecode_verifier::loop_summary::LoopPartition",
+                                "parents"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
                               []
-                            |),
-                            [ M.read (| l |) ]
-                          |)
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
+                                  []
+                                  [
+                                    Ty.path "move_bytecode_verifier::loop_summary::NodeId";
+                                    Ty.path "alloc::alloc::Global"
+                                  ]
+                              ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              M.get_trait_method (|
+                                "core::convert::From",
+                                Ty.path "usize",
+                                [],
+                                [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
+                                "from",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| l |))
+                                  (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
+                              ]
+                            |))
+                            (Ty.path "usize")
                         ]
                       |)
                     |)
@@ -4222,27 +5273,43 @@ Module loop_summary.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "move_bytecode_verifier::loop_summary::LoopPartition",
-                      "depths"
-                    |)
-                  |);
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_trait_method (|
-                      "core::convert::From",
-                      Ty.path "usize",
-                      [],
-                      [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
-                      "from",
-                      [],
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "move_bytecode_verifier::loop_summary::LoopPartition",
+                        "depths"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
                       []
-                    |),
-                    [ M.read (| l |) ]
-                  |)
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ]
+                      ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      M.get_trait_method (|
+                        "core::convert::From",
+                        Ty.path "usize",
+                        [],
+                        [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
+                        "from",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.read (| l |))
+                          (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
+                      ]
+                    |))
+                    (Ty.path "usize")
                 ]
               |)
             |)
@@ -4296,27 +5363,43 @@ Module loop_summary.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "move_bytecode_verifier::loop_summary::LoopPartition",
-                              "depths"
-                            |)
-                          |);
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_trait_method (|
-                              "core::convert::From",
-                              Ty.path "usize",
-                              [],
-                              [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
-                              "from",
-                              [],
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "move_bytecode_verifier::loop_summary::LoopPartition",
+                                "depths"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
                               []
-                            |),
-                            [ M.read (| l |) ]
-                          |)
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
+                                  []
+                                  [ Ty.path "u16"; Ty.path "alloc::alloc::Global" ]
+                              ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              M.get_trait_method (|
+                                "core::convert::From",
+                                Ty.path "usize",
+                                [],
+                                [ Ty.path "move_bytecode_verifier::loop_summary::NodeId" ],
+                                "from",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| l |))
+                                  (Ty.path "move_bytecode_verifier::loop_summary::NodeId")
+                              ]
+                            |))
+                            (Ty.path "usize")
                         ]
                       |)
                     |)

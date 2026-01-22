@@ -28,39 +28,41 @@ Module interpreter.
                   [ Ty.path "revm_interpreter::interpreter::return_data::ReturnDataImpl" ],
                 self
               |) in
-            Value.StructTuple
-              "revm_interpreter::interpreter::return_data::ReturnDataImpl"
-              []
-              []
-              [
-                M.call_closure (|
-                  Ty.path "alloy_primitives::bytes_::Bytes",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+            M.value_with_ty
+              (Value.StructTuple
+                "revm_interpreter::interpreter::return_data::ReturnDataImpl"
+                [
+                  M.call_closure (|
                     Ty.path "alloy_primitives::bytes_::Bytes",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_interpreter::interpreter::return_data::ReturnDataImpl",
-                            0
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_interpreter::interpreter::return_data::ReturnDataImpl",
+                                0
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                    ]
+                  |)
+                ])
+              (Ty.path "revm_interpreter::interpreter::return_data::ReturnDataImpl")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -104,39 +106,48 @@ Module interpreter.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ReturnDataImpl" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_tuple_field (|
-                                M.deref (| M.read (| self |) |),
-                                "revm_interpreter::interpreter::return_data::ReturnDataImpl",
-                                0
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ReturnDataImpl" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_tuple_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_interpreter::interpreter::return_data::ReturnDataImpl",
+                                  0
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -160,25 +171,25 @@ Module interpreter.
         match ε, τ, α with
         | [], [], [] =>
           ltac:(M.monadic
-            (Value.StructTuple
-              "revm_interpreter::interpreter::return_data::ReturnDataImpl"
-              []
-              []
-              [
-                M.call_closure (|
-                  Ty.path "alloy_primitives::bytes_::Bytes",
-                  M.get_trait_method (|
-                    "core::default::Default",
+            (M.value_with_ty
+              (Value.StructTuple
+                "revm_interpreter::interpreter::return_data::ReturnDataImpl"
+                [
+                  M.call_closure (|
                     Ty.path "alloy_primitives::bytes_::Bytes",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |)
-              ]))
+                  |)
+                ])
+              (Ty.path "revm_interpreter::interpreter::return_data::ReturnDataImpl")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -227,14 +238,16 @@ Module interpreter.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_interpreter::interpreter::return_data::ReturnDataImpl",
-                        0
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::interpreter::return_data::ReturnDataImpl",
+                          0
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
                   ]
                 |)
               |)

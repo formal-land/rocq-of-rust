@@ -46,7 +46,7 @@ Module AccountInfo.
   Instance IsLink : Link t := {
     Φ := Ty.path "solana_account_info::AccountInfo";
     φ x :=
-      Value.StructRecord "solana_account_info::AccountInfo" [] [] [
+      Value.StructRecord "solana_account_info::AccountInfo" [
         ("_unused", φ x.(_unused));
         ("data", φ x.(data));
         ("executable", φ x.(executable));
@@ -74,7 +74,7 @@ Module AccountInfo.
       (lamports' : Value.t) {H_lamports : OfValueWith.C (Rc.t (RefCell.t ('&mut u64)) Global.t) lamports'}
       (owner' : Value.t) {H_owner : OfValueWith.C ('& Address.t) owner'}
       :
-    OfValueWith.C t (Value.StructRecord "solana_account_info::AccountInfo" [] [] [
+    OfValueWith.C t (Value.StructRecord "solana_account_info::AccountInfo" [
       ("_unused", _unused');
       ("data", data');
       ("executable", executable');
@@ -108,7 +108,7 @@ Module AccountInfo.
       (lamports' : Value.t) {H_lamports : OfValueWith.C (Rc.t (RefCell.t ('&mut u64)) Global.t) lamports'}
       (owner' : Value.t) {H_owner : OfValueWith.C ('& Address.t) owner'}
       :
-    OfValue.C (Value.StructRecord "solana_account_info::AccountInfo" [] [] [
+    OfValue.C (Value.StructRecord "solana_account_info::AccountInfo" [
       ("_unused", _unused');
       ("data", data');
       ("executable", executable');

@@ -239,8 +239,8 @@ Module Value.
   | String : string -> t
   | Tuple : list t -> t
   | Array : list t -> t
-  | StructRecord : string -> list t -> list Ty.t ->list (string * t) -> t
-  | StructTuple : string -> list t -> list Ty.t -> list t -> t
+  | StructRecord : string -> list (string * t) -> t
+  | StructTuple : string -> list t -> t
   | Pointer : Pointer.t t -> t
   (** The two existential types of the closure must be [Value.t] and [M]. We
       cannot enforce this constraint there yet, but we will do when defining the
@@ -262,11 +262,9 @@ Module Value.
       which they are created, in case of side-effects. *)
   Definition mkStructRecord
       (constructor : string)
-      (consts : list t)
-      (tys : list Ty.t)
       (fields : list (string * t)) :
       t :=
-    StructRecord constructor consts tys (List.sort_assoc fields).
+    StructRecord constructor (List.sort_assoc fields).
   Arguments mkStructRecord /.
 
   (** Read the part of the value that is at a given pointer index. It might return [None] if the
@@ -285,7 +283,7 @@ Module Value.
       end
     | Pointer.Index.StructRecord constructor field =>
       match value with
-      | StructRecord c _ _ fields =>
+      | StructRecord c fields =>
         match PrimString.compare c constructor with
         | Eq => List.assoc fields field
         | _ => None
@@ -294,7 +292,7 @@ Module Value.
       end
     | Pointer.Index.StructTuple constructor index =>
       match value with
-      | StructTuple c _ _ fields =>
+      | StructTuple c fields =>
         match PrimString.compare c constructor with
         | Eq => List.nth_error fields (Z.to_nat index)
         | _ => None
@@ -325,18 +323,18 @@ Module Value.
       end
     | Pointer.Index.StructRecord constructor field =>
       match value with
-      | StructRecord c consts tys fields =>
+      | StructRecord c fields =>
         match PrimString.compare c constructor with
-        | Eq => Some (StructRecord c consts tys (List.assoc_replace fields field update))
+        | Eq => Some (StructRecord c (List.assoc_replace fields field update))
         | _ => None
         end
       | _ => None
       end
     | Pointer.Index.StructTuple constructor index =>
       match value with
-      | StructTuple c consts tys fields =>
+      | StructTuple c fields =>
         match PrimString.compare c constructor with
-        | Eq => Some (StructTuple c consts tys (List.replace_at fields (Z.to_nat index) update))
+        | Eq => Some (StructTuple c (List.replace_at fields (Z.to_nat index) update))
         | _ => None
         end
       | _ => None
@@ -972,7 +970,7 @@ Definition is_struct_tuple (value : Value.t) (constructor : string) : M :=
   let* value := deref value in
   let* value := read value in
   match value with
-  | Value.StructTuple current_constructor _ _ _ =>
+  | Value.StructTuple current_constructor _ =>
     match PrimString.compare current_constructor constructor with
     | Eq => pure (Value.Tuple [])
     | _ => break_match
@@ -1024,10 +1022,10 @@ Definition closure (f : list Value.t -> M) : Value.t :=
   Value.Closure (existS (_, _) f).
 Arguments closure /.
 
-Definition constructor_as_closure (constructor : string) (consts : list Value.t) (tys : list Ty.t) :
+Definition constructor_as_closure (constructor : string) :
     Value.t :=
   closure (fun args =>
-    pure (Value.StructTuple constructor consts tys args)).
+    pure (Value.StructTuple constructor args)).
 
 Parameter pointer_coercion_intrinsic : PointerCoercion.t -> PolymorphicFunction.t.
 
@@ -1040,3 +1038,7 @@ Parameter struct_record_update : Value.t -> list (string * Value.t) -> Value.t.
 Parameter unevaluated_const : Value.t -> Value.t.
 
 Parameter yield : Value.t -> M.
+
+Definition value_with_ty (value : Value.t) (ty : Ty.t) : Value.t :=
+  value.
+Global Opaque value_with_ty.

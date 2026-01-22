@@ -15,32 +15,44 @@ Module raw_vec.
           Ty.path "never",
           M.get_function (| "core::panicking::panic_fmt", [], [] |),
           [
-            M.call_closure (|
-              Ty.path "core::fmt::Arguments",
-              M.get_associated_function (|
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                "new_const",
-                [ Value.Integer IntegerKind.Usize 1 ],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+                M.get_associated_function (|
+                  Ty.path "core::fmt::Arguments",
+                  "new_const",
+                  [ Value.Integer IntegerKind.Usize 1 ],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.alloc (|
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                            Value.Array [ mk_str (| "capacity overflow" |) ]
+                          |)
+                        |)
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
                         Ty.apply
                           (Ty.path "array")
                           [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        Value.Array [ mk_str (| "capacity overflow" |) ]
-                      |)
-                    |)
-                  |)
-                |)
-              ]
-            |)
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                      ])
+                ]
+              |))
+              (Ty.path "core::fmt::Arguments")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -91,7 +103,9 @@ Module raw_vec.
       ltac:(M.monadic
         (M.alloc (|
           Ty.path "alloc::raw_vec::Cap",
-          Value.StructTuple "alloc::raw_vec::Cap" [] [] [ Value.Integer IntegerKind.Usize 0 ]
+          M.value_with_ty
+            (Value.StructTuple "alloc::raw_vec::Cap" [ Value.Integer IntegerKind.Usize 0 ])
+            (Ty.path "alloc::raw_vec::Cap")
         |))).
     
     Global Instance AssociatedConstant_value_ZERO : M.IsAssociatedFunction.C Self "ZERO" value_ZERO.
@@ -130,7 +144,9 @@ Module raw_vec.
                   |)));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple "alloc::raw_vec::Cap" [] [] [ M.read (| cap |) ]))
+                  (M.value_with_ty
+                    (Value.StructTuple "alloc::raw_vec::Cap" [ M.read (| cap |) ])
+                    (Ty.path "alloc::raw_vec::Cap")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -188,7 +204,13 @@ Module raw_vec.
               [],
               []
             |),
-            [ Value.StructTuple "alloc::alloc::Global" [] [] [] ]
+            [
+              M.value_with_ty
+                (M.value_with_ty
+                  (Value.StructTuple "alloc::alloc::Global" [])
+                  (Ty.path "alloc::alloc::Global"))
+                (Ty.path "alloc::alloc::Global")
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -210,38 +232,43 @@ Module raw_vec.
       | [], [], [ capacity ] =>
         ltac:(M.monadic
           (let capacity := M.alloc (| Ty.path "usize", capacity |) in
-          Value.mkStructRecord
-            "alloc::raw_vec::RawVec"
-            []
-            [ T; Ty.path "alloc::alloc::Global" ]
-            [
-              ("inner",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::raw_vec::RawVecInner")
-                    []
-                    [ Ty.path "alloc::alloc::Global" ],
-                  M.get_associated_function (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "alloc::raw_vec::RawVec"
+              [
+                ("inner",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "alloc::raw_vec::RawVecInner")
                       []
                       [ Ty.path "alloc::alloc::Global" ],
-                    "with_capacity",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (| capacity |);
-                    M.read (|
-                      get_constant (|
-                        "core::mem::SizedTypeProperties::LAYOUT",
-                        Ty.path "core::alloc::layout::Layout"
-                      |)
-                    |)
-                  ]
-                |));
-              ("_marker", Value.StructTuple "core::marker::PhantomData" [] [ T ] [])
-            ]))
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "alloc::raw_vec::RawVecInner")
+                        []
+                        [ Ty.path "alloc::alloc::Global" ],
+                      "with_capacity",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty (M.read (| capacity |)) (Ty.path "usize");
+                      M.value_with_ty
+                        (M.read (|
+                          get_constant (|
+                            "core::mem::SizedTypeProperties::LAYOUT",
+                            Ty.path "core::alloc::layout::Layout"
+                          |)
+                        |))
+                        (Ty.path "core::alloc::layout::Layout")
+                    ]
+                  |));
+                ("_marker",
+                  M.value_with_ty
+                    (Value.StructTuple "core::marker::PhantomData" [])
+                    (Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ]))
+              ])
+            (Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; Ty.path "alloc::alloc::Global" ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -270,39 +297,48 @@ Module raw_vec.
       | [], [], [ capacity ] =>
         ltac:(M.monadic
           (let capacity := M.alloc (| Ty.path "usize", capacity |) in
-          Value.mkStructRecord
-            "alloc::raw_vec::RawVec"
-            []
-            [ T; Ty.path "alloc::alloc::Global" ]
-            [
-              ("inner",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::raw_vec::RawVecInner")
-                    []
-                    [ Ty.path "alloc::alloc::Global" ],
-                  M.get_associated_function (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "alloc::raw_vec::RawVec"
+              [
+                ("inner",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "alloc::raw_vec::RawVecInner")
                       []
                       [ Ty.path "alloc::alloc::Global" ],
-                    "with_capacity_zeroed_in",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (| capacity |);
-                    Value.StructTuple "alloc::alloc::Global" [] [] [];
-                    M.read (|
-                      get_constant (|
-                        "core::mem::SizedTypeProperties::LAYOUT",
-                        Ty.path "core::alloc::layout::Layout"
-                      |)
-                    |)
-                  ]
-                |));
-              ("_marker", Value.StructTuple "core::marker::PhantomData" [] [ T ] [])
-            ]))
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "alloc::raw_vec::RawVecInner")
+                        []
+                        [ Ty.path "alloc::alloc::Global" ],
+                      "with_capacity_zeroed_in",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty (M.read (| capacity |)) (Ty.path "usize");
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "alloc::alloc::Global" [])
+                          (Ty.path "alloc::alloc::Global"))
+                        (Ty.path "alloc::alloc::Global");
+                      M.value_with_ty
+                        (M.read (|
+                          get_constant (|
+                            "core::mem::SizedTypeProperties::LAYOUT",
+                            Ty.path "core::alloc::layout::Layout"
+                          |)
+                        |))
+                        (Ty.path "core::alloc::layout::Layout")
+                    ]
+                  |));
+                ("_marker",
+                  M.value_with_ty
+                    (Value.StructTuple "core::marker::PhantomData" [])
+                    (Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ]))
+              ])
+            (Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; Ty.path "alloc::alloc::Global" ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -365,10 +401,18 @@ Module raw_vec.
                   []
                 |),
                 [
-                  M.read (| capacity |);
-                  Value.StructTuple "alloc::raw_vec::AllocInit::Uninitialized" [] [] [];
-                  Value.StructTuple "alloc::alloc::Global" [] [] [];
-                  M.read (| elem_layout |)
+                  M.value_with_ty (M.read (| capacity |)) (Ty.path "usize");
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple "alloc::raw_vec::AllocInit::Uninitialized" [])
+                      (Ty.path "alloc::raw_vec::AllocInit"))
+                    (Ty.path "alloc::raw_vec::AllocInit");
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple "alloc::alloc::Global" [])
+                      (Ty.path "alloc::alloc::Global"))
+                    (Ty.path "alloc::alloc::Global");
+                  M.value_with_ty (M.read (| elem_layout |)) (Ty.path "core::alloc::layout::Layout")
                 ]
               |)
             |),
@@ -395,7 +439,11 @@ Module raw_vec.
                     M.call_closure (|
                       Ty.path "never",
                       M.get_function (| "alloc::raw_vec::handle_error", [], [] |),
-                      [ M.read (| err |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| err |))
+                          (Ty.path "alloc::collections::TryReserveError")
+                      ]
                     |)
                   |)))
             ]
@@ -495,11 +543,13 @@ Module raw_vec.
             Ty.path "usize",
             M.get_function (| "alloc::raw_vec::min_non_zero_cap", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "usize",
-                M.get_function (| "core::mem::size_of", [], [ T ] |),
-                []
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "usize",
+                  M.get_function (| "core::mem::size_of", [], [ T ] |),
+                  []
+                |))
+                (Ty.path "usize")
             ]
           |)
         |))).
@@ -521,31 +571,36 @@ Module raw_vec.
       | [], [], [ alloc ] =>
         ltac:(M.monadic
           (let alloc := M.alloc (| A, alloc |) in
-          Value.mkStructRecord
-            "alloc::raw_vec::RawVec"
-            []
-            [ T; A ]
-            [
-              ("inner",
-                M.call_closure (|
-                  Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                  M.get_associated_function (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "alloc::raw_vec::RawVec"
+              [
+                ("inner",
+                  M.call_closure (|
                     Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                    "new_in",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (| alloc |);
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_function (| "core::mem::align_of", [], [ T ] |),
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
+                      "new_in",
+                      [],
                       []
-                    |)
-                  ]
-                |));
-              ("_marker", Value.StructTuple "core::marker::PhantomData" [] [ T ] [])
-            ]))
+                    |),
+                    [
+                      M.value_with_ty (M.read (| alloc |)) A;
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          M.get_function (| "core::mem::align_of", [], [ T ] |),
+                          []
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |));
+                ("_marker",
+                  M.value_with_ty
+                    (Value.StructTuple "core::marker::PhantomData" [])
+                    (Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ]))
+              ])
+            (Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -575,33 +630,38 @@ Module raw_vec.
         ltac:(M.monadic
           (let capacity := M.alloc (| Ty.path "usize", capacity |) in
           let alloc := M.alloc (| A, alloc |) in
-          Value.mkStructRecord
-            "alloc::raw_vec::RawVec"
-            []
-            [ T; A ]
-            [
-              ("inner",
-                M.call_closure (|
-                  Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                  M.get_associated_function (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "alloc::raw_vec::RawVec"
+              [
+                ("inner",
+                  M.call_closure (|
                     Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                    "with_capacity_in",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (| capacity |);
-                    M.read (| alloc |);
-                    M.read (|
-                      get_constant (|
-                        "core::mem::SizedTypeProperties::LAYOUT",
-                        Ty.path "core::alloc::layout::Layout"
-                      |)
-                    |)
-                  ]
-                |));
-              ("_marker", Value.StructTuple "core::marker::PhantomData" [] [ T ] [])
-            ]))
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
+                      "with_capacity_in",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty (M.read (| capacity |)) (Ty.path "usize");
+                      M.value_with_ty (M.read (| alloc |)) A;
+                      M.value_with_ty
+                        (M.read (|
+                          get_constant (|
+                            "core::mem::SizedTypeProperties::LAYOUT",
+                            Ty.path "core::alloc::layout::Layout"
+                          |)
+                        |))
+                        (Ty.path "core::alloc::layout::Layout")
+                    ]
+                  |));
+                ("_marker",
+                  M.value_with_ty
+                    (Value.StructTuple "core::marker::PhantomData" [])
+                    (Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ]))
+              ])
+            (Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -662,14 +722,16 @@ Module raw_vec.
                   []
                 |),
                 [
-                  M.read (| capacity |);
-                  M.read (| alloc |);
-                  M.read (|
-                    get_constant (|
-                      "core::mem::SizedTypeProperties::LAYOUT",
-                      Ty.path "core::alloc::layout::Layout"
-                    |)
-                  |)
+                  M.value_with_ty (M.read (| capacity |)) (Ty.path "usize");
+                  M.value_with_ty (M.read (| alloc |)) A;
+                  M.value_with_ty
+                    (M.read (|
+                      get_constant (|
+                        "core::mem::SizedTypeProperties::LAYOUT",
+                        Ty.path "core::alloc::layout::Layout"
+                      |)
+                    |))
+                    (Ty.path "core::alloc::layout::Layout")
                 ]
               |)
             |),
@@ -680,36 +742,43 @@ Module raw_vec.
                     M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Ok", 0 |) in
                   let inner :=
                     M.copy (| Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ], γ0_0 |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ];
-                      Ty.path "alloc::collections::TryReserveError"
-                    ]
-                    [
-                      Value.mkStructRecord
-                        "alloc::raw_vec::RawVec"
-                        []
-                        [ T; A ]
-                        [
-                          ("inner", M.read (| inner |));
-                          ("_marker", Value.StructTuple "core::marker::PhantomData" [] [ T ] [])
-                        ]
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "alloc::raw_vec::RawVec"
+                            [
+                              ("inner", M.read (| inner |));
+                              ("_marker",
+                                M.value_with_ty
+                                  (Value.StructTuple "core::marker::PhantomData" [])
+                                  (Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ]))
+                            ])
+                          (Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ])
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ];
+                        Ty.path "alloc::collections::TryReserveError"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Err", 0 |) in
                   let e := M.copy (| Ty.path "alloc::collections::TryReserveError", γ0_0 |) in
-                  Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [
-                      Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ];
-                      Ty.path "alloc::collections::TryReserveError"
-                    ]
-                    [ M.read (| e |) ]))
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Err" [ M.read (| e |) ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ];
+                        Ty.path "alloc::collections::TryReserveError"
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -741,33 +810,38 @@ Module raw_vec.
         ltac:(M.monadic
           (let capacity := M.alloc (| Ty.path "usize", capacity |) in
           let alloc := M.alloc (| A, alloc |) in
-          Value.mkStructRecord
-            "alloc::raw_vec::RawVec"
-            []
-            [ T; A ]
-            [
-              ("inner",
-                M.call_closure (|
-                  Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                  M.get_associated_function (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "alloc::raw_vec::RawVec"
+              [
+                ("inner",
+                  M.call_closure (|
                     Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                    "with_capacity_zeroed_in",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (| capacity |);
-                    M.read (| alloc |);
-                    M.read (|
-                      get_constant (|
-                        "core::mem::SizedTypeProperties::LAYOUT",
-                        Ty.path "core::alloc::layout::Layout"
-                      |)
-                    |)
-                  ]
-                |));
-              ("_marker", Value.StructTuple "core::marker::PhantomData" [] [ T ] [])
-            ]))
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
+                      "with_capacity_zeroed_in",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty (M.read (| capacity |)) (Ty.path "usize");
+                      M.value_with_ty (M.read (| alloc |)) A;
+                      M.value_with_ty
+                        (M.read (|
+                          get_constant (|
+                            "core::mem::SizedTypeProperties::LAYOUT",
+                            Ty.path "core::alloc::layout::Layout"
+                          |)
+                        |))
+                        (Ty.path "core::alloc::layout::Layout")
+                    ]
+                  |));
+                ("_marker",
+                  M.value_with_ty
+                    (Value.StructTuple "core::marker::PhantomData" [])
+                    (Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ]))
+              ])
+            (Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -842,7 +916,19 @@ Module raw_vec.
                                                     [],
                                                     []
                                                   |),
-                                                  [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.Ref, self |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "alloc::raw_vec::RawVec")
+                                                            []
+                                                            [ T; A ]
+                                                        ])
+                                                  ]
                                                 |)
                                               ]
                                             |)
@@ -859,38 +945,55 @@ Module raw_vec.
                                       Ty.path "never",
                                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                       [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::Arguments",
-                                          M.get_associated_function (|
+                                        M.value_with_ty
+                                          (M.call_closure (|
                                             Ty.path "core::fmt::Arguments",
-                                            "new_const",
-                                            [ Value.Integer IntegerKind.Usize 1 ],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Arguments",
+                                              "new_const",
+                                              [ Value.Integer IntegerKind.Usize 1 ],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "str" ]
+                                                          ],
+                                                        Value.Array
+                                                          [
+                                                            mk_str (|
+                                                              "`len` must be smaller than or equal to `self.capacity()`"
+                                                            |)
+                                                          ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
                                                     Ty.apply
                                                       (Ty.path "array")
                                                       [ Value.Integer IntegerKind.Usize 1 ]
                                                       [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ],
-                                                    Value.Array
-                                                      [
-                                                        mk_str (|
-                                                          "`len` must be smaller than or equal to `self.capacity()`"
-                                                        |)
                                                       ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)
+                                                  ])
+                                            ]
+                                          |))
+                                          (Ty.path "core::fmt::Arguments")
                                       ]
                                     |)
                                   |)));
@@ -921,7 +1024,11 @@ Module raw_vec.
                   [],
                   []
                 |),
-                [ M.read (| self |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| self |))
+                    (Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ])
+                ]
               |) in
             let~ slice :
                 Ty.apply
@@ -949,47 +1056,74 @@ Module raw_vec.
                   [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
                 |),
                 [
-                  M.cast
+                  M.value_with_ty
+                    (M.cast
+                      (Ty.apply
+                        (Ty.path "*mut")
+                        []
+                        [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ])
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*mut") [] [ T ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ],
+                          "ptr",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ] ],
+                                  M.get_trait_method (|
+                                    "core::ops::deref::Deref",
+                                    Ty.apply
+                                      (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                      []
+                                      [ Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ] ],
+                                    [],
+                                    [],
+                                    "deref",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, me |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::raw_vec::RawVec")
+                                                []
+                                                [ T; A ]
+                                            ]
+                                        ])
+                                  ]
+                                |)
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ] ])
+                        ]
+                      |)))
                     (Ty.apply
                       (Ty.path "*mut")
                       []
-                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ])
-                    (M.call_closure (|
-                      Ty.apply (Ty.path "*mut") [] [ T ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ],
-                        "ptr",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ] ],
-                              M.get_trait_method (|
-                                "core::ops::deref::Deref",
-                                Ty.apply
-                                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
-                                  []
-                                  [ Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ] ],
-                                [],
-                                [],
-                                "deref",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, me |) ]
-                            |)
-                          |)
-                        |)
-                      ]
-                    |));
-                  M.read (| len |)
+                      [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]);
+                  M.value_with_ty (M.read (| len |)) (Ty.path "usize")
                 ]
               |) in
             M.alloc (|
@@ -1030,50 +1164,87 @@ Module raw_vec.
                   []
                 |),
                 [
-                  M.read (| slice |);
-                  M.call_closure (|
-                    A,
-                    M.get_function (| "core::ptr::read", [], [ A ] |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.ConstPointer,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ] ],
-                                    M.get_trait_method (|
-                                      "core::ops::deref::Deref",
-                                      Ty.apply
-                                        (Ty.path "core::mem::manually_drop::ManuallyDrop")
-                                        []
-                                        [ Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ] ],
-                                      [],
-                                      [],
-                                      "deref",
-                                      [],
-                                      []
+                  M.value_with_ty
+                    (M.read (| slice |))
+                    (Ty.apply
+                      (Ty.path "*mut")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "slice")
+                          []
+                          [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                      ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      A,
+                      M.get_function (| "core::ptr::read", [], [ A ] |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.ConstPointer,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ]
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::ops::deref::Deref",
+                                          Ty.apply
+                                            (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::raw_vec::RawVec")
+                                                []
+                                                [ T; A ]
+                                            ],
+                                          [],
+                                          [],
+                                          "deref",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, me |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::raw_vec::RawVec")
+                                                      []
+                                                      [ T; A ]
+                                                  ]
+                                              ])
+                                        ]
+                                      |)
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, me |) ]
-                                  |)
-                                |),
-                                "alloc::raw_vec::RawVec",
-                                "inner"
-                              |),
-                              "alloc::raw_vec::RawVecInner",
-                              "alloc"
+                                    "alloc::raw_vec::RawVec",
+                                    "inner"
+                                  |),
+                                  "alloc::raw_vec::RawVecInner",
+                                  "alloc"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
+                          |))
+                          (Ty.apply (Ty.path "*const") [] [ A ])
+                      ]
+                    |))
+                    A
                 ]
               |)
             |)
@@ -1123,34 +1294,43 @@ Module raw_vec.
                   [],
                   [ Ty.path "u8" ]
                 |),
-                [ M.read (| ptr |) ]
+                [ M.value_with_ty (M.read (| ptr |)) (Ty.apply (Ty.path "*mut") [] [ T ]) ]
               |) in
             let~ capacity : Ty.path "alloc::raw_vec::Cap" :=
               M.call_closure (|
                 Ty.path "alloc::raw_vec::Cap",
                 M.get_associated_function (| Ty.path "alloc::raw_vec::Cap", "new", [], [ T ] |),
-                [ M.read (| capacity |) ]
+                [ M.value_with_ty (M.read (| capacity |)) (Ty.path "usize") ]
               |) in
             M.alloc (|
               Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ],
-              Value.mkStructRecord
-                "alloc::raw_vec::RawVec"
-                []
-                [ T; A ]
-                [
-                  ("inner",
-                    M.call_closure (|
-                      Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                      M.get_associated_function (|
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "alloc::raw_vec::RawVec"
+                  [
+                    ("inner",
+                      M.call_closure (|
                         Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                        "from_raw_parts_in",
-                        [],
-                        []
-                      |),
-                      [ M.read (| ptr |); M.read (| capacity |); M.read (| alloc |) ]
-                    |));
-                  ("_marker", Value.StructTuple "core::marker::PhantomData" [] [ T ] [])
-                ]
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
+                          "from_raw_parts_in",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| ptr |))
+                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                          M.value_with_ty (M.read (| capacity |)) (Ty.path "alloc::raw_vec::Cap");
+                          M.value_with_ty (M.read (| alloc |)) A
+                        ]
+                      |));
+                    ("_marker",
+                      M.value_with_ty
+                        (Value.StructTuple "core::marker::PhantomData" [])
+                        (Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ]))
+                  ])
+                (Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ])
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1196,34 +1376,47 @@ Module raw_vec.
                   [],
                   [ Ty.path "u8" ]
                 |),
-                [ M.read (| ptr |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| ptr |))
+                    (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
+                ]
               |) in
             let~ capacity : Ty.path "alloc::raw_vec::Cap" :=
               M.call_closure (|
                 Ty.path "alloc::raw_vec::Cap",
                 M.get_associated_function (| Ty.path "alloc::raw_vec::Cap", "new", [], [ T ] |),
-                [ M.read (| capacity |) ]
+                [ M.value_with_ty (M.read (| capacity |)) (Ty.path "usize") ]
               |) in
             M.alloc (|
               Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ],
-              Value.mkStructRecord
-                "alloc::raw_vec::RawVec"
-                []
-                [ T; A ]
-                [
-                  ("inner",
-                    M.call_closure (|
-                      Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                      M.get_associated_function (|
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "alloc::raw_vec::RawVec"
+                  [
+                    ("inner",
+                      M.call_closure (|
                         Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                        "from_nonnull_in",
-                        [],
-                        []
-                      |),
-                      [ M.read (| ptr |); M.read (| capacity |); M.read (| alloc |) ]
-                    |));
-                  ("_marker", Value.StructTuple "core::marker::PhantomData" [] [ T ] [])
-                ]
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
+                          "from_nonnull_in",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| ptr |))
+                            (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ]);
+                          M.value_with_ty (M.read (| capacity |)) (Ty.path "alloc::raw_vec::Cap");
+                          M.value_with_ty (M.read (| alloc |)) A
+                        ]
+                      |));
+                    ("_marker",
+                      M.value_with_ty
+                        (Value.StructTuple "core::marker::PhantomData" [])
+                        (Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ]))
+                  ])
+                (Ty.apply (Ty.path "alloc::raw_vec::RawVec") [] [ T; A ])
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1259,14 +1452,19 @@ Module raw_vec.
               [ T ]
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloc::raw_vec::RawVec",
-                  "inner"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "alloc::raw_vec::RawVec",
+                    "inner"
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1302,14 +1500,19 @@ Module raw_vec.
               [ T ]
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloc::raw_vec::RawVec",
-                  "inner"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "alloc::raw_vec::RawVec",
+                    "inner"
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1345,19 +1548,26 @@ Module raw_vec.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloc::raw_vec::RawVec",
-                  "inner"
-                |)
-              |);
-              M.call_closure (|
-                Ty.path "usize",
-                M.get_function (| "core::mem::size_of", [], [ T ] |),
-                []
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "alloc::raw_vec::RawVec",
+                    "inner"
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "usize",
+                  M.get_function (| "core::mem::size_of", [], [ T ] |),
+                  []
+                |))
+                (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1396,14 +1606,19 @@ Module raw_vec.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloc::raw_vec::RawVec",
-                      "inner"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloc::raw_vec::RawVec",
+                        "inner"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ])
                 ]
               |)
             |)
@@ -1446,22 +1661,29 @@ Module raw_vec.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloc::raw_vec::RawVec",
-                  "inner"
-                |)
-              |);
-              M.read (| len |);
-              M.read (| additional |);
-              M.read (|
-                get_constant (|
-                  "core::mem::SizedTypeProperties::LAYOUT",
-                  Ty.path "core::alloc::layout::Layout"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "alloc::raw_vec::RawVec",
+                    "inner"
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ]);
+              M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+              M.value_with_ty (M.read (| additional |)) (Ty.path "usize");
+              M.value_with_ty
+                (M.read (|
+                  get_constant (|
+                    "core::mem::SizedTypeProperties::LAYOUT",
+                    Ty.path "core::alloc::layout::Layout"
+                  |)
+                |))
+                (Ty.path "core::alloc::layout::Layout")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1500,20 +1722,27 @@ Module raw_vec.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloc::raw_vec::RawVec",
-                  "inner"
-                |)
-              |);
-              M.read (|
-                get_constant (|
-                  "core::mem::SizedTypeProperties::LAYOUT",
-                  Ty.path "core::alloc::layout::Layout"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "alloc::raw_vec::RawVec",
+                    "inner"
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ]);
+              M.value_with_ty
+                (M.read (|
+                  get_constant (|
+                    "core::mem::SizedTypeProperties::LAYOUT",
+                    Ty.path "core::alloc::layout::Layout"
+                  |)
+                |))
+                (Ty.path "core::alloc::layout::Layout")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1557,22 +1786,29 @@ Module raw_vec.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloc::raw_vec::RawVec",
-                  "inner"
-                |)
-              |);
-              M.read (| len |);
-              M.read (| additional |);
-              M.read (|
-                get_constant (|
-                  "core::mem::SizedTypeProperties::LAYOUT",
-                  Ty.path "core::alloc::layout::Layout"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "alloc::raw_vec::RawVec",
+                    "inner"
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ]);
+              M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+              M.value_with_ty (M.read (| additional |)) (Ty.path "usize");
+              M.value_with_ty
+                (M.read (|
+                  get_constant (|
+                    "core::mem::SizedTypeProperties::LAYOUT",
+                    Ty.path "core::alloc::layout::Layout"
+                  |)
+                |))
+                (Ty.path "core::alloc::layout::Layout")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1618,22 +1854,29 @@ Module raw_vec.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloc::raw_vec::RawVec",
-                  "inner"
-                |)
-              |);
-              M.read (| len |);
-              M.read (| additional |);
-              M.read (|
-                get_constant (|
-                  "core::mem::SizedTypeProperties::LAYOUT",
-                  Ty.path "core::alloc::layout::Layout"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "alloc::raw_vec::RawVec",
+                    "inner"
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ]);
+              M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+              M.value_with_ty (M.read (| additional |)) (Ty.path "usize");
+              M.value_with_ty
+                (M.read (|
+                  get_constant (|
+                    "core::mem::SizedTypeProperties::LAYOUT",
+                    Ty.path "core::alloc::layout::Layout"
+                  |)
+                |))
+                (Ty.path "core::alloc::layout::Layout")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1686,22 +1929,29 @@ Module raw_vec.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloc::raw_vec::RawVec",
-                  "inner"
-                |)
-              |);
-              M.read (| len |);
-              M.read (| additional |);
-              M.read (|
-                get_constant (|
-                  "core::mem::SizedTypeProperties::LAYOUT",
-                  Ty.path "core::alloc::layout::Layout"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "alloc::raw_vec::RawVec",
+                    "inner"
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ]);
+              M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+              M.value_with_ty (M.read (| additional |)) (Ty.path "usize");
+              M.value_with_ty
+                (M.read (|
+                  get_constant (|
+                    "core::mem::SizedTypeProperties::LAYOUT",
+                    Ty.path "core::alloc::layout::Layout"
+                  |)
+                |))
+                (Ty.path "core::alloc::layout::Layout")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1746,21 +1996,28 @@ Module raw_vec.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloc::raw_vec::RawVec",
-                  "inner"
-                |)
-              |);
-              M.read (| cap |);
-              M.read (|
-                get_constant (|
-                  "core::mem::SizedTypeProperties::LAYOUT",
-                  Ty.path "core::alloc::layout::Layout"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "alloc::raw_vec::RawVec",
+                    "inner"
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ]);
+              M.value_with_ty (M.read (| cap |)) (Ty.path "usize");
+              M.value_with_ty
+                (M.read (|
+                  get_constant (|
+                    "core::mem::SizedTypeProperties::LAYOUT",
+                    Ty.path "core::alloc::layout::Layout"
+                  |)
+                |))
+                (Ty.path "core::alloc::layout::Layout")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1804,20 +2061,27 @@ Module raw_vec.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "alloc::raw_vec::RawVec",
-                  "inner"
-                |)
-              |);
-              M.read (|
-                get_constant (|
-                  "core::mem::SizedTypeProperties::LAYOUT",
-                  Ty.path "core::alloc::layout::Layout"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "alloc::raw_vec::RawVec",
+                    "inner"
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ]);
+              M.value_with_ty
+                (M.read (|
+                  get_constant (|
+                    "core::mem::SizedTypeProperties::LAYOUT",
+                    Ty.path "core::alloc::layout::Layout"
+                  |)
+                |))
+                (Ty.path "core::alloc::layout::Layout")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1862,26 +2126,26 @@ Module raw_vec.
                     Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ Ty.path "u8" ]
                   ]
                 |),
-                [ M.read (| align |) ]
+                [ M.value_with_ty (M.read (| align |)) (Ty.path "usize") ]
               |) in
             M.alloc (|
               Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-              Value.mkStructRecord
-                "alloc::raw_vec::RawVecInner"
-                []
-                [ A ]
-                [
-                  ("ptr", M.read (| ptr |));
-                  ("cap",
-                    M.read (|
-                      get_associated_constant (|
-                        Ty.path "alloc::raw_vec::Cap",
-                        "ZERO",
-                        Ty.path "alloc::raw_vec::Cap"
-                      |)
-                    |));
-                  ("alloc", M.read (| alloc |))
-                ]
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "alloc::raw_vec::RawVecInner"
+                  [
+                    ("ptr", M.read (| ptr |));
+                    ("cap",
+                      M.read (|
+                        get_associated_constant (|
+                          Ty.path "alloc::raw_vec::Cap",
+                          "ZERO",
+                          Ty.path "alloc::raw_vec::Cap"
+                        |)
+                      |));
+                    ("alloc", M.read (| alloc |))
+                  ])
+                (Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ])
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1945,10 +2209,14 @@ Module raw_vec.
                   []
                 |),
                 [
-                  M.read (| capacity |);
-                  Value.StructTuple "alloc::raw_vec::AllocInit::Uninitialized" [] [] [];
-                  M.read (| alloc |);
-                  M.read (| elem_layout |)
+                  M.value_with_ty (M.read (| capacity |)) (Ty.path "usize");
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple "alloc::raw_vec::AllocInit::Uninitialized" [])
+                      (Ty.path "alloc::raw_vec::AllocInit"))
+                    (Ty.path "alloc::raw_vec::AllocInit");
+                  M.value_with_ty (M.read (| alloc |)) A;
+                  M.value_with_ty (M.read (| elem_layout |)) (Ty.path "core::alloc::layout::Layout")
                 ]
               |)
             |),
@@ -1967,27 +2235,43 @@ Module raw_vec.
                             Ty.tuple [],
                             M.get_function (| "core::hint::assert_unchecked", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "bool",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                                      "needs_to_grow",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (| Pointer.Kind.Ref, this |);
-                                      Value.Integer IntegerKind.Usize 0;
-                                      M.read (| capacity |);
-                                      M.read (| elem_layout |)
-                                    ]
-                                  |)
-                                ]
-                              |)
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "bool",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "bool",
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
+                                        "needs_to_grow",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, this |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::raw_vec::RawVecInner")
+                                                []
+                                                [ A ]
+                                            ]);
+                                        M.value_with_ty
+                                          (Value.Integer IntegerKind.Usize 0)
+                                          (Ty.path "usize");
+                                        M.value_with_ty (M.read (| capacity |)) (Ty.path "usize");
+                                        M.value_with_ty
+                                          (M.read (| elem_layout |))
+                                          (Ty.path "core::alloc::layout::Layout")
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "bool")
                             ]
                           |) in
                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2003,7 +2287,11 @@ Module raw_vec.
                     M.call_closure (|
                       Ty.path "never",
                       M.get_function (| "alloc::raw_vec::handle_error", [], [] |),
-                      [ M.read (| err |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| err |))
+                          (Ty.path "alloc::collections::TryReserveError")
+                      ]
                     |)
                   |)))
             ]
@@ -2054,10 +2342,14 @@ Module raw_vec.
               []
             |),
             [
-              M.read (| capacity |);
-              Value.StructTuple "alloc::raw_vec::AllocInit::Uninitialized" [] [] [];
-              M.read (| alloc |);
-              M.read (| elem_layout |)
+              M.value_with_ty (M.read (| capacity |)) (Ty.path "usize");
+              M.value_with_ty
+                (M.value_with_ty
+                  (Value.StructTuple "alloc::raw_vec::AllocInit::Uninitialized" [])
+                  (Ty.path "alloc::raw_vec::AllocInit"))
+                (Ty.path "alloc::raw_vec::AllocInit");
+              M.value_with_ty (M.read (| alloc |)) A;
+              M.value_with_ty (M.read (| elem_layout |)) (Ty.path "core::alloc::layout::Layout")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2115,10 +2407,14 @@ Module raw_vec.
                   []
                 |),
                 [
-                  M.read (| capacity |);
-                  Value.StructTuple "alloc::raw_vec::AllocInit::Zeroed" [] [] [];
-                  M.read (| alloc |);
-                  M.read (| elem_layout |)
+                  M.value_with_ty (M.read (| capacity |)) (Ty.path "usize");
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple "alloc::raw_vec::AllocInit::Zeroed" [])
+                      (Ty.path "alloc::raw_vec::AllocInit"))
+                    (Ty.path "alloc::raw_vec::AllocInit");
+                  M.value_with_ty (M.read (| alloc |)) A;
+                  M.value_with_ty (M.read (| elem_layout |)) (Ty.path "core::alloc::layout::Layout")
                 ]
               |)
             |),
@@ -2139,7 +2435,11 @@ Module raw_vec.
                     M.call_closure (|
                       Ty.path "never",
                       M.get_function (| "alloc::raw_vec::handle_error", [], [] |),
-                      [ M.read (| err |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| err |))
+                          (Ty.path "alloc::collections::TryReserveError")
+                      ]
                     |)
                   |)))
             ]
@@ -2236,7 +2536,12 @@ Module raw_vec.
                             Ty.path "alloc::collections::TryReserveError"
                           ],
                         M.get_function (| "alloc::raw_vec::layout_array", [], [] |),
-                        [ M.read (| capacity |); M.read (| elem_layout |) ]
+                        [
+                          M.value_with_ty (M.read (| capacity |)) (Ty.path "usize");
+                          M.value_with_ty
+                            (M.read (| elem_layout |))
+                            (Ty.path "core::alloc::layout::Layout")
+                        ]
                       |)
                     |),
                     [
@@ -2261,34 +2566,39 @@ Module raw_vec.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ];
-                                    Ty.path "alloc::collections::TryReserveError"
-                                  ]
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "alloc::collections::TryReserveError",
-                                      M.get_trait_method (|
-                                        "core::convert::Into",
-                                        Ty.path "alloc::collections::TryReserveErrorKind",
-                                        [],
-                                        [ Ty.path "alloc::collections::TryReserveError" ],
-                                        "into",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        Value.StructTuple
-                                          "alloc::collections::TryReserveErrorKind::CapacityOverflow"
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "alloc::collections::TryReserveError",
+                                        M.get_trait_method (|
+                                          "core::convert::Into",
+                                          Ty.path "alloc::collections::TryReserveErrorKind",
+                                          [],
+                                          [ Ty.path "alloc::collections::TryReserveError" ],
+                                          "into",
+                                          [],
                                           []
-                                          []
-                                          []
-                                      ]
-                                    |)
-                                  ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.value_with_ty
+                                              (Value.StructTuple
+                                                "alloc::collections::TryReserveErrorKind::CapacityOverflow"
+                                                [])
+                                              (Ty.path "alloc::collections::TryReserveErrorKind"))
+                                            (Ty.path "alloc::collections::TryReserveErrorKind")
+                                        ]
+                                      |)
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ];
+                                      Ty.path "alloc::collections::TryReserveError"
+                                    ])
                               |)
                             |)
                           |)))
@@ -2317,7 +2627,14 @@ Module raw_vec.
                                         [],
                                         []
                                       |),
-                                      [ M.borrow (| Pointer.Kind.Ref, layout |) ]
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, layout |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "core::alloc::layout::Layout" ])
+                                      ]
                                     |);
                                     Value.Integer IntegerKind.Usize 0
                                   ]
@@ -2328,37 +2645,49 @@ Module raw_vec.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ];
-                                    Ty.path "alloc::collections::TryReserveError"
-                                  ]
-                                  [
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                                      M.get_associated_function (|
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [
+                                      M.call_closure (|
                                         Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                                        "new_in",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.read (| alloc |);
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          M.get_associated_function (|
-                                            Ty.path "core::alloc::layout::Layout",
-                                            "align",
-                                            [],
-                                            []
-                                          |),
-                                          [ M.borrow (| Pointer.Kind.Ref, elem_layout |) ]
-                                        |)
-                                      ]
-                                    |)
-                                  ]
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
+                                          "new_in",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty (M.read (| alloc |)) A;
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_associated_function (|
+                                                Ty.path "core::alloc::layout::Layout",
+                                                "align",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (| Pointer.Kind.Ref, elem_layout |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.path "core::alloc::layout::Layout" ])
+                                              ]
+                                            |))
+                                            (Ty.path "usize")
+                                        ]
+                                      |)
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ];
+                                      Ty.path "alloc::collections::TryReserveError"
+                                    ])
                               |)
                             |)
                           |)));
@@ -2385,16 +2714,25 @@ Module raw_vec.
                                   [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ],
                                 M.get_function (| "alloc::raw_vec::alloc_guard", [], [] |),
                                 [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.path "core::alloc::layout::Layout",
-                                      "size",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, layout |) ]
-                                  |)
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.path "core::alloc::layout::Layout",
+                                        "size",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, layout |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "core::alloc::layout::Layout" ])
+                                      ]
+                                    |))
+                                    (Ty.path "usize")
                                 ]
                               |)
                             |) in
@@ -2409,14 +2747,17 @@ Module raw_vec.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ];
-                                    Ty.path "alloc::collections::TryReserveError"
-                                  ]
-                                  [ M.read (| err |) ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [ M.read (| err |) ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ];
+                                      Ty.path "alloc::collections::TryReserveError"
+                                    ])
                               |)
                             |)
                           |)));
@@ -2471,7 +2812,14 @@ Module raw_vec.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, alloc |); M.read (| layout |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, alloc |))
+                                (Ty.apply (Ty.path "&") [] [ A ]);
+                              M.value_with_ty
+                                (M.read (| layout |))
+                                (Ty.path "core::alloc::layout::Layout")
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -2497,7 +2845,14 @@ Module raw_vec.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, alloc |); M.read (| layout |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, alloc |))
+                                (Ty.apply (Ty.path "&") [] [ A ]);
+                              M.value_with_ty
+                                (M.read (| layout |))
+                                (Ty.path "core::alloc::layout::Layout")
+                            ]
                           |)))
                     ]
                   |) in
@@ -2541,37 +2896,42 @@ Module raw_vec.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ];
-                                    Ty.path "alloc::collections::TryReserveError"
-                                  ]
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "alloc::collections::TryReserveError",
-                                      M.get_trait_method (|
-                                        "core::convert::Into",
-                                        Ty.path "alloc::collections::TryReserveErrorKind",
-                                        [],
-                                        [ Ty.path "alloc::collections::TryReserveError" ],
-                                        "into",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        Value.mkStructRecord
-                                          "alloc::collections::TryReserveErrorKind::AllocError"
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "alloc::collections::TryReserveError",
+                                        M.get_trait_method (|
+                                          "core::convert::Into",
+                                          Ty.path "alloc::collections::TryReserveErrorKind",
+                                          [],
+                                          [ Ty.path "alloc::collections::TryReserveError" ],
+                                          "into",
+                                          [],
                                           []
-                                          []
-                                          [
-                                            ("layout", M.read (| layout |));
-                                            ("non_exhaustive", Value.Tuple [])
-                                          ]
-                                      ]
-                                    |)
-                                  ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.value_with_ty
+                                              (Value.mkStructRecord
+                                                "alloc::collections::TryReserveErrorKind::AllocError"
+                                                [
+                                                  ("layout", M.read (| layout |));
+                                                  ("non_exhaustive", Value.Tuple [])
+                                                ])
+                                              (Ty.path "alloc::collections::TryReserveErrorKind"))
+                                            (Ty.path "alloc::collections::TryReserveErrorKind")
+                                        ]
+                                      |)
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ];
+                                      Ty.path "alloc::collections::TryReserveError"
+                                    ])
                               |)
                             |)
                           |)))
@@ -2585,64 +2945,85 @@ Module raw_vec.
                       Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ];
                       Ty.path "alloc::collections::TryReserveError"
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ];
-                      Ty.path "alloc::collections::TryReserveError"
-                    ]
-                    [
-                      Value.mkStructRecord
-                        "alloc::raw_vec::RawVecInner"
-                        []
-                        [ A ]
-                        [
-                          ("ptr",
-                            M.call_closure (|
-                              Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ Ty.path "u8" ],
-                              M.get_trait_method (|
-                                "core::convert::From",
-                                Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ Ty.path "u8" ],
-                                [],
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
-                                    []
-                                    [ Ty.path "u8" ]
-                                ],
-                                "from",
-                                [],
-                                []
-                              |),
-                              [
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "alloc::raw_vec::RawVecInner"
+                            [
+                              ("ptr",
                                 M.call_closure (|
                                   Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    (Ty.path "core::ptr::unique::Unique")
                                     []
                                     [ Ty.path "u8" ],
-                                  M.get_associated_function (|
+                                  M.get_trait_method (|
+                                    "core::convert::From",
                                     Ty.apply
-                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      (Ty.path "core::ptr::unique::Unique")
                                       []
-                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                    "cast",
+                                      [ Ty.path "u8" ],
                                     [],
-                                    [ Ty.path "u8" ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Ty.path "u8" ]
+                                    ],
+                                    "from",
+                                    [],
+                                    []
                                   |),
-                                  [ M.read (| ptr |) ]
-                                |)
-                              ]
-                            |));
-                          ("cap",
-                            Value.StructTuple
-                              "alloc::raw_vec::Cap"
-                              []
-                              []
-                              [ M.read (| capacity |) ]);
-                          ("alloc", M.read (| alloc |))
-                        ]
-                    ]
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::ptr::non_null::NonNull")
+                                          []
+                                          [ Ty.path "u8" ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "core::ptr::non_null::NonNull")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                          "cast",
+                                          [],
+                                          [ Ty.path "u8" ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| ptr |))
+                                            (Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Ty.path "u8" ])
+                                  ]
+                                |));
+                              ("cap",
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "alloc::raw_vec::Cap"
+                                    [ M.read (| capacity |) ])
+                                  (Ty.path "alloc::raw_vec::Cap"));
+                              ("alloc", M.read (| alloc |))
+                            ])
+                          (Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ])
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ];
+                        Ty.path "alloc::collections::TryReserveError"
+                      ])
                 |)
               |)))
           |)))
@@ -2673,25 +3054,29 @@ Module raw_vec.
           (let ptr := M.alloc (| Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ], ptr |) in
           let cap := M.alloc (| Ty.path "alloc::raw_vec::Cap", cap |) in
           let alloc := M.alloc (| A, alloc |) in
-          Value.mkStructRecord
-            "alloc::raw_vec::RawVecInner"
-            []
-            [ A ]
-            [
-              ("ptr",
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ Ty.path "u8" ],
-                  M.get_associated_function (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "alloc::raw_vec::RawVecInner"
+              [
+                ("ptr",
+                  M.call_closure (|
                     Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ Ty.path "u8" ],
-                    "new_unchecked",
-                    [],
-                    []
-                  |),
-                  [ M.read (| ptr |) ]
-                |));
-              ("cap", M.read (| cap |));
-              ("alloc", M.read (| alloc |))
-            ]))
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ Ty.path "u8" ],
+                      "new_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| ptr |))
+                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                    ]
+                  |));
+                ("cap", M.read (| cap |));
+                ("alloc", M.read (| alloc |))
+              ])
+            (Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2723,28 +3108,32 @@ Module raw_vec.
             |) in
           let cap := M.alloc (| Ty.path "alloc::raw_vec::Cap", cap |) in
           let alloc := M.alloc (| A, alloc |) in
-          Value.mkStructRecord
-            "alloc::raw_vec::RawVecInner"
-            []
-            [ A ]
-            [
-              ("ptr",
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ Ty.path "u8" ],
-                  M.get_trait_method (|
-                    "core::convert::From",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "alloc::raw_vec::RawVecInner"
+              [
+                ("ptr",
+                  M.call_closure (|
                     Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ Ty.path "u8" ],
-                    [],
-                    [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ] ],
-                    "from",
-                    [],
-                    []
-                  |),
-                  [ M.read (| ptr |) ]
-                |));
-              ("cap", M.read (| cap |));
-              ("alloc", M.read (| alloc |))
-            ]))
+                    M.get_trait_method (|
+                      "core::convert::From",
+                      Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ Ty.path "u8" ],
+                      [],
+                      [ Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ] ],
+                      "from",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| ptr |))
+                        (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ])
+                    ]
+                  |));
+                ("cap", M.read (| cap |));
+                ("alloc", M.read (| alloc |))
+              ])
+            (Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2781,16 +3170,25 @@ Module raw_vec.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                  "non_null",
-                  [],
-                  [ T ]
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
+                    "non_null",
+                    [],
+                    [ T ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2829,24 +3227,28 @@ Module raw_vec.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ Ty.path "u8" ],
-                  "cast",
-                  [],
-                  [ T ]
-                |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloc::raw_vec::RawVecInner",
-                      "ptr"
-                    |)
-                  |)
-                ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ Ty.path "u8" ],
+                    "cast",
+                    [],
+                    [ T ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::raw_vec::RawVecInner",
+                          "ptr"
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ Ty.path "u8" ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "core::ptr::unique::Unique") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3029,7 +3431,14 @@ Module raw_vec.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, elem_layout |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, elem_layout |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "core::alloc::layout::Layout" ])
+                                ]
                               |);
                               Value.Integer IntegerKind.Usize 0
                             ]
@@ -3056,17 +3465,18 @@ Module raw_vec.
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ];
-                          Ty.path "core::alloc::layout::Layout"
-                        ]
-                    ]
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ];
+                            Ty.path "core::alloc::layout::Layout"
+                          ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (M.read (|
@@ -3075,27 +3485,38 @@ Module raw_vec.
                         Ty.path "usize",
                         M.get_associated_function (| Ty.path "usize", "unchecked_mul", [], [] |),
                         [
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_associated_function (|
-                              Ty.path "core::alloc::layout::Layout",
-                              "size",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, elem_layout |) ]
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::raw_vec::RawVecInner",
-                                "cap"
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (|
+                                Ty.path "core::alloc::layout::Layout",
+                                "size",
+                                [],
+                                []
                               |),
-                              "alloc::raw_vec::Cap",
-                              0
-                            |)
-                          |)
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, elem_layout |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "core::alloc::layout::Layout" ])
+                              ]
+                            |))
+                            (Ty.path "usize");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloc::raw_vec::RawVecInner",
+                                  "cap"
+                                |),
+                                "alloc::raw_vec::Cap",
+                                0
+                              |)
+                            |))
+                            (Ty.path "usize")
                         ]
                       |) in
                     let~ layout : Ty.path "core::alloc::layout::Layout" :=
@@ -3108,17 +3529,26 @@ Module raw_vec.
                           []
                         |),
                         [
-                          M.read (| alloc_size |);
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_associated_function (|
-                              Ty.path "core::alloc::layout::Layout",
-                              "align",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, elem_layout |) ]
-                          |)
+                          M.value_with_ty (M.read (| alloc_size |)) (Ty.path "usize");
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (|
+                                Ty.path "core::alloc::layout::Layout",
+                                "align",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, elem_layout |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "core::alloc::layout::Layout" ])
+                              ]
+                            |))
+                            (Ty.path "usize")
                         ]
                       |) in
                     M.alloc (|
@@ -3132,54 +3562,65 @@ Module raw_vec.
                               Ty.path "core::alloc::layout::Layout"
                             ]
                         ],
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [
-                          Ty.tuple
-                            [
-                              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ];
-                              Ty.path "core::alloc::layout::Layout"
-                            ]
-                        ]
-                        [
-                          Value.Tuple
-                            [
-                              M.call_closure (|
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [
+                            Value.Tuple
+                              [
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.path "u8" ],
+                                  M.get_trait_method (|
+                                    "core::convert::Into",
+                                    Ty.apply
+                                      (Ty.path "core::ptr::unique::Unique")
+                                      []
+                                      [ Ty.path "u8" ],
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Ty.path "u8" ]
+                                    ],
+                                    "into",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::raw_vec::RawVecInner",
+                                          "ptr"
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "core::ptr::unique::Unique")
+                                        []
+                                        [ Ty.path "u8" ])
+                                  ]
+                                |);
+                                M.read (| layout |)
+                              ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [
+                            Ty.tuple
+                              [
                                 Ty.apply
                                   (Ty.path "core::ptr::non_null::NonNull")
                                   []
-                                  [ Ty.path "u8" ],
-                                M.get_trait_method (|
-                                  "core::convert::Into",
-                                  Ty.apply
-                                    (Ty.path "core::ptr::unique::Unique")
-                                    []
-                                    [ Ty.path "u8" ],
-                                  [],
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::ptr::non_null::NonNull")
-                                      []
-                                      [ Ty.path "u8" ]
-                                  ],
-                                  "into",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::raw_vec::RawVecInner",
-                                      "ptr"
-                                    |)
-                                  |)
-                                ]
-                              |);
-                              M.read (| layout |)
-                            ]
-                        ]
+                                  [ Ty.path "u8" ];
+                                Ty.path "core::alloc::layout::Layout"
+                              ]
+                          ])
                     |)
                   |)))
             ]
@@ -3251,10 +3692,17 @@ Module raw_vec.
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            M.read (| len |);
-                            M.read (| additional |);
-                            M.read (| elem_layout |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ]);
+                            M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                            M.value_with_ty (M.read (| additional |)) (Ty.path "usize");
+                            M.value_with_ty
+                              (M.read (| elem_layout |))
+                              (Ty.path "core::alloc::layout::Layout")
                           ]
                         |)
                       |)) in
@@ -3270,10 +3718,17 @@ Module raw_vec.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                          M.read (| len |);
-                          M.read (| additional |);
-                          M.read (| elem_layout |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ]);
+                          M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                          M.value_with_ty (M.read (| additional |)) (Ty.path "usize");
+                          M.value_with_ty
+                            (M.read (| elem_layout |))
+                            (Ty.path "core::alloc::layout::Layout")
                         ]
                       |) in
                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3335,20 +3790,29 @@ Module raw_vec.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::raw_vec::RawVecInner",
-                                "cap"
-                              |),
-                              "alloc::raw_vec::Cap",
-                              0
-                            |)
-                          |);
-                          Value.Integer IntegerKind.Usize 1;
-                          M.read (| elem_layout |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ]);
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloc::raw_vec::RawVecInner",
+                                  "cap"
+                                |),
+                                "alloc::raw_vec::Cap",
+                                0
+                              |)
+                            |))
+                            (Ty.path "usize");
+                          M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize");
+                          M.value_with_ty
+                            (M.read (| elem_layout |))
+                            (Ty.path "core::alloc::layout::Layout")
                         ]
                       |)
                     |) in
@@ -3359,7 +3823,11 @@ Module raw_vec.
                     M.call_closure (|
                       Ty.path "never",
                       M.get_function (| "alloc::raw_vec::handle_error", [], [] |),
-                      [ M.read (| err |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| err |))
+                          (Ty.path "alloc::collections::TryReserveError")
+                      ]
                     |)
                   |)));
               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -3434,13 +3902,21 @@ Module raw_vec.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| self |) |)
-                                    |);
-                                    M.read (| len |);
-                                    M.read (| additional |);
-                                    M.read (| elem_layout |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ]
+                                        ]);
+                                    M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                                    M.value_with_ty (M.read (| additional |)) (Ty.path "usize");
+                                    M.value_with_ty
+                                      (M.read (| elem_layout |))
+                                      (Ty.path "core::alloc::layout::Layout")
                                   ]
                                 |)
                               |)) in
@@ -3492,30 +3968,55 @@ Module raw_vec.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.tuple [];
+                                              Ty.path "alloc::collections::TryReserveError"
+                                            ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "alloc::raw_vec::RawVecInner")
+                                              []
+                                              [ A ],
+                                            "grow_amortized",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::raw_vec::RawVecInner")
+                                                    []
+                                                    [ A ]
+                                                ]);
+                                            M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                                            M.value_with_ty
+                                              (M.read (| additional |))
+                                              (Ty.path "usize");
+                                            M.value_with_ty
+                                              (M.read (| elem_layout |))
+                                              (Ty.path "core::alloc::layout::Layout")
+                                          ]
+                                        |))
+                                        (Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
                                           [
                                             Ty.tuple [];
                                             Ty.path "alloc::collections::TryReserveError"
-                                          ],
-                                        M.get_associated_function (|
-                                          Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                                          "grow_amortized",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| self |) |)
-                                          |);
-                                          M.read (| len |);
-                                          M.read (| additional |);
-                                          M.read (| elem_layout |)
-                                        ]
-                                      |)
+                                          ])
                                     ]
                                   |)
                                 |),
@@ -3573,7 +4074,17 @@ Module raw_vec.
                                                 [],
                                                 []
                                               |),
-                                              [ M.read (| residual |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| residual |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.path "core::convert::Infallible";
+                                                      Ty.path "alloc::collections::TryReserveError"
+                                                    ])
+                                              ]
                                             |)
                                           |)
                                         |)
@@ -3602,27 +4113,40 @@ Module raw_vec.
                         Ty.tuple [],
                         M.get_function (| "core::hint::assert_unchecked", [], [] |),
                         [
-                          M.call_closure (|
-                            Ty.path "bool",
-                            UnOp.not,
-                            [
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                                  "needs_to_grow",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                  M.read (| len |);
-                                  M.read (| additional |);
-                                  M.read (| elem_layout |)
-                                ]
-                              |)
-                            ]
-                          |)
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "bool",
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
+                                    "needs_to_grow",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ]
+                                        ]);
+                                    M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                                    M.value_with_ty (M.read (| additional |)) (Ty.path "usize");
+                                    M.value_with_ty
+                                      (M.read (| elem_layout |))
+                                      (Ty.path "core::alloc::layout::Layout")
+                                  ]
+                                |)
+                              ]
+                            |))
+                            (Ty.path "bool")
                         ]
                       |) in
                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3632,11 +4156,12 @@ Module raw_vec.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ])
                 |)
               |)))
           |)))
@@ -3696,10 +4221,17 @@ Module raw_vec.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                          M.read (| len |);
-                          M.read (| additional |);
-                          M.read (| elem_layout |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ]);
+                          M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                          M.value_with_ty (M.read (| additional |)) (Ty.path "usize");
+                          M.value_with_ty
+                            (M.read (| elem_layout |))
+                            (Ty.path "core::alloc::layout::Layout")
                         ]
                       |)
                     |) in
@@ -3710,7 +4242,11 @@ Module raw_vec.
                     M.call_closure (|
                       Ty.path "never",
                       M.get_function (| "alloc::raw_vec::handle_error", [], [] |),
-                      [ M.read (| err |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| err |))
+                          (Ty.path "alloc::collections::TryReserveError")
+                      ]
                     |)
                   |)));
               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -3790,13 +4326,21 @@ Module raw_vec.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| self |) |)
-                                    |);
-                                    M.read (| len |);
-                                    M.read (| additional |);
-                                    M.read (| elem_layout |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ]
+                                        ]);
+                                    M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                                    M.value_with_ty (M.read (| additional |)) (Ty.path "usize");
+                                    M.value_with_ty
+                                      (M.read (| elem_layout |))
+                                      (Ty.path "core::alloc::layout::Layout")
                                   ]
                                 |)
                               |)) in
@@ -3848,30 +4392,55 @@ Module raw_vec.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.tuple [];
+                                              Ty.path "alloc::collections::TryReserveError"
+                                            ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "alloc::raw_vec::RawVecInner")
+                                              []
+                                              [ A ],
+                                            "grow_exact",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::raw_vec::RawVecInner")
+                                                    []
+                                                    [ A ]
+                                                ]);
+                                            M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                                            M.value_with_ty
+                                              (M.read (| additional |))
+                                              (Ty.path "usize");
+                                            M.value_with_ty
+                                              (M.read (| elem_layout |))
+                                              (Ty.path "core::alloc::layout::Layout")
+                                          ]
+                                        |))
+                                        (Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
                                           [
                                             Ty.tuple [];
                                             Ty.path "alloc::collections::TryReserveError"
-                                          ],
-                                        M.get_associated_function (|
-                                          Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                                          "grow_exact",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| self |) |)
-                                          |);
-                                          M.read (| len |);
-                                          M.read (| additional |);
-                                          M.read (| elem_layout |)
-                                        ]
-                                      |)
+                                          ])
                                     ]
                                   |)
                                 |),
@@ -3929,7 +4498,17 @@ Module raw_vec.
                                                 [],
                                                 []
                                               |),
-                                              [ M.read (| residual |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| residual |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.path "core::convert::Infallible";
+                                                      Ty.path "alloc::collections::TryReserveError"
+                                                    ])
+                                              ]
                                             |)
                                           |)
                                         |)
@@ -3958,27 +4537,40 @@ Module raw_vec.
                         Ty.tuple [],
                         M.get_function (| "core::hint::assert_unchecked", [], [] |),
                         [
-                          M.call_closure (|
-                            Ty.path "bool",
-                            UnOp.not,
-                            [
-                              M.call_closure (|
-                                Ty.path "bool",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                                  "needs_to_grow",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                  M.read (| len |);
-                                  M.read (| additional |);
-                                  M.read (| elem_layout |)
-                                ]
-                              |)
-                            ]
-                          |)
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "bool",
+                              UnOp.not,
+                              [
+                                M.call_closure (|
+                                  Ty.path "bool",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
+                                    "needs_to_grow",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ]
+                                        ]);
+                                    M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                                    M.value_with_ty (M.read (| additional |)) (Ty.path "usize");
+                                    M.value_with_ty
+                                      (M.read (| elem_layout |))
+                                      (Ty.path "core::alloc::layout::Layout")
+                                  ]
+                                |)
+                              ]
+                            |))
+                            (Ty.path "bool")
                         ]
                       |) in
                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3988,11 +4580,12 @@ Module raw_vec.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ])
                 |)
               |)))
           |)))
@@ -4051,9 +4644,16 @@ Module raw_vec.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                          M.read (| cap |);
-                          M.read (| elem_layout |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ]);
+                          M.value_with_ty (M.read (| cap |)) (Ty.path "usize");
+                          M.value_with_ty
+                            (M.read (| elem_layout |))
+                            (Ty.path "core::alloc::layout::Layout")
                         ]
                       |)
                     |) in
@@ -4064,7 +4664,11 @@ Module raw_vec.
                     M.call_closure (|
                       Ty.path "never",
                       M.get_function (| "alloc::raw_vec::handle_error", [], [] |),
-                      [ M.read (| err |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| err |))
+                          (Ty.path "alloc::collections::TryReserveError")
+                      ]
                     |)
                   |)));
               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -4109,29 +4713,45 @@ Module raw_vec.
                 Ty.path "usize",
                 M.get_associated_function (| Ty.path "usize", "wrapping_sub", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                      "capacity",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_associated_function (|
-                          Ty.path "core::alloc::layout::Layout",
-                          "size",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, elem_layout |) ]
-                      |)
-                    ]
-                  |);
-                  M.read (| len |)
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
+                        "capacity",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            M.get_associated_function (|
+                              Ty.path "core::alloc::layout::Layout",
+                              "size",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, elem_layout |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "core::alloc::layout::Layout" ])
+                            ]
+                          |))
+                          (Ty.path "usize")
+                      ]
+                    |))
+                    (Ty.path "usize");
+                  M.value_with_ty (M.read (| len |)) (Ty.path "usize")
                 ]
               |)
             ]
@@ -4201,19 +4821,28 @@ Module raw_vec.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "core::ptr::non_null::NonNull")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                        "cast",
-                        [],
-                        [ Ty.path "u8" ]
-                      |),
-                      [ M.read (| ptr |) ]
-                    |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                          "cast",
+                          [],
+                          [ Ty.path "u8" ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| ptr |))
+                            (Ty.apply
+                              (Ty.path "core::ptr::non_null::NonNull")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ])
                   ]
                 |)
               |) in
@@ -4224,7 +4853,9 @@ Module raw_vec.
                   "alloc::raw_vec::RawVecInner",
                   "cap"
                 |),
-                Value.StructTuple "alloc::raw_vec::Cap" [] [] [ M.read (| cap |) ]
+                M.value_with_ty
+                  (Value.StructTuple "alloc::raw_vec::Cap" [ M.read (| cap |) ])
+                  (Ty.path "alloc::raw_vec::Cap")
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -4344,7 +4975,11 @@ Module raw_vec.
                                         M.call_closure (|
                                           Ty.path "never",
                                           M.get_function (| "core::panicking::panic", [], [] |),
-                                          [ mk_str (| "assertion failed: additional > 0" |) ]
+                                          [
+                                            M.value_with_ty
+                                              (mk_str (| "assertion failed: additional > 0" |))
+                                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                          ]
                                         |)
                                       |)));
                                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -4378,7 +5013,14 @@ Module raw_vec.
                                         [],
                                         []
                                       |),
-                                      [ M.borrow (| Pointer.Kind.Ref, elem_layout |) ]
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, elem_layout |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "core::alloc::layout::Layout" ])
+                                      ]
                                     |);
                                     Value.Integer IntegerKind.Usize 0
                                   ]
@@ -4389,31 +5031,36 @@ Module raw_vec.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ]
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "alloc::collections::TryReserveError",
-                                      M.get_trait_method (|
-                                        "core::convert::Into",
-                                        Ty.path "alloc::collections::TryReserveErrorKind",
-                                        [],
-                                        [ Ty.path "alloc::collections::TryReserveError" ],
-                                        "into",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        Value.StructTuple
-                                          "alloc::collections::TryReserveErrorKind::CapacityOverflow"
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "alloc::collections::TryReserveError",
+                                        M.get_trait_method (|
+                                          "core::convert::Into",
+                                          Ty.path "alloc::collections::TryReserveErrorKind",
+                                          [],
+                                          [ Ty.path "alloc::collections::TryReserveError" ],
+                                          "into",
+                                          [],
                                           []
-                                          []
-                                          []
-                                      ]
-                                    |)
-                                  ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.value_with_ty
+                                              (Value.StructTuple
+                                                "alloc::collections::TryReserveErrorKind::CapacityOverflow"
+                                                [])
+                                              (Ty.path "alloc::collections::TryReserveErrorKind"))
+                                            (Ty.path "alloc::collections::TryReserveErrorKind")
+                                        ]
+                                      |)
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ])
                               |)
                             |)
                           |)));
@@ -4464,36 +5111,55 @@ Module raw_vec.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "usize"; Ty.path "alloc::collections::TryReserveErrorKind"
+                                ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                                "ok_or",
+                                [],
+                                [ Ty.path "alloc::collections::TryReserveErrorKind" ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "usize" ],
+                                    M.get_associated_function (|
+                                      Ty.path "usize",
+                                      "checked_add",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                                      M.value_with_ty (M.read (| additional |)) (Ty.path "usize")
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.path "usize" ]);
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.StructTuple
+                                      "alloc::collections::TryReserveErrorKind::CapacityOverflow"
+                                      [])
+                                    (Ty.path "alloc::collections::TryReserveErrorKind"))
+                                  (Ty.path "alloc::collections::TryReserveErrorKind")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [ Ty.path "usize"; Ty.path "alloc::collections::TryReserveErrorKind"
-                              ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                              "ok_or",
-                              [],
-                              [ Ty.path "alloc::collections::TryReserveErrorKind" ]
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                                M.get_associated_function (|
-                                  Ty.path "usize",
-                                  "checked_add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| len |); M.read (| additional |) ]
-                              |);
-                              Value.StructTuple
-                                "alloc::collections::TryReserveErrorKind::CapacityOverflow"
-                                []
-                                []
-                                []
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -4546,7 +5212,17 @@ Module raw_vec.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "alloc::collections::TryReserveErrorKind"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -4568,25 +5244,27 @@ Module raw_vec.
                     Ty.path "usize",
                     M.get_function (| "core::cmp::max", [], [ Ty.path "usize" ] |),
                     [
-                      M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.mul,
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::raw_vec::RawVecInner",
-                                "cap"
-                              |),
-                              "alloc::raw_vec::Cap",
-                              0
-                            |)
-                          |);
-                          Value.Integer IntegerKind.Usize 2
-                        ]
-                      |);
-                      M.read (| required_cap |)
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          BinOp.Wrap.mul,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloc::raw_vec::RawVecInner",
+                                  "cap"
+                                |),
+                                "alloc::raw_vec::Cap",
+                                0
+                              |)
+                            |);
+                            Value.Integer IntegerKind.Usize 2
+                          ]
+                        |))
+                        (Ty.path "usize");
+                      M.value_with_ty (M.read (| required_cap |)) (Ty.path "usize")
                     ]
                   |) in
                 let~ cap : Ty.path "usize" :=
@@ -4594,23 +5272,34 @@ Module raw_vec.
                     Ty.path "usize",
                     M.get_function (| "core::cmp::max", [], [ Ty.path "usize" ] |),
                     [
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_function (| "alloc::raw_vec::min_non_zero_cap", [], [] |),
-                        [
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_associated_function (|
-                              Ty.path "core::alloc::layout::Layout",
-                              "size",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, elem_layout |) ]
-                          |)
-                        ]
-                      |);
-                      M.read (| cap |)
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          M.get_function (| "alloc::raw_vec::min_non_zero_cap", [], [] |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_associated_function (|
+                                  Ty.path "core::alloc::layout::Layout",
+                                  "size",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, elem_layout |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "core::alloc::layout::Layout" ])
+                                ]
+                              |))
+                              (Ty.path "usize")
+                          ]
+                        |))
+                        (Ty.path "usize");
+                      M.value_with_ty (M.read (| cap |)) (Ty.path "usize")
                     ]
                   |) in
                 let~ new_layout : Ty.path "core::alloc::layout::Layout" :=
@@ -4660,17 +5349,30 @@ Module raw_vec.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "core::alloc::layout::Layout";
+                                  Ty.path "alloc::collections::TryReserveError"
+                                ],
+                              M.get_function (| "alloc::raw_vec::layout_array", [], [] |),
+                              [
+                                M.value_with_ty (M.read (| cap |)) (Ty.path "usize");
+                                M.value_with_ty
+                                  (M.read (| elem_layout |))
+                                  (Ty.path "core::alloc::layout::Layout")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
                                 Ty.path "core::alloc::layout::Layout";
                                 Ty.path "alloc::collections::TryReserveError"
-                              ],
-                            M.get_function (| "alloc::raw_vec::layout_array", [], [] |),
-                            [ M.read (| cap |); M.read (| elem_layout |) ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -4723,7 +5425,17 @@ Module raw_vec.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "alloc::collections::TryReserveError"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -4803,8 +5515,95 @@ Module raw_vec.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                                  Ty.path "alloc::collections::TryReserveError"
+                                ],
+                              M.get_function (| "alloc::raw_vec::finish_grow", [], [ A ] |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| new_layout |))
+                                  (Ty.path "core::alloc::layout::Layout");
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [
+                                        Ty.tuple
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [ Ty.path "u8" ];
+                                            Ty.path "core::alloc::layout::Layout"
+                                          ]
+                                      ],
+                                    M.get_associated_function (|
+                                      Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
+                                      "current_memory",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::raw_vec::RawVecInner")
+                                              []
+                                              [ A ]
+                                          ]);
+                                      M.value_with_ty
+                                        (M.read (| elem_layout |))
+                                        (Ty.path "core::alloc::layout::Layout")
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
+                                      Ty.tuple
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ptr::non_null::NonNull")
+                                            []
+                                            [ Ty.path "u8" ];
+                                          Ty.path "core::alloc::layout::Layout"
+                                        ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::raw_vec::RawVecInner",
+                                          "alloc"
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ A ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
@@ -4813,50 +5612,7 @@ Module raw_vec.
                                   []
                                   [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                                 Ty.path "alloc::collections::TryReserveError"
-                              ],
-                            M.get_function (| "alloc::raw_vec::finish_grow", [], [ A ] |),
-                            [
-                              M.read (| new_layout |);
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "core::option::Option")
-                                  []
-                                  [
-                                    Ty.tuple
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::ptr::non_null::NonNull")
-                                          []
-                                          [ Ty.path "u8" ];
-                                        Ty.path "core::alloc::layout::Layout"
-                                      ]
-                                  ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                                  "current_memory",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                  M.read (| elem_layout |)
-                                ]
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::raw_vec::RawVecInner",
-                                      "alloc"
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -4909,7 +5665,17 @@ Module raw_vec.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "alloc::collections::TryReserveError"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -4943,9 +5709,19 @@ Module raw_vec.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                      M.read (| ptr |);
-                      M.read (| cap |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ]);
+                      M.value_with_ty
+                        (M.read (| ptr |))
+                        (Ty.apply
+                          (Ty.path "core::ptr::non_null::NonNull")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                      M.value_with_ty (M.read (| cap |)) (Ty.path "usize")
                     ]
                   |) in
                 M.alloc (|
@@ -4953,11 +5729,12 @@ Module raw_vec.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ])
                 |)
               |)))
           |)))
@@ -5040,7 +5817,14 @@ Module raw_vec.
                                         [],
                                         []
                                       |),
-                                      [ M.borrow (| Pointer.Kind.Ref, elem_layout |) ]
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, elem_layout |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "core::alloc::layout::Layout" ])
+                                      ]
                                     |);
                                     Value.Integer IntegerKind.Usize 0
                                   ]
@@ -5051,31 +5835,36 @@ Module raw_vec.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ]
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "alloc::collections::TryReserveError",
-                                      M.get_trait_method (|
-                                        "core::convert::Into",
-                                        Ty.path "alloc::collections::TryReserveErrorKind",
-                                        [],
-                                        [ Ty.path "alloc::collections::TryReserveError" ],
-                                        "into",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        Value.StructTuple
-                                          "alloc::collections::TryReserveErrorKind::CapacityOverflow"
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "alloc::collections::TryReserveError",
+                                        M.get_trait_method (|
+                                          "core::convert::Into",
+                                          Ty.path "alloc::collections::TryReserveErrorKind",
+                                          [],
+                                          [ Ty.path "alloc::collections::TryReserveError" ],
+                                          "into",
+                                          [],
                                           []
-                                          []
-                                          []
-                                      ]
-                                    |)
-                                  ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.value_with_ty
+                                              (Value.StructTuple
+                                                "alloc::collections::TryReserveErrorKind::CapacityOverflow"
+                                                [])
+                                              (Ty.path "alloc::collections::TryReserveErrorKind"))
+                                            (Ty.path "alloc::collections::TryReserveErrorKind")
+                                        ]
+                                      |)
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ])
                               |)
                             |)
                           |)));
@@ -5126,36 +5915,55 @@ Module raw_vec.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.path "usize"; Ty.path "alloc::collections::TryReserveErrorKind"
+                                ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                                "ok_or",
+                                [],
+                                [ Ty.path "alloc::collections::TryReserveErrorKind" ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "usize" ],
+                                    M.get_associated_function (|
+                                      Ty.path "usize",
+                                      "checked_add",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                                      M.value_with_ty (M.read (| additional |)) (Ty.path "usize")
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.path "usize" ]);
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.StructTuple
+                                      "alloc::collections::TryReserveErrorKind::CapacityOverflow"
+                                      [])
+                                    (Ty.path "alloc::collections::TryReserveErrorKind"))
+                                  (Ty.path "alloc::collections::TryReserveErrorKind")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [ Ty.path "usize"; Ty.path "alloc::collections::TryReserveErrorKind"
-                              ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                              "ok_or",
-                              [],
-                              [ Ty.path "alloc::collections::TryReserveErrorKind" ]
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                                M.get_associated_function (|
-                                  Ty.path "usize",
-                                  "checked_add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| len |); M.read (| additional |) ]
-                              |);
-                              Value.StructTuple
-                                "alloc::collections::TryReserveErrorKind::CapacityOverflow"
-                                []
-                                []
-                                []
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -5208,7 +6016,17 @@ Module raw_vec.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "alloc::collections::TryReserveErrorKind"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -5272,17 +6090,30 @@ Module raw_vec.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.path "core::alloc::layout::Layout";
+                                  Ty.path "alloc::collections::TryReserveError"
+                                ],
+                              M.get_function (| "alloc::raw_vec::layout_array", [], [] |),
+                              [
+                                M.value_with_ty (M.read (| cap |)) (Ty.path "usize");
+                                M.value_with_ty
+                                  (M.read (| elem_layout |))
+                                  (Ty.path "core::alloc::layout::Layout")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
                                 Ty.path "core::alloc::layout::Layout";
                                 Ty.path "alloc::collections::TryReserveError"
-                              ],
-                            M.get_function (| "alloc::raw_vec::layout_array", [], [] |),
-                            [ M.read (| cap |); M.read (| elem_layout |) ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -5335,7 +6166,17 @@ Module raw_vec.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "alloc::collections::TryReserveError"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -5415,8 +6256,95 @@ Module raw_vec.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                                  Ty.path "alloc::collections::TryReserveError"
+                                ],
+                              M.get_function (| "alloc::raw_vec::finish_grow", [], [ A ] |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| new_layout |))
+                                  (Ty.path "core::alloc::layout::Layout");
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [
+                                        Ty.tuple
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [ Ty.path "u8" ];
+                                            Ty.path "core::alloc::layout::Layout"
+                                          ]
+                                      ],
+                                    M.get_associated_function (|
+                                      Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
+                                      "current_memory",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::raw_vec::RawVecInner")
+                                              []
+                                              [ A ]
+                                          ]);
+                                      M.value_with_ty
+                                        (M.read (| elem_layout |))
+                                        (Ty.path "core::alloc::layout::Layout")
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
+                                      Ty.tuple
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ptr::non_null::NonNull")
+                                            []
+                                            [ Ty.path "u8" ];
+                                          Ty.path "core::alloc::layout::Layout"
+                                        ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::raw_vec::RawVecInner",
+                                          "alloc"
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ A ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
                               [
@@ -5425,50 +6353,7 @@ Module raw_vec.
                                   []
                                   [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
                                 Ty.path "alloc::collections::TryReserveError"
-                              ],
-                            M.get_function (| "alloc::raw_vec::finish_grow", [], [ A ] |),
-                            [
-                              M.read (| new_layout |);
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "core::option::Option")
-                                  []
-                                  [
-                                    Ty.tuple
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::ptr::non_null::NonNull")
-                                          []
-                                          [ Ty.path "u8" ];
-                                        Ty.path "core::alloc::layout::Layout"
-                                      ]
-                                  ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ],
-                                  "current_memory",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                  M.read (| elem_layout |)
-                                ]
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::raw_vec::RawVecInner",
-                                      "alloc"
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -5521,7 +6406,17 @@ Module raw_vec.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "alloc::collections::TryReserveError"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -5557,9 +6452,19 @@ Module raw_vec.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                          M.read (| ptr |);
-                          M.read (| cap |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ]);
+                          M.value_with_ty
+                            (M.read (| ptr |))
+                            (Ty.apply
+                              (Ty.path "core::ptr::non_null::NonNull")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                          M.value_with_ty (M.read (| cap |)) (Ty.path "usize")
                         ]
                       |) in
                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -5569,11 +6474,12 @@ Module raw_vec.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ])
                 |)
               |)))
           |)))
@@ -5638,20 +6544,39 @@ Module raw_vec.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          M.get_associated_function (|
-                                            Ty.path "core::alloc::layout::Layout",
-                                            "size",
-                                            [],
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
                                             []
-                                          |),
-                                          [ M.borrow (| Pointer.Kind.Ref, elem_layout |) ]
-                                        |)
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::raw_vec::RawVecInner")
+                                                []
+                                                [ A ]
+                                            ]);
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_associated_function (|
+                                              Ty.path "core::alloc::layout::Layout",
+                                              "size",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (| Pointer.Kind.Ref, elem_layout |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.path "core::alloc::layout::Layout" ])
+                                            ]
+                                          |))
+                                          (Ty.path "usize")
                                       ]
                                     |)
                                   ]
@@ -5665,33 +6590,46 @@ Module raw_vec.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [ mk_str (| "Tried to shrink to a larger capacity" |)
+                                              ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [ mk_str (| "Tried to shrink to a larger capacity" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -5715,9 +6653,14 @@ Module raw_vec.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.read (| cap |);
-                  M.read (| elem_layout |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ]);
+                  M.value_with_ty (M.read (| cap |)) (Ty.path "usize");
+                  M.value_with_ty (M.read (| elem_layout |)) (Ty.path "core::alloc::layout::Layout")
                 ]
               |)
             |)
@@ -5849,8 +6792,19 @@ Module raw_vec.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                  M.read (| elem_layout |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.read (| elem_layout |))
+                                    (Ty.path "core::alloc::layout::Layout")
                                 ]
                               |)
                             |) in
@@ -5878,11 +6832,12 @@ Module raw_vec.
                           (M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ]
-                                  [ Value.Tuple [] ]
+                                M.value_with_ty
+                                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ])
                               |)
                             |)
                           |)))
@@ -5937,16 +6892,25 @@ Module raw_vec.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "alloc::raw_vec::RawVecInner",
-                                              "alloc"
-                                            |)
-                                          |);
-                                          M.read (| ptr |);
-                                          M.read (| layout |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "alloc::raw_vec::RawVecInner",
+                                                "alloc"
+                                              |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ A ]);
+                                          M.value_with_ty
+                                            (M.read (| ptr |))
+                                            (Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [ Ty.path "u8" ]);
+                                          M.value_with_ty
+                                            (M.read (| layout |))
+                                            (Ty.path "core::alloc::layout::Layout")
                                         ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
@@ -5971,26 +6935,41 @@ Module raw_vec.
                                             []
                                           |),
                                           [
-                                            M.call_closure (|
-                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                              M.get_function (|
-                                                "core::ptr::without_provenance_mut",
-                                                [],
-                                                [ Ty.path "u8" ]
-                                              |),
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  M.get_associated_function (|
-                                                    Ty.path "core::alloc::layout::Layout",
-                                                    "align",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [ M.borrow (| Pointer.Kind.Ref, elem_layout |) ]
-                                                |)
-                                              ]
-                                            |)
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                                M.get_function (|
+                                                  "core::ptr::without_provenance_mut",
+                                                  [],
+                                                  [ Ty.path "u8" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
+                                                      Ty.path "usize",
+                                                      M.get_associated_function (|
+                                                        Ty.path "core::alloc::layout::Layout",
+                                                        "align",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            elem_layout
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "core::alloc::layout::Layout"
+                                                            ])
+                                                      ]
+                                                    |))
+                                                    (Ty.path "usize")
+                                                ]
+                                              |))
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
                                           ]
                                         |)
                                       |) in
@@ -6030,17 +7009,26 @@ Module raw_vec.
                                               []
                                             |),
                                             [
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::alloc::layout::Layout",
-                                                  "size",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.borrow (| Pointer.Kind.Ref, elem_layout |) ]
-                                              |);
-                                              M.read (| cap |)
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_associated_function (|
+                                                    Ty.path "core::alloc::layout::Layout",
+                                                    "size",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.Ref, elem_layout |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [ Ty.path "core::alloc::layout::Layout" ])
+                                                  ]
+                                                |))
+                                                (Ty.path "usize");
+                                              M.value_with_ty (M.read (| cap |)) (Ty.path "usize")
                                             ]
                                           |) in
                                         let~ new_layout : Ty.path "core::alloc::layout::Layout" :=
@@ -6053,17 +7041,28 @@ Module raw_vec.
                                               []
                                             |),
                                             [
-                                              M.read (| new_size |);
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::alloc::layout::Layout",
-                                                  "align",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.borrow (| Pointer.Kind.Ref, layout |) ]
-                                              |)
+                                              M.value_with_ty
+                                                (M.read (| new_size |))
+                                                (Ty.path "usize");
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_associated_function (|
+                                                    Ty.path "core::alloc::layout::Layout",
+                                                    "align",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.Ref, layout |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [ Ty.path "core::alloc::layout::Layout" ])
+                                                  ]
+                                                |))
+                                                (Ty.path "usize")
                                             ]
                                           |) in
                                         M.alloc (|
@@ -6143,24 +7142,8 @@ Module raw_vec.
                                                   []
                                                 |),
                                                 [
-                                                  M.call_closure (|
-                                                    Ty.apply
-                                                      (Ty.path "core::result::Result")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "core::ptr::non_null::NonNull")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "slice")
-                                                              []
-                                                              [ Ty.path "u8" ]
-                                                          ];
-                                                        Ty.path
-                                                          "alloc::collections::TryReserveErrorKind"
-                                                      ],
-                                                    M.get_associated_function (|
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
                                                       Ty.apply
                                                         (Ty.path "core::result::Result")
                                                         []
@@ -6174,21 +7157,10 @@ Module raw_vec.
                                                                 []
                                                                 [ Ty.path "u8" ]
                                                             ];
-                                                          Ty.path "core::alloc::AllocError"
+                                                          Ty.path
+                                                            "alloc::collections::TryReserveErrorKind"
                                                         ],
-                                                      "map_err",
-                                                      [],
-                                                      [
-                                                        Ty.path
-                                                          "alloc::collections::TryReserveErrorKind";
-                                                        Ty.function
-                                                          [ Ty.path "core::alloc::AllocError" ]
-                                                          (Ty.path
-                                                            "alloc::collections::TryReserveErrorKind")
-                                                      ]
-                                                    |),
-                                                    [
-                                                      M.call_closure (|
+                                                      M.get_associated_function (|
                                                         Ty.apply
                                                           (Ty.path "core::result::Result")
                                                           []
@@ -6205,66 +7177,148 @@ Module raw_vec.
                                                               ];
                                                             Ty.path "core::alloc::AllocError"
                                                           ],
-                                                        M.get_trait_method (|
-                                                          "core::alloc::Allocator",
-                                                          A,
-                                                          [],
-                                                          [],
-                                                          "shrink",
-                                                          [],
-                                                          []
-                                                        |),
+                                                        "map_err",
+                                                        [],
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "alloc::raw_vec::RawVecInner",
-                                                              "alloc"
-                                                            |)
-                                                          |);
-                                                          M.read (| ptr |);
-                                                          M.read (| layout |);
-                                                          M.read (| new_layout |)
+                                                          Ty.path
+                                                            "alloc::collections::TryReserveErrorKind";
+                                                          Ty.function
+                                                            [ Ty.path "core::alloc::AllocError" ]
+                                                            (Ty.path
+                                                              "alloc::collections::TryReserveErrorKind")
                                                         ]
-                                                      |);
-                                                      M.closure
-                                                        (fun γ =>
-                                                          ltac:(M.monadic
-                                                            match γ with
-                                                            | [ α0 ] =>
-                                                              ltac:(M.monadic
-                                                                (M.match_operator (|
-                                                                  Ty.path
-                                                                    "alloc::collections::TryReserveErrorKind",
-                                                                  M.alloc (|
-                                                                    Ty.path
-                                                                      "core::alloc::AllocError",
-                                                                    α0
-                                                                  |),
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "core::result::Result")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::ptr::non_null::NonNull")
+                                                                  []
                                                                   [
-                                                                    fun γ =>
-                                                                      ltac:(M.monadic
-                                                                        (Value.mkStructRecord
-                                                                          "alloc::collections::TryReserveErrorKind::AllocError"
-                                                                          []
-                                                                          []
-                                                                          [
-                                                                            ("layout",
-                                                                              M.read (|
-                                                                                new_layout
-                                                                              |));
-                                                                            ("non_exhaustive",
-                                                                              Value.Tuple [])
-                                                                          ]))
-                                                                  ]
-                                                                |)))
-                                                            | _ =>
-                                                              M.impossible
-                                                                "wrong number of arguments"
-                                                            end))
-                                                    ]
-                                                  |)
+                                                                    Ty.apply
+                                                                      (Ty.path "slice")
+                                                                      []
+                                                                      [ Ty.path "u8" ]
+                                                                  ];
+                                                                Ty.path "core::alloc::AllocError"
+                                                              ],
+                                                            M.get_trait_method (|
+                                                              "core::alloc::Allocator",
+                                                              A,
+                                                              [],
+                                                              [],
+                                                              "shrink",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.SubPointer.get_struct_record_field (|
+                                                                    M.deref (| M.read (| self |) |),
+                                                                    "alloc::raw_vec::RawVecInner",
+                                                                    "alloc"
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply (Ty.path "&") [] [ A ]);
+                                                              M.value_with_ty
+                                                                (M.read (| ptr |))
+                                                                (Ty.apply
+                                                                  (Ty.path
+                                                                    "core::ptr::non_null::NonNull")
+                                                                  []
+                                                                  [ Ty.path "u8" ]);
+                                                              M.value_with_ty
+                                                                (M.read (| layout |))
+                                                                (Ty.path
+                                                                  "core::alloc::layout::Layout");
+                                                              M.value_with_ty
+                                                                (M.read (| new_layout |))
+                                                                (Ty.path
+                                                                  "core::alloc::layout::Layout")
+                                                            ]
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "core::result::Result")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "core::ptr::non_null::NonNull")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [ Ty.path "u8" ]
+                                                                ];
+                                                              Ty.path "core::alloc::AllocError"
+                                                            ]);
+                                                        M.value_with_ty
+                                                          (M.closure
+                                                            (fun γ =>
+                                                              ltac:(M.monadic
+                                                                match γ with
+                                                                | [ α0 ] =>
+                                                                  ltac:(M.monadic
+                                                                    (M.match_operator (|
+                                                                      Ty.path
+                                                                        "alloc::collections::TryReserveErrorKind",
+                                                                      M.alloc (|
+                                                                        Ty.path
+                                                                          "core::alloc::AllocError",
+                                                                        α0
+                                                                      |),
+                                                                      [
+                                                                        fun γ =>
+                                                                          ltac:(M.monadic
+                                                                            (M.value_with_ty
+                                                                              (Value.mkStructRecord
+                                                                                "alloc::collections::TryReserveErrorKind::AllocError"
+                                                                                [
+                                                                                  ("layout",
+                                                                                    M.read (|
+                                                                                      new_layout
+                                                                                    |));
+                                                                                  ("non_exhaustive",
+                                                                                    Value.Tuple [])
+                                                                                ])
+                                                                              (Ty.path
+                                                                                "alloc::collections::TryReserveErrorKind")))
+                                                                      ]
+                                                                    |)))
+                                                                | _ =>
+                                                                  M.impossible
+                                                                    "wrong number of arguments"
+                                                                end)))
+                                                          (Ty.function
+                                                            [ Ty.path "core::alloc::AllocError" ]
+                                                            (Ty.path
+                                                              "alloc::collections::TryReserveErrorKind"))
+                                                      ]
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::result::Result")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::ptr::non_null::NonNull")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "slice")
+                                                              []
+                                                              [ Ty.path "u8" ]
+                                                          ];
+                                                        Ty.path
+                                                          "alloc::collections::TryReserveErrorKind"
+                                                      ])
                                                 ]
                                               |)
                                             |),
@@ -6327,7 +7381,19 @@ Module raw_vec.
                                                             [],
                                                             []
                                                           |),
-                                                          [ M.read (| residual |) ]
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| residual |))
+                                                              (Ty.apply
+                                                                (Ty.path "core::result::Result")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "core::convert::Infallible";
+                                                                  Ty.path
+                                                                    "alloc::collections::TryReserveErrorKind"
+                                                                ])
+                                                          ]
                                                         |)
                                                       |)
                                                     |)
@@ -6368,12 +7434,27 @@ Module raw_vec.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| self |) |)
-                                          |);
-                                          M.read (| ptr |);
-                                          M.read (| cap |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::raw_vec::RawVecInner")
+                                                  []
+                                                  [ A ]
+                                              ]);
+                                          M.value_with_ty
+                                            (M.read (| ptr |))
+                                            (Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                          M.value_with_ty (M.read (| cap |)) (Ty.path "usize")
                                         ]
                                       |) in
                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -6385,11 +7466,12 @@ Module raw_vec.
                             (Ty.path "core::result::Result")
                             []
                             [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ],
-                          Value.StructTuple
-                            "core::result::Result::Ok"
-                            []
-                            [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ]
-                            [ Value.Tuple [] ]
+                          M.value_with_ty
+                            (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ])
                         |)
                       |)))
                 ]
@@ -6466,8 +7548,15 @@ Module raw_vec.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                          M.read (| elem_layout |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "alloc::raw_vec::RawVecInner") [] [ A ] ]);
+                          M.value_with_ty
+                            (M.read (| elem_layout |))
+                            (Ty.path "core::alloc::layout::Layout")
                         ]
                       |)
                     |) in
@@ -6495,16 +7584,22 @@ Module raw_vec.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::raw_vec::RawVecInner",
-                              "alloc"
-                            |)
-                          |);
-                          M.read (| ptr |);
-                          M.read (| layout |)
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::raw_vec::RawVecInner",
+                                "alloc"
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ A ]);
+                          M.value_with_ty
+                            (M.read (| ptr |))
+                            (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Ty.path "u8" ]);
+                          M.value_with_ty
+                            (M.read (| layout |))
+                            (Ty.path "core::alloc::layout::Layout")
                         ]
                       |) in
                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -6624,25 +7719,39 @@ Module raw_vec.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ],
+                            M.get_function (| "alloc::raw_vec::alloc_guard", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.path "core::alloc::layout::Layout",
+                                    "size",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, new_layout |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "core::alloc::layout::Layout" ])
+                                  ]
+                                |))
+                                (Ty.path "usize")
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ],
-                          M.get_function (| "alloc::raw_vec::alloc_guard", [], [] |),
-                          [
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_associated_function (|
-                                Ty.path "core::alloc::layout::Layout",
-                                "size",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, new_layout |) ]
-                            |)
-                          ]
-                        |)
+                            [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ])
                       ]
                     |)
                   |),
@@ -6706,7 +7815,17 @@ Module raw_vec.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "alloc::collections::TryReserveError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -6804,7 +7923,17 @@ Module raw_vec.
                                                         [],
                                                         []
                                                       |),
-                                                      [ M.borrow (| Pointer.Kind.Ref, old_layout |)
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            old_layout
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "core::alloc::layout::Layout"
+                                                            ])
                                                       ]
                                                     |)
                                                   |)
@@ -6821,7 +7950,17 @@ Module raw_vec.
                                                         [],
                                                         []
                                                       |),
-                                                      [ M.borrow (| Pointer.Kind.Ref, new_layout |)
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            new_layout
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "core::alloc::layout::Layout"
+                                                            ])
                                                       ]
                                                     |)
                                                   |)
@@ -6888,11 +8027,12 @@ Module raw_vec.
                                                             let~ kind :
                                                                 Ty.path
                                                                   "core::panicking::AssertKind" :=
-                                                              Value.StructTuple
-                                                                "core::panicking::AssertKind::Eq"
-                                                                []
-                                                                []
-                                                                [] in
+                                                              M.value_with_ty
+                                                                (Value.StructTuple
+                                                                  "core::panicking::AssertKind::Eq"
+                                                                  [])
+                                                                (Ty.path
+                                                                  "core::panicking::AssertKind") in
                                                             M.alloc (|
                                                               Ty.path "never",
                                                               M.call_closure (|
@@ -6904,35 +8044,63 @@ Module raw_vec.
                                                                   ]
                                                                 |),
                                                                 [
-                                                                  M.read (| kind |);
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.deref (|
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.read (| left_val |)
+                                                                  M.value_with_ty
+                                                                    (M.read (| kind |))
+                                                                    (Ty.path
+                                                                      "core::panicking::AssertKind");
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.deref (|
+                                                                            M.read (| left_val |)
+                                                                          |)
                                                                         |)
                                                                       |)
-                                                                    |)
-                                                                  |);
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.deref (|
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.read (| right_val |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [ Ty.path "usize" ]);
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.deref (|
+                                                                            M.read (| right_val |)
+                                                                          |)
                                                                         |)
                                                                       |)
-                                                                    |)
-                                                                  |);
-                                                                  Value.StructTuple
-                                                                    "core::option::Option::None"
-                                                                    []
-                                                                    [ Ty.path "core::fmt::Arguments"
-                                                                    ]
-                                                                    []
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [ Ty.path "usize" ]);
+                                                                  M.value_with_ty
+                                                                    (M.value_with_ty
+                                                                      (Value.StructTuple
+                                                                        "core::option::Option::None"
+                                                                        [])
+                                                                      (Ty.apply
+                                                                        (Ty.path
+                                                                          "core::option::Option")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "core::fmt::Arguments"
+                                                                        ]))
+                                                                    (Ty.apply
+                                                                      (Ty.path
+                                                                        "core::option::Option")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "core::fmt::Arguments"
+                                                                      ])
                                                                 ]
                                                               |)
                                                             |)
@@ -6953,32 +8121,48 @@ Module raw_vec.
                               Ty.tuple [],
                               M.get_function (| "core::hint::assert_unchecked", [], [] |),
                               [
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.path "core::alloc::layout::Layout",
-                                        "align",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.borrow (| Pointer.Kind.Ref, old_layout |) ]
-                                    |);
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.path "core::alloc::layout::Layout",
-                                        "align",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.borrow (| Pointer.Kind.Ref, new_layout |) ]
-                                    |)
-                                  ]
-                                |)
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.eq,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.path "core::alloc::layout::Layout",
+                                          "align",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, old_layout |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "core::alloc::layout::Layout" ])
+                                        ]
+                                      |);
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.path "core::alloc::layout::Layout",
+                                          "align",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, new_layout |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "core::alloc::layout::Layout" ])
+                                        ]
+                                      |)
+                                    ]
+                                  |))
+                                  (Ty.path "bool")
                               ]
                             |) in
                           M.alloc (|
@@ -7013,10 +8197,24 @@ Module raw_vec.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| alloc |) |) |);
-                                M.read (| ptr |);
-                                M.read (| old_layout |);
-                                M.read (| new_layout |)
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| alloc |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ A ]);
+                                M.value_with_ty
+                                  (M.read (| ptr |))
+                                  (Ty.apply
+                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    []
+                                    [ Ty.path "u8" ]);
+                                M.value_with_ty
+                                  (M.read (| old_layout |))
+                                  (Ty.path "core::alloc::layout::Layout");
+                                M.value_with_ty
+                                  (M.read (| new_layout |))
+                                  (Ty.path "core::alloc::layout::Layout")
                               ]
                             |)
                           |)
@@ -7044,8 +8242,12 @@ Module raw_vec.
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| alloc |) |) |);
-                            M.read (| new_layout |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| alloc |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ A ]);
+                            M.value_with_ty
+                              (M.read (| new_layout |))
+                              (Ty.path "core::alloc::layout::Layout")
                           ]
                         |)))
                   ]
@@ -7093,45 +8295,62 @@ Module raw_vec.
                     ]
                   |),
                   [
-                    M.read (| memory |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0 ] =>
-                            ltac:(M.monadic
-                              (M.match_operator (|
-                                Ty.path "alloc::collections::TryReserveError",
-                                M.alloc (| Ty.path "core::alloc::AllocError", α0 |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (M.call_closure (|
-                                        Ty.path "alloc::collections::TryReserveError",
-                                        M.get_trait_method (|
-                                          "core::convert::Into",
-                                          Ty.path "alloc::collections::TryReserveErrorKind",
-                                          [],
-                                          [ Ty.path "alloc::collections::TryReserveError" ],
-                                          "into",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          Value.mkStructRecord
-                                            "alloc::collections::TryReserveErrorKind::AllocError"
+                    M.value_with_ty
+                      (M.read (| memory |))
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::ptr::non_null::NonNull")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ];
+                          Ty.path "core::alloc::AllocError"
+                        ]);
+                    M.value_with_ty
+                      (M.closure
+                        (fun γ =>
+                          ltac:(M.monadic
+                            match γ with
+                            | [ α0 ] =>
+                              ltac:(M.monadic
+                                (M.match_operator (|
+                                  Ty.path "alloc::collections::TryReserveError",
+                                  M.alloc (| Ty.path "core::alloc::AllocError", α0 |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (M.call_closure (|
+                                          Ty.path "alloc::collections::TryReserveError",
+                                          M.get_trait_method (|
+                                            "core::convert::Into",
+                                            Ty.path "alloc::collections::TryReserveErrorKind",
+                                            [],
+                                            [ Ty.path "alloc::collections::TryReserveError" ],
+                                            "into",
+                                            [],
                                             []
-                                            []
-                                            [
-                                              ("layout", M.read (| new_layout |));
-                                              ("non_exhaustive", Value.Tuple [])
-                                            ]
-                                        ]
-                                      |)))
-                                ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.value_with_ty
+                                                (Value.mkStructRecord
+                                                  "alloc::collections::TryReserveErrorKind::AllocError"
+                                                  [
+                                                    ("layout", M.read (| new_layout |));
+                                                    ("non_exhaustive", Value.Tuple [])
+                                                  ])
+                                                (Ty.path "alloc::collections::TryReserveErrorKind"))
+                                              (Ty.path "alloc::collections::TryReserveErrorKind")
+                                          ]
+                                        |)))
+                                  ]
+                                |)))
+                            | _ => M.impossible "wrong number of arguments"
+                            end)))
+                      (Ty.function
+                        [ Ty.path "core::alloc::AllocError" ]
+                        (Ty.path "alloc::collections::TryReserveError"))
                   ]
                 |)
               |)
@@ -7170,7 +8389,11 @@ Module raw_vec.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, e |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, e |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "alloc::collections::TryReserveError" ])
+              ]
             |)
           |),
           [
@@ -7198,7 +8421,7 @@ Module raw_vec.
                 M.call_closure (|
                   Ty.path "never",
                   M.get_function (| "alloc::alloc::handle_alloc_error", [], [] |),
-                  [ M.read (| layout |) ]
+                  [ M.value_with_ty (M.read (| layout |)) (Ty.path "core::alloc::layout::Layout") ]
                 |)))
           ]
         |)))
@@ -7268,38 +8491,44 @@ Module raw_vec.
                       |)
                     |)) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                Value.StructTuple
-                  "core::result::Result::Err"
-                  []
-                  [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ]
-                  [
-                    M.call_closure (|
-                      Ty.path "alloc::collections::TryReserveError",
-                      M.get_trait_method (|
-                        "core::convert::Into",
-                        Ty.path "alloc::collections::TryReserveErrorKind",
-                        [],
-                        [ Ty.path "alloc::collections::TryReserveError" ],
-                        "into",
-                        [],
-                        []
-                      |),
-                      [
-                        Value.StructTuple
-                          "alloc::collections::TryReserveErrorKind::CapacityOverflow"
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Err"
+                    [
+                      M.call_closure (|
+                        Ty.path "alloc::collections::TryReserveError",
+                        M.get_trait_method (|
+                          "core::convert::Into",
+                          Ty.path "alloc::collections::TryReserveErrorKind",
+                          [],
+                          [ Ty.path "alloc::collections::TryReserveError" ],
+                          "into",
+                          [],
                           []
-                          []
-                          []
-                      ]
-                    |)
-                  ]));
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.value_with_ty
+                              (Value.StructTuple
+                                "alloc::collections::TryReserveErrorKind::CapacityOverflow"
+                                [])
+                              (Ty.path "alloc::collections::TryReserveErrorKind"))
+                            (Ty.path "alloc::collections::TryReserveErrorKind")
+                        ]
+                      |)
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ])));
             fun γ =>
               ltac:(M.monadic
-                (Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ]
-                  [ Value.Tuple [] ]))
+                (M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "alloc::collections::TryReserveError" ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7342,31 +8571,16 @@ Module raw_vec.
             ]
           |),
           [
-            M.call_closure (|
-              Ty.apply
-                (Ty.path "core::result::Result")
-                []
-                [ Ty.path "core::alloc::layout::Layout"; Ty.path "core::alloc::layout::LayoutError"
-                ],
-              M.get_associated_function (|
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.apply
                   (Ty.path "core::result::Result")
                   []
                   [
-                    Ty.tuple [ Ty.path "core::alloc::layout::Layout"; Ty.path "usize" ];
+                    Ty.path "core::alloc::layout::Layout";
                     Ty.path "core::alloc::layout::LayoutError"
                   ],
-                "map",
-                [],
-                [
-                  Ty.path "core::alloc::layout::Layout";
-                  Ty.function
-                    [ Ty.tuple [ Ty.path "core::alloc::layout::Layout"; Ty.path "usize" ] ]
-                    (Ty.path "core::alloc::layout::Layout")
-                ]
-              |),
-              [
-                M.call_closure (|
+                M.get_associated_function (|
                   Ty.apply
                     (Ty.path "core::result::Result")
                     []
@@ -7374,76 +8588,123 @@ Module raw_vec.
                       Ty.tuple [ Ty.path "core::alloc::layout::Layout"; Ty.path "usize" ];
                       Ty.path "core::alloc::layout::LayoutError"
                     ],
-                  M.get_associated_function (|
-                    Ty.path "core::alloc::layout::Layout",
-                    "repeat",
-                    [],
-                    []
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, elem_layout |); M.read (| cap |) ]
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.path "core::alloc::layout::Layout",
-                            M.alloc (|
-                              Ty.tuple [ Ty.path "core::alloc::layout::Layout"; Ty.path "usize" ],
-                              α0
-                            |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                                  let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                                  let layout :=
-                                    M.copy (| Ty.path "core::alloc::layout::Layout", γ0_0 |) in
-                                  let _pad := M.copy (| Ty.path "usize", γ0_1 |) in
-                                  M.read (| layout |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
-              ]
-            |);
-            M.closure
-              (fun γ =>
-                ltac:(M.monadic
-                  match γ with
-                  | [ α0 ] =>
-                    ltac:(M.monadic
-                      (M.match_operator (|
-                        Ty.path "alloc::collections::TryReserveError",
-                        M.alloc (| Ty.path "core::alloc::layout::LayoutError", α0 |),
+                  "map",
+                  [],
+                  [
+                    Ty.path "core::alloc::layout::Layout";
+                    Ty.function
+                      [ Ty.tuple [ Ty.path "core::alloc::layout::Layout"; Ty.path "usize" ] ]
+                      (Ty.path "core::alloc::layout::Layout")
+                  ]
+                |),
+                [
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
                         [
-                          fun γ =>
+                          Ty.tuple [ Ty.path "core::alloc::layout::Layout"; Ty.path "usize" ];
+                          Ty.path "core::alloc::layout::LayoutError"
+                        ],
+                      M.get_associated_function (|
+                        Ty.path "core::alloc::layout::Layout",
+                        "repeat",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, elem_layout |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::alloc::layout::Layout" ]);
+                        M.value_with_ty (M.read (| cap |)) (Ty.path "usize")
+                      ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.tuple [ Ty.path "core::alloc::layout::Layout"; Ty.path "usize" ];
+                        Ty.path "core::alloc::layout::LayoutError"
+                      ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0 ] =>
                             ltac:(M.monadic
-                              (M.call_closure (|
-                                Ty.path "alloc::collections::TryReserveError",
-                                M.get_trait_method (|
-                                  "core::convert::Into",
-                                  Ty.path "alloc::collections::TryReserveErrorKind",
-                                  [],
-                                  [ Ty.path "alloc::collections::TryReserveError" ],
-                                  "into",
-                                  [],
-                                  []
+                              (M.match_operator (|
+                                Ty.path "core::alloc::layout::Layout",
+                                M.alloc (|
+                                  Ty.tuple
+                                    [ Ty.path "core::alloc::layout::Layout"; Ty.path "usize" ],
+                                  α0
                                 |),
                                 [
-                                  Value.StructTuple
-                                    "alloc::collections::TryReserveErrorKind::CapacityOverflow"
-                                    []
-                                    []
-                                    []
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                                      let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                      let layout :=
+                                        M.copy (| Ty.path "core::alloc::layout::Layout", γ0_0 |) in
+                                      let _pad := M.copy (| Ty.path "usize", γ0_1 |) in
+                                      M.read (| layout |)))
                                 ]
                               |)))
-                        ]
-                      |)))
-                  | _ => M.impossible "wrong number of arguments"
-                  end))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.tuple [ Ty.path "core::alloc::layout::Layout"; Ty.path "usize" ] ]
+                      (Ty.path "core::alloc::layout::Layout"))
+                ]
+              |))
+              (Ty.apply
+                (Ty.path "core::result::Result")
+                []
+                [ Ty.path "core::alloc::layout::Layout"; Ty.path "core::alloc::layout::LayoutError"
+                ]);
+            M.value_with_ty
+              (M.closure
+                (fun γ =>
+                  ltac:(M.monadic
+                    match γ with
+                    | [ α0 ] =>
+                      ltac:(M.monadic
+                        (M.match_operator (|
+                          Ty.path "alloc::collections::TryReserveError",
+                          M.alloc (| Ty.path "core::alloc::layout::LayoutError", α0 |),
+                          [
+                            fun γ =>
+                              ltac:(M.monadic
+                                (M.call_closure (|
+                                  Ty.path "alloc::collections::TryReserveError",
+                                  M.get_trait_method (|
+                                    "core::convert::Into",
+                                    Ty.path "alloc::collections::TryReserveErrorKind",
+                                    [],
+                                    [ Ty.path "alloc::collections::TryReserveError" ],
+                                    "into",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple
+                                          "alloc::collections::TryReserveErrorKind::CapacityOverflow"
+                                          [])
+                                        (Ty.path "alloc::collections::TryReserveErrorKind"))
+                                      (Ty.path "alloc::collections::TryReserveErrorKind")
+                                  ]
+                                |)))
+                          ]
+                        |)))
+                    | _ => M.impossible "wrong number of arguments"
+                    end)))
+              (Ty.function
+                [ Ty.path "core::alloc::layout::LayoutError" ]
+                (Ty.path "alloc::collections::TryReserveError"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"

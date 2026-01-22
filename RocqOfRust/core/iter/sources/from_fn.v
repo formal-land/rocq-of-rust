@@ -17,7 +17,9 @@ Module iter.
         | [], [ T; F ], [ f ] =>
           ltac:(M.monadic
             (let f := M.alloc (| F, f |) in
-            Value.StructTuple "core::iter::sources::from_fn::FromFn" [] [ F ] [ M.read (| f |) ]))
+            M.value_with_ty
+              (Value.StructTuple "core::iter::sources::from_fn::FromFn" [ M.read (| f |) ])
+              (Ty.apply (Ty.path "core::iter::sources::from_fn::FromFn") [] [ F ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -52,31 +54,33 @@ Module iter.
                     [ Ty.apply (Ty.path "core::iter::sources::from_fn::FromFn") [] [ F ] ],
                   self
                 |) in
-              Value.StructTuple
-                "core::iter::sources::from_fn::FromFn"
-                []
-                [ F ]
-                [
-                  M.call_closure (|
-                    F,
-                    M.get_trait_method (| "core::clone::Clone", F, [], [], "clone", [], [] |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+              M.value_with_ty
+                (Value.StructTuple
+                  "core::iter::sources::from_fn::FromFn"
+                  [
+                    M.call_closure (|
+                      F,
+                      M.get_trait_method (| "core::clone::Clone", F, [], [], "clone", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::iter::sources::from_fn::FromFn",
-                              0
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_tuple_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::iter::sources::from_fn::FromFn",
+                                  0
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
-                ]))
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ F ])
+                      ]
+                    |)
+                  ])
+                (Ty.apply (Ty.path "core::iter::sources::from_fn::FromFn") [] [ F ])))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -127,15 +131,17 @@ Module iter.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::iter::sources::from_fn::FromFn",
-                      0
-                    |)
-                  |);
-                  Value.Tuple []
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::iter::sources::from_fn::FromFn",
+                        0
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&mut") [] [ F ]);
+                  M.value_with_ty (Value.Tuple []) (Ty.tuple [])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -188,25 +194,31 @@ Module iter.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.alloc (|
-                      Ty.path "core::fmt::builders::DebugStruct",
-                      M.call_closure (|
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.alloc (|
                         Ty.path "core::fmt::builders::DebugStruct",
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::Formatter",
-                          "debug_struct",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FromFn" |) |) |)
-                        ]
+                        M.call_closure (|
+                          Ty.path "core::fmt::builders::DebugStruct",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Formatter",
+                            "debug_struct",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FromFn" |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"

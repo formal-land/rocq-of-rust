@@ -25,7 +25,11 @@ Module num.
                 []
                 [ Ty.path "f32"; Ty.path "core::num::dec2flt::ParseFloatError" ],
               M.get_function (| "core::num::dec2flt::dec2flt", [], [ Ty.path "f32" ] |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -62,7 +66,11 @@ Module num.
                 []
                 [ Ty.path "f64"; Ty.path "core::num::dec2flt::ParseFloatError" ],
               M.get_function (| "core::num::dec2flt::dec2flt", [], [ Ty.path "f64" ] |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -112,44 +120,52 @@ Module num.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ParseFloatError" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "kind" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "core::num::dec2flt::FloatErrorKind" ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.path "core::num::dec2flt::FloatErrorKind" ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::num::dec2flt::ParseFloatError",
-                                "kind"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ParseFloatError" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "kind" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "core::num::dec2flt::FloatErrorKind" ]
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "core::num::dec2flt::FloatErrorKind" ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::num::dec2flt::ParseFloatError",
+                                  "kind"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -177,40 +193,45 @@ Module num.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::num::dec2flt::ParseFloatError" ],
                 self
               |) in
-            Value.mkStructRecord
-              "core::num::dec2flt::ParseFloatError"
-              []
-              []
-              [
-                ("kind",
-                  M.call_closure (|
-                    Ty.path "core::num::dec2flt::FloatErrorKind",
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::num::dec2flt::ParseFloatError"
+                [
+                  ("kind",
+                    M.call_closure (|
                       Ty.path "core::num::dec2flt::FloatErrorKind",
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.path "core::num::dec2flt::FloatErrorKind",
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::num::dec2flt::ParseFloatError",
-                              "kind"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::num::dec2flt::ParseFloatError",
+                                  "kind"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |))
-              ]))
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.path "core::num::dec2flt::FloatErrorKind" ])
+                      ]
+                    |))
+                ])
+              (Ty.path "core::num::dec2flt::ParseFloatError")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -265,22 +286,26 @@ Module num.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::num::dec2flt::ParseFloatError",
-                    "kind"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "core::num::dec2flt::ParseFloatError",
-                    "kind"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::num::dec2flt::ParseFloatError",
+                      "kind"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::num::dec2flt::FloatErrorKind" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "core::num::dec2flt::ParseFloatError",
+                      "kind"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::num::dec2flt::FloatErrorKind" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -376,28 +401,35 @@ Module num.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.match_operator (|
-                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                  self,
-                  [
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (| γ, "core::num::dec2flt::FloatErrorKind::Empty" |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Empty" |) |) |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "core::num::dec2flt::FloatErrorKind::Invalid"
-                          |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Invalid" |) |) |)))
-                  ]
-                |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.match_operator (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                    self,
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "core::num::dec2flt::FloatErrorKind::Empty"
+                            |) in
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Empty" |) |) |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "core::num::dec2flt::FloatErrorKind::Invalid"
+                            |) in
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Invalid" |) |) |)))
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -434,13 +466,17 @@ Module num.
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "core::num::dec2flt::FloatErrorKind::Empty" |) in
-                    Value.StructTuple "core::num::dec2flt::FloatErrorKind::Empty" [] [] []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::num::dec2flt::FloatErrorKind::Empty" [])
+                      (Ty.path "core::num::dec2flt::FloatErrorKind")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "core::num::dec2flt::FloatErrorKind::Invalid" |) in
-                    Value.StructTuple "core::num::dec2flt::FloatErrorKind::Invalid" [] [] []))
+                    M.value_with_ty
+                      (Value.StructTuple "core::num::dec2flt::FloatErrorKind::Invalid" [])
+                      (Ty.path "core::num::dec2flt::FloatErrorKind")))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -494,7 +530,11 @@ Module num.
                     [],
                     [ Ty.path "core::num::dec2flt::FloatErrorKind" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::num::dec2flt::FloatErrorKind" ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "isize" :=
                 M.call_closure (|
@@ -504,7 +544,11 @@ Module num.
                     [],
                     [ Ty.path "core::num::dec2flt::FloatErrorKind" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::num::dec2flt::FloatErrorKind" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "bool",
@@ -643,25 +687,36 @@ Module num.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Display", Ty.path "str", [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                      M.get_trait_method (|
-                        "core::error::Error",
-                        Ty.path "core::num::dec2flt::ParseFloatError",
-                        [],
-                        [],
-                        "description",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                        M.get_trait_method (|
+                          "core::error::Error",
+                          Ty.path "core::num::dec2flt::ParseFloatError",
+                          [],
+                          [],
+                          "description",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "core::num::dec2flt::ParseFloatError" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -685,11 +740,16 @@ Module num.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "core::num::dec2flt::ParseFloatError"
-            []
-            []
-            [ ("kind", Value.StructTuple "core::num::dec2flt::FloatErrorKind::Empty" [] [] []) ]))
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "core::num::dec2flt::ParseFloatError"
+              [
+                ("kind",
+                  M.value_with_ty
+                    (Value.StructTuple "core::num::dec2flt::FloatErrorKind::Empty" [])
+                    (Ty.path "core::num::dec2flt::FloatErrorKind"))
+              ])
+            (Ty.path "core::num::dec2flt::ParseFloatError")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -707,11 +767,16 @@ Module num.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "core::num::dec2flt::ParseFloatError"
-            []
-            []
-            [ ("kind", Value.StructTuple "core::num::dec2flt::FloatErrorKind::Invalid" [] [] []) ]))
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "core::num::dec2flt::ParseFloatError"
+              [
+                ("kind",
+                  M.value_with_ty
+                    (Value.StructTuple "core::num::dec2flt::FloatErrorKind::Invalid" [])
+                    (Ty.path "core::num::dec2flt::FloatErrorKind"))
+              ])
+            (Ty.path "core::num::dec2flt::ParseFloatError")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -787,7 +852,7 @@ Module num.
                   [],
                   []
                 |),
-                [ M.read (| word |) ]
+                [ M.value_with_ty (M.read (| word |)) (Ty.path "u64") ]
               |)
             |)
           |)))
@@ -865,7 +930,11 @@ Module num.
                   M.call_closure (|
                     Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
                     M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                    ]
                   |) in
                 let~ c : Ty.path "u8" :=
                   M.match_operator (|
@@ -891,7 +960,14 @@ Module num.
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                ]
                               |)
                             |) in
                           let γ0_0 :=
@@ -908,17 +984,24 @@ Module num.
                           (M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [ F; Ty.path "core::num::dec2flt::ParseFloatError" ]
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "core::num::dec2flt::ParseFloatError",
-                                      M.get_function (| "core::num::dec2flt::pfe_empty", [], [] |),
-                                      []
-                                    |)
-                                  ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::num::dec2flt::ParseFloatError",
+                                        M.get_function (|
+                                          "core::num::dec2flt::pfe_empty",
+                                          [],
+                                          []
+                                        |),
+                                        []
+                                      |)
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ F; Ty.path "core::num::dec2flt::ParseFloatError" ])
                               |)
                             |)
                           |)))
@@ -987,15 +1070,28 @@ Module num.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| s |) |)
-                                            |);
-                                            Value.mkStructRecord
-                                              "core::ops::range::RangeFrom"
-                                              []
-                                              [ Ty.path "usize" ]
-                                              [ ("start", Value.Integer IntegerKind.Usize 1) ]
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| s |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                            M.value_with_ty
+                                              (M.value_with_ty
+                                                (Value.mkStructRecord
+                                                  "core::ops::range::RangeFrom"
+                                                  [ ("start", Value.Integer IntegerKind.Usize 1) ])
+                                                (Ty.apply
+                                                  (Ty.path "core::ops::range::RangeFrom")
+                                                  []
+                                                  [ Ty.path "usize" ]))
+                                              (Ty.apply
+                                                (Ty.path "core::ops::range::RangeFrom")
+                                                []
+                                                [ Ty.path "usize" ])
                                           ]
                                         |)
                                       |)
@@ -1027,7 +1123,17 @@ Module num.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| s |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                  ]
                                 |)
                               |)) in
                           let _ :=
@@ -1035,21 +1141,24 @@ Module num.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [ F; Ty.path "core::num::dec2flt::ParseFloatError" ]
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "core::num::dec2flt::ParseFloatError",
-                                      M.get_function (|
-                                        "core::num::dec2flt::pfe_invalid",
-                                        [],
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::num::dec2flt::ParseFloatError",
+                                        M.get_function (|
+                                          "core::num::dec2flt::pfe_invalid",
+                                          [],
+                                          []
+                                        |),
                                         []
-                                      |),
-                                      []
-                                    |)
-                                  ]
+                                      |)
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ F; Ty.path "core::num::dec2flt::ParseFloatError" ])
                               |)
                             |)
                           |)));
@@ -1070,7 +1179,14 @@ Module num.
                           []
                           [ Ty.path "core::num::dec2flt::number::Number" ],
                         M.get_function (| "core::num::dec2flt::parse::parse_number", [], [] |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                        ]
                       |)
                     |),
                     [
@@ -1099,8 +1215,13 @@ Module num.
                                   [ F ]
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |);
-                                  M.read (| negative |)
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                  M.value_with_ty (M.read (| negative |)) (Ty.path "bool")
                                 ]
                               |)
                             |) in
@@ -1114,11 +1235,14 @@ Module num.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [ F; Ty.path "core::num::dec2flt::ParseFloatError" ]
-                                  [ M.read (| value |) ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [ M.read (| value |) ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ F; Ty.path "core::num::dec2flt::ParseFloatError" ])
                               |)
                             |)
                           |)));
@@ -1128,21 +1252,24 @@ Module num.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [ F; Ty.path "core::num::dec2flt::ParseFloatError" ]
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "core::num::dec2flt::ParseFloatError",
-                                      M.get_function (|
-                                        "core::num::dec2flt::pfe_invalid",
-                                        [],
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::num::dec2flt::ParseFloatError",
+                                        M.get_function (|
+                                          "core::num::dec2flt::pfe_invalid",
+                                          [],
+                                          []
+                                        |),
                                         []
-                                      |),
-                                      []
-                                    |)
-                                  ]
+                                      |)
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ F; Ty.path "core::num::dec2flt::ParseFloatError" ])
                               |)
                             |)
                           |)))
@@ -1189,7 +1316,14 @@ Module num.
                                           [],
                                           [ F ]
                                         |),
-                                        [ M.borrow (| Pointer.Kind.Ref, num |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, num |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "core::num::dec2flt::number::Number" ])
+                                        ]
                                       |)
                                     |) in
                                   let γ0_0 :=
@@ -1202,11 +1336,14 @@ Module num.
                                   M.never_to_any (|
                                     M.read (|
                                       M.return_ (|
-                                        Value.StructTuple
-                                          "core::result::Result::Ok"
-                                          []
-                                          [ F; Ty.path "core::num::dec2flt::ParseFloatError" ]
-                                          [ M.read (| value |) ]
+                                        M.value_with_ty
+                                          (Value.StructTuple
+                                            "core::result::Result::Ok"
+                                            [ M.read (| value |) ])
+                                          (Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [ F; Ty.path "core::num::dec2flt::ParseFloatError" ])
                                       |)
                                     |)
                                   |)));
@@ -1221,20 +1358,24 @@ Module num.
                     Ty.path "core::num::dec2flt::common::BiasedFp",
                     M.get_function (| "core::num::dec2flt::lemire::compute_float", [], [ F ] |),
                     [
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          num,
-                          "core::num::dec2flt::number::Number",
-                          "exponent"
-                        |)
-                      |);
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          num,
-                          "core::num::dec2flt::number::Number",
-                          "mantissa"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            num,
+                            "core::num::dec2flt::number::Number",
+                            "exponent"
+                          |)
+                        |))
+                        (Ty.path "i64");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            num,
+                            "core::num::dec2flt::number::Number",
+                            "mantissa"
+                          |)
+                        |))
+                        (Ty.path "u64")
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -1286,44 +1427,58 @@ Module num.
                                         []
                                       |),
                                       [
-                                        M.borrow (| Pointer.Kind.Ref, fp |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.alloc (|
-                                            Ty.path "core::num::dec2flt::common::BiasedFp",
-                                            M.call_closure (|
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, fp |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "core::num::dec2flt::common::BiasedFp" ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.alloc (|
                                               Ty.path "core::num::dec2flt::common::BiasedFp",
-                                              M.get_function (|
-                                                "core::num::dec2flt::lemire::compute_float",
-                                                [],
-                                                [ F ]
-                                              |),
-                                              [
-                                                M.read (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    num,
-                                                    "core::num::dec2flt::number::Number",
-                                                    "exponent"
-                                                  |)
-                                                |);
-                                                M.call_closure (|
-                                                  Ty.path "u64",
-                                                  BinOp.Wrap.add,
-                                                  [
-                                                    M.read (|
+                                              M.call_closure (|
+                                                Ty.path "core::num::dec2flt::common::BiasedFp",
+                                                M.get_function (|
+                                                  "core::num::dec2flt::lemire::compute_float",
+                                                  [],
+                                                  [ F ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (|
                                                       M.SubPointer.get_struct_record_field (|
                                                         num,
                                                         "core::num::dec2flt::number::Number",
-                                                        "mantissa"
+                                                        "exponent"
                                                       |)
-                                                    |);
-                                                    Value.Integer IntegerKind.U64 1
-                                                  ]
-                                                |)
-                                              ]
+                                                    |))
+                                                    (Ty.path "i64");
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
+                                                      Ty.path "u64",
+                                                      BinOp.Wrap.add,
+                                                      [
+                                                        M.read (|
+                                                          M.SubPointer.get_struct_record_field (|
+                                                            num,
+                                                            "core::num::dec2flt::number::Number",
+                                                            "mantissa"
+                                                          |)
+                                                        |);
+                                                        Value.Integer IntegerKind.U64 1
+                                                      ]
+                                                    |))
+                                                    (Ty.path "u64")
+                                                ]
+                                              |)
                                             |)
-                                          |)
-                                        |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "core::num::dec2flt::common::BiasedFp" ])
                                       ]
                                     |)))
                                 |)
@@ -1384,7 +1539,17 @@ Module num.
                                     [],
                                     [ F ]
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| s |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                  ]
                                 |)
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1396,7 +1561,11 @@ Module num.
                   M.call_closure (|
                     F,
                     M.get_function (| "core::num::dec2flt::biased_fp_to_float", [], [ F ] |),
-                    [ M.read (| fp |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| fp |))
+                        (Ty.path "core::num::dec2flt::common::BiasedFp")
+                    ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -1429,7 +1598,7 @@ Module num.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| float |) ]
+                                  [ M.value_with_ty (M.read (| float |)) F ]
                                 |)
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1442,11 +1611,12 @@ Module num.
                     (Ty.path "core::result::Result")
                     []
                     [ F; Ty.path "core::num::dec2flt::ParseFloatError" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ F; Ty.path "core::num::dec2flt::ParseFloatError" ]
-                    [ M.read (| float |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ M.read (| float |) ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ F; Ty.path "core::num::dec2flt::ParseFloatError" ])
                 |)
               |)))
           |)))

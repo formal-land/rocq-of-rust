@@ -66,36 +66,42 @@ Module Impl_core_fmt_Debug_for_subtle_Choice.
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Choice" |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "subtle::Choice",
-                            0
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Choice" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "subtle::Choice",
+                              0
+                            |)
                           |)
                         |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -226,9 +232,11 @@ Module Impl_core_convert_From_subtle_Choice_for_bool.
                                     Ty.path "never",
                                     M.get_function (| "core::panicking::panic", [], [] |),
                                     [
-                                      mk_str (|
-                                        "assertion failed: (source.0 == 0u8) | (source.0 == 1u8)"
-                                      |)
+                                      M.value_with_ty
+                                        (mk_str (|
+                                          "assertion failed: (source.0 == 0u8) | (source.0 == 1u8)"
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                     ]
                                   |)
                                 |)));
@@ -293,14 +301,16 @@ Module Impl_core_ops_bit_BitAnd_subtle_Choice_for_subtle_Choice.
             []
           |),
           [
-            M.call_closure (|
-              Ty.path "u8",
-              BinOp.Wrap.bit_and,
-              [
-                M.read (| M.SubPointer.get_struct_tuple_field (| self, "subtle::Choice", 0 |) |);
-                M.read (| M.SubPointer.get_struct_tuple_field (| rhs, "subtle::Choice", 0 |) |)
-              ]
-            |)
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.path "u8",
+                BinOp.Wrap.bit_and,
+                [
+                  M.read (| M.SubPointer.get_struct_tuple_field (| self, "subtle::Choice", 0 |) |);
+                  M.read (| M.SubPointer.get_struct_tuple_field (| rhs, "subtle::Choice", 0 |) |)
+                ]
+              |))
+              (Ty.path "u8")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -346,7 +356,12 @@ Module Impl_core_ops_bit_BitAndAssign_subtle_Choice_for_subtle_Choice.
                   [],
                   []
                 |),
-                [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| M.deref (| M.read (| self |) |) |))
+                    (Ty.path "subtle::Choice");
+                  M.value_with_ty (M.read (| rhs |)) (Ty.path "subtle::Choice")
+                ]
               |)
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -392,14 +407,16 @@ Module Impl_core_ops_bit_BitOr_subtle_Choice_for_subtle_Choice.
             []
           |),
           [
-            M.call_closure (|
-              Ty.path "u8",
-              BinOp.Wrap.bit_or,
-              [
-                M.read (| M.SubPointer.get_struct_tuple_field (| self, "subtle::Choice", 0 |) |);
-                M.read (| M.SubPointer.get_struct_tuple_field (| rhs, "subtle::Choice", 0 |) |)
-              ]
-            |)
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.path "u8",
+                BinOp.Wrap.bit_or,
+                [
+                  M.read (| M.SubPointer.get_struct_tuple_field (| self, "subtle::Choice", 0 |) |);
+                  M.read (| M.SubPointer.get_struct_tuple_field (| rhs, "subtle::Choice", 0 |) |)
+                ]
+              |))
+              (Ty.path "u8")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -445,7 +462,12 @@ Module Impl_core_ops_bit_BitOrAssign_subtle_Choice_for_subtle_Choice.
                   [],
                   []
                 |),
-                [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| M.deref (| M.read (| self |) |) |))
+                    (Ty.path "subtle::Choice");
+                  M.value_with_ty (M.read (| rhs |)) (Ty.path "subtle::Choice")
+                ]
               |)
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -491,14 +513,16 @@ Module Impl_core_ops_bit_BitXor_subtle_Choice_for_subtle_Choice.
             []
           |),
           [
-            M.call_closure (|
-              Ty.path "u8",
-              BinOp.Wrap.bit_xor,
-              [
-                M.read (| M.SubPointer.get_struct_tuple_field (| self, "subtle::Choice", 0 |) |);
-                M.read (| M.SubPointer.get_struct_tuple_field (| rhs, "subtle::Choice", 0 |) |)
-              ]
-            |)
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.path "u8",
+                BinOp.Wrap.bit_xor,
+                [
+                  M.read (| M.SubPointer.get_struct_tuple_field (| self, "subtle::Choice", 0 |) |);
+                  M.read (| M.SubPointer.get_struct_tuple_field (| rhs, "subtle::Choice", 0 |) |)
+                ]
+              |))
+              (Ty.path "u8")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -544,7 +568,12 @@ Module Impl_core_ops_bit_BitXorAssign_subtle_Choice_for_subtle_Choice.
                   [],
                   []
                 |),
-                [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| rhs |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| M.deref (| M.read (| self |) |) |))
+                    (Ty.path "subtle::Choice");
+                  M.value_with_ty (M.read (| rhs |)) (Ty.path "subtle::Choice")
+                ]
               |)
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -589,19 +618,24 @@ Module Impl_core_ops_bit_Not_for_subtle_Choice.
             []
           |),
           [
-            M.call_closure (|
-              Ty.path "u8",
-              BinOp.Wrap.bit_and,
-              [
-                Value.Integer IntegerKind.U8 1;
-                M.call_closure (|
-                  Ty.path "u8",
-                  UnOp.not,
-                  [ M.read (| M.SubPointer.get_struct_tuple_field (| self, "subtle::Choice", 0 |) |)
-                  ]
-                |)
-              ]
-            |)
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.path "u8",
+                BinOp.Wrap.bit_and,
+                [
+                  Value.Integer IntegerKind.U8 1;
+                  M.call_closure (|
+                    Ty.path "u8",
+                    UnOp.not,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (| self, "subtle::Choice", 0 |)
+                      |)
+                    ]
+                  |)
+                ]
+              |))
+              (Ty.path "u8")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -689,7 +723,12 @@ Definition black_box (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
                                 M.call_closure (|
                                   Ty.path "never",
                                   M.get_function (| "core::panicking::panic", [], [] |),
-                                  [ mk_str (| "assertion failed: (input == 0u8) | (input == 1u8)" |)
+                                  [
+                                    M.value_with_ty
+                                      (mk_str (|
+                                        "assertion failed: (input == 0u8) | (input == 1u8)"
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                   ]
                                 |)
                               |)));
@@ -707,16 +746,18 @@ Definition black_box (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
             Ty.path "u8",
             M.get_function (| "core::ptr::read_volatile", [], [ Ty.path "u8" ] |),
             [
-              M.read (|
-                M.use
-                  (M.alloc (|
-                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                    M.borrow (|
-                      Pointer.Kind.ConstPointer,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, input |) |)
-                    |)
-                  |))
-              |)
+              M.value_with_ty
+                (M.read (|
+                  M.use
+                    (M.alloc (|
+                      Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                      M.borrow (|
+                        Pointer.Kind.ConstPointer,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, input |) |)
+                      |)
+                    |))
+                |))
+                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ])
             ]
           |)
         |)
@@ -743,17 +784,17 @@ Module Impl_core_convert_From_u8_for_subtle_Choice.
     | [], [], [ input ] =>
       ltac:(M.monadic
         (let input := M.alloc (| Ty.path "u8", input |) in
-        Value.StructTuple
-          "subtle::Choice"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.path "u8",
-              M.get_function (| "subtle::black_box", [], [] |),
-              [ M.read (| input |) ]
-            |)
-          ]))
+        M.value_with_ty
+          (Value.StructTuple
+            "subtle::Choice"
+            [
+              M.call_closure (|
+                Ty.path "u8",
+                M.get_function (| "subtle::black_box", [], [] |),
+                [ M.value_with_ty (M.read (| input |)) (Ty.path "u8") ]
+              |)
+            ])
+          (Ty.path "subtle::Choice")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -786,14 +827,20 @@ Module ConstantTimeEq.
             []
           |),
           [
-            M.call_closure (|
-              Ty.path "subtle::Choice",
-              M.get_trait_method (| "subtle::ConstantTimeEq", Self, [], [], "ct_eq", [], [] |),
-              [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
-              ]
-            |)
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.path "subtle::Choice",
+                M.get_trait_method (| "subtle::ConstantTimeEq", Self, [], [], "ct_eq", [], [] |),
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Self ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Self ])
+                ]
+              |))
+              (Ty.path "subtle::Choice")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -847,7 +894,11 @@ Module Impl_subtle_ConstantTimeEq_where_subtle_ConstantTimeEq_T_for_slice_T.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|
@@ -874,10 +925,15 @@ Module Impl_subtle_ConstantTimeEq_where_subtle_ConstantTimeEq_T_for_slice_T.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| _rhs |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| _rhs |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                     ]
                                   |)
                                 ]
@@ -898,7 +954,7 @@ Module Impl_subtle_ConstantTimeEq_where_subtle_ConstantTimeEq_T_for_slice_T.
                                   [],
                                   []
                                 |),
-                                [ Value.Integer IntegerKind.U8 0 ]
+                                [ M.value_with_ty (Value.Integer IntegerKind.U8 0) (Ty.path "u8") ]
                               |)
                             |)
                           |)
@@ -946,56 +1002,78 @@ Module Impl_subtle_ConstantTimeEq_where_subtle_ConstantTimeEq_T_for_slice_T.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::iter::adapters::zip::Zip")
+                                    []
+                                    [
+                                      Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ];
+                                      Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ]
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::iter::traits::iterator::Iterator",
+                                    Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                                    [],
+                                    [],
+                                    "zip",
+                                    [],
+                                    [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "slice") [] [ T ],
+                                          "iter",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                        ]
+                                      |))
+                                      (Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "slice") [] [ T ],
+                                          "iter",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| _rhs |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                        ]
+                                      |))
+                                      (Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ])
+                                  ]
+                                |))
+                                (Ty.apply
                                   (Ty.path "core::iter::adapters::zip::Zip")
                                   []
                                   [
                                     Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ];
                                     Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ]
-                                  ],
-                                M.get_trait_method (|
-                                  "core::iter::traits::iterator::Iterator",
-                                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
-                                  [],
-                                  [],
-                                  "zip",
-                                  [],
-                                  [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ]
-                                |),
-                                [
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      "iter",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      "iter",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| _rhs |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
+                                  ])
                             ]
                           |)
                         |),
@@ -1062,12 +1140,31 @@ Module Impl_subtle_ConstantTimeEq_where_subtle_ConstantTimeEq_T_for_slice_T.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (|
-                                                  M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::iter::adapters::zip::Zip")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::slice::iter::Iter")
+                                                          []
+                                                          [ T ];
+                                                        Ty.apply
+                                                          (Ty.path "core::slice::iter::Iter")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ])
                                             ]
                                           |)
                                         |),
@@ -1121,34 +1218,53 @@ Module Impl_subtle_ConstantTimeEq_where_subtle_ConstantTimeEq_T_for_slice_T.
                                                             []
                                                           |),
                                                           [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.alloc (|
-                                                                Ty.path "subtle::Choice",
-                                                                M.call_closure (|
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.alloc (|
                                                                   Ty.path "subtle::Choice",
-                                                                  M.get_trait_method (|
-                                                                    "subtle::ConstantTimeEq",
-                                                                    T,
-                                                                    [],
-                                                                    [],
-                                                                    "ct_eq",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.deref (| M.read (| ai |) |)
-                                                                    |);
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.deref (| M.read (| bi |) |)
-                                                                    |)
-                                                                  ]
+                                                                  M.call_closure (|
+                                                                    Ty.path "subtle::Choice",
+                                                                    M.get_trait_method (|
+                                                                      "subtle::ConstantTimeEq",
+                                                                      T,
+                                                                      [],
+                                                                      [],
+                                                                      "ct_eq",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.deref (|
+                                                                            M.read (| ai |)
+                                                                          |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [ T ]);
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.deref (|
+                                                                            M.read (| bi |)
+                                                                          |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [ T ])
+                                                                    ]
+                                                                  |)
                                                                 |)
-                                                              |)
-                                                            |)
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [ Ty.path "subtle::Choice" ])
                                                           ]
                                                         |)
                                                       ]
@@ -1178,7 +1294,7 @@ Module Impl_subtle_ConstantTimeEq_where_subtle_ConstantTimeEq_T_for_slice_T.
                     [],
                     []
                   |),
-                  [ M.read (| x |) ]
+                  [ M.value_with_ty (M.read (| x |)) (Ty.path "u8") ]
                 |)
               |)
             |)))
@@ -1222,22 +1338,28 @@ Module Impl_subtle_ConstantTimeEq_for_subtle_Choice.
             []
           |),
           [
-            M.call_closure (|
-              Ty.path "subtle::Choice",
-              M.get_trait_method (|
-                "core::ops::bit::BitXor",
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.path "subtle::Choice",
-                [],
-                [ Ty.path "subtle::Choice" ],
-                "bitxor",
-                [],
-                []
-              |),
-              [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                M.read (| M.deref (| M.read (| rhs |) |) |)
-              ]
-            |)
+                M.get_trait_method (|
+                  "core::ops::bit::BitXor",
+                  Ty.path "subtle::Choice",
+                  [],
+                  [ Ty.path "subtle::Choice" ],
+                  "bitxor",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.read (| M.deref (| M.read (| self |) |) |))
+                    (Ty.path "subtle::Choice");
+                  M.value_with_ty
+                    (M.read (| M.deref (| M.read (| rhs |) |) |))
+                    (Ty.path "subtle::Choice")
+                ]
+              |))
+              (Ty.path "subtle::Choice")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1287,7 +1409,10 @@ Module Impl_subtle_ConstantTimeEq_for_u8.
                 [],
                 []
               |),
-              [ M.read (| self |); M.read (| other |) ]
+              [
+                M.value_with_ty (M.read (| self |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                M.value_with_ty (M.read (| other |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+              ]
             |) in
           let~ y : Ty.path "u8" :=
             M.call_closure (|
@@ -1302,7 +1427,7 @@ Module Impl_subtle_ConstantTimeEq_for_u8.
                     M.call_closure (|
                       Ty.path "u8",
                       M.get_associated_function (| Ty.path "u8", "wrapping_neg", [], [] |),
-                      [ M.read (| x |) ]
+                      [ M.value_with_ty (M.read (| x |)) (Ty.path "u8") ]
                     |)
                   ]
                 |);
@@ -1327,22 +1452,24 @@ Module Impl_subtle_ConstantTimeEq_for_u8.
                 []
               |),
               [
-                M.read (|
-                  M.use
-                    (M.alloc (|
-                      Ty.path "u8",
-                      M.call_closure (|
+                M.value_with_ty
+                  (M.read (|
+                    M.use
+                      (M.alloc (|
                         Ty.path "u8",
-                        BinOp.Wrap.bit_xor,
-                        [
-                          M.read (| y |);
-                          M.read (|
-                            M.use (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 1 |))
-                          |)
-                        ]
-                      |)
-                    |))
-                |)
+                        M.call_closure (|
+                          Ty.path "u8",
+                          BinOp.Wrap.bit_xor,
+                          [
+                            M.read (| y |);
+                            M.read (|
+                              M.use (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 1 |))
+                            |)
+                          ]
+                        |)
+                      |))
+                  |))
+                  (Ty.path "u8")
               ]
             |)
           |)
@@ -1378,25 +1505,29 @@ Module Impl_subtle_ConstantTimeEq_for_i8.
           Ty.path "subtle::Choice",
           M.get_trait_method (| "subtle::ConstantTimeEq", Ty.path "u8", [], [], "ct_eq", [], [] |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.alloc (|
-                Ty.path "u8",
-                M.cast (Ty.path "u8") (M.read (| M.deref (| M.read (| self |) |) |))
-              |)
-            |);
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "u8",
-                    M.cast (Ty.path "u8") (M.read (| M.deref (| M.read (| other |) |) |))
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.alloc (|
+                  Ty.path "u8",
+                  M.cast (Ty.path "u8") (M.read (| M.deref (| M.read (| self |) |) |))
+                |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "u8",
+                      M.cast (Ty.path "u8") (M.read (| M.deref (| M.read (| other |) |) |))
+                    |)
                   |)
                 |)
-              |)
-            |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1446,7 +1577,10 @@ Module Impl_subtle_ConstantTimeEq_for_u16.
                 [],
                 []
               |),
-              [ M.read (| self |); M.read (| other |) ]
+              [
+                M.value_with_ty (M.read (| self |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ]);
+                M.value_with_ty (M.read (| other |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
+              ]
             |) in
           let~ y : Ty.path "u16" :=
             M.call_closure (|
@@ -1461,7 +1595,7 @@ Module Impl_subtle_ConstantTimeEq_for_u16.
                     M.call_closure (|
                       Ty.path "u16",
                       M.get_associated_function (| Ty.path "u16", "wrapping_neg", [], [] |),
-                      [ M.read (| x |) ]
+                      [ M.value_with_ty (M.read (| x |)) (Ty.path "u16") ]
                     |)
                   ]
                 |);
@@ -1486,18 +1620,20 @@ Module Impl_subtle_ConstantTimeEq_for_u16.
                 []
               |),
               [
-                M.cast
+                M.value_with_ty
+                  (M.cast
+                    (Ty.path "u8")
+                    (M.call_closure (|
+                      Ty.path "u16",
+                      BinOp.Wrap.bit_xor,
+                      [
+                        M.read (| y |);
+                        M.read (|
+                          M.use (M.alloc (| Ty.path "u16", Value.Integer IntegerKind.U16 1 |))
+                        |)
+                      ]
+                    |)))
                   (Ty.path "u8")
-                  (M.call_closure (|
-                    Ty.path "u16",
-                    BinOp.Wrap.bit_xor,
-                    [
-                      M.read (| y |);
-                      M.read (|
-                        M.use (M.alloc (| Ty.path "u16", Value.Integer IntegerKind.U16 1 |))
-                      |)
-                    ]
-                  |))
               ]
             |)
           |)
@@ -1533,25 +1669,29 @@ Module Impl_subtle_ConstantTimeEq_for_i16.
           Ty.path "subtle::Choice",
           M.get_trait_method (| "subtle::ConstantTimeEq", Ty.path "u16", [], [], "ct_eq", [], [] |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.alloc (|
-                Ty.path "u16",
-                M.cast (Ty.path "u16") (M.read (| M.deref (| M.read (| self |) |) |))
-              |)
-            |);
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "u16",
-                    M.cast (Ty.path "u16") (M.read (| M.deref (| M.read (| other |) |) |))
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.alloc (|
+                  Ty.path "u16",
+                  M.cast (Ty.path "u16") (M.read (| M.deref (| M.read (| self |) |) |))
+                |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "u16",
+                      M.cast (Ty.path "u16") (M.read (| M.deref (| M.read (| other |) |) |))
+                    |)
                   |)
                 |)
-              |)
-            |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1601,7 +1741,10 @@ Module Impl_subtle_ConstantTimeEq_for_u32.
                 [],
                 []
               |),
-              [ M.read (| self |); M.read (| other |) ]
+              [
+                M.value_with_ty (M.read (| self |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ]);
+                M.value_with_ty (M.read (| other |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+              ]
             |) in
           let~ y : Ty.path "u32" :=
             M.call_closure (|
@@ -1616,7 +1759,7 @@ Module Impl_subtle_ConstantTimeEq_for_u32.
                     M.call_closure (|
                       Ty.path "u32",
                       M.get_associated_function (| Ty.path "u32", "wrapping_neg", [], [] |),
-                      [ M.read (| x |) ]
+                      [ M.value_with_ty (M.read (| x |)) (Ty.path "u32") ]
                     |)
                   ]
                 |);
@@ -1641,18 +1784,20 @@ Module Impl_subtle_ConstantTimeEq_for_u32.
                 []
               |),
               [
-                M.cast
+                M.value_with_ty
+                  (M.cast
+                    (Ty.path "u8")
+                    (M.call_closure (|
+                      Ty.path "u32",
+                      BinOp.Wrap.bit_xor,
+                      [
+                        M.read (| y |);
+                        M.read (|
+                          M.use (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 1 |))
+                        |)
+                      ]
+                    |)))
                   (Ty.path "u8")
-                  (M.call_closure (|
-                    Ty.path "u32",
-                    BinOp.Wrap.bit_xor,
-                    [
-                      M.read (| y |);
-                      M.read (|
-                        M.use (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 1 |))
-                      |)
-                    ]
-                  |))
               ]
             |)
           |)
@@ -1688,25 +1833,29 @@ Module Impl_subtle_ConstantTimeEq_for_i32.
           Ty.path "subtle::Choice",
           M.get_trait_method (| "subtle::ConstantTimeEq", Ty.path "u32", [], [], "ct_eq", [], [] |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.alloc (|
-                Ty.path "u32",
-                M.cast (Ty.path "u32") (M.read (| M.deref (| M.read (| self |) |) |))
-              |)
-            |);
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "u32",
-                    M.cast (Ty.path "u32") (M.read (| M.deref (| M.read (| other |) |) |))
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.alloc (|
+                  Ty.path "u32",
+                  M.cast (Ty.path "u32") (M.read (| M.deref (| M.read (| self |) |) |))
+                |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "u32",
+                      M.cast (Ty.path "u32") (M.read (| M.deref (| M.read (| other |) |) |))
+                    |)
                   |)
                 |)
-              |)
-            |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1756,7 +1905,10 @@ Module Impl_subtle_ConstantTimeEq_for_u64.
                 [],
                 []
               |),
-              [ M.read (| self |); M.read (| other |) ]
+              [
+                M.value_with_ty (M.read (| self |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                M.value_with_ty (M.read (| other |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+              ]
             |) in
           let~ y : Ty.path "u64" :=
             M.call_closure (|
@@ -1771,7 +1923,7 @@ Module Impl_subtle_ConstantTimeEq_for_u64.
                     M.call_closure (|
                       Ty.path "u64",
                       M.get_associated_function (| Ty.path "u64", "wrapping_neg", [], [] |),
-                      [ M.read (| x |) ]
+                      [ M.value_with_ty (M.read (| x |)) (Ty.path "u64") ]
                     |)
                   ]
                 |);
@@ -1796,18 +1948,20 @@ Module Impl_subtle_ConstantTimeEq_for_u64.
                 []
               |),
               [
-                M.cast
+                M.value_with_ty
+                  (M.cast
+                    (Ty.path "u8")
+                    (M.call_closure (|
+                      Ty.path "u64",
+                      BinOp.Wrap.bit_xor,
+                      [
+                        M.read (| y |);
+                        M.read (|
+                          M.use (M.alloc (| Ty.path "u64", Value.Integer IntegerKind.U64 1 |))
+                        |)
+                      ]
+                    |)))
                   (Ty.path "u8")
-                  (M.call_closure (|
-                    Ty.path "u64",
-                    BinOp.Wrap.bit_xor,
-                    [
-                      M.read (| y |);
-                      M.read (|
-                        M.use (M.alloc (| Ty.path "u64", Value.Integer IntegerKind.U64 1 |))
-                      |)
-                    ]
-                  |))
               ]
             |)
           |)
@@ -1843,25 +1997,29 @@ Module Impl_subtle_ConstantTimeEq_for_i64.
           Ty.path "subtle::Choice",
           M.get_trait_method (| "subtle::ConstantTimeEq", Ty.path "u64", [], [], "ct_eq", [], [] |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.alloc (|
-                Ty.path "u64",
-                M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| self |) |) |))
-              |)
-            |);
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "u64",
-                    M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| other |) |) |))
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.alloc (|
+                  Ty.path "u64",
+                  M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| self |) |) |))
+                |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "u64",
+                      M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| other |) |) |))
+                    |)
                   |)
                 |)
-              |)
-            |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1911,7 +2069,10 @@ Module Impl_subtle_ConstantTimeEq_for_usize.
                 [],
                 []
               |),
-              [ M.read (| self |); M.read (| other |) ]
+              [
+                M.value_with_ty (M.read (| self |)) (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                M.value_with_ty (M.read (| other |)) (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+              ]
             |) in
           let~ y : Ty.path "usize" :=
             M.call_closure (|
@@ -1926,7 +2087,7 @@ Module Impl_subtle_ConstantTimeEq_for_usize.
                     M.call_closure (|
                       Ty.path "usize",
                       M.get_associated_function (| Ty.path "usize", "wrapping_neg", [], [] |),
-                      [ M.read (| x |) ]
+                      [ M.value_with_ty (M.read (| x |)) (Ty.path "usize") ]
                     |)
                   ]
                 |);
@@ -1965,18 +2126,20 @@ Module Impl_subtle_ConstantTimeEq_for_usize.
                 []
               |),
               [
-                M.cast
+                M.value_with_ty
+                  (M.cast
+                    (Ty.path "u8")
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      BinOp.Wrap.bit_xor,
+                      [
+                        M.read (| y |);
+                        M.read (|
+                          M.use (M.alloc (| Ty.path "usize", Value.Integer IntegerKind.Usize 1 |))
+                        |)
+                      ]
+                    |)))
                   (Ty.path "u8")
-                  (M.call_closure (|
-                    Ty.path "usize",
-                    BinOp.Wrap.bit_xor,
-                    [
-                      M.read (| y |);
-                      M.read (|
-                        M.use (M.alloc (| Ty.path "usize", Value.Integer IntegerKind.Usize 1 |))
-                      |)
-                    ]
-                  |))
               ]
             |)
           |)
@@ -2020,25 +2183,29 @@ Module Impl_subtle_ConstantTimeEq_for_isize.
             []
           |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.alloc (|
-                Ty.path "usize",
-                M.cast (Ty.path "usize") (M.read (| M.deref (| M.read (| self |) |) |))
-              |)
-            |);
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "usize",
-                    M.cast (Ty.path "usize") (M.read (| M.deref (| M.read (| other |) |) |))
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.alloc (|
+                  Ty.path "usize",
+                  M.cast (Ty.path "usize") (M.read (| M.deref (| M.read (| self |) |) |))
+                |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "usize",
+                      M.cast (Ty.path "usize") (M.read (| M.deref (| M.read (| other |) |) |))
+                    |)
                   |)
                 |)
-              |)
-            |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2083,9 +2250,13 @@ Module ConditionallySelectable.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |);
-                  M.read (| choice |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Self ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Self ]);
+                  M.value_with_ty (M.read (| choice |)) (Ty.path "subtle::Choice")
                 ]
               |)
             |) in
@@ -2123,12 +2294,16 @@ Module ConditionallySelectable.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| a |) |) |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.borrow (| Pointer.Kind.Ref, b |) |) |) |)
-                |);
-                M.read (| choice |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| a |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Self ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.borrow (| Pointer.Kind.Ref, b |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Self ]);
+                M.value_with_ty (M.read (| choice |)) (Ty.path "subtle::Choice")
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -2144,9 +2319,16 @@ Module ConditionallySelectable.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| b |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, t |) |) |);
-                M.read (| choice |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| b |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Self ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, t |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Self ]);
+                M.value_with_ty (M.read (| choice |)) (Ty.path "subtle::Choice")
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2189,7 +2371,11 @@ Module Impl_subtle_ConditionallySelectable_for_u8.
                     (M.call_closure (|
                       Ty.path "u8",
                       M.get_associated_function (| Ty.path "subtle::Choice", "unwrap_u8", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, choice |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                      ]
                     |))
                 ]
               |)) in
@@ -2207,27 +2393,36 @@ Module Impl_subtle_ConditionallySelectable_for_u8.
                 []
               |),
               [
-                M.read (| a |);
-                M.call_closure (|
-                  Ty.path "u8",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (| mask |);
-                    M.call_closure (|
-                      Ty.path "u8",
-                      M.get_trait_method (|
-                        "core::ops::bit::BitXor",
-                        Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                        [],
-                        [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
-                        "bitxor",
-                        [],
-                        []
-                      |),
-                      [ M.read (| a |); M.read (| b |) ]
-                    |)
-                  ]
-                |)
+                M.value_with_ty (M.read (| a |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "u8",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (| mask |);
+                      M.call_closure (|
+                        Ty.path "u8",
+                        M.get_trait_method (|
+                          "core::ops::bit::BitXor",
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                          [],
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
+                          "bitxor",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| a |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                          M.value_with_ty
+                            (M.read (| b |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.path "u8")
               ]
             |)
           |)
@@ -2263,7 +2458,11 @@ Module Impl_subtle_ConditionallySelectable_for_u8.
                     (M.call_closure (|
                       Ty.path "u8",
                       M.get_associated_function (| Ty.path "subtle::Choice", "unwrap_u8", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, choice |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                      ]
                     |))
                 ]
               |)) in
@@ -2329,7 +2528,11 @@ Module Impl_subtle_ConditionallySelectable_for_u8.
                     (M.call_closure (|
                       Ty.path "u8",
                       M.get_associated_function (| Ty.path "subtle::Choice", "unwrap_u8", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, choice |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                      ]
                     |))
                 ]
               |)) in
@@ -2426,7 +2629,11 @@ Module Impl_subtle_ConditionallySelectable_for_i8.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, choice |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                          ]
                         |))
                     ]
                   |)
@@ -2446,27 +2653,36 @@ Module Impl_subtle_ConditionallySelectable_for_i8.
                 []
               |),
               [
-                M.read (| a |);
-                M.call_closure (|
-                  Ty.path "i8",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (| mask |);
-                    M.call_closure (|
-                      Ty.path "i8",
-                      M.get_trait_method (|
-                        "core::ops::bit::BitXor",
-                        Ty.apply (Ty.path "&") [] [ Ty.path "i8" ],
-                        [],
-                        [ Ty.apply (Ty.path "&") [] [ Ty.path "i8" ] ],
-                        "bitxor",
-                        [],
-                        []
-                      |),
-                      [ M.read (| a |); M.read (| b |) ]
-                    |)
-                  ]
-                |)
+                M.value_with_ty (M.read (| a |)) (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "i8",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (| mask |);
+                      M.call_closure (|
+                        Ty.path "i8",
+                        M.get_trait_method (|
+                          "core::ops::bit::BitXor",
+                          Ty.apply (Ty.path "&") [] [ Ty.path "i8" ],
+                          [],
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "i8" ] ],
+                          "bitxor",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| a |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ]);
+                          M.value_with_ty
+                            (M.read (| b |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.path "i8")
               ]
             |)
           |)
@@ -2509,7 +2725,11 @@ Module Impl_subtle_ConditionallySelectable_for_i8.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, choice |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                          ]
                         |))
                     ]
                   |)
@@ -2584,7 +2804,11 @@ Module Impl_subtle_ConditionallySelectable_for_i8.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, choice |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                          ]
                         |))
                     ]
                   |)
@@ -2676,7 +2900,11 @@ Module Impl_subtle_ConditionallySelectable_for_u16.
                     (M.call_closure (|
                       Ty.path "u8",
                       M.get_associated_function (| Ty.path "subtle::Choice", "unwrap_u8", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, choice |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                      ]
                     |))
                 ]
               |)) in
@@ -2694,27 +2922,36 @@ Module Impl_subtle_ConditionallySelectable_for_u16.
                 []
               |),
               [
-                M.read (| a |);
-                M.call_closure (|
-                  Ty.path "u16",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (| mask |);
-                    M.call_closure (|
-                      Ty.path "u16",
-                      M.get_trait_method (|
-                        "core::ops::bit::BitXor",
-                        Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
-                        [],
-                        [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ],
-                        "bitxor",
-                        [],
-                        []
-                      |),
-                      [ M.read (| a |); M.read (| b |) ]
-                    |)
-                  ]
-                |)
+                M.value_with_ty (M.read (| a |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "u16",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (| mask |);
+                      M.call_closure (|
+                        Ty.path "u16",
+                        M.get_trait_method (|
+                          "core::ops::bit::BitXor",
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                          [],
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ],
+                          "bitxor",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| a |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ]);
+                          M.value_with_ty
+                            (M.read (| b |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.path "u16")
               ]
             |)
           |)
@@ -2750,7 +2987,11 @@ Module Impl_subtle_ConditionallySelectable_for_u16.
                     (M.call_closure (|
                       Ty.path "u8",
                       M.get_associated_function (| Ty.path "subtle::Choice", "unwrap_u8", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, choice |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                      ]
                     |))
                 ]
               |)) in
@@ -2816,7 +3057,11 @@ Module Impl_subtle_ConditionallySelectable_for_u16.
                     (M.call_closure (|
                       Ty.path "u8",
                       M.get_associated_function (| Ty.path "subtle::Choice", "unwrap_u8", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, choice |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                      ]
                     |))
                 ]
               |)) in
@@ -2913,7 +3158,11 @@ Module Impl_subtle_ConditionallySelectable_for_i16.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, choice |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                          ]
                         |))
                     ]
                   |)
@@ -2933,27 +3182,36 @@ Module Impl_subtle_ConditionallySelectable_for_i16.
                 []
               |),
               [
-                M.read (| a |);
-                M.call_closure (|
-                  Ty.path "i16",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (| mask |);
-                    M.call_closure (|
-                      Ty.path "i16",
-                      M.get_trait_method (|
-                        "core::ops::bit::BitXor",
-                        Ty.apply (Ty.path "&") [] [ Ty.path "i16" ],
-                        [],
-                        [ Ty.apply (Ty.path "&") [] [ Ty.path "i16" ] ],
-                        "bitxor",
-                        [],
-                        []
-                      |),
-                      [ M.read (| a |); M.read (| b |) ]
-                    |)
-                  ]
-                |)
+                M.value_with_ty (M.read (| a |)) (Ty.apply (Ty.path "&") [] [ Ty.path "i16" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "i16",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (| mask |);
+                      M.call_closure (|
+                        Ty.path "i16",
+                        M.get_trait_method (|
+                          "core::ops::bit::BitXor",
+                          Ty.apply (Ty.path "&") [] [ Ty.path "i16" ],
+                          [],
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "i16" ] ],
+                          "bitxor",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| a |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "i16" ]);
+                          M.value_with_ty
+                            (M.read (| b |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "i16" ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.path "i16")
               ]
             |)
           |)
@@ -2996,7 +3254,11 @@ Module Impl_subtle_ConditionallySelectable_for_i16.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, choice |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                          ]
                         |))
                     ]
                   |)
@@ -3071,7 +3333,11 @@ Module Impl_subtle_ConditionallySelectable_for_i16.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, choice |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                          ]
                         |))
                     ]
                   |)
@@ -3163,7 +3429,11 @@ Module Impl_subtle_ConditionallySelectable_for_u32.
                     (M.call_closure (|
                       Ty.path "u8",
                       M.get_associated_function (| Ty.path "subtle::Choice", "unwrap_u8", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, choice |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                      ]
                     |))
                 ]
               |)) in
@@ -3181,27 +3451,36 @@ Module Impl_subtle_ConditionallySelectable_for_u32.
                 []
               |),
               [
-                M.read (| a |);
-                M.call_closure (|
-                  Ty.path "u32",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (| mask |);
-                    M.call_closure (|
-                      Ty.path "u32",
-                      M.get_trait_method (|
-                        "core::ops::bit::BitXor",
-                        Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
-                        [],
-                        [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ],
-                        "bitxor",
-                        [],
-                        []
-                      |),
-                      [ M.read (| a |); M.read (| b |) ]
-                    |)
-                  ]
-                |)
+                M.value_with_ty (M.read (| a |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "u32",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (| mask |);
+                      M.call_closure (|
+                        Ty.path "u32",
+                        M.get_trait_method (|
+                          "core::ops::bit::BitXor",
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                          [],
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ],
+                          "bitxor",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| a |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ]);
+                          M.value_with_ty
+                            (M.read (| b |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.path "u32")
               ]
             |)
           |)
@@ -3237,7 +3516,11 @@ Module Impl_subtle_ConditionallySelectable_for_u32.
                     (M.call_closure (|
                       Ty.path "u8",
                       M.get_associated_function (| Ty.path "subtle::Choice", "unwrap_u8", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, choice |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                      ]
                     |))
                 ]
               |)) in
@@ -3303,7 +3586,11 @@ Module Impl_subtle_ConditionallySelectable_for_u32.
                     (M.call_closure (|
                       Ty.path "u8",
                       M.get_associated_function (| Ty.path "subtle::Choice", "unwrap_u8", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, choice |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                      ]
                     |))
                 ]
               |)) in
@@ -3400,7 +3687,11 @@ Module Impl_subtle_ConditionallySelectable_for_i32.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, choice |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                          ]
                         |))
                     ]
                   |)
@@ -3420,27 +3711,36 @@ Module Impl_subtle_ConditionallySelectable_for_i32.
                 []
               |),
               [
-                M.read (| a |);
-                M.call_closure (|
-                  Ty.path "i32",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (| mask |);
-                    M.call_closure (|
-                      Ty.path "i32",
-                      M.get_trait_method (|
-                        "core::ops::bit::BitXor",
-                        Ty.apply (Ty.path "&") [] [ Ty.path "i32" ],
-                        [],
-                        [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
-                        "bitxor",
-                        [],
-                        []
-                      |),
-                      [ M.read (| a |); M.read (| b |) ]
-                    |)
-                  ]
-                |)
+                M.value_with_ty (M.read (| a |)) (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "i32",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (| mask |);
+                      M.call_closure (|
+                        Ty.path "i32",
+                        M.get_trait_method (|
+                          "core::ops::bit::BitXor",
+                          Ty.apply (Ty.path "&") [] [ Ty.path "i32" ],
+                          [],
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
+                          "bitxor",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| a |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ]);
+                          M.value_with_ty
+                            (M.read (| b |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.path "i32")
               ]
             |)
           |)
@@ -3483,7 +3783,11 @@ Module Impl_subtle_ConditionallySelectable_for_i32.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, choice |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                          ]
                         |))
                     ]
                   |)
@@ -3558,7 +3862,11 @@ Module Impl_subtle_ConditionallySelectable_for_i32.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, choice |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                          ]
                         |))
                     ]
                   |)
@@ -3650,7 +3958,11 @@ Module Impl_subtle_ConditionallySelectable_for_u64.
                     (M.call_closure (|
                       Ty.path "u8",
                       M.get_associated_function (| Ty.path "subtle::Choice", "unwrap_u8", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, choice |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                      ]
                     |))
                 ]
               |)) in
@@ -3668,27 +3980,36 @@ Module Impl_subtle_ConditionallySelectable_for_u64.
                 []
               |),
               [
-                M.read (| a |);
-                M.call_closure (|
-                  Ty.path "u64",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (| mask |);
-                    M.call_closure (|
-                      Ty.path "u64",
-                      M.get_trait_method (|
-                        "core::ops::bit::BitXor",
-                        Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
-                        [],
-                        [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ],
-                        "bitxor",
-                        [],
-                        []
-                      |),
-                      [ M.read (| a |); M.read (| b |) ]
-                    |)
-                  ]
-                |)
+                M.value_with_ty (M.read (| a |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "u64",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (| mask |);
+                      M.call_closure (|
+                        Ty.path "u64",
+                        M.get_trait_method (|
+                          "core::ops::bit::BitXor",
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          [],
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ],
+                          "bitxor",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| a |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                          M.value_with_ty
+                            (M.read (| b |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.path "u64")
               ]
             |)
           |)
@@ -3724,7 +4045,11 @@ Module Impl_subtle_ConditionallySelectable_for_u64.
                     (M.call_closure (|
                       Ty.path "u8",
                       M.get_associated_function (| Ty.path "subtle::Choice", "unwrap_u8", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, choice |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                      ]
                     |))
                 ]
               |)) in
@@ -3790,7 +4115,11 @@ Module Impl_subtle_ConditionallySelectable_for_u64.
                     (M.call_closure (|
                       Ty.path "u8",
                       M.get_associated_function (| Ty.path "subtle::Choice", "unwrap_u8", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, choice |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                      ]
                     |))
                 ]
               |)) in
@@ -3887,7 +4216,11 @@ Module Impl_subtle_ConditionallySelectable_for_i64.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, choice |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                          ]
                         |))
                     ]
                   |)
@@ -3907,27 +4240,36 @@ Module Impl_subtle_ConditionallySelectable_for_i64.
                 []
               |),
               [
-                M.read (| a |);
-                M.call_closure (|
-                  Ty.path "i64",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (| mask |);
-                    M.call_closure (|
-                      Ty.path "i64",
-                      M.get_trait_method (|
-                        "core::ops::bit::BitXor",
-                        Ty.apply (Ty.path "&") [] [ Ty.path "i64" ],
-                        [],
-                        [ Ty.apply (Ty.path "&") [] [ Ty.path "i64" ] ],
-                        "bitxor",
-                        [],
-                        []
-                      |),
-                      [ M.read (| a |); M.read (| b |) ]
-                    |)
-                  ]
-                |)
+                M.value_with_ty (M.read (| a |)) (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "i64",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (| mask |);
+                      M.call_closure (|
+                        Ty.path "i64",
+                        M.get_trait_method (|
+                          "core::ops::bit::BitXor",
+                          Ty.apply (Ty.path "&") [] [ Ty.path "i64" ],
+                          [],
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "i64" ] ],
+                          "bitxor",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| a |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ]);
+                          M.value_with_ty
+                            (M.read (| b |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ])
+                        ]
+                      |)
+                    ]
+                  |))
+                  (Ty.path "i64")
               ]
             |)
           |)
@@ -3970,7 +4312,11 @@ Module Impl_subtle_ConditionallySelectable_for_i64.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, choice |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                          ]
                         |))
                     ]
                   |)
@@ -4045,7 +4391,11 @@ Module Impl_subtle_ConditionallySelectable_for_i64.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, choice |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, choice |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                          ]
                         |))
                     ]
                   |)
@@ -4121,53 +4471,57 @@ Module Impl_subtle_ConditionallySelectable_for_subtle_Choice.
         (let a := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ], a |) in
         let b := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ], b |) in
         let choice := M.alloc (| Ty.path "subtle::Choice", choice |) in
-        Value.StructTuple
-          "subtle::Choice"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.path "u8",
-              M.get_trait_method (|
-                "subtle::ConditionallySelectable",
+        M.value_with_ty
+          (Value.StructTuple
+            "subtle::Choice"
+            [
+              M.call_closure (|
                 Ty.path "u8",
-                [],
-                [],
-                "conditional_select",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+                M.get_trait_method (|
+                  "subtle::ConditionallySelectable",
+                  Ty.path "u8",
+                  [],
+                  [],
+                  "conditional_select",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| a |) |),
-                        "subtle::Choice",
-                        0
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_tuple_field (|
+                            M.deref (| M.read (| a |) |),
+                            "subtle::Choice",
+                            0
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| b |) |),
-                        "subtle::Choice",
-                        0
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_tuple_field (|
+                            M.deref (| M.read (| b |) |),
+                            "subtle::Choice",
+                            0
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |);
-                M.read (| choice |)
-              ]
-            |)
-          ]))
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                  M.value_with_ty (M.read (| choice |)) (Ty.path "subtle::Choice")
+                ]
+              |)
+            ])
+          (Ty.path "subtle::Choice")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -4219,13 +4573,15 @@ Module Impl_subtle_ConditionallyNegatable_where_subtle_ConditionallySelectable_T
                 []
               |),
               [
-                M.read (|
-                  M.use
-                    (M.alloc (|
-                      Ty.apply (Ty.path "&") [] [ T ],
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                    |))
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.use
+                      (M.alloc (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                      |))
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -4241,12 +4597,16 @@ Module Impl_subtle_ConditionallyNegatable_where_subtle_ConditionallySelectable_T
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, self_neg |) |)
-                |);
-                M.read (| choice |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ T ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, self_neg |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ]);
+                M.value_with_ty (M.read (| choice |)) (Ty.path "subtle::Choice")
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4286,60 +4646,64 @@ Module Impl_core_clone_Clone_where_core_clone_Clone_T_for_subtle_CtOption_T.
             Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "subtle::CtOption") [] [ T ] ],
             self
           |) in
-        Value.mkStructRecord
-          "subtle::CtOption"
-          []
-          [ T ]
-          [
-            ("value",
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+        M.value_with_ty
+          (Value.mkStructRecord
+            "subtle::CtOption"
+            [
+              ("value",
+                M.call_closure (|
+                  T,
+                  M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "subtle::CtOption",
-                          "value"
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "subtle::CtOption",
+                              "value"
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |));
-            ("is_some",
-              M.call_closure (|
-                Ty.path "subtle::Choice",
-                M.get_trait_method (|
-                  "core::clone::Clone",
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
+                  ]
+                |));
+              ("is_some",
+                M.call_closure (|
                   Ty.path "subtle::Choice",
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "subtle::Choice",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "subtle::CtOption",
-                          "is_some"
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "subtle::CtOption",
+                              "is_some"
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |))
-          ]))
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
+                  ]
+                |))
+            ])
+          (Ty.apply (Ty.path "subtle::CtOption") [] [ T ])))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -4390,63 +4754,75 @@ Module Impl_core_fmt_Debug_where_core_fmt_Debug_T_for_subtle_CtOption_T.
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CtOption" |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "value" |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply (Ty.path "&") [] [ T ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "subtle::CtOption",
-                        "value"
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CtOption" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "value" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply (Ty.path "&") [] [ T ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "subtle::CtOption",
+                          "value"
+                        |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "is_some" |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ] ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ],
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "subtle::CtOption",
-                            "is_some"
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "is_some" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ] ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ],
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "subtle::CtOption",
+                              "is_some"
+                            |)
                           |)
                         |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4503,22 +4879,31 @@ Module Impl_core_convert_From_subtle_CtOption_T_for_core_option_Option_T.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.path "subtle::Choice",
-                                  M.call_closure (|
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
                                     Ty.path "subtle::Choice",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "subtle::CtOption") [] [ T ],
-                                      "is_some",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, source |) ]
+                                    M.call_closure (|
+                                      Ty.path "subtle::Choice",
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "subtle::CtOption") [] [ T ],
+                                        "is_some",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, source |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "subtle::CtOption") [] [ T ] ])
+                                      ]
+                                    |)
                                   |)
-                                |)
-                              |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
                             ]
                           |);
                           Value.Integer IntegerKind.U8 1
@@ -4526,16 +4911,24 @@ Module Impl_core_convert_From_subtle_CtOption_T_for_core_option_Option_T.
                       |)
                     |)) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ T ]
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (| source, "subtle::CtOption", "value" |)
-                    |)
-                  ]));
-            fun γ => ltac:(M.monadic (Value.StructTuple "core::option::Option::None" [] [ T ] []))
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::option::Option::Some"
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          source,
+                          "subtle::CtOption",
+                          "value"
+                        |)
+                      |)
+                    ])
+                  (Ty.apply (Ty.path "core::option::Option") [] [ T ])));
+            fun γ =>
+              ltac:(M.monadic
+                (M.value_with_ty
+                  (Value.StructTuple "core::option::Option::None" [])
+                  (Ty.apply (Ty.path "core::option::Option") [] [ T ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4569,11 +4962,11 @@ Module Impl_subtle_CtOption_T.
       ltac:(M.monadic
         (let value := M.alloc (| T, value |) in
         let is_some := M.alloc (| Ty.path "subtle::Choice", is_some |) in
-        Value.mkStructRecord
-          "subtle::CtOption"
-          []
-          [ T ]
-          [ ("value", M.read (| value |)); ("is_some", M.read (| is_some |)) ]))
+        M.value_with_ty
+          (Value.mkStructRecord
+            "subtle::CtOption"
+            [ ("value", M.read (| value |)); ("is_some", M.read (| is_some |)) ])
+          (Ty.apply (Ty.path "subtle::CtOption") [] [ T ])))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -4622,14 +5015,16 @@ Module Impl_subtle_CtOption_T.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                self,
-                                "subtle::CtOption",
-                                "is_some"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  self,
+                                  "subtle::CtOption",
+                                  "is_some"
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
                           ]
                         |)
                       |)
@@ -4678,7 +5073,9 @@ Module Impl_subtle_CtOption_T.
                             M.never_to_any (|
                               M.read (|
                                 let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                  Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                  M.value_with_ty
+                                    (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                    (Ty.path "core::panicking::AssertKind") in
                                 M.alloc (|
                                   Ty.path "never",
                                   M.call_closure (|
@@ -4689,107 +5086,157 @@ Module Impl_subtle_CtOption_T.
                                       [ Ty.path "u8"; Ty.path "u8" ]
                                     |),
                                     [
-                                      M.read (| kind |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| left_val |) |)
+                                      M.value_with_ty
+                                        (M.read (| kind |))
+                                        (Ty.path "core::panicking::AssertKind");
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| left_val |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| right_val |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| right_val |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |);
-                                      Value.StructTuple
-                                        "core::option::Option::Some"
-                                        []
-                                        [ Ty.path "core::fmt::Arguments" ]
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::Arguments",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::Arguments",
-                                              "new_v1",
-                                              [
-                                                Value.Integer IntegerKind.Usize 1;
-                                                Value.Integer IntegerKind.Usize 1
-                                              ],
-                                              []
-                                            |),
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (M.value_with_ty
+                                          (Value.StructTuple
+                                            "core::option::Option::Some"
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "&")
-                                                            []
-                                                            [ Ty.path "str" ]
-                                                        ],
-                                                      Value.Array [ mk_str (| "" |) ]
-                                                    |)
-                                                  |)
-                                                |)
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 1 ]
-                                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                                      Value.Array
-                                                        [
-                                                          M.call_closure (|
-                                                            Ty.path "core::fmt::rt::Argument",
-                                                            M.get_associated_function (|
-                                                              Ty.path "core::fmt::rt::Argument",
-                                                              "new_display",
-                                                              [],
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::Arguments",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::Arguments",
+                                                  "new_v1",
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 1;
+                                                    Value.Integer IntegerKind.Usize 1
+                                                  ],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.alloc (|
+                                                            Ty.apply
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 1 ]
                                                               [
                                                                 Ty.apply
                                                                   (Ty.path "&")
                                                                   []
                                                                   [ Ty.path "str" ]
-                                                              ]
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    msg
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            ]
+                                                              ],
+                                                            Value.Array [ mk_str (| "" |) ]
                                                           |)
-                                                        ]
-                                                    |)
-                                                  |)
-                                                |)
+                                                        |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "str" ]
+                                                          ]
+                                                      ]);
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.alloc (|
+                                                            Ty.apply
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                                              [ Ty.path "core::fmt::rt::Argument" ],
+                                                            Value.Array
+                                                              [
+                                                                M.call_closure (|
+                                                                  Ty.path "core::fmt::rt::Argument",
+                                                                  M.get_associated_function (|
+                                                                    Ty.path
+                                                                      "core::fmt::rt::Argument",
+                                                                    "new_display",
+                                                                    [],
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ Ty.path "str" ]
+                                                                    ]
+                                                                  |),
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            msg
+                                                                          |)
+                                                                        |)
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [ Ty.path "str" ]
+                                                                        ])
+                                                                  ]
+                                                                |)
+                                                              ]
+                                                          |)
+                                                        |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                                          [ Ty.path "core::fmt::rt::Argument" ]
+                                                      ])
+                                                ]
                                               |)
-                                            ]
-                                          |)
-                                        ]
+                                            ])
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ]))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ])
                                     ]
                                   |)
                                 |)
@@ -4849,14 +5296,16 @@ Module Impl_subtle_CtOption_T.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                self,
-                                "subtle::CtOption",
-                                "is_some"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  self,
+                                  "subtle::CtOption",
+                                  "is_some"
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ])
                           ]
                         |)
                       |)
@@ -4905,7 +5354,9 @@ Module Impl_subtle_CtOption_T.
                             M.never_to_any (|
                               M.read (|
                                 let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                  Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                  M.value_with_ty
+                                    (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                    (Ty.path "core::panicking::AssertKind") in
                                 M.alloc (|
                                   Ty.path "never",
                                   M.call_closure (|
@@ -4916,30 +5367,42 @@ Module Impl_subtle_CtOption_T.
                                       [ Ty.path "u8"; Ty.path "u8" ]
                                     |),
                                     [
-                                      M.read (| kind |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| left_val |) |)
+                                      M.value_with_ty
+                                        (M.read (| kind |))
+                                        (Ty.path "core::panicking::AssertKind");
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| left_val |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| right_val |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| right_val |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |);
-                                      Value.StructTuple
-                                        "core::option::Option::None"
-                                        []
-                                        [ Ty.path "core::fmt::Arguments" ]
-                                        []
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (M.value_with_ty
+                                          (Value.StructTuple "core::option::Option::None" [])
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ]))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ])
                                     ]
                                   |)
                                 |)
@@ -4988,19 +5451,25 @@ Module Impl_subtle_CtOption_T.
             []
           |),
           [
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, def |) |) |);
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (| self, "subtle::CtOption", "value" |)
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, def |) |) |))
+              (Ty.apply (Ty.path "&") [] [ T ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (| self, "subtle::CtOption", "value" |)
+                  |)
                 |)
-              |)
-            |);
-            M.read (|
-              M.SubPointer.get_struct_record_field (| self, "subtle::CtOption", "is_some" |)
-            |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ T ]);
+            M.value_with_ty
+              (M.read (|
+                M.SubPointer.get_struct_record_field (| self, "subtle::CtOption", "is_some" |)
+              |))
+              (Ty.path "subtle::Choice")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5040,42 +5509,51 @@ Module Impl_subtle_CtOption_T.
             []
           |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    T,
-                    M.call_closure (|
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       T,
-                      M.get_trait_method (|
-                        "core::ops::function::FnOnce",
-                        F,
-                        [],
-                        [ Ty.tuple [] ],
-                        "call_once",
-                        [],
-                        []
-                      |),
-                      [ M.read (| f |); Value.Tuple [] ]
+                      M.call_closure (|
+                        T,
+                        M.get_trait_method (|
+                          "core::ops::function::FnOnce",
+                          F,
+                          [],
+                          [ Ty.tuple [] ],
+                          "call_once",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty (M.read (| f |)) F;
+                          M.value_with_ty (Value.Tuple []) (Ty.tuple [])
+                        ]
+                      |)
                     |)
                   |)
                 |)
-              |)
-            |);
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (| self, "subtle::CtOption", "value" |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ T ]);
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (| self, "subtle::CtOption", "value" |)
+                  |)
                 |)
-              |)
-            |);
-            M.read (|
-              M.SubPointer.get_struct_record_field (| self, "subtle::CtOption", "is_some" |)
-            |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ T ]);
+            M.value_with_ty
+              (M.read (|
+                M.SubPointer.get_struct_record_field (| self, "subtle::CtOption", "is_some" |)
+              |))
+              (Ty.path "subtle::Choice")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5145,13 +5623,15 @@ Module Impl_subtle_CtOption_T.
             []
           |),
           [
-            M.read (|
-              M.SubPointer.get_struct_record_field (|
-                M.deref (| M.read (| self |) |),
-                "subtle::CtOption",
-                "is_some"
-              |)
-            |)
+            M.value_with_ty
+              (M.read (|
+                M.SubPointer.get_struct_record_field (|
+                  M.deref (| M.read (| self |) |),
+                  "subtle::CtOption",
+                  "is_some"
+                |)
+              |))
+              (Ty.path "subtle::Choice")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5195,85 +5675,97 @@ Module Impl_subtle_CtOption_T.
             []
           |),
           [
-            M.call_closure (|
-              U,
-              M.get_trait_method (|
-                "core::ops::function::FnOnce",
-                F,
-                [],
-                [ Ty.tuple [ T ] ],
-                "call_once",
-                [],
-                []
-              |),
-              [
-                M.read (| f |);
-                Value.Tuple
-                  [
-                    M.call_closure (|
-                      T,
-                      M.get_trait_method (|
-                        "subtle::ConditionallySelectable",
-                        T,
-                        [],
-                        [],
-                        "conditional_select",
-                        [],
-                        []
-                      |),
+            M.value_with_ty
+              (M.call_closure (|
+                U,
+                M.get_trait_method (|
+                  "core::ops::function::FnOnce",
+                  F,
+                  [],
+                  [ Ty.tuple [ T ] ],
+                  "call_once",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty (M.read (| f |)) F;
+                  M.value_with_ty
+                    (Value.Tuple
                       [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                T,
-                                M.call_closure (|
-                                  T,
-                                  M.get_trait_method (|
-                                    "core::default::Default",
-                                    T,
-                                    [],
-                                    [],
-                                    "default",
-                                    [],
-                                    []
-                                  |),
-                                  []
+                        M.call_closure (|
+                          T,
+                          M.get_trait_method (|
+                            "subtle::ConditionallySelectable",
+                            T,
+                            [],
+                            [],
+                            "conditional_select",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      T,
+                                      M.call_closure (|
+                                        T,
+                                        M.get_trait_method (|
+                                          "core::default::Default",
+                                          T,
+                                          [],
+                                          [],
+                                          "default",
+                                          [],
+                                          []
+                                        |),
+                                        []
+                                      |)
+                                    |)
+                                  |)
                                 |)
-                              |)
-                            |)
-                          |)
-                        |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                self,
-                                "subtle::CtOption",
-                                "value"
-                              |)
-                            |)
-                          |)
-                        |);
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            self,
-                            "subtle::CtOption",
-                            "is_some"
-                          |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ T ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      self,
+                                      "subtle::CtOption",
+                                      "value"
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ T ]);
+                            M.value_with_ty
+                              (M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  self,
+                                  "subtle::CtOption",
+                                  "is_some"
+                                |)
+                              |))
+                              (Ty.path "subtle::Choice")
+                          ]
                         |)
-                      ]
-                    |)
-                  ]
-              ]
-            |);
-            M.read (|
-              M.SubPointer.get_struct_record_field (| self, "subtle::CtOption", "is_some" |)
-            |)
+                      ])
+                    (Ty.tuple [ T ])
+                ]
+              |))
+              U;
+            M.value_with_ty
+              (M.read (|
+                M.SubPointer.get_struct_record_field (| self, "subtle::CtOption", "is_some" |)
+              |))
+              (Ty.path "subtle::Choice")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5322,68 +5814,76 @@ Module Impl_subtle_CtOption_T.
                 []
               |),
               [
-                M.read (| f |);
-                Value.Tuple
-                  [
-                    M.call_closure (|
-                      T,
-                      M.get_trait_method (|
-                        "subtle::ConditionallySelectable",
+                M.value_with_ty (M.read (| f |)) F;
+                M.value_with_ty
+                  (Value.Tuple
+                    [
+                      M.call_closure (|
                         T,
-                        [],
-                        [],
-                        "conditional_select",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
+                        M.get_trait_method (|
+                          "subtle::ConditionallySelectable",
+                          T,
+                          [],
+                          [],
+                          "conditional_select",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
                               Pointer.Kind.Ref,
-                              M.alloc (|
-                                T,
-                                M.call_closure (|
-                                  T,
-                                  M.get_trait_method (|
-                                    "core::default::Default",
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
                                     T,
-                                    [],
-                                    [],
-                                    "default",
-                                    [],
-                                    []
-                                  |),
-                                  []
+                                    M.call_closure (|
+                                      T,
+                                      M.get_trait_method (|
+                                        "core::default::Default",
+                                        T,
+                                        [],
+                                        [],
+                                        "default",
+                                        [],
+                                        []
+                                      |),
+                                      []
+                                    |)
+                                  |)
                                 |)
                               |)
-                            |)
-                          |)
-                        |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ T ]);
+                          M.value_with_ty
+                            (M.borrow (|
                               Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    self,
+                                    "subtle::CtOption",
+                                    "value"
+                                  |)
+                                |)
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ T ]);
+                          M.value_with_ty
+                            (M.read (|
                               M.SubPointer.get_struct_record_field (|
                                 self,
                                 "subtle::CtOption",
-                                "value"
+                                "is_some"
                               |)
-                            |)
-                          |)
-                        |);
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            self,
-                            "subtle::CtOption",
-                            "is_some"
-                          |)
-                        |)
-                      ]
-                    |)
-                  ]
+                            |))
+                            (Ty.path "subtle::Choice")
+                        ]
+                      |)
+                    ])
+                  (Ty.tuple [ T ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -5399,13 +5899,17 @@ Module Impl_subtle_CtOption_T.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (| tmp, "subtle::CtOption", "is_some" |)
-                |);
-                M.read (|
-                  M.SubPointer.get_struct_record_field (| self, "subtle::CtOption", "is_some" |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (| tmp, "subtle::CtOption", "is_some" |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "subtle::Choice" ]);
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (| self, "subtle::CtOption", "is_some" |)
+                  |))
+                  (Ty.path "subtle::Choice")
               ]
             |) in
           tmp
@@ -5448,7 +5952,11 @@ Module Impl_subtle_CtOption_T.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, self |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, self |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "subtle::CtOption") [] [ T ] ])
+              ]
             |) in
           let~ f : Ty.apply (Ty.path "subtle::CtOption") [] [ T ] :=
             M.call_closure (|
@@ -5462,7 +5970,7 @@ Module Impl_subtle_CtOption_T.
                 [],
                 []
               |),
-              [ M.read (| f |); Value.Tuple [] ]
+              [ M.value_with_ty (M.read (| f |)) F; M.value_with_ty (Value.Tuple []) (Ty.tuple []) ]
             |) in
           M.alloc (|
             Ty.apply (Ty.path "subtle::CtOption") [] [ T ],
@@ -5478,12 +5986,19 @@ Module Impl_subtle_CtOption_T.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, self |) |)
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, f |) |) |);
-                M.read (| is_none |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, self |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "subtle::CtOption") [] [ T ] ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, f |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "subtle::CtOption") [] [ T ] ]);
+                M.value_with_ty (M.read (| is_none |)) (Ty.path "subtle::Choice")
               ]
             |)
           |)
@@ -5539,88 +6054,100 @@ Module Impl_subtle_ConditionallySelectable_where_subtle_ConditionallySelectable_
             []
           |),
           [
-            M.call_closure (|
-              T,
-              M.get_trait_method (|
-                "subtle::ConditionallySelectable",
+            M.value_with_ty
+              (M.call_closure (|
                 T,
-                [],
-                [],
-                "conditional_select",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+                M.get_trait_method (|
+                  "subtle::ConditionallySelectable",
+                  T,
+                  [],
+                  [],
+                  "conditional_select",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| a |) |),
-                        "subtle::CtOption",
-                        "value"
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| a |) |),
+                            "subtle::CtOption",
+                            "value"
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ]);
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| b |) |),
-                        "subtle::CtOption",
-                        "value"
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| b |) |),
+                            "subtle::CtOption",
+                            "value"
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |);
-                M.read (| choice |)
-              ]
-            |);
-            M.call_closure (|
-              Ty.path "subtle::Choice",
-              M.get_trait_method (|
-                "subtle::ConditionallySelectable",
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ]);
+                  M.value_with_ty (M.read (| choice |)) (Ty.path "subtle::Choice")
+                ]
+              |))
+              T;
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.path "subtle::Choice",
-                [],
-                [],
-                "conditional_select",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+                M.get_trait_method (|
+                  "subtle::ConditionallySelectable",
+                  Ty.path "subtle::Choice",
+                  [],
+                  [],
+                  "conditional_select",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| a |) |),
-                        "subtle::CtOption",
-                        "is_some"
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| a |) |),
+                            "subtle::CtOption",
+                            "is_some"
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ]);
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| b |) |),
-                        "subtle::CtOption",
-                        "is_some"
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| b |) |),
+                            "subtle::CtOption",
+                            "is_some"
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |);
-                M.read (| choice |)
-              ]
-            |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "subtle::Choice" ]);
+                  M.value_with_ty (M.read (| choice |)) (Ty.path "subtle::Choice")
+                ]
+              |))
+              (Ty.path "subtle::Choice")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5672,7 +6199,11 @@ Module Impl_subtle_ConstantTimeEq_where_subtle_ConstantTimeEq_T_for_subtle_CtOpt
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "subtle::CtOption") [] [ T ] ])
+              ]
             |) in
           let~ b : Ty.path "subtle::Choice" :=
             M.call_closure (|
@@ -5683,7 +6214,11 @@ Module Impl_subtle_ConstantTimeEq_where_subtle_ConstantTimeEq_T_for_subtle_CtOpt
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| rhs |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| rhs |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "subtle::CtOption") [] [ T ] ])
+              ]
             |) in
           M.alloc (|
             Ty.path "subtle::Choice",
@@ -5699,100 +6234,127 @@ Module Impl_subtle_ConstantTimeEq_where_subtle_ConstantTimeEq_T_for_subtle_CtOpt
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "subtle::Choice",
-                  M.get_trait_method (|
-                    "core::ops::bit::BitAnd",
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "subtle::Choice",
-                    [],
-                    [ Ty.path "subtle::Choice" ],
-                    "bitand",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
+                    M.get_trait_method (|
+                      "core::ops::bit::BitAnd",
                       Ty.path "subtle::Choice",
-                      M.get_trait_method (|
-                        "core::ops::bit::BitAnd",
-                        Ty.path "subtle::Choice",
-                        [],
-                        [ Ty.path "subtle::Choice" ],
-                        "bitand",
-                        [],
-                        []
-                      |),
-                      [ M.read (| a |); M.read (| b |) ]
-                    |);
-                    M.call_closure (|
-                      Ty.path "subtle::Choice",
-                      M.get_trait_method (| "subtle::ConstantTimeEq", T, [], [], "ct_eq", [], [] |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "subtle::CtOption",
-                            "value"
-                          |)
-                        |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| rhs |) |),
-                                "subtle::CtOption",
-                                "value"
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |)
-                  ]
-                |);
-                M.call_closure (|
-                  Ty.path "subtle::Choice",
-                  M.get_trait_method (|
-                    "core::ops::bit::BitAnd",
+                      [],
+                      [ Ty.path "subtle::Choice" ],
+                      "bitand",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "subtle::Choice",
+                          M.get_trait_method (|
+                            "core::ops::bit::BitAnd",
+                            Ty.path "subtle::Choice",
+                            [],
+                            [ Ty.path "subtle::Choice" ],
+                            "bitand",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty (M.read (| a |)) (Ty.path "subtle::Choice");
+                            M.value_with_ty (M.read (| b |)) (Ty.path "subtle::Choice")
+                          ]
+                        |))
+                        (Ty.path "subtle::Choice");
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "subtle::Choice",
+                          M.get_trait_method (|
+                            "subtle::ConstantTimeEq",
+                            T,
+                            [],
+                            [],
+                            "ct_eq",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "subtle::CtOption",
+                                  "value"
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ T ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| rhs |) |),
+                                      "subtle::CtOption",
+                                      "value"
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ T ])
+                          ]
+                        |))
+                        (Ty.path "subtle::Choice")
+                    ]
+                  |))
+                  (Ty.path "subtle::Choice");
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "subtle::Choice",
-                    [],
-                    [ Ty.path "subtle::Choice" ],
-                    "bitand",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
+                    M.get_trait_method (|
+                      "core::ops::bit::BitAnd",
                       Ty.path "subtle::Choice",
-                      M.get_trait_method (|
-                        "core::ops::bit::Not",
-                        Ty.path "subtle::Choice",
-                        [],
-                        [],
-                        "not",
-                        [],
-                        []
-                      |),
-                      [ M.read (| a |) ]
-                    |);
-                    M.call_closure (|
-                      Ty.path "subtle::Choice",
-                      M.get_trait_method (|
-                        "core::ops::bit::Not",
-                        Ty.path "subtle::Choice",
-                        [],
-                        [],
-                        "not",
-                        [],
-                        []
-                      |),
-                      [ M.read (| b |) ]
-                    |)
-                  ]
-                |)
+                      [],
+                      [ Ty.path "subtle::Choice" ],
+                      "bitand",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "subtle::Choice",
+                          M.get_trait_method (|
+                            "core::ops::bit::Not",
+                            Ty.path "subtle::Choice",
+                            [],
+                            [],
+                            "not",
+                            [],
+                            []
+                          |),
+                          [ M.value_with_ty (M.read (| a |)) (Ty.path "subtle::Choice") ]
+                        |))
+                        (Ty.path "subtle::Choice");
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "subtle::Choice",
+                          M.get_trait_method (|
+                            "core::ops::bit::Not",
+                            Ty.path "subtle::Choice",
+                            [],
+                            [],
+                            "not",
+                            [],
+                            []
+                          |),
+                          [ M.value_with_ty (M.read (| b |)) (Ty.path "subtle::Choice") ]
+                        |))
+                        (Ty.path "subtle::Choice")
+                    ]
+                  |))
+                  (Ty.path "subtle::Choice")
               ]
             |)
           |)
@@ -5859,20 +6421,26 @@ Module Impl_subtle_ConstantTimeGreater_for_u8.
                 []
               |),
               [
-                M.read (| self |);
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_trait_method (|
-                    "core::ops::bit::Not",
-                    Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                    [],
-                    [],
-                    "not",
-                    [],
-                    []
-                  |),
-                  [ M.read (| other |) ]
-                |)
+                M.value_with_ty (M.read (| self |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "u8",
+                    M.get_trait_method (|
+                      "core::ops::bit::Not",
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      [],
+                      [],
+                      "not",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                    ]
+                  |))
+                  (Ty.path "u8")
               ]
             |) in
           let~ ltb : Ty.path "u8" :=
@@ -5888,20 +6456,26 @@ Module Impl_subtle_ConstantTimeGreater_for_u8.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_trait_method (|
-                    "core::ops::bit::Not",
-                    Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                    [],
-                    [],
-                    "not",
-                    [],
-                    []
-                  |),
-                  [ M.read (| self |) ]
-                |);
-                M.read (| other |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "u8",
+                    M.get_trait_method (|
+                      "core::ops::bit::Not",
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                      [],
+                      [],
+                      "not",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                    ]
+                  |))
+                  (Ty.path "u8");
+                M.value_with_ty (M.read (| other |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
               ]
             |) in
           let~ pow : Ty.path "i32" := Value.Integer IntegerKind.I32 1 in
@@ -6065,17 +6639,19 @@ Module Impl_subtle_ConstantTimeGreater_for_u8.
                 []
               |),
               [
-                M.read (|
-                  M.use
-                    (M.alloc (|
-                      Ty.path "u8",
-                      M.call_closure (|
+                M.value_with_ty
+                  (M.read (|
+                    M.use
+                      (M.alloc (|
                         Ty.path "u8",
-                        BinOp.Wrap.bit_and,
-                        [ M.read (| bit |); Value.Integer IntegerKind.U8 1 ]
-                      |)
-                    |))
-                |)
+                        M.call_closure (|
+                          Ty.path "u8",
+                          BinOp.Wrap.bit_and,
+                          [ M.read (| bit |); Value.Integer IntegerKind.U8 1 ]
+                        |)
+                      |))
+                  |))
+                  (Ty.path "u8")
               ]
             |)
           |)
@@ -6138,20 +6714,26 @@ Module Impl_subtle_ConstantTimeGreater_for_u16.
                 []
               |),
               [
-                M.read (| self |);
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_trait_method (|
-                    "core::ops::bit::Not",
-                    Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
-                    [],
-                    [],
-                    "not",
-                    [],
-                    []
-                  |),
-                  [ M.read (| other |) ]
-                |)
+                M.value_with_ty (M.read (| self |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "u16",
+                    M.get_trait_method (|
+                      "core::ops::bit::Not",
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                      [],
+                      [],
+                      "not",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
+                    ]
+                  |))
+                  (Ty.path "u16")
               ]
             |) in
           let~ ltb : Ty.path "u16" :=
@@ -6167,20 +6749,26 @@ Module Impl_subtle_ConstantTimeGreater_for_u16.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_trait_method (|
-                    "core::ops::bit::Not",
-                    Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
-                    [],
-                    [],
-                    "not",
-                    [],
-                    []
-                  |),
-                  [ M.read (| self |) ]
-                |);
-                M.read (| other |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "u16",
+                    M.get_trait_method (|
+                      "core::ops::bit::Not",
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                      [],
+                      [],
+                      "not",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
+                    ]
+                  |))
+                  (Ty.path "u16");
+                M.value_with_ty (M.read (| other |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
               ]
             |) in
           let~ pow : Ty.path "i32" := Value.Integer IntegerKind.I32 1 in
@@ -6344,13 +6932,15 @@ Module Impl_subtle_ConstantTimeGreater_for_u16.
                 []
               |),
               [
-                M.cast
+                M.value_with_ty
+                  (M.cast
+                    (Ty.path "u8")
+                    (M.call_closure (|
+                      Ty.path "u16",
+                      BinOp.Wrap.bit_and,
+                      [ M.read (| bit |); Value.Integer IntegerKind.U16 1 ]
+                    |)))
                   (Ty.path "u8")
-                  (M.call_closure (|
-                    Ty.path "u16",
-                    BinOp.Wrap.bit_and,
-                    [ M.read (| bit |); Value.Integer IntegerKind.U16 1 ]
-                  |))
               ]
             |)
           |)
@@ -6413,20 +7003,26 @@ Module Impl_subtle_ConstantTimeGreater_for_u32.
                 []
               |),
               [
-                M.read (| self |);
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_trait_method (|
-                    "core::ops::bit::Not",
-                    Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
-                    [],
-                    [],
-                    "not",
-                    [],
-                    []
-                  |),
-                  [ M.read (| other |) ]
-                |)
+                M.value_with_ty (M.read (| self |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "u32",
+                    M.get_trait_method (|
+                      "core::ops::bit::Not",
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                      [],
+                      [],
+                      "not",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                    ]
+                  |))
+                  (Ty.path "u32")
               ]
             |) in
           let~ ltb : Ty.path "u32" :=
@@ -6442,20 +7038,26 @@ Module Impl_subtle_ConstantTimeGreater_for_u32.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_trait_method (|
-                    "core::ops::bit::Not",
-                    Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
-                    [],
-                    [],
-                    "not",
-                    [],
-                    []
-                  |),
-                  [ M.read (| self |) ]
-                |);
-                M.read (| other |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "u32",
+                    M.get_trait_method (|
+                      "core::ops::bit::Not",
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                      [],
+                      [],
+                      "not",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                    ]
+                  |))
+                  (Ty.path "u32");
+                M.value_with_ty (M.read (| other |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
               ]
             |) in
           let~ pow : Ty.path "i32" := Value.Integer IntegerKind.I32 1 in
@@ -6619,13 +7221,15 @@ Module Impl_subtle_ConstantTimeGreater_for_u32.
                 []
               |),
               [
-                M.cast
+                M.value_with_ty
+                  (M.cast
+                    (Ty.path "u8")
+                    (M.call_closure (|
+                      Ty.path "u32",
+                      BinOp.Wrap.bit_and,
+                      [ M.read (| bit |); Value.Integer IntegerKind.U32 1 ]
+                    |)))
                   (Ty.path "u8")
-                  (M.call_closure (|
-                    Ty.path "u32",
-                    BinOp.Wrap.bit_and,
-                    [ M.read (| bit |); Value.Integer IntegerKind.U32 1 ]
-                  |))
               ]
             |)
           |)
@@ -6688,20 +7292,26 @@ Module Impl_subtle_ConstantTimeGreater_for_u64.
                 []
               |),
               [
-                M.read (| self |);
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_trait_method (|
-                    "core::ops::bit::Not",
-                    Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
-                    [],
-                    [],
-                    "not",
-                    [],
-                    []
-                  |),
-                  [ M.read (| other |) ]
-                |)
+                M.value_with_ty (M.read (| self |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "u64",
+                    M.get_trait_method (|
+                      "core::ops::bit::Not",
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      [],
+                      [],
+                      "not",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                    ]
+                  |))
+                  (Ty.path "u64")
               ]
             |) in
           let~ ltb : Ty.path "u64" :=
@@ -6717,20 +7327,26 @@ Module Impl_subtle_ConstantTimeGreater_for_u64.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_trait_method (|
-                    "core::ops::bit::Not",
-                    Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
-                    [],
-                    [],
-                    "not",
-                    [],
-                    []
-                  |),
-                  [ M.read (| self |) ]
-                |);
-                M.read (| other |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "u64",
+                    M.get_trait_method (|
+                      "core::ops::bit::Not",
+                      Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                      [],
+                      [],
+                      "not",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                    ]
+                  |))
+                  (Ty.path "u64");
+                M.value_with_ty (M.read (| other |)) (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
               ]
             |) in
           let~ pow : Ty.path "i32" := Value.Integer IntegerKind.I32 1 in
@@ -6894,13 +7510,15 @@ Module Impl_subtle_ConstantTimeGreater_for_u64.
                 []
               |),
               [
-                M.cast
+                M.value_with_ty
+                  (M.cast
+                    (Ty.path "u8")
+                    (M.call_closure (|
+                      Ty.path "u64",
+                      BinOp.Wrap.bit_and,
+                      [ M.read (| bit |); Value.Integer IntegerKind.U64 1 ]
+                    |)))
                   (Ty.path "u8")
-                  (M.call_closure (|
-                    Ty.path "u64",
-                    BinOp.Wrap.bit_and,
-                    [ M.read (| bit |); Value.Integer IntegerKind.U64 1 ]
-                  |))
               ]
             |)
           |)
@@ -6937,58 +7555,82 @@ Module ConstantTimeLess.
             []
           |),
           [
-            M.call_closure (|
-              Ty.path "subtle::Choice",
-              M.get_trait_method (|
-                "core::ops::bit::Not",
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.path "subtle::Choice",
-                [],
-                [],
-                "not",
-                [],
-                []
-              |),
-              [
-                M.call_closure (|
+                M.get_trait_method (|
+                  "core::ops::bit::Not",
                   Ty.path "subtle::Choice",
-                  M.get_trait_method (|
-                    "subtle::ConstantTimeGreater",
-                    Self,
-                    [],
-                    [],
-                    "ct_gt",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]
-            |);
-            M.call_closure (|
-              Ty.path "subtle::Choice",
-              M.get_trait_method (|
-                "core::ops::bit::Not",
+                  [],
+                  [],
+                  "not",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "subtle::Choice",
+                      M.get_trait_method (|
+                        "subtle::ConstantTimeGreater",
+                        Self,
+                        [],
+                        [],
+                        "ct_gt",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Self ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Self ])
+                      ]
+                    |))
+                    (Ty.path "subtle::Choice")
+                ]
+              |))
+              (Ty.path "subtle::Choice");
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.path "subtle::Choice",
-                [],
-                [],
-                "not",
-                [],
-                []
-              |),
-              [
-                M.call_closure (|
+                M.get_trait_method (|
+                  "core::ops::bit::Not",
                   Ty.path "subtle::Choice",
-                  M.get_trait_method (| "subtle::ConstantTimeEq", Self, [], [], "ct_eq", [], [] |),
-                  [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]
-            |)
+                  [],
+                  [],
+                  "not",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "subtle::Choice",
+                      M.get_trait_method (|
+                        "subtle::ConstantTimeEq",
+                        Self,
+                        [],
+                        [],
+                        "ct_eq",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Self ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Self ])
+                      ]
+                    |))
+                    (Ty.path "subtle::Choice")
+                ]
+              |))
+              (Ty.path "subtle::Choice")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"

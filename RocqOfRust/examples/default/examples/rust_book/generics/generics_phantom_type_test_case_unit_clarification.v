@@ -208,69 +208,77 @@ Module Impl_core_fmt_Debug_where_core_fmt_Debug_Unit_for_generics_phantom_type_t
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Length" |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply (Ty.path "&") [] [ Ty.path "f64" ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| self |) |),
-                        "generics_phantom_type_test_case_unit_clarification::Length",
-                        0
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Length" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "f64" ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "generics_phantom_type_test_case_unit_clarification::Length",
+                          0
+                        |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ Unit ] ]
-                  ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ Unit ] ],
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "generics_phantom_type_test_case_unit_clarification::Length",
-                            1
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ Unit ] ]
+                    ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ Unit ] ],
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "generics_phantom_type_test_case_unit_clarification::Length",
+                              1
+                            |)
                           |)
                         |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -309,58 +317,76 @@ Module Impl_core_clone_Clone_where_core_clone_Clone_Unit_for_generics_phantom_ty
               ],
             self
           |) in
-        Value.StructTuple
-          "generics_phantom_type_test_case_unit_clarification::Length"
-          []
-          [ Unit ]
-          [
-            M.call_closure (|
-              Ty.path "f64",
-              M.get_trait_method (| "core::clone::Clone", Ty.path "f64", [], [], "clone", [], [] |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+        M.value_with_ty
+          (Value.StructTuple
+            "generics_phantom_type_test_case_unit_clarification::Length"
+            [
+              M.call_closure (|
+                Ty.path "f64",
+                M.get_trait_method (|
+                  "core::clone::Clone",
+                  Ty.path "f64",
+                  [],
+                  [],
+                  "clone",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| self |) |),
-                        "generics_phantom_type_test_case_unit_clarification::Length",
-                        0
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_tuple_field (|
+                            M.deref (| M.read (| self |) |),
+                            "generics_phantom_type_test_case_unit_clarification::Length",
+                            0
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |)
-              ]
-            |);
-            M.call_closure (|
-              Ty.apply (Ty.path "core::marker::PhantomData") [] [ Unit ],
-              M.get_trait_method (|
-                "core::clone::Clone",
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "f64" ])
+                ]
+              |);
+              M.call_closure (|
                 Ty.apply (Ty.path "core::marker::PhantomData") [] [ Unit ],
-                [],
-                [],
-                "clone",
-                [],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+                M.get_trait_method (|
+                  "core::clone::Clone",
+                  Ty.apply (Ty.path "core::marker::PhantomData") [] [ Unit ],
+                  [],
+                  [],
+                  "clone",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| self |) |),
-                        "generics_phantom_type_test_case_unit_clarification::Length",
-                        1
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_tuple_field (|
+                            M.deref (| M.read (| self |) |),
+                            "generics_phantom_type_test_case_unit_clarification::Length",
+                            1
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |)
-              ]
-            |)
-          ]))
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ Unit ] ])
+                ]
+              |)
+            ])
+          (Ty.apply
+            (Ty.path "generics_phantom_type_test_case_unit_clarification::Length")
+            []
+            [ Unit ])))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -423,33 +449,38 @@ Module Impl_core_ops_arith_Add_generics_phantom_type_test_case_unit_clarificatio
               [ Unit ],
             rhs
           |) in
-        Value.StructTuple
-          "generics_phantom_type_test_case_unit_clarification::Length"
-          []
-          [ Unit ]
-          [
-            M.call_closure (|
-              Ty.path "f64",
-              BinOp.Wrap.add,
-              [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (|
-                    self,
-                    "generics_phantom_type_test_case_unit_clarification::Length",
-                    0
+        M.value_with_ty
+          (Value.StructTuple
+            "generics_phantom_type_test_case_unit_clarification::Length"
+            [
+              M.call_closure (|
+                Ty.path "f64",
+                BinOp.Wrap.add,
+                [
+                  M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "generics_phantom_type_test_case_unit_clarification::Length",
+                      0
+                    |)
+                  |);
+                  M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      rhs,
+                      "generics_phantom_type_test_case_unit_clarification::Length",
+                      0
+                    |)
                   |)
-                |);
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (|
-                    rhs,
-                    "generics_phantom_type_test_case_unit_clarification::Length",
-                    0
-                  |)
-                |)
-              ]
-            |);
-            Value.StructTuple "core::marker::PhantomData" [] [ Unit ] []
-          ]))
+                ]
+              |);
+              M.value_with_ty
+                (Value.StructTuple "core::marker::PhantomData" [])
+                (Ty.apply (Ty.path "core::marker::PhantomData") [] [ Unit ])
+            ])
+          (Ty.apply
+            (Ty.path "generics_phantom_type_test_case_unit_clarification::Length")
+            []
+            [ Unit ])))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -499,35 +530,43 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               (Ty.path "generics_phantom_type_test_case_unit_clarification::Length")
               []
               [ Ty.path "generics_phantom_type_test_case_unit_clarification::Inch" ] :=
-          Value.StructTuple
-            "generics_phantom_type_test_case_unit_clarification::Length"
-            []
-            [ Ty.path "generics_phantom_type_test_case_unit_clarification::Inch" ]
-            [
-              M.read (| UnsupportedLiteral |);
-              Value.StructTuple
-                "core::marker::PhantomData"
-                []
-                [ Ty.path "generics_phantom_type_test_case_unit_clarification::Inch" ]
-                []
-            ] in
+          M.value_with_ty
+            (Value.StructTuple
+              "generics_phantom_type_test_case_unit_clarification::Length"
+              [
+                M.read (| UnsupportedLiteral |);
+                M.value_with_ty
+                  (Value.StructTuple "core::marker::PhantomData" [])
+                  (Ty.apply
+                    (Ty.path "core::marker::PhantomData")
+                    []
+                    [ Ty.path "generics_phantom_type_test_case_unit_clarification::Inch" ])
+              ])
+            (Ty.apply
+              (Ty.path "generics_phantom_type_test_case_unit_clarification::Length")
+              []
+              [ Ty.path "generics_phantom_type_test_case_unit_clarification::Inch" ]) in
         let~ one_meter :
             Ty.apply
               (Ty.path "generics_phantom_type_test_case_unit_clarification::Length")
               []
               [ Ty.path "generics_phantom_type_test_case_unit_clarification::Mm" ] :=
-          Value.StructTuple
-            "generics_phantom_type_test_case_unit_clarification::Length"
-            []
-            [ Ty.path "generics_phantom_type_test_case_unit_clarification::Mm" ]
-            [
-              M.read (| UnsupportedLiteral |);
-              Value.StructTuple
-                "core::marker::PhantomData"
-                []
-                [ Ty.path "generics_phantom_type_test_case_unit_clarification::Mm" ]
-                []
-            ] in
+          M.value_with_ty
+            (Value.StructTuple
+              "generics_phantom_type_test_case_unit_clarification::Length"
+              [
+                M.read (| UnsupportedLiteral |);
+                M.value_with_ty
+                  (Value.StructTuple "core::marker::PhantomData" [])
+                  (Ty.apply
+                    (Ty.path "core::marker::PhantomData")
+                    []
+                    [ Ty.path "generics_phantom_type_test_case_unit_clarification::Mm" ])
+              ])
+            (Ty.apply
+              (Ty.path "generics_phantom_type_test_case_unit_clarification::Length")
+              []
+              [ Ty.path "generics_phantom_type_test_case_unit_clarification::Mm" ]) in
         let~ two_feet :
             Ty.apply
               (Ty.path "generics_phantom_type_test_case_unit_clarification::Length")
@@ -555,7 +594,20 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               [],
               []
             |),
-            [ M.read (| one_foot |); M.read (| one_foot |) ]
+            [
+              M.value_with_ty
+                (M.read (| one_foot |))
+                (Ty.apply
+                  (Ty.path "generics_phantom_type_test_case_unit_clarification::Length")
+                  []
+                  [ Ty.path "generics_phantom_type_test_case_unit_clarification::Inch" ]);
+              M.value_with_ty
+                (M.read (| one_foot |))
+                (Ty.apply
+                  (Ty.path "generics_phantom_type_test_case_unit_clarification::Length")
+                  []
+                  [ Ty.path "generics_phantom_type_test_case_unit_clarification::Inch" ])
+            ]
           |) in
         let~ two_meters :
             Ty.apply
@@ -584,7 +636,20 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               [],
               []
             |),
-            [ M.read (| one_meter |); M.read (| one_meter |) ]
+            [
+              M.value_with_ty
+                (M.read (| one_meter |))
+                (Ty.apply
+                  (Ty.path "generics_phantom_type_test_case_unit_clarification::Length")
+                  []
+                  [ Ty.path "generics_phantom_type_test_case_unit_clarification::Mm" ]);
+              M.value_with_ty
+                (M.read (| one_meter |))
+                (Ty.apply
+                  (Ty.path "generics_phantom_type_test_case_unit_clarification::Length")
+                  []
+                  [ Ty.path "generics_phantom_type_test_case_unit_clarification::Mm" ])
+            ]
           |) in
         let~ _ : Ty.tuple [] :=
           M.read (|
@@ -593,75 +658,99 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                 Ty.tuple [],
                 M.get_function (| "std::io::stdio::_print", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new_v1",
+                        [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 2 ]
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                  Value.Array
+                                    [ mk_str (| "one foot + one_foot = " |); mk_str (| " in
+" |) ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array
-                                [ mk_str (| "one foot + one_foot = " |); mk_str (| " in
-" |) ]
-                            |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            ]);
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ],
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_debug",
+                                          [],
+                                          [ Ty.path "f64" ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_struct_tuple_field (|
+                                                    two_feet,
+                                                    "generics_phantom_type_test_case_unit_clarification::Length",
+                                                    0
+                                                  |)
+                                                |)
+                                              |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "f64" ])
+                                        ]
+                                      |)
+                                    ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_debug",
-                                      [],
-                                      [ Ty.path "f64" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_tuple_field (|
-                                              two_feet,
-                                              "generics_phantom_type_test_case_unit_clarification::Length",
-                                              0
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
+                                [ Ty.path "core::fmt::rt::Argument" ]
+                            ])
+                      ]
+                    |))
+                    (Ty.path "core::fmt::Arguments")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -673,75 +762,99 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                 Ty.tuple [],
                 M.get_function (| "std::io::stdio::_print", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new_v1",
+                        [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 2 ]
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                  Value.Array
+                                    [ mk_str (| "one meter + one_meter = " |); mk_str (| " mm
+" |) ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array
-                                [ mk_str (| "one meter + one_meter = " |); mk_str (| " mm
-" |) ]
-                            |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            ]);
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ],
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_debug",
+                                          [],
+                                          [ Ty.path "f64" ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_struct_tuple_field (|
+                                                    two_meters,
+                                                    "generics_phantom_type_test_case_unit_clarification::Length",
+                                                    0
+                                                  |)
+                                                |)
+                                              |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "f64" ])
+                                        ]
+                                      |)
+                                    ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_debug",
-                                      [],
-                                      [ Ty.path "f64" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_tuple_field (|
-                                              two_meters,
-                                              "generics_phantom_type_test_case_unit_clarification::Length",
-                                              0
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
+                                [ Ty.path "core::fmt::rt::Argument" ]
+                            ])
+                      ]
+                    |))
+                    (Ty.path "core::fmt::Arguments")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)

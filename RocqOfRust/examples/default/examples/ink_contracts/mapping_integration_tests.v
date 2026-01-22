@@ -23,40 +23,40 @@ Module Impl_core_default_Default_where_core_default_Default_K_where_core_default
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "mapping_integration_tests::Mapping"
-          []
-          [ K; V ]
-          [
-            ("_key",
-              M.call_closure (|
-                Ty.apply (Ty.path "core::marker::PhantomData") [] [ K ],
-                M.get_trait_method (|
-                  "core::default::Default",
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "mapping_integration_tests::Mapping"
+            [
+              ("_key",
+                M.call_closure (|
                   Ty.apply (Ty.path "core::marker::PhantomData") [] [ K ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply (Ty.path "core::marker::PhantomData") [] [ K ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("_value",
-              M.call_closure (|
-                Ty.apply (Ty.path "core::marker::PhantomData") [] [ V ],
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("_value",
+                M.call_closure (|
                   Ty.apply (Ty.path "core::marker::PhantomData") [] [ V ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply (Ty.path "core::marker::PhantomData") [] [ V ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |))
-          ]))
+                |))
+            ])
+          (Ty.apply (Ty.path "mapping_integration_tests::Mapping") [] [ K; V ])))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -97,7 +97,11 @@ Module Impl_mapping_integration_tests_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -132,7 +136,11 @@ Module Impl_mapping_integration_tests_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -168,7 +176,11 @@ Module Impl_mapping_integration_tests_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -194,7 +206,11 @@ Module Impl_mapping_integration_tests_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -229,7 +245,11 @@ Module Impl_mapping_integration_tests_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -264,7 +284,11 @@ Module Impl_mapping_integration_tests_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -299,7 +323,11 @@ Module Impl_mapping_integration_tests_Mapping_K_V.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -328,25 +356,25 @@ Module Impl_core_default_Default_for_mapping_integration_tests_AccountId.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.StructTuple
-          "mapping_integration_tests::AccountId"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.path "u128",
-              M.get_trait_method (|
-                "core::default::Default",
+        (M.value_with_ty
+          (Value.StructTuple
+            "mapping_integration_tests::AccountId"
+            [
+              M.call_closure (|
                 Ty.path "u128",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "u128",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
-          ]))
+              |)
+            ])
+          (Ty.path "mapping_integration_tests::AccountId")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -466,32 +494,32 @@ Module Impl_core_default_Default_for_mapping_integration_tests_Mappings.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "mapping_integration_tests::Mappings"
-          []
-          []
-          [
-            ("balances",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "mapping_integration_tests::Mapping")
-                  []
-                  [ Ty.path "mapping_integration_tests::AccountId"; Ty.path "u128" ],
-                M.get_trait_method (|
-                  "core::default::Default",
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "mapping_integration_tests::Mappings"
+            [
+              ("balances",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "mapping_integration_tests::Mapping")
                     []
                     [ Ty.path "mapping_integration_tests::AccountId"; Ty.path "u128" ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply
+                      (Ty.path "mapping_integration_tests::Mapping")
+                      []
+                      [ Ty.path "mapping_integration_tests::AccountId"; Ty.path "u128" ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |))
-          ]))
+                |))
+            ])
+          (Ty.path "mapping_integration_tests::Mappings")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -520,7 +548,11 @@ Module Impl_mapping_integration_tests_Mappings.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -543,7 +575,11 @@ Module Impl_mapping_integration_tests_Mappings.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -590,11 +626,11 @@ Module Impl_mapping_integration_tests_Mappings.
             |) in
           M.alloc (|
             Ty.path "mapping_integration_tests::Mappings",
-            Value.mkStructRecord
-              "mapping_integration_tests::Mappings"
-              []
-              []
-              [ ("balances", M.read (| balances |)) ]
+            M.value_with_ty
+              (Value.mkStructRecord
+                "mapping_integration_tests::Mappings"
+                [ ("balances", M.read (| balances |)) ])
+              (Ty.path "mapping_integration_tests::Mappings")
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -630,22 +666,24 @@ Module Impl_mapping_integration_tests_Mappings.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "mapping_integration_tests::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "mapping_integration_tests::Env",
-                      M.get_associated_function (|
-                        Ty.path "mapping_integration_tests::Mappings",
-                        "env",
-                        [],
+                      M.call_closure (|
+                        Ty.path "mapping_integration_tests::Env",
+                        M.get_associated_function (|
+                          Ty.path "mapping_integration_tests::Mappings",
+                          "env",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "mapping_integration_tests::Env" ])
               ]
             |) in
           M.alloc (|
@@ -662,18 +700,30 @@ Module Impl_mapping_integration_tests_Mappings.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "mapping_integration_tests::Mappings",
-                    "balances"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, caller |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "mapping_integration_tests::Mappings",
+                      "balances"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "mapping_integration_tests::Mapping")
+                        []
+                        [ Ty.path "mapping_integration_tests::AccountId"; Ty.path "u128" ]
+                    ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, caller |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "mapping_integration_tests::AccountId" ])
               ]
             |)
           |)
@@ -713,22 +763,24 @@ Module Impl_mapping_integration_tests_Mappings.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "mapping_integration_tests::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "mapping_integration_tests::Env",
-                      M.get_associated_function (|
-                        Ty.path "mapping_integration_tests::Mappings",
-                        "env",
-                        [],
+                      M.call_closure (|
+                        Ty.path "mapping_integration_tests::Env",
+                        M.get_associated_function (|
+                          Ty.path "mapping_integration_tests::Mappings",
+                          "env",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "mapping_integration_tests::Env" ])
               ]
             |) in
           M.alloc (|
@@ -745,16 +797,28 @@ Module Impl_mapping_integration_tests_Mappings.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "mapping_integration_tests::Mappings",
-                    "balances"
-                  |)
-                |);
-                M.read (| caller |);
-                M.read (| value |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "mapping_integration_tests::Mappings",
+                      "balances"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "mapping_integration_tests::Mapping")
+                        []
+                        [ Ty.path "mapping_integration_tests::AccountId"; Ty.path "u128" ]
+                    ]);
+                M.value_with_ty
+                  (M.read (| caller |))
+                  (Ty.path "mapping_integration_tests::AccountId");
+                M.value_with_ty (M.read (| value |)) (Ty.path "u128")
               ]
             |)
           |)
@@ -793,22 +857,24 @@ Module Impl_mapping_integration_tests_Mappings.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "mapping_integration_tests::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "mapping_integration_tests::Env",
-                      M.get_associated_function (|
-                        Ty.path "mapping_integration_tests::Mappings",
-                        "env",
-                        [],
+                      M.call_closure (|
+                        Ty.path "mapping_integration_tests::Env",
+                        M.get_associated_function (|
+                          Ty.path "mapping_integration_tests::Mappings",
+                          "env",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "mapping_integration_tests::Env" ])
               ]
             |) in
           M.alloc (|
@@ -825,15 +891,27 @@ Module Impl_mapping_integration_tests_Mappings.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "mapping_integration_tests::Mappings",
-                    "balances"
-                  |)
-                |);
-                M.read (| caller |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "mapping_integration_tests::Mappings",
+                      "balances"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "mapping_integration_tests::Mapping")
+                        []
+                        [ Ty.path "mapping_integration_tests::AccountId"; Ty.path "u128" ]
+                    ]);
+                M.value_with_ty
+                  (M.read (| caller |))
+                  (Ty.path "mapping_integration_tests::AccountId")
               ]
             |)
           |)
@@ -872,22 +950,24 @@ Module Impl_mapping_integration_tests_Mappings.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "mapping_integration_tests::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "mapping_integration_tests::Env",
-                      M.get_associated_function (|
-                        Ty.path "mapping_integration_tests::Mappings",
-                        "env",
-                        [],
+                      M.call_closure (|
+                        Ty.path "mapping_integration_tests::Env",
+                        M.get_associated_function (|
+                          Ty.path "mapping_integration_tests::Mappings",
+                          "env",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "mapping_integration_tests::Env" ])
               ]
             |) in
           M.alloc (|
@@ -904,18 +984,30 @@ Module Impl_mapping_integration_tests_Mappings.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "mapping_integration_tests::Mappings",
-                    "balances"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, caller |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "mapping_integration_tests::Mappings",
+                      "balances"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "mapping_integration_tests::Mapping")
+                        []
+                        [ Ty.path "mapping_integration_tests::AccountId"; Ty.path "u128" ]
+                    ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, caller |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "mapping_integration_tests::AccountId" ])
               ]
             |)
           |)
@@ -954,22 +1046,24 @@ Module Impl_mapping_integration_tests_Mappings.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "mapping_integration_tests::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "mapping_integration_tests::Env",
-                      M.get_associated_function (|
-                        Ty.path "mapping_integration_tests::Mappings",
-                        "env",
-                        [],
+                      M.call_closure (|
+                        Ty.path "mapping_integration_tests::Env",
+                        M.get_associated_function (|
+                          Ty.path "mapping_integration_tests::Mappings",
+                          "env",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "mapping_integration_tests::Env" ])
               ]
             |) in
           let~ _ : Ty.tuple [] :=
@@ -985,15 +1079,27 @@ Module Impl_mapping_integration_tests_Mappings.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "mapping_integration_tests::Mappings",
-                    "balances"
-                  |)
-                |);
-                M.read (| caller |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "mapping_integration_tests::Mappings",
+                      "balances"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "mapping_integration_tests::Mapping")
+                        []
+                        [ Ty.path "mapping_integration_tests::AccountId"; Ty.path "u128" ]
+                    ]);
+                M.value_with_ty
+                  (M.read (| caller |))
+                  (Ty.path "mapping_integration_tests::AccountId")
               ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1032,22 +1138,24 @@ Module Impl_mapping_integration_tests_Mappings.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "mapping_integration_tests::Env",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "mapping_integration_tests::Env",
-                      M.get_associated_function (|
-                        Ty.path "mapping_integration_tests::Mappings",
-                        "env",
-                        [],
+                      M.call_closure (|
+                        Ty.path "mapping_integration_tests::Env",
+                        M.get_associated_function (|
+                          Ty.path "mapping_integration_tests::Mappings",
+                          "env",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "mapping_integration_tests::Env" ])
               ]
             |) in
           M.alloc (|
@@ -1064,15 +1172,27 @@ Module Impl_mapping_integration_tests_Mappings.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "mapping_integration_tests::Mappings",
-                    "balances"
-                  |)
-                |);
-                M.read (| caller |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "mapping_integration_tests::Mappings",
+                      "balances"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "mapping_integration_tests::Mapping")
+                        []
+                        [ Ty.path "mapping_integration_tests::AccountId"; Ty.path "u128" ]
+                    ]);
+                M.value_with_ty
+                  (M.read (| caller |))
+                  (Ty.path "mapping_integration_tests::AccountId")
               ]
             |)
           |)

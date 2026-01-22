@@ -24,8 +24,14 @@ Module bool.
                 ltac:(M.monadic
                   (let γ := M.use self in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple "core::option::Option::Some" [] [ T ] [ M.read (| t |) ]));
-              fun γ => ltac:(M.monadic (Value.StructTuple "core::option::Option::None" [] [ T ] []))
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| t |) ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ T ])));
+              fun γ =>
+                ltac:(M.monadic
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ T ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -55,26 +61,33 @@ Module bool.
                 ltac:(M.monadic
                   (let γ := M.use self in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ T ]
-                    [
-                      M.call_closure (|
-                        T,
-                        M.get_trait_method (|
-                          "core::ops::function::FnOnce",
-                          F,
-                          [],
-                          [ Ty.tuple [] ],
-                          "call_once",
-                          [],
-                          []
-                        |),
-                        [ M.read (| f |); Value.Tuple [] ]
-                      |)
-                    ]));
-              fun γ => ltac:(M.monadic (Value.StructTuple "core::option::Option::None" [] [ T ] []))
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.call_closure (|
+                          T,
+                          M.get_trait_method (|
+                            "core::ops::function::FnOnce",
+                            F,
+                            [],
+                            [ Ty.tuple [] ],
+                            "call_once",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty (M.read (| f |)) F;
+                            M.value_with_ty (Value.Tuple []) (Ty.tuple [])
+                          ]
+                        |)
+                      ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ T ])));
+              fun γ =>
+                ltac:(M.monadic
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ T ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

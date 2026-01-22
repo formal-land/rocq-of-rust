@@ -44,7 +44,7 @@ Module FeeCalculator.
   Global Instance IsLink : Link t := {
     Φ := Ty.path "pinocchio::sysvars::fees::FeeCalculator";
     φ x :=
-      Value.StructRecord "pinocchio::sysvars::fees::FeeCalculator" [] [] [
+      Value.StructRecord "pinocchio::sysvars::fees::FeeCalculator" [
         ("lamports_per_signature", φ x.(lamports_per_signature))
       ];
   }.
@@ -63,7 +63,7 @@ Module FeeRateGovernor.
   Global Instance IsLink : Link t := {
     Φ := Ty.path "pinocchio::sysvars::fees::FeeRateGovernor";
     φ x :=
-      Value.StructRecord "pinocchio::sysvars::fees::FeeRateGovernor" [] [] [
+      Value.StructRecord "pinocchio::sysvars::fees::FeeRateGovernor" [
         ("lamports_per_signature", φ x.(lamports_per_signature));
         ("target_lamports_per_signature", φ x.(target_lamports_per_signature));
         ("target_signatures_per_slot", φ x.(target_signatures_per_slot));
@@ -83,7 +83,7 @@ Module Fees.
   Global Instance IsLink : Link t := {
     Φ := Ty.path "pinocchio::sysvars::fees::Fees";
     φ x :=
-      Value.StructRecord "pinocchio::sysvars::fees::Fees" [] [] [
+      Value.StructRecord "pinocchio::sysvars::fees::Fees" [
         ("fee_calculator", φ x.(fee_calculator));
         ("fee_rate_governor", φ x.(fee_rate_governor))
       ];

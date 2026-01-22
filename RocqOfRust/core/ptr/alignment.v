@@ -95,22 +95,26 @@ Module ptr.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::ptr::alignment::Alignment",
-                    0
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| other |) |),
-                    "core::ptr::alignment::Alignment",
-                    0
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::ptr::alignment::Alignment",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::ptr::alignment::AlignmentEnum" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| other |) |),
+                      "core::ptr::alignment::Alignment",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::ptr::alignment::AlignmentEnum" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -214,11 +218,15 @@ Module ptr.
         ltac:(M.monadic
           (M.alloc (|
             Ty.path "core::ptr::alignment::Alignment",
-            Value.StructTuple
-              "core::ptr::alignment::Alignment"
-              []
-              []
-              [ Value.StructTuple "core::ptr::alignment::AlignmentEnum::_Align1Shl0" [] [] [] ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::ptr::alignment::Alignment"
+                [
+                  M.value_with_ty
+                    (Value.StructTuple "core::ptr::alignment::AlignmentEnum::_Align1Shl0" [])
+                    (Ty.path "core::ptr::alignment::AlignmentEnum")
+                ])
+              (Ty.path "core::ptr::alignment::Alignment")
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
@@ -244,11 +252,13 @@ Module ptr.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_function (| "core::mem::align_of", [], [ T ] |),
-                  []
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    M.get_function (| "core::mem::align_of", [], [ T ] |),
+                    []
+                  |))
+                  (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -294,33 +304,37 @@ Module ptr.
                               [],
                               []
                             |),
-                            [ M.read (| align |) ]
+                            [ M.value_with_ty (M.read (| align |)) (Ty.path "usize") ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "core::ptr::alignment::Alignment" ]
-                      [
-                        M.call_closure (|
-                          Ty.path "core::ptr::alignment::Alignment",
-                          M.get_associated_function (|
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.call_closure (|
                             Ty.path "core::ptr::alignment::Alignment",
-                            "new_unchecked",
-                            [],
-                            []
-                          |),
-                          [ M.read (| align |) ]
-                        |)
-                      ]));
+                            M.get_associated_function (|
+                              Ty.path "core::ptr::alignment::Alignment",
+                              "new_unchecked",
+                              [],
+                              []
+                            |),
+                            [ M.value_with_ty (M.read (| align |)) (Ty.path "usize") ]
+                          |)
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::ptr::alignment::Alignment" ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.path "core::ptr::alignment::Alignment" ]
-                      []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "core::ptr::alignment::Alignment" ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -377,7 +391,7 @@ Module ptr.
                                 [],
                                 []
                               |),
-                              [ M.read (| align |) ]
+                              [ M.value_with_ty (M.read (| align |)) (Ty.path "usize") ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)));
@@ -393,7 +407,7 @@ Module ptr.
                     [],
                     [ Ty.path "usize"; Ty.path "core::ptr::alignment::Alignment" ]
                   |),
-                  [ M.read (| align |) ]
+                  [ M.value_with_ty (M.read (| align |)) (Ty.path "usize") ]
                 |)
               |)
             |)))
@@ -448,16 +462,22 @@ Module ptr.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (|
-                    Ty.path "core::ptr::alignment::Alignment",
-                    "as_usize",
-                    [],
-                    []
-                  |),
-                  [ M.read (| self |) ]
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (|
+                      Ty.path "core::ptr::alignment::Alignment",
+                      "as_usize",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.path "core::ptr::alignment::Alignment")
+                    ]
+                  |))
+                  (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -487,16 +507,22 @@ Module ptr.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
-                    Ty.path "core::ptr::alignment::Alignment",
-                    "as_nonzero",
-                    [],
-                    []
-                  |),
-                  [ M.read (| self |) ]
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                    M.get_associated_function (|
+                      Ty.path "core::ptr::alignment::Alignment",
+                      "as_nonzero",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.path "core::ptr::alignment::Alignment")
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -525,17 +551,23 @@ Module ptr.
                   Ty.path "usize",
                   M.get_associated_function (| Ty.path "usize", "unchecked_sub", [], [] |),
                   [
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.path "core::ptr::alignment::Alignment",
-                        "as_usize",
-                        [],
-                        []
-                      |),
-                      [ M.read (| self |) ]
-                    |);
-                    Value.Integer IntegerKind.Usize 1
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        M.get_associated_function (|
+                          Ty.path "core::ptr::alignment::Alignment",
+                          "as_usize",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| self |))
+                            (Ty.path "core::ptr::alignment::Alignment")
+                        ]
+                      |))
+                      (Ty.path "usize");
+                    M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
                   ]
                 |)
               ]
@@ -580,7 +612,11 @@ Module ptr.
                                   [],
                                   []
                                 |),
-                                [ M.read (| a |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| a |))
+                                    (Ty.path "core::ptr::alignment::Alignment")
+                                ]
                               |);
                               M.call_closure (|
                                 Ty.path "usize",
@@ -590,7 +626,11 @@ Module ptr.
                                   [],
                                   []
                                 |),
-                                [ M.read (| b |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| b |))
+                                    (Ty.path "core::ptr::alignment::Alignment")
+                                ]
                               |)
                             ]
                           |)
@@ -634,126 +674,174 @@ Module ptr.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 3; Value.Integer IntegerKind.Usize 2 ],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Arguments",
+                      "new_v1",
+                      [ Value.Integer IntegerKind.Usize 3; Value.Integer IntegerKind.Usize 2 ],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 3 ]
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                Value.Array
+                                  [ mk_str (| "" |); mk_str (| " (1 << " |); mk_str (| ")" |) ]
+                              |)
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 3 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array
-                              [ mk_str (| "" |); mk_str (| " (1 << " |); mk_str (| ")" |) ]
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 2 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            Value.Array
-                              [
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_debug",
-                                    [],
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::num::nonzero::NonZero")
-                                        []
-                                        [ Ty.path "usize" ]
-                                    ]
-                                  |),
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 2 ]
+                                  [ Ty.path "core::fmt::rt::Argument" ],
+                                Value.Array
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.alloc (|
-                                            Ty.apply
-                                              (Ty.path "core::num::nonzero::NonZero")
-                                              []
-                                              [ Ty.path "usize" ],
-                                            M.call_closure (|
+                                    M.call_closure (|
+                                      Ty.path "core::fmt::rt::Argument",
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        "new_debug",
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::num::nonzero::NonZero")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.alloc (|
+                                                  Ty.apply
+                                                    (Ty.path "core::num::nonzero::NonZero")
+                                                    []
+                                                    [ Ty.path "usize" ],
+                                                  M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "core::num::nonzero::NonZero")
+                                                      []
+                                                      [ Ty.path "usize" ],
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::ptr::alignment::Alignment",
+                                                      "as_nonzero",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (|
+                                                          M.deref (| M.read (| self |) |)
+                                                        |))
+                                                        (Ty.path "core::ptr::alignment::Alignment")
+                                                    ]
+                                                  |)
+                                                |)
+                                              |)
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::nonzero::NonZero")
                                                 []
-                                                [ Ty.path "usize" ],
-                                              M.get_associated_function (|
-                                                Ty.path "core::ptr::alignment::Alignment",
-                                                "as_nonzero",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                                                [ Ty.path "usize" ]
+                                            ])
+                                      ]
+                                    |);
+                                    M.call_closure (|
+                                      Ty.path "core::fmt::rt::Argument",
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        "new_debug",
+                                        [],
+                                        [ Ty.path "u32" ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.alloc (|
+                                                  Ty.path "u32",
+                                                  M.call_closure (|
+                                                    Ty.path "u32",
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::ptr::alignment::Alignment",
+                                                      "log2",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (|
+                                                          M.deref (| M.read (| self |) |)
+                                                        |))
+                                                        (Ty.path "core::ptr::alignment::Alignment")
+                                                    ]
+                                                  |)
+                                                |)
+                                              |)
                                             |)
-                                          |)
-                                        |)
-                                      |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                                      ]
                                     |)
                                   ]
-                                |);
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_debug",
-                                    [],
-                                    [ Ty.path "u32" ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.alloc (|
-                                            Ty.path "u32",
-                                            M.call_closure (|
-                                              Ty.path "u32",
-                                              M.get_associated_function (|
-                                                Ty.path "core::ptr::alignment::Alignment",
-                                                "log2",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |)
-                              ]
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 2 ]
+                              [ Ty.path "core::fmt::rt::Argument" ]
+                          ])
+                    ]
+                  |))
+                  (Ty.path "core::fmt::Arguments")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -806,16 +894,22 @@ Module ptr.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
-                    "get",
-                    [],
-                    []
-                  |),
-                  [ M.read (| align |) ]
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                      "get",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| align |))
+                        (Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ])
+                    ]
+                  |))
+                  (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -866,20 +960,29 @@ Module ptr.
                 [ Ty.path "core::num::error::TryFromIntError" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "core::ptr::alignment::Alignment" ],
+                    M.get_associated_function (|
+                      Ty.path "core::ptr::alignment::Alignment",
+                      "new",
+                      [],
+                      []
+                    |),
+                    [ M.value_with_ty (M.read (| align |)) (Ty.path "usize") ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::option::Option")
                     []
-                    [ Ty.path "core::ptr::alignment::Alignment" ],
-                  M.get_associated_function (|
-                    Ty.path "core::ptr::alignment::Alignment",
-                    "new",
-                    [],
-                    []
-                  |),
-                  [ M.read (| align |) ]
-                |);
-                Value.StructTuple "core::num::error::TryFromIntError" [] [] [ Value.Tuple [] ]
+                    [ Ty.path "core::ptr::alignment::Alignment" ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple "core::num::error::TryFromIntError" [ Value.Tuple [] ])
+                    (Ty.path "core::num::error::TryFromIntError"))
+                  (Ty.path "core::num::error::TryFromIntError")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -917,7 +1020,7 @@ Module ptr.
                 [],
                 []
               |),
-              [ M.read (| align |) ]
+              [ M.value_with_ty (M.read (| align |)) (Ty.path "core::ptr::alignment::Alignment") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -952,7 +1055,7 @@ Module ptr.
                 [],
                 []
               |),
-              [ M.read (| align |) ]
+              [ M.value_with_ty (M.read (| align |)) (Ty.path "core::ptr::alignment::Alignment") ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -992,50 +1095,22 @@ Module ptr.
               Ty.path "core::cmp::Ordering",
               M.get_trait_method (| "core::cmp::Ord", Ty.path "usize", [], [], "cmp", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "usize",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
-                        "get",
-                        [],
-                        []
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
-                          M.get_associated_function (|
-                            Ty.path "core::ptr::alignment::Alignment",
-                            "as_nonzero",
-                            [],
-                            []
-                          |),
-                          [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      ]
-                    |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
+                      M.call_closure (|
                         Ty.path "usize",
-                        M.call_closure (|
-                          Ty.path "usize",
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
-                            "get",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                          "get",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.apply
                                 (Ty.path "core::num::nonzero::NonZero")
                                 []
@@ -1046,14 +1121,70 @@ Module ptr.
                                 [],
                                 []
                               |),
-                              [ M.read (| M.deref (| M.read (| other |) |) |) ]
-                            |)
-                          ]
+                              [
+                                M.value_with_ty
+                                  (M.read (| M.deref (| M.read (| self |) |) |))
+                                  (Ty.path "core::ptr::alignment::Alignment")
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "core::num::nonzero::NonZero")
+                              []
+                              [ Ty.path "usize" ])
+                        ]
+                      |)
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.path "usize",
+                          M.call_closure (|
+                            Ty.path "usize",
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::num::nonzero::NonZero")
+                                []
+                                [ Ty.path "usize" ],
+                              "get",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::num::nonzero::NonZero")
+                                    []
+                                    [ Ty.path "usize" ],
+                                  M.get_associated_function (|
+                                    Ty.path "core::ptr::alignment::Alignment",
+                                    "as_nonzero",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| M.deref (| M.read (| other |) |) |))
+                                      (Ty.path "core::ptr::alignment::Alignment")
+                                  ]
+                                |))
+                                (Ty.apply
+                                  (Ty.path "core::num::nonzero::NonZero")
+                                  []
+                                  [ Ty.path "usize" ])
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1090,28 +1221,32 @@ Module ptr.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::ptr::alignment::Alignment" ],
                 other
               |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_trait_method (|
-                    "core::cmp::Ord",
-                    Ty.path "core::ptr::alignment::Alignment",
-                    [],
-                    [],
-                    "cmp",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_trait_method (|
+                      "core::cmp::Ord",
+                      Ty.path "core::ptr::alignment::Alignment",
+                      [],
+                      [],
+                      "cmp",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "core::ptr::alignment::Alignment" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "core::ptr::alignment::Alignment" ])
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1154,23 +1289,34 @@ Module ptr.
                 [ H ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
-                      M.get_associated_function (|
-                        Ty.path "core::ptr::alignment::Alignment",
-                        "as_nonzero",
-                        [],
-                        []
-                      |),
-                      [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                      M.call_closure (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                        M.get_associated_function (|
+                          Ty.path "core::ptr::alignment::Alignment",
+                          "as_nonzero",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| M.deref (| M.read (| self |) |) |))
+                            (Ty.path "core::ptr::alignment::Alignment")
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ H ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1689,7 +1835,11 @@ Module ptr.
                     [],
                     [ Ty.path "core::ptr::alignment::AlignmentEnum" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::ptr::alignment::AlignmentEnum" ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "u64" :=
                 M.call_closure (|
@@ -1699,7 +1849,11 @@ Module ptr.
                     [],
                     [ Ty.path "core::ptr::alignment::AlignmentEnum" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::ptr::alignment::AlignmentEnum" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "bool",

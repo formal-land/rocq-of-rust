@@ -112,11 +112,17 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             Ty.tuple [],
             M.get_function (| "generics_functions::reg_fn", [], [] |),
             [
-              Value.StructTuple
-                "generics_functions::S"
-                []
-                []
-                [ Value.StructTuple "generics_functions::A" [] [] [] ]
+              M.value_with_ty
+                (M.value_with_ty
+                  (Value.StructTuple
+                    "generics_functions::S"
+                    [
+                      M.value_with_ty
+                        (Value.StructTuple "generics_functions::A" [])
+                        (Ty.path "generics_functions::A")
+                    ])
+                  (Ty.path "generics_functions::S"))
+                (Ty.path "generics_functions::S")
             ]
           |) in
         let~ _ : Ty.tuple [] :=
@@ -124,11 +130,23 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             Ty.tuple [],
             M.get_function (| "generics_functions::gen_spec_t", [], [] |),
             [
-              Value.StructTuple
-                "generics_functions::SGen"
-                []
-                [ Ty.path "generics_functions::A" ]
-                [ Value.StructTuple "generics_functions::A" [] [] [] ]
+              M.value_with_ty
+                (M.value_with_ty
+                  (Value.StructTuple
+                    "generics_functions::SGen"
+                    [
+                      M.value_with_ty
+                        (Value.StructTuple "generics_functions::A" [])
+                        (Ty.path "generics_functions::A")
+                    ])
+                  (Ty.apply
+                    (Ty.path "generics_functions::SGen")
+                    []
+                    [ Ty.path "generics_functions::A" ]))
+                (Ty.apply
+                  (Ty.path "generics_functions::SGen")
+                  []
+                  [ Ty.path "generics_functions::A" ])
             ]
           |) in
         let~ _ : Ty.tuple [] :=
@@ -136,11 +154,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             Ty.tuple [],
             M.get_function (| "generics_functions::gen_spec_i32", [], [] |),
             [
-              Value.StructTuple
-                "generics_functions::SGen"
-                []
-                [ Ty.path "i32" ]
-                [ Value.Integer IntegerKind.I32 6 ]
+              M.value_with_ty
+                (M.value_with_ty
+                  (Value.StructTuple "generics_functions::SGen" [ Value.Integer IntegerKind.I32 6 ])
+                  (Ty.apply (Ty.path "generics_functions::SGen") [] [ Ty.path "i32" ]))
+                (Ty.apply (Ty.path "generics_functions::SGen") [] [ Ty.path "i32" ])
             ]
           |) in
         let~ _ : Ty.tuple [] :=
@@ -148,11 +166,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             Ty.tuple [],
             M.get_function (| "generics_functions::generic", [], [ Ty.path "char" ] |),
             [
-              Value.StructTuple
-                "generics_functions::SGen"
-                []
-                [ Ty.path "char" ]
-                [ Value.UnicodeChar 97 ]
+              M.value_with_ty
+                (M.value_with_ty
+                  (Value.StructTuple "generics_functions::SGen" [ Value.UnicodeChar 97 ])
+                  (Ty.apply (Ty.path "generics_functions::SGen") [] [ Ty.path "char" ]))
+                (Ty.apply (Ty.path "generics_functions::SGen") [] [ Ty.path "char" ])
             ]
           |) in
         let~ _ : Ty.tuple [] :=
@@ -160,11 +178,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             Ty.tuple [],
             M.get_function (| "generics_functions::generic", [], [ Ty.path "char" ] |),
             [
-              Value.StructTuple
-                "generics_functions::SGen"
-                []
-                [ Ty.path "char" ]
-                [ Value.UnicodeChar 99 ]
+              M.value_with_ty
+                (M.value_with_ty
+                  (Value.StructTuple "generics_functions::SGen" [ Value.UnicodeChar 99 ])
+                  (Ty.apply (Ty.path "generics_functions::SGen") [] [ Ty.path "char" ]))
+                (Ty.apply (Ty.path "generics_functions::SGen") [] [ Ty.path "char" ])
             ]
           |) in
         M.alloc (| Ty.tuple [], Value.Tuple [] |)

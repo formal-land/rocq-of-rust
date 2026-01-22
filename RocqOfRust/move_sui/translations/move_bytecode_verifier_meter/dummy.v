@@ -52,11 +52,12 @@ Module dummy.
           let _from := M.alloc (| Ty.path "move_bytecode_verifier_meter::Scope", _from |) in
           let _to := M.alloc (| Ty.path "move_bytecode_verifier_meter::Scope", _to |) in
           let _factor := M.alloc (| Ty.path "f32", _factor |) in
-          Value.StructTuple
-            "core::result::Result::Ok"
-            []
-            [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]
-            [ Value.Tuple [] ]))
+          M.value_with_ty
+            (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+            (Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -79,11 +80,12 @@ Module dummy.
             |) in
           let _scope := M.alloc (| Ty.path "move_bytecode_verifier_meter::Scope", _scope |) in
           let _units := M.alloc (| Ty.path "u128", _units |) in
-          Value.StructTuple
-            "core::result::Result::Ok"
-            []
-            [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]
-            [ Value.Tuple [] ]))
+          M.value_with_ty
+            (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+            (Ty.apply
+              (Ty.path "core::result::Result")
+              []
+              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     

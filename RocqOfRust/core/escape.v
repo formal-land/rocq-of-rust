@@ -35,8 +35,46 @@ Module escape.
             []
           |),
           [
-            M.call_closure (|
-              Ty.apply
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 16 ]
+                          [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                      ]
+                  ],
+                M.get_associated_function (|
+                  Ty.apply
+                    (Ty.path "array")
+                    [ Value.Integer IntegerKind.Usize 16 ]
+                    [ Ty.path "u8" ],
+                  "as_ascii",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| UnsupportedLiteral |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 16 ]
+                          [ Ty.path "u8" ]
+                      ])
+                ]
+              |))
+              (Ty.apply
                 (Ty.path "core::option::Option")
                 []
                 [
@@ -49,15 +87,7 @@ Module escape.
                         [ Value.Integer IntegerKind.Usize 16 ]
                         [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
                     ]
-                ],
-              M.get_associated_function (|
-                Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u8" ],
-                "as_ascii",
-                [],
-                []
-              |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| UnsupportedLiteral |) |) |) ]
-            |)
+                ])
           ]
         |)
       |))).
@@ -90,13 +120,17 @@ Module escape.
           let~ output :
               Ty.apply (Ty.path "array") [ N ] [ Ty.path "core::ascii::ascii_char::AsciiChar" ] :=
             lib.repeat (|
-              Value.StructTuple "core::ascii::ascii_char::AsciiChar::Null" [] [] [],
+              M.value_with_ty
+                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::Null" [])
+                (Ty.path "core::ascii::ascii_char::AsciiChar"),
               N
             |) in
           let~ _ : Ty.tuple [] :=
             M.write (|
               M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 0 |),
-              Value.StructTuple "core::ascii::ascii_char::AsciiChar::ReverseSolidus" [] [] []
+              M.value_with_ty
+                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::ReverseSolidus" [])
+                (Ty.path "core::ascii::ascii_char::AsciiChar")
             |) in
           let~ _ : Ty.tuple [] :=
             M.write (|
@@ -112,14 +146,14 @@ Module escape.
             Value.Tuple
               [
                 M.read (| output |);
-                Value.mkStructRecord
-                  "core::ops::range::Range"
-                  []
-                  [ Ty.path "u8" ]
-                  [
-                    ("start", Value.Integer IntegerKind.U8 0);
-                    ("end_", Value.Integer IntegerKind.U8 2)
-                  ]
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::ops::range::Range"
+                    [
+                      ("start", Value.Integer IntegerKind.U8 0);
+                      ("end_", Value.Integer IntegerKind.U8 2)
+                    ])
+                  (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ])
               ]
           |)
         |)))
@@ -159,7 +193,9 @@ Module escape.
           let~ output :
               Ty.apply (Ty.path "array") [ N ] [ Ty.path "core::ascii::ascii_char::AsciiChar" ] :=
             lib.repeat (|
-              Value.StructTuple "core::ascii::ascii_char::AsciiChar::Null" [] [] [],
+              M.value_with_ty
+                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::Null" [])
+                (Ty.path "core::ascii::ascii_char::AsciiChar"),
               N
             |) in
           let~ hi : Ty.path "core::ascii::ascii_char::AsciiChar" :=
@@ -203,12 +239,16 @@ Module escape.
           let~ _ : Ty.tuple [] :=
             M.write (|
               M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 0 |),
-              Value.StructTuple "core::ascii::ascii_char::AsciiChar::ReverseSolidus" [] [] []
+              M.value_with_ty
+                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::ReverseSolidus" [])
+                (Ty.path "core::ascii::ascii_char::AsciiChar")
             |) in
           let~ _ : Ty.tuple [] :=
             M.write (|
               M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 1 |),
-              Value.StructTuple "core::ascii::ascii_char::AsciiChar::SmallX" [] [] []
+              M.value_with_ty
+                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::SmallX" [])
+                (Ty.path "core::ascii::ascii_char::AsciiChar")
             |) in
           let~ _ : Ty.tuple [] :=
             M.write (|
@@ -229,14 +269,14 @@ Module escape.
             Value.Tuple
               [
                 M.read (| output |);
-                Value.mkStructRecord
-                  "core::ops::range::Range"
-                  []
-                  [ Ty.path "u8" ]
-                  [
-                    ("start", Value.Integer IntegerKind.U8 0);
-                    ("end_", Value.Integer IntegerKind.U8 4)
-                  ]
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::ops::range::Range"
+                    [
+                      ("start", Value.Integer IntegerKind.U8 0);
+                      ("end_", Value.Integer IntegerKind.U8 4)
+                    ])
+                  (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ])
               ]
           |)
         |)))
@@ -270,7 +310,9 @@ Module escape.
           let~ output :
               Ty.apply (Ty.path "array") [ N ] [ Ty.path "core::ascii::ascii_char::AsciiChar" ] :=
             lib.repeat (|
-              Value.StructTuple "core::ascii::ascii_char::AsciiChar::Null" [] [] [],
+              M.value_with_ty
+                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::Null" [])
+                (Ty.path "core::ascii::ascii_char::AsciiChar"),
               N
             |) in
           let~ _ : Ty.tuple [] :=
@@ -287,14 +329,14 @@ Module escape.
             Value.Tuple
               [
                 M.read (| output |);
-                Value.mkStructRecord
-                  "core::ops::range::Range"
-                  []
-                  [ Ty.path "u8" ]
-                  [
-                    ("start", Value.Integer IntegerKind.U8 0);
-                    ("end_", Value.Integer IntegerKind.U8 1)
-                  ]
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::ops::range::Range"
+                    [
+                      ("start", Value.Integer IntegerKind.U8 0);
+                      ("end_", Value.Integer IntegerKind.U8 1)
+                    ])
+                  (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ])
               ]
           |)
         |)))
@@ -426,11 +468,13 @@ Module escape.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "u8",
-                  BinOp.Wrap.bit_and,
-                  [ M.read (| lookup |); Value.Integer IntegerKind.U8 127 ]
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "u8",
+                    BinOp.Wrap.bit_and,
+                    [ M.read (| lookup |); Value.Integer IntegerKind.U8 127 ]
+                  |))
+                  (Ty.path "u8")
               ]
             |) in
           M.alloc (|
@@ -496,7 +540,7 @@ Module escape.
                                   Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ]
                                 ],
                               M.get_function (| "core::escape::hex_escape", [ N ], [] |),
-                              [ M.read (| byte |) ]
+                              [ M.value_with_ty (M.read (| byte |)) (Ty.path "u8") ]
                             |)));
                         fun γ =>
                           ltac:(M.monadic
@@ -510,7 +554,11 @@ Module escape.
                                   Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ]
                                 ],
                               M.get_function (| "core::escape::backslash", [ N ], [] |),
-                              [ M.read (| lookup_ascii |) ]
+                              [
+                                M.value_with_ty
+                                  (M.read (| lookup_ascii |))
+                                  (Ty.path "core::ascii::ascii_char::AsciiChar")
+                              ]
                             |)))
                       ]
                     |)));
@@ -526,7 +574,11 @@ Module escape.
                           Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ]
                         ],
                       M.get_function (| "core::escape::verbatim", [ N ], [] |),
-                      [ M.read (| lookup_ascii |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| lookup_ascii |))
+                          (Ty.path "core::ascii::ascii_char::AsciiChar")
+                      ]
                     |)))
               ]
             |)
@@ -789,11 +841,13 @@ Module escape.
                         Ty.path "u32",
                         M.get_associated_function (| Ty.path "u32", "leading_zeros", [], [] |),
                         [
-                          M.call_closure (|
-                            Ty.path "u32",
-                            BinOp.Wrap.bit_or,
-                            [ M.read (| c |); Value.Integer IntegerKind.U32 1 ]
-                          |)
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "u32",
+                              BinOp.Wrap.bit_or,
+                              [ M.read (| c |); Value.Integer IntegerKind.U32 1 ]
+                            |))
+                            (Ty.path "u32")
                         ]
                       |));
                     Value.Integer IntegerKind.Usize 4
@@ -805,7 +859,9 @@ Module escape.
           let~ output :
               Ty.apply (Ty.path "array") [ N ] [ Ty.path "core::ascii::ascii_char::AsciiChar" ] :=
             lib.repeat (|
-              Value.StructTuple "core::ascii::ascii_char::AsciiChar::Null" [] [] [],
+              M.value_with_ty
+                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::Null" [])
+                (Ty.path "core::ascii::ascii_char::AsciiChar"),
               N
             |) in
           let~ _ : Ty.tuple [] :=
@@ -985,7 +1041,9 @@ Module escape.
           let~ _ : Ty.tuple [] :=
             M.write (|
               M.SubPointer.get_array_field (| output, Value.Integer IntegerKind.Usize 9 |),
-              Value.StructTuple "core::ascii::ascii_char::AsciiChar::RightCurlyBracket" [] [] []
+              M.value_with_ty
+                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::RightCurlyBracket" [])
+                (Ty.path "core::ascii::ascii_char::AsciiChar")
             |) in
           let~ _ : Ty.tuple [] :=
             M.write (|
@@ -997,7 +1055,9 @@ Module escape.
                   [ M.read (| start |); Value.Integer IntegerKind.Usize 0 ]
                 |)
               |),
-              Value.StructTuple "core::ascii::ascii_char::AsciiChar::ReverseSolidus" [] [] []
+              M.value_with_ty
+                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::ReverseSolidus" [])
+                (Ty.path "core::ascii::ascii_char::AsciiChar")
             |) in
           let~ _ : Ty.tuple [] :=
             M.write (|
@@ -1009,7 +1069,9 @@ Module escape.
                   [ M.read (| start |); Value.Integer IntegerKind.Usize 1 ]
                 |)
               |),
-              Value.StructTuple "core::ascii::ascii_char::AsciiChar::SmallU" [] [] []
+              M.value_with_ty
+                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::SmallU" [])
+                (Ty.path "core::ascii::ascii_char::AsciiChar")
             |) in
           let~ _ : Ty.tuple [] :=
             M.write (|
@@ -1021,7 +1083,9 @@ Module escape.
                   [ M.read (| start |); Value.Integer IntegerKind.Usize 2 ]
                 |)
               |),
-              Value.StructTuple "core::ascii::ascii_char::AsciiChar::LeftCurlyBracket" [] [] []
+              M.value_with_ty
+                (Value.StructTuple "core::ascii::ascii_char::AsciiChar::LeftCurlyBracket" [])
+                (Ty.path "core::ascii::ascii_char::AsciiChar")
             |) in
           M.alloc (|
             Ty.tuple
@@ -1032,14 +1096,14 @@ Module escape.
             Value.Tuple
               [
                 M.read (| output |);
-                Value.mkStructRecord
-                  "core::ops::range::Range"
-                  []
-                  [ Ty.path "u8" ]
-                  [
-                    ("start", M.cast (Ty.path "u8") (M.read (| start |)));
-                    ("end_", M.cast (Ty.path "u8") N)
-                  ]
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::ops::range::Range"
+                    [
+                      ("start", M.cast (Ty.path "u8") (M.read (| start |)));
+                      ("end_", M.cast (Ty.path "u8") N)
+                    ])
+                  (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ])
               ]
           |)
         |)))
@@ -1082,71 +1146,89 @@ Module escape.
                 [ Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [] ],
               self
             |) in
-          Value.mkStructRecord
-            "core::escape::EscapeIterInner"
-            [ N ]
-            []
-            [
-              ("data",
-                M.call_closure (|
-                  Ty.apply (Ty.path "array") [ N ] [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::escape::EscapeIterInner"
+              [
+                ("data",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "array")
                       [ N ]
                       [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.apply
+                        (Ty.path "array")
+                        [ N ]
+                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::escape::EscapeIterInner",
-                            "data"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::escape::EscapeIterInner",
+                                "data"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("alive",
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ N ]
+                              [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                          ])
+                    ]
+                  |));
+                ("alive",
+                  M.call_closure (|
                     Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::escape::EscapeIterInner",
-                            "alive"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::escape::EscapeIterInner",
+                                "alive"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ] ])
+                    ]
+                  |))
+              ])
+            (Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1192,79 +1274,91 @@ Module escape.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EscapeIterInner" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "data" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ N ]
-                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::escape::EscapeIterInner",
-                          "data"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EscapeIterInner" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "data" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ N ]
+                          [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::escape::EscapeIterInner",
+                            "data"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "alive" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ] ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ] ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::escape::EscapeIterInner",
-                              "alive"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "alive" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ] ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ] ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::escape::EscapeIterInner",
+                                "alive"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1314,7 +1408,7 @@ Module escape.
                     Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ]
                   ],
                 M.get_function (| "core::escape::backslash", [ N ], [] |),
-                [ M.read (| c |) ]
+                [ M.value_with_ty (M.read (| c |)) (Ty.path "core::ascii::ascii_char::AsciiChar") ]
               |)
             |),
             [
@@ -1335,11 +1429,11 @@ Module escape.
                       Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
                       γ0_1
                     |) in
-                  Value.mkStructRecord
-                    "core::escape::EscapeIterInner"
-                    [ N ]
-                    []
-                    [ ("data", M.read (| data |)); ("alive", M.read (| range |)) ]))
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "core::escape::EscapeIterInner"
+                      [ ("data", M.read (| data |)); ("alive", M.read (| range |)) ])
+                    (Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1381,7 +1475,7 @@ Module escape.
                     Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ]
                   ],
                 M.get_function (| "core::escape::escape_ascii", [ N ], [] |),
-                [ M.read (| c |) ]
+                [ M.value_with_ty (M.read (| c |)) (Ty.path "u8") ]
               |)
             |),
             [
@@ -1402,11 +1496,11 @@ Module escape.
                       Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
                       γ0_1
                     |) in
-                  Value.mkStructRecord
-                    "core::escape::EscapeIterInner"
-                    [ N ]
-                    []
-                    [ ("data", M.read (| data |)); ("alive", M.read (| range |)) ]))
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "core::escape::EscapeIterInner"
+                      [ ("data", M.read (| data |)); ("alive", M.read (| range |)) ])
+                    (Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1448,7 +1542,7 @@ Module escape.
                     Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ]
                   ],
                 M.get_function (| "core::escape::escape_unicode", [ N ], [] |),
-                [ M.read (| c |) ]
+                [ M.value_with_ty (M.read (| c |)) (Ty.path "char") ]
               |)
             |),
             [
@@ -1469,11 +1563,11 @@ Module escape.
                       Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
                       γ0_1
                     |) in
-                  Value.mkStructRecord
-                    "core::escape::EscapeIterInner"
-                    [ N ]
-                    []
-                    [ ("data", M.read (| data |)); ("alive", M.read (| range |)) ]))
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "core::escape::EscapeIterInner"
+                      [ ("data", M.read (| data |)); ("alive", M.read (| range |)) ])
+                    (Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1495,26 +1589,28 @@ Module escape.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "core::escape::EscapeIterInner"
-            [ N ]
-            []
-            [
-              ("data",
-                lib.repeat (|
-                  Value.StructTuple "core::ascii::ascii_char::AsciiChar::Null" [] [] [],
-                  N
-                |));
-              ("alive",
-                Value.mkStructRecord
-                  "core::ops::range::Range"
-                  []
-                  [ Ty.path "u8" ]
-                  [
-                    ("start", Value.Integer IntegerKind.U8 0);
-                    ("end_", Value.Integer IntegerKind.U8 0)
-                  ])
-            ]))
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "core::escape::EscapeIterInner"
+              [
+                ("data",
+                  lib.repeat (|
+                    M.value_with_ty
+                      (Value.StructTuple "core::ascii::ascii_char::AsciiChar::Null" [])
+                      (Ty.path "core::ascii::ascii_char::AsciiChar"),
+                    N
+                  |));
+                ("alive",
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "core::ops::range::Range"
+                      [
+                        ("start", Value.Integer IntegerKind.U8 0);
+                        ("end_", Value.Integer IntegerKind.U8 0)
+                      ])
+                    (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ]))
+              ])
+            (Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1561,28 +1657,9 @@ Module escape.
                   [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ]
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "slice")
-                          []
-                          [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                      ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ N ]
-                            [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                        ])
-                      (Ty.apply
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
                         (Ty.path "&")
                         []
                         [
@@ -1590,76 +1667,111 @@ Module escape.
                             (Ty.path "slice")
                             []
                             [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                        ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::escape::EscapeIterInner",
-                          "data"
+                        ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ N ]
+                              [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                          ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::escape::EscapeIterInner",
+                            "data"
+                          |)
                         |)
-                      |)
-                    ]
-                  |);
-                  Value.mkStructRecord
-                    "core::ops::range::Range"
-                    []
-                    [ Ty.path "usize" ]
-                    [
-                      ("start",
-                        M.call_closure (|
-                          Ty.path "usize",
-                          M.get_trait_method (|
-                            "core::convert::From",
-                            Ty.path "usize",
-                            [],
-                            [ Ty.path "u8" ],
-                            "from",
-                            [],
-                            []
-                          |),
-                          [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::escape::EscapeIterInner",
-                                  "alive"
-                                |),
-                                "core::ops::range::Range",
-                                "start"
-                              |)
-                            |)
-                          ]
-                        |));
-                      ("end_",
-                        M.call_closure (|
-                          Ty.path "usize",
-                          M.get_trait_method (|
-                            "core::convert::From",
-                            Ty.path "usize",
-                            [],
-                            [ Ty.path "u8" ],
-                            "from",
-                            [],
-                            []
-                          |),
-                          [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::escape::EscapeIterInner",
-                                  "alive"
-                                |),
-                                "core::ops::range::Range",
-                                "end"
-                              |)
-                            |)
-                          ]
-                        |))
-                    ]
+                      ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "slice")
+                          []
+                          [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                      ]);
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.mkStructRecord
+                        "core::ops::range::Range"
+                        [
+                          ("start",
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_trait_method (|
+                                "core::convert::From",
+                                Ty.path "usize",
+                                [],
+                                [ Ty.path "u8" ],
+                                "from",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::escape::EscapeIterInner",
+                                        "alive"
+                                      |),
+                                      "core::ops::range::Range",
+                                      "start"
+                                    |)
+                                  |))
+                                  (Ty.path "u8")
+                              ]
+                            |));
+                          ("end_",
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_trait_method (|
+                                "core::convert::From",
+                                Ty.path "usize",
+                                [],
+                                [ Ty.path "u8" ],
+                                "from",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::escape::EscapeIterInner",
+                                        "alive"
+                                      |),
+                                      "core::ops::range::Range",
+                                      "end"
+                                    |)
+                                  |))
+                                  (Ty.path "u8")
+                              ]
+                            |))
+                        ])
+                      (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]))
+                    (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ])
                 ]
               |)
             |)
@@ -1703,29 +1815,46 @@ Module escape.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                            ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [],
+                            "as_ascii",
+                            [],
+                            []
+                          |),
                           [
-                            Ty.apply
-                              (Ty.path "slice")
-                              []
-                              [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                          ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [],
-                          "as_ascii",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "core::escape::EscapeIterInner") [ N ] [] ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "slice")
+                          []
+                          [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                      ])
                 ]
               |)
             |)
@@ -1769,34 +1898,36 @@ Module escape.
               []
             |),
             [
-              M.call_closure (|
-                Ty.path "u8",
-                BinOp.Wrap.sub,
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "u8",
+                  BinOp.Wrap.sub,
+                  [
+                    M.read (|
                       M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::escape::EscapeIterInner",
-                        "alive"
-                      |),
-                      "core::ops::range::Range",
-                      "end"
-                    |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::escape::EscapeIterInner",
+                          "alive"
+                        |),
+                        "core::ops::range::Range",
+                        "end"
+                      |)
+                    |);
+                    M.read (|
                       M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::escape::EscapeIterInner",
-                        "alive"
-                      |),
-                      "core::ops::range::Range",
-                      "start"
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::escape::EscapeIterInner",
+                          "alive"
+                        |),
+                        "core::ops::range::Range",
+                        "start"
+                      |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.path "u8")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1867,28 +1998,40 @@ Module escape.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                            M.get_trait_method (|
-                              "core::iter::traits::iterator::Iterator",
-                              Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
-                              [],
-                              [],
-                              "next",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::escape::EscapeIterInner",
-                                  "alive"
-                                |)
-                              |)
-                            ]
-                          |)
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
+                              M.get_trait_method (|
+                                "core::iter::traits::iterator::Iterator",
+                                Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
+                                [],
+                                [],
+                                "next",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::escape::EscapeIterInner",
+                                      "alive"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ops::range::Range")
+                                        []
+                                        [ Ty.path "u8" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ])
                         ]
                       |)
                     |),
@@ -1928,7 +2071,14 @@ Module escape.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -1947,98 +2097,112 @@ Module escape.
                   |) in
                 M.alloc (|
                   Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "u8" ]
-                    [
-                      M.call_closure (|
-                        Ty.path "u8",
-                        M.get_associated_function (|
-                          Ty.path "core::ascii::ascii_char::AsciiChar",
-                          "to_u8",
-                          [],
-                          []
-                        |),
-                        [
-                          M.read (|
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "slice")
-                                    []
-                                    [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
-                                  "get_unchecked",
-                                  [],
-                                  [ Ty.path "usize" ]
-                                |),
-                                [
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.call_closure (|
+                          Ty.path "u8",
+                          M.get_associated_function (|
+                            Ty.path "core::ascii::ascii_char::AsciiChar",
+                            "to_u8",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (|
+                                M.deref (|
                                   M.call_closure (|
                                     Ty.apply
                                       (Ty.path "&")
                                       []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "slice")
-                                          []
-                                          [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                                      ],
-                                    M.pointer_coercion
-                                      M.PointerCoercion.Unsize
-                                      (Ty.apply
-                                        (Ty.path "&")
+                                      [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "slice")
                                         []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ N ]
-                                            [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                                        ])
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "slice")
-                                            []
-                                            [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                                        ]),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::escape::EscapeIterInner",
-                                          "data"
-                                        |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_trait_method (|
-                                      "core::convert::From",
-                                      Ty.path "usize",
+                                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
+                                      "get_unchecked",
                                       [],
-                                      [ Ty.path "u8" ],
-                                      "from",
-                                      [],
-                                      []
+                                      [ Ty.path "usize" ]
                                     |),
-                                    [ M.read (| i |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "slice")
+                                                []
+                                                [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                                            ],
+                                          M.pointer_coercion
+                                            M.PointerCoercion.Unsize
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ N ]
+                                                  [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "slice")
+                                                  []
+                                                  [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                                              ]),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::escape::EscapeIterInner",
+                                                "data"
+                                              |)
+                                            |)
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "slice")
+                                              []
+                                              [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                                          ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_trait_method (|
+                                            "core::convert::From",
+                                            Ty.path "usize",
+                                            [],
+                                            [ Ty.path "u8" ],
+                                            "from",
+                                            [],
+                                            []
+                                          |),
+                                          [ M.value_with_ty (M.read (| i |)) (Ty.path "u8") ]
+                                        |))
+                                        (Ty.path "usize")
+                                    ]
                                   |)
-                                ]
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
-                    ]
+                                |)
+                              |))
+                              (Ty.path "core::ascii::ascii_char::AsciiChar")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ])
                 |)
               |)))
           |)))
@@ -2110,28 +2274,40 @@ Module escape.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                            M.get_trait_method (|
-                              "core::iter::traits::double_ended::DoubleEndedIterator",
-                              Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
-                              [],
-                              [],
-                              "next_back",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::escape::EscapeIterInner",
-                                  "alive"
-                                |)
-                              |)
-                            ]
-                          |)
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
+                              M.get_trait_method (|
+                                "core::iter::traits::double_ended::DoubleEndedIterator",
+                                Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ],
+                                [],
+                                [],
+                                "next_back",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::escape::EscapeIterInner",
+                                      "alive"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ops::range::Range")
+                                        []
+                                        [ Ty.path "u8" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ])
                         ]
                       |)
                     |),
@@ -2171,7 +2347,14 @@ Module escape.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -2190,98 +2373,112 @@ Module escape.
                   |) in
                 M.alloc (|
                   Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "u8" ]
-                    [
-                      M.call_closure (|
-                        Ty.path "u8",
-                        M.get_associated_function (|
-                          Ty.path "core::ascii::ascii_char::AsciiChar",
-                          "to_u8",
-                          [],
-                          []
-                        |),
-                        [
-                          M.read (|
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "slice")
-                                    []
-                                    [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
-                                  "get_unchecked",
-                                  [],
-                                  [ Ty.path "usize" ]
-                                |),
-                                [
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.call_closure (|
+                          Ty.path "u8",
+                          M.get_associated_function (|
+                            Ty.path "core::ascii::ascii_char::AsciiChar",
+                            "to_u8",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (|
+                                M.deref (|
                                   M.call_closure (|
                                     Ty.apply
                                       (Ty.path "&")
                                       []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "slice")
-                                          []
-                                          [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                                      ],
-                                    M.pointer_coercion
-                                      M.PointerCoercion.Unsize
-                                      (Ty.apply
-                                        (Ty.path "&")
+                                      [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "slice")
                                         []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ N ]
-                                            [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                                        ])
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "slice")
-                                            []
-                                            [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
-                                        ]),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::escape::EscapeIterInner",
-                                          "data"
-                                        |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_trait_method (|
-                                      "core::convert::From",
-                                      Ty.path "usize",
+                                        [ Ty.path "core::ascii::ascii_char::AsciiChar" ],
+                                      "get_unchecked",
                                       [],
-                                      [ Ty.path "u8" ],
-                                      "from",
-                                      [],
-                                      []
+                                      [ Ty.path "usize" ]
                                     |),
-                                    [ M.read (| i |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "slice")
+                                                []
+                                                [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                                            ],
+                                          M.pointer_coercion
+                                            M.PointerCoercion.Unsize
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ N ]
+                                                  [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "slice")
+                                                  []
+                                                  [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                                              ]),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "core::escape::EscapeIterInner",
+                                                "data"
+                                              |)
+                                            |)
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "slice")
+                                              []
+                                              [ Ty.path "core::ascii::ascii_char::AsciiChar" ]
+                                          ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_trait_method (|
+                                            "core::convert::From",
+                                            Ty.path "usize",
+                                            [],
+                                            [ Ty.path "u8" ],
+                                            "from",
+                                            [],
+                                            []
+                                          |),
+                                          [ M.value_with_ty (M.read (| i |)) (Ty.path "u8") ]
+                                        |))
+                                        (Ty.path "usize")
+                                    ]
                                   |)
-                                ]
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
-                    ]
+                                |)
+                              |))
+                              (Ty.path "core::ascii::ascii_char::AsciiChar")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ])
                 |)
               |)))
           |)))
@@ -2329,15 +2526,20 @@ Module escape.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::escape::EscapeIterInner",
-                  "alive"
-                |)
-              |);
-              M.read (| n |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::escape::EscapeIterInner",
+                    "alive"
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ] ]);
+              M.value_with_ty (M.read (| n |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2389,15 +2591,20 @@ Module escape.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::escape::EscapeIterInner",
-                  "alive"
-                |)
-              |);
-              M.read (| n |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::escape::EscapeIterInner",
+                    "alive"
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "u8" ] ]);
+              M.value_with_ty (M.read (| n |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

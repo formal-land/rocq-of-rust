@@ -13,7 +13,7 @@ Module Blake3Air.
 
   Global Instance IsLink : Link t := {
     Φ := Ty.path "p3_blake3_air::air::Blake3Air";
-    φ _ := Value.StructRecord "p3_blake3_air::air::Blake3Air" [] [] [];
+    φ _ := Value.StructRecord "p3_blake3_air::air::Blake3Air" [];
   }.
 
   Definition of_ty : OfTy.t (Ty.path "p3_blake3_air::air::Blake3Air").

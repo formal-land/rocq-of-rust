@@ -29,26 +29,44 @@ Module str.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                      M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                        M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                      M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                        M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -89,28 +107,54 @@ Module str.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                      M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                        M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.call_closure (|
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                    ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
                       Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                      M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                        M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -151,20 +195,24 @@ Module str.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
             let other := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], other |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_trait_method (| "core::cmp::Ord", Ty.path "str", [], [], "cmp", [], [] |),
-                  [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_trait_method (| "core::cmp::Ord", Ty.path "str", [], [], "cmp", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -221,8 +269,10 @@ Module str.
                     []
                   |),
                   [
-                    M.read (| index |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                    M.value_with_ty (M.read (| index |)) I;
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)
               |)
@@ -284,8 +334,10 @@ Module str.
                         []
                       |),
                       [
-                        M.read (| index |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |)
+                        M.value_with_ty (M.read (| index |)) I;
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ])
                       ]
                     |)
                   |)
@@ -318,32 +370,45 @@ Module str.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array
+                                [ mk_str (| "attempted to index str up to maximum usize" |) ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "attempted to index str up to maximum usize" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -371,11 +436,14 @@ Module str.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.path "core::ops::range::RangeFull", self |) in
             let slice := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], slice |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ])
+              (Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -390,11 +458,14 @@ Module str.
           ltac:(M.monadic
             (let self := M.alloc (| Ty.path "core::ops::range::RangeFull", self |) in
             let slice := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ], slice |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ]
-              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |) ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |) ])
+              (Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -555,17 +626,21 @@ Module str.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| slice |) |)
-                                    |);
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        self,
-                                        "core::ops::range::Range",
-                                        "start"
-                                      |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| slice |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                    M.value_with_ty
+                                      (M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          self,
+                                          "core::ops::range::Range",
+                                          "start"
+                                        |)
+                                      |))
+                                      (Ty.path "usize")
                                   ]
                                 |)))
                             |),
@@ -579,64 +654,82 @@ Module str.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      self,
-                                      "core::ops::range::Range",
-                                      "end"
-                                    |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| slice |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        self,
+                                        "core::ops::range::Range",
+                                        "end"
+                                      |)
+                                    |))
+                                    (Ty.path "usize")
                                 ]
                               |)))
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "*const") [] [ Ty.path "str" ],
-                                  M.get_trait_method (|
-                                    "core::slice::index::SliceIndex",
-                                    Ty.apply
-                                      (Ty.path "core::ops::range::Range")
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "str" ],
+                                    M.get_trait_method (|
+                                      "core::slice::index::SliceIndex",
+                                      Ty.apply
+                                        (Ty.path "core::ops::range::Range")
+                                        []
+                                        [ Ty.path "usize" ],
+                                      [],
+                                      [ Ty.path "str" ],
+                                      "get_unchecked",
+                                      [],
                                       []
-                                      [ Ty.path "usize" ],
-                                    [],
-                                    [ Ty.path "str" ],
-                                    "get_unchecked",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (| self |);
-                                    M.borrow (|
-                                      Pointer.Kind.ConstPointer,
-                                      M.deref (| M.read (| slice |) |)
-                                    |)
-                                  ]
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| self |))
+                                        (Ty.apply
+                                          (Ty.path "core::ops::range::Range")
+                                          []
+                                          [ Ty.path "usize" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.ConstPointer,
+                                          M.deref (| M.read (| slice |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ Ty.path "str" ])
+                                    ]
+                                  |)
                                 |)
                               |)
                             |)
                           |)
-                        |)
-                      ]));
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -711,17 +804,21 @@ Module str.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| slice |) |)
-                                    |);
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        self,
-                                        "core::ops::range::Range",
-                                        "start"
-                                      |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| slice |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                    M.value_with_ty
+                                      (M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          self,
+                                          "core::ops::range::Range",
+                                          "start"
+                                        |)
+                                      |))
+                                      (Ty.path "usize")
                                   ]
                                 |)))
                             |),
@@ -735,69 +832,87 @@ Module str.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      self,
-                                      "core::ops::range::Range",
-                                      "end"
-                                    |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| slice |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        self,
+                                        "core::ops::range::Range",
+                                        "end"
+                                      |)
+                                    |))
+                                    (Ty.path "usize")
                                 ]
                               |)))
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ]
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ],
-                                      M.get_trait_method (|
-                                        "core::slice::index::SliceIndex",
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::Range")
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ],
+                                        M.get_trait_method (|
+                                          "core::slice::index::SliceIndex",
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::Range")
+                                            []
+                                            [ Ty.path "usize" ],
+                                          [],
+                                          [ Ty.path "str" ],
+                                          "get_unchecked_mut",
+                                          [],
                                           []
-                                          [ Ty.path "usize" ],
-                                        [],
-                                        [ Ty.path "str" ],
-                                        "get_unchecked_mut",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.read (| self |);
-                                        M.borrow (|
-                                          Pointer.Kind.MutPointer,
-                                          M.deref (| M.read (| slice |) |)
-                                        |)
-                                      ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| self |))
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::Range")
+                                              []
+                                              [ Ty.path "usize" ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutPointer,
+                                              M.deref (| M.read (| slice |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
+                                        ]
+                                      |)
                                     |)
                                   |)
                                 |)
                               |)
                             |)
                           |)
-                        |)
-                      ]));
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ]
-                      []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -882,33 +997,46 @@ Module str.
                                 []
                               |),
                               [
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    self,
-                                    "core::ops::range::Range",
-                                    "start"
-                                  |)
-                                |);
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    self,
-                                    "core::ops::range::Range",
-                                    "end"
-                                  |)
-                                |);
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "*const")
+                                M.value_with_ty
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      self,
+                                      "core::ops::range::Range",
+                                      "start"
+                                    |)
+                                  |))
+                                  (Ty.path "usize");
+                                M.value_with_ty
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      self,
+                                      "core::ops::range::Range",
+                                      "end"
+                                    |)
+                                  |))
+                                  (Ty.path "usize");
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "*const")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                      "len",
+                                      [],
                                       []
-                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                    "len",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| slice |) ]
-                                |)
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| slice |))
+                                        (Ty.apply
+                                          (Ty.path "*const")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                    ]
+                                  |))
+                                  (Ty.path "usize")
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -921,20 +1049,24 @@ Module str.
                   Ty.path "usize",
                   M.get_function (| "core::intrinsics::unchecked_sub", [], [ Ty.path "usize" ] |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::ops::range::Range",
-                        "end"
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::ops::range::Range",
-                        "start"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "core::ops::range::Range",
+                          "end"
+                        |)
+                      |))
+                      (Ty.path "usize");
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "core::ops::range::Range",
+                          "start"
+                        |)
+                      |))
+                      (Ty.path "usize")
                   ]
                 |) in
               M.alloc (|
@@ -948,38 +1080,51 @@ Module str.
                       [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
                     M.get_function (| "core::ptr::slice_from_raw_parts", [], [ Ty.path "u8" ] |),
                     [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                          "add",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
+                          M.get_associated_function (|
                             Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "*const")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                              "as_ptr",
-                              [],
-                              []
-                            |),
-                            [ M.read (| slice |) ]
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              self,
-                              "core::ops::range::Range",
-                              "start"
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.read (| new_len |)
+                            "add",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "*const")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                  "as_ptr",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| slice |))
+                                    (Ty.apply
+                                      (Ty.path "*const")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                ]
+                              |))
+                              (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                            M.value_with_ty
+                              (M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  self,
+                                  "core::ops::range::Range",
+                                  "start"
+                                |)
+                              |))
+                              (Ty.path "usize")
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                      M.value_with_ty (M.read (| new_len |)) (Ty.path "usize")
                     ]
                   |))
               |)
@@ -1053,33 +1198,46 @@ Module str.
                                 []
                               |),
                               [
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    self,
-                                    "core::ops::range::Range",
-                                    "start"
-                                  |)
-                                |);
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    self,
-                                    "core::ops::range::Range",
-                                    "end"
-                                  |)
-                                |);
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "*mut")
+                                M.value_with_ty
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      self,
+                                      "core::ops::range::Range",
+                                      "start"
+                                    |)
+                                  |))
+                                  (Ty.path "usize");
+                                M.value_with_ty
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      self,
+                                      "core::ops::range::Range",
+                                      "end"
+                                    |)
+                                  |))
+                                  (Ty.path "usize");
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "*mut")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                      "len",
+                                      [],
                                       []
-                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                    "len",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| slice |) ]
-                                |)
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| slice |))
+                                        (Ty.apply
+                                          (Ty.path "*mut")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                    ]
+                                  |))
+                                  (Ty.path "usize")
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1092,20 +1250,24 @@ Module str.
                   Ty.path "usize",
                   M.get_function (| "core::intrinsics::unchecked_sub", [], [ Ty.path "usize" ] |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::ops::range::Range",
-                        "end"
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::ops::range::Range",
-                        "start"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "core::ops::range::Range",
+                          "end"
+                        |)
+                      |))
+                      (Ty.path "usize");
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "core::ops::range::Range",
+                          "start"
+                        |)
+                      |))
+                      (Ty.path "usize")
                   ]
                 |) in
               M.alloc (|
@@ -1120,38 +1282,51 @@ Module str.
                       [ Ty.path "u8" ]
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                          "add",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
+                          M.get_associated_function (|
                             Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "*mut")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                              "as_mut_ptr",
-                              [],
-                              []
-                            |),
-                            [ M.read (| slice |) ]
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              self,
-                              "core::ops::range::Range",
-                              "start"
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.read (| new_len |)
+                            "add",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "*mut")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                  "as_mut_ptr",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| slice |))
+                                    (Ty.apply
+                                      (Ty.path "*mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                ]
+                              |))
+                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                            M.value_with_ty
+                              (M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  self,
+                                  "core::ops::range::Range",
+                                  "start"
+                                |)
+                              |))
+                              (Ty.path "usize")
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                      M.value_with_ty (M.read (| new_len |)) (Ty.path "usize")
                     ]
                   |))
               |)
@@ -1229,8 +1404,12 @@ Module str.
                             []
                           |),
                           [
-                            M.read (| self |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                            M.value_with_ty
+                              (M.read (| self |))
+                              (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                           ]
                         |)
                       |),
@@ -1254,9 +1433,14 @@ Module str.
                                 Ty.path "never",
                                 M.get_function (| "core::str::slice_error_fail", [], [] |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                                  M.read (| start |);
-                                  M.read (| end_ |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| slice |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                  M.value_with_ty (M.read (| start |)) (Ty.path "usize");
+                                  M.value_with_ty (M.read (| end_ |)) (Ty.path "usize")
                                 ]
                               |)
                             |)))
@@ -1341,17 +1525,21 @@ Module str.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| slice |) |)
-                                            |);
-                                            M.read (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                self,
-                                                "core::ops::range::Range",
-                                                "start"
-                                              |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| slice |) |)
+                                              |))
+                                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                            M.value_with_ty
+                                              (M.read (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  self,
+                                                  "core::ops::range::Range",
+                                                  "start"
+                                                |)
+                                              |))
+                                              (Ty.path "usize")
                                           ]
                                         |)))
                                     |),
@@ -1365,17 +1553,21 @@ Module str.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| slice |) |)
-                                          |);
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              self,
-                                              "core::ops::range::Range",
-                                              "end"
-                                            |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| slice |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                          M.value_with_ty
+                                            (M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                self,
+                                                "core::ops::range::Range",
+                                                "end"
+                                              |)
+                                            |))
+                                            (Ty.path "usize")
                                         ]
                                       |)))
                                   |)
@@ -1409,11 +1601,18 @@ Module str.
                                                 []
                                               |),
                                               [
-                                                M.read (| self |);
-                                                M.borrow (|
-                                                  Pointer.Kind.MutPointer,
-                                                  M.deref (| M.read (| slice |) |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.read (| self |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::ops::range::Range")
+                                                    []
+                                                    [ Ty.path "usize" ]);
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutPointer,
+                                                    M.deref (| M.read (| slice |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
                                               ]
                                             |)
                                           |)
@@ -1431,21 +1630,30 @@ Module str.
                                 Ty.path "never",
                                 M.get_function (| "core::str::slice_error_fail", [], [] |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      self,
-                                      "core::ops::range::Range",
-                                      "start"
-                                    |)
-                                  |);
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      self,
-                                      "core::ops::range::Range",
-                                      "end"
-                                    |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| slice |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        self,
+                                        "core::ops::range::Range",
+                                        "start"
+                                      |)
+                                    |))
+                                    (Ty.path "usize");
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        self,
+                                        "core::ops::range::Range",
+                                        "end"
+                                      |)
+                                    |))
+                                    (Ty.path "usize")
                                 ]
                               |)
                             |)))
@@ -1549,17 +1757,21 @@ Module str.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| slice |) |)
-                                    |);
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        self,
-                                        "core::range::Range",
-                                        "start"
-                                      |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| slice |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                    M.value_with_ty
+                                      (M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          self,
+                                          "core::range::Range",
+                                          "start"
+                                        |)
+                                      |))
+                                      (Ty.path "usize")
                                   ]
                                 |)))
                             |),
@@ -1573,61 +1785,82 @@ Module str.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      self,
-                                      "core::range::Range",
-                                      "end"
-                                    |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| slice |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        self,
+                                        "core::range::Range",
+                                        "end"
+                                      |)
+                                    |))
+                                    (Ty.path "usize")
                                 ]
                               |)))
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "*const") [] [ Ty.path "str" ],
-                                  M.get_trait_method (|
-                                    "core::slice::index::SliceIndex",
-                                    Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ],
-                                    [],
-                                    [ Ty.path "str" ],
-                                    "get_unchecked",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (| self |);
-                                    M.borrow (|
-                                      Pointer.Kind.ConstPointer,
-                                      M.deref (| M.read (| slice |) |)
-                                    |)
-                                  ]
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "str" ],
+                                    M.get_trait_method (|
+                                      "core::slice::index::SliceIndex",
+                                      Ty.apply
+                                        (Ty.path "core::range::Range")
+                                        []
+                                        [ Ty.path "usize" ],
+                                      [],
+                                      [ Ty.path "str" ],
+                                      "get_unchecked",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| self |))
+                                        (Ty.apply
+                                          (Ty.path "core::range::Range")
+                                          []
+                                          [ Ty.path "usize" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.ConstPointer,
+                                          M.deref (| M.read (| slice |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ Ty.path "str" ])
+                                    ]
+                                  |)
                                 |)
                               |)
                             |)
                           |)
-                        |)
-                      ]));
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1699,17 +1932,21 @@ Module str.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| slice |) |)
-                                    |);
-                                    M.read (|
-                                      M.SubPointer.get_struct_record_field (|
-                                        self,
-                                        "core::range::Range",
-                                        "start"
-                                      |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| slice |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                    M.value_with_ty
+                                      (M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          self,
+                                          "core::range::Range",
+                                          "start"
+                                        |)
+                                      |))
+                                      (Ty.path "usize")
                                   ]
                                 |)))
                             |),
@@ -1723,69 +1960,87 @@ Module str.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      self,
-                                      "core::range::Range",
-                                      "end"
-                                    |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| slice |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        self,
+                                        "core::range::Range",
+                                        "end"
+                                      |)
+                                    |))
+                                    (Ty.path "usize")
                                 ]
                               |)))
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ]
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ],
-                                      M.get_trait_method (|
-                                        "core::slice::index::SliceIndex",
-                                        Ty.apply
-                                          (Ty.path "core::range::Range")
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ],
+                                        M.get_trait_method (|
+                                          "core::slice::index::SliceIndex",
+                                          Ty.apply
+                                            (Ty.path "core::range::Range")
+                                            []
+                                            [ Ty.path "usize" ],
+                                          [],
+                                          [ Ty.path "str" ],
+                                          "get_unchecked_mut",
+                                          [],
                                           []
-                                          [ Ty.path "usize" ],
-                                        [],
-                                        [ Ty.path "str" ],
-                                        "get_unchecked_mut",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.read (| self |);
-                                        M.borrow (|
-                                          Pointer.Kind.MutPointer,
-                                          M.deref (| M.read (| slice |) |)
-                                        |)
-                                      ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| self |))
+                                            (Ty.apply
+                                              (Ty.path "core::range::Range")
+                                              []
+                                              [ Ty.path "usize" ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutPointer,
+                                              M.deref (| M.read (| slice |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
+                                        ]
+                                      |)
                                     |)
                                   |)
                                 |)
                               |)
                             |)
                           |)
-                        |)
-                      ]));
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ]
-                      []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1867,33 +2122,46 @@ Module str.
                                 []
                               |),
                               [
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    self,
-                                    "core::range::Range",
-                                    "start"
-                                  |)
-                                |);
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    self,
-                                    "core::range::Range",
-                                    "end"
-                                  |)
-                                |);
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "*const")
+                                M.value_with_ty
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      self,
+                                      "core::range::Range",
+                                      "start"
+                                    |)
+                                  |))
+                                  (Ty.path "usize");
+                                M.value_with_ty
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      self,
+                                      "core::range::Range",
+                                      "end"
+                                    |)
+                                  |))
+                                  (Ty.path "usize");
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "*const")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                      "len",
+                                      [],
                                       []
-                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                    "len",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| slice |) ]
-                                |)
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| slice |))
+                                        (Ty.apply
+                                          (Ty.path "*const")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                    ]
+                                  |))
+                                  (Ty.path "usize")
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1906,12 +2174,20 @@ Module str.
                   Ty.path "usize",
                   M.get_function (| "core::intrinsics::unchecked_sub", [], [ Ty.path "usize" ] |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (| self, "core::range::Range", "end" |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (| self, "core::range::Range", "start" |)
-                    |)
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (| self, "core::range::Range", "end" |)
+                      |))
+                      (Ty.path "usize");
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "core::range::Range",
+                          "start"
+                        |)
+                      |))
+                      (Ty.path "usize")
                   ]
                 |) in
               M.alloc (|
@@ -1925,38 +2201,51 @@ Module str.
                       [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
                     M.get_function (| "core::ptr::slice_from_raw_parts", [], [ Ty.path "u8" ] |),
                     [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                          "add",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
+                          M.get_associated_function (|
                             Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "*const")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                              "as_ptr",
-                              [],
-                              []
-                            |),
-                            [ M.read (| slice |) ]
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              self,
-                              "core::range::Range",
-                              "start"
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.read (| new_len |)
+                            "add",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "*const")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                  "as_ptr",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| slice |))
+                                    (Ty.apply
+                                      (Ty.path "*const")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                ]
+                              |))
+                              (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                            M.value_with_ty
+                              (M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  self,
+                                  "core::range::Range",
+                                  "start"
+                                |)
+                              |))
+                              (Ty.path "usize")
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                      M.value_with_ty (M.read (| new_len |)) (Ty.path "usize")
                     ]
                   |))
               |)
@@ -2027,33 +2316,46 @@ Module str.
                                 []
                               |),
                               [
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    self,
-                                    "core::range::Range",
-                                    "start"
-                                  |)
-                                |);
-                                M.read (|
-                                  M.SubPointer.get_struct_record_field (|
-                                    self,
-                                    "core::range::Range",
-                                    "end"
-                                  |)
-                                |);
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "*mut")
+                                M.value_with_ty
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      self,
+                                      "core::range::Range",
+                                      "start"
+                                    |)
+                                  |))
+                                  (Ty.path "usize");
+                                M.value_with_ty
+                                  (M.read (|
+                                    M.SubPointer.get_struct_record_field (|
+                                      self,
+                                      "core::range::Range",
+                                      "end"
+                                    |)
+                                  |))
+                                  (Ty.path "usize");
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "*mut")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                      "len",
+                                      [],
                                       []
-                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                    "len",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| slice |) ]
-                                |)
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| slice |))
+                                        (Ty.apply
+                                          (Ty.path "*mut")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                    ]
+                                  |))
+                                  (Ty.path "usize")
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2066,12 +2368,20 @@ Module str.
                   Ty.path "usize",
                   M.get_function (| "core::intrinsics::unchecked_sub", [], [ Ty.path "usize" ] |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (| self, "core::range::Range", "end" |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (| self, "core::range::Range", "start" |)
-                    |)
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (| self, "core::range::Range", "end" |)
+                      |))
+                      (Ty.path "usize");
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "core::range::Range",
+                          "start"
+                        |)
+                      |))
+                      (Ty.path "usize")
                   ]
                 |) in
               M.alloc (|
@@ -2086,38 +2396,51 @@ Module str.
                       [ Ty.path "u8" ]
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                          "add",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
+                          M.get_associated_function (|
                             Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "*mut")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                              "as_mut_ptr",
-                              [],
-                              []
-                            |),
-                            [ M.read (| slice |) ]
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              self,
-                              "core::range::Range",
-                              "start"
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.read (| new_len |)
+                            "add",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "*mut")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                  "as_mut_ptr",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| slice |))
+                                    (Ty.apply
+                                      (Ty.path "*mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                ]
+                              |))
+                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                            M.value_with_ty
+                              (M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  self,
+                                  "core::range::Range",
+                                  "start"
+                                |)
+                              |))
+                              (Ty.path "usize")
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                      M.value_with_ty (M.read (| new_len |)) (Ty.path "usize")
                     ]
                   |))
               |)
@@ -2184,8 +2507,12 @@ Module str.
                             []
                           |),
                           [
-                            M.read (| self |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                            M.value_with_ty
+                              (M.read (| self |))
+                              (Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                           ]
                         |)
                       |),
@@ -2209,9 +2536,14 @@ Module str.
                                 Ty.path "never",
                                 M.get_function (| "core::str::slice_error_fail", [], [] |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                                  M.read (| start |);
-                                  M.read (| end_ |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| slice |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                  M.value_with_ty (M.read (| start |)) (Ty.path "usize");
+                                  M.value_with_ty (M.read (| end_ |)) (Ty.path "usize")
                                 ]
                               |)
                             |)))
@@ -2293,17 +2625,21 @@ Module str.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| slice |) |)
-                                            |);
-                                            M.read (|
-                                              M.SubPointer.get_struct_record_field (|
-                                                self,
-                                                "core::range::Range",
-                                                "start"
-                                              |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| slice |) |)
+                                              |))
+                                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                            M.value_with_ty
+                                              (M.read (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  self,
+                                                  "core::range::Range",
+                                                  "start"
+                                                |)
+                                              |))
+                                              (Ty.path "usize")
                                           ]
                                         |)))
                                     |),
@@ -2317,17 +2653,21 @@ Module str.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| slice |) |)
-                                          |);
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              self,
-                                              "core::range::Range",
-                                              "end"
-                                            |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| slice |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                          M.value_with_ty
+                                            (M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                self,
+                                                "core::range::Range",
+                                                "end"
+                                              |)
+                                            |))
+                                            (Ty.path "usize")
                                         ]
                                       |)))
                                   |)
@@ -2361,11 +2701,18 @@ Module str.
                                                 []
                                               |),
                                               [
-                                                M.read (| self |);
-                                                M.borrow (|
-                                                  Pointer.Kind.MutPointer,
-                                                  M.deref (| M.read (| slice |) |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.read (| self |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::range::Range")
+                                                    []
+                                                    [ Ty.path "usize" ]);
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutPointer,
+                                                    M.deref (| M.read (| slice |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
                                               ]
                                             |)
                                           |)
@@ -2383,21 +2730,30 @@ Module str.
                                 Ty.path "never",
                                 M.get_function (| "core::str::slice_error_fail", [], [] |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      self,
-                                      "core::range::Range",
-                                      "start"
-                                    |)
-                                  |);
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      self,
-                                      "core::range::Range",
-                                      "end"
-                                    |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| slice |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        self,
+                                        "core::range::Range",
+                                        "start"
+                                      |)
+                                    |))
+                                    (Ty.path "usize");
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        self,
+                                        "core::range::Range",
+                                        "end"
+                                      |)
+                                    |))
+                                    (Ty.path "usize")
                                 ]
                               |)
                             |)))
@@ -2479,20 +2835,10 @@ Module str.
                     []
                   |),
                   [
-                    M.match_operator (|
-                      Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::ops::control_flow::ControlFlow")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::option::Option")
-                              []
-                              [ Ty.path "core::convert::Infallible" ];
-                            Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]
-                          ],
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.match_operator (|
+                        Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                        M.alloc (|
                           Ty.apply
                             (Ty.path "core::ops::control_flow::ControlFlow")
                             []
@@ -2503,21 +2849,19 @@ Module str.
                                 [ Ty.path "core::convert::Infallible" ];
                               Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]
                             ],
-                          M.get_trait_method (|
-                            "core::ops::try_trait::Try",
+                          M.call_closure (|
                             Ty.apply
-                              (Ty.path "core::option::Option")
+                              (Ty.path "core::ops::control_flow::ControlFlow")
                               []
-                              [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.path "core::convert::Infallible" ];
+                                Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]
                               ],
-                            [],
-                            [],
-                            "branch",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
+                            M.get_trait_method (|
+                              "core::ops::try_trait::Try",
                               Ty.apply
                                 (Ty.path "core::option::Option")
                                 []
@@ -2527,88 +2871,149 @@ Module str.
                                     []
                                     [ Ty.path "usize" ]
                                 ],
-                              M.get_function (| "core::slice::index::into_range", [], [] |),
-                              [
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_associated_function (| Ty.path "str", "len", [], [] |),
+                              [],
+                              [],
+                              "branch",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ops::range::Range")
+                                        []
+                                        [ Ty.path "usize" ]
+                                    ],
+                                  M.get_function (| "core::slice::index::into_range", [], [] |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| slice |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.path "str",
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| slice |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                        ]
+                                      |))
+                                      (Ty.path "usize");
+                                    M.value_with_ty
+                                      (M.read (| self |))
+                                      (Ty.tuple
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::Bound")
+                                            []
+                                            [ Ty.path "usize" ];
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::Bound")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ])
                                   ]
-                                |);
-                                M.read (| self |)
-                              ]
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Break",
-                                0
-                              |) in
-                            let residual :=
-                              M.copy (|
-                                Ty.apply
+                                |))
+                                (Ty.apply
                                   (Ty.path "core::option::Option")
                                   []
-                                  [ Ty.path "core::convert::Infallible" ],
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
-                                  M.call_closure (|
+                                  [
                                     Ty.apply
-                                      (Ty.path "core::option::Option")
+                                      (Ty.path "core::ops::range::Range")
                                       []
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    M.get_trait_method (|
-                                      "core::ops::try_trait::FromResidual",
+                                      [ Ty.path "usize" ]
+                                  ])
+                            ]
+                          |)
+                        |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Break",
+                                  0
+                                |) in
+                              let residual :=
+                                M.copy (|
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.path "core::convert::Infallible" ],
+                                  γ0_0
+                                |) in
+                              M.never_to_any (|
+                                M.read (|
+                                  M.return_ (|
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      [],
-                                      [
+                                      M.get_trait_method (|
+                                        "core::ops::try_trait::FromResidual",
                                         Ty.apply
                                           (Ty.path "core::option::Option")
                                           []
-                                          [ Ty.path "core::convert::Infallible" ]
-                                      ],
-                                      "from_residual",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| residual |) ]
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::convert::Infallible" ]
+                                        ],
+                                        "from_residual",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.read (| residual |))
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::convert::Infallible" ])
+                                      ]
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Continue",
-                                0
-                              |) in
-                            let val :=
-                              M.copy (|
-                                Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                                γ0_0
-                              |) in
-                            M.read (| val |)))
-                      ]
-                    |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                              |)));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Continue",
+                                  0
+                                |) in
+                              let val :=
+                                M.copy (|
+                                  Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "usize" ],
+                                  γ0_0
+                                |) in
+                              M.read (| val |)))
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)))
             |)))
@@ -2655,20 +3060,10 @@ Module str.
                     []
                   |),
                   [
-                    M.match_operator (|
-                      Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "core::ops::control_flow::ControlFlow")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::option::Option")
-                              []
-                              [ Ty.path "core::convert::Infallible" ];
-                            Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]
-                          ],
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.match_operator (|
+                        Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                        M.alloc (|
                           Ty.apply
                             (Ty.path "core::ops::control_flow::ControlFlow")
                             []
@@ -2679,21 +3074,19 @@ Module str.
                                 [ Ty.path "core::convert::Infallible" ];
                               Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]
                             ],
-                          M.get_trait_method (|
-                            "core::ops::try_trait::Try",
+                          M.call_closure (|
                             Ty.apply
-                              (Ty.path "core::option::Option")
+                              (Ty.path "core::ops::control_flow::ControlFlow")
                               []
-                              [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.path "core::convert::Infallible" ];
+                                Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]
                               ],
-                            [],
-                            [],
-                            "branch",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
+                            M.get_trait_method (|
+                              "core::ops::try_trait::Try",
                               Ty.apply
                                 (Ty.path "core::option::Option")
                                 []
@@ -2703,88 +3096,149 @@ Module str.
                                     []
                                     [ Ty.path "usize" ]
                                 ],
-                              M.get_function (| "core::slice::index::into_range", [], [] |),
-                              [
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_associated_function (| Ty.path "str", "len", [], [] |),
+                              [],
+                              [],
+                              "branch",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ops::range::Range")
+                                        []
+                                        [ Ty.path "usize" ]
+                                    ],
+                                  M.get_function (| "core::slice::index::into_range", [], [] |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| slice |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.path "str",
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| slice |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                        ]
+                                      |))
+                                      (Ty.path "usize");
+                                    M.value_with_ty
+                                      (M.read (| self |))
+                                      (Ty.tuple
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::Bound")
+                                            []
+                                            [ Ty.path "usize" ];
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::Bound")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ])
                                   ]
-                                |);
-                                M.read (| self |)
-                              ]
-                            |)
-                          ]
-                        |)
-                      |),
-                      [
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Break",
-                                0
-                              |) in
-                            let residual :=
-                              M.copy (|
-                                Ty.apply
+                                |))
+                                (Ty.apply
                                   (Ty.path "core::option::Option")
                                   []
-                                  [ Ty.path "core::convert::Infallible" ],
-                                γ0_0
-                              |) in
-                            M.never_to_any (|
-                              M.read (|
-                                M.return_ (|
-                                  M.call_closure (|
+                                  [
                                     Ty.apply
-                                      (Ty.path "core::option::Option")
+                                      (Ty.path "core::ops::range::Range")
                                       []
-                                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ],
-                                    M.get_trait_method (|
-                                      "core::ops::try_trait::FromResidual",
+                                      [ Ty.path "usize" ]
+                                  ])
+                            ]
+                          |)
+                        |),
+                        [
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Break",
+                                  0
+                                |) in
+                              let residual :=
+                                M.copy (|
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.path "core::convert::Infallible" ],
+                                  γ0_0
+                                |) in
+                              M.never_to_any (|
+                                M.read (|
+                                  M.return_ (|
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
                                         [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ],
-                                      [],
-                                      [
+                                      M.get_trait_method (|
+                                        "core::ops::try_trait::FromResidual",
                                         Ty.apply
                                           (Ty.path "core::option::Option")
                                           []
-                                          [ Ty.path "core::convert::Infallible" ]
-                                      ],
-                                      "from_residual",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| residual |) ]
+                                          [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::convert::Infallible" ]
+                                        ],
+                                        "from_residual",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.read (| residual |))
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::convert::Infallible" ])
+                                      ]
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)));
-                        fun γ =>
-                          ltac:(M.monadic
-                            (let γ0_0 :=
-                              M.SubPointer.get_struct_tuple_field (|
-                                γ,
-                                "core::ops::control_flow::ControlFlow::Continue",
-                                0
-                              |) in
-                            let val :=
-                              M.copy (|
-                                Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                                γ0_0
-                              |) in
-                            M.read (| val |)))
-                      ]
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |)
+                              |)));
+                          fun γ =>
+                            ltac:(M.monadic
+                              (let γ0_0 :=
+                                M.SubPointer.get_struct_tuple_field (|
+                                  γ,
+                                  "core::ops::control_flow::ControlFlow::Continue",
+                                  0
+                                |) in
+                              let val :=
+                                M.copy (|
+                                  Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "usize" ],
+                                  γ0_0
+                                |) in
+                              M.read (| val |)))
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ])
                   ]
                 |)))
             |)))
@@ -2826,12 +3280,17 @@ Module str.
                     []
                   |),
                   [
-                    M.cast
+                    M.value_with_ty
+                      (M.cast
+                        (Ty.apply
+                          (Ty.path "*const")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                        (M.read (| slice |)))
                       (Ty.apply
                         (Ty.path "*const")
                         []
                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
-                      (M.read (| slice |))
                   ]
                 |) in
               M.alloc (|
@@ -2848,12 +3307,25 @@ Module str.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                      M.get_function (| "core::slice::index::into_range_unchecked", [], [] |),
-                      [ M.read (| len |); M.read (| self |) ]
-                    |);
-                    M.read (| slice |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                        M.get_function (| "core::slice::index::into_range_unchecked", [], [] |),
+                        [
+                          M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                          M.value_with_ty
+                            (M.read (| self |))
+                            (Ty.tuple
+                              [
+                                Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.path "usize" ];
+                                Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.path "usize" ]
+                              ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                    M.value_with_ty
+                      (M.read (| slice |))
+                      (Ty.apply (Ty.path "*const") [] [ Ty.path "str" ])
                   ]
                 |)
               |)
@@ -2893,12 +3365,17 @@ Module str.
                     []
                   |),
                   [
-                    M.cast
+                    M.value_with_ty
+                      (M.cast
+                        (Ty.apply
+                          (Ty.path "*mut")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                        (M.read (| slice |)))
                       (Ty.apply
                         (Ty.path "*mut")
                         []
                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
-                      (M.read (| slice |))
                   ]
                 |) in
               M.alloc (|
@@ -2915,12 +3392,25 @@ Module str.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                      M.get_function (| "core::slice::index::into_range_unchecked", [], [] |),
-                      [ M.read (| len |); M.read (| self |) ]
-                    |);
-                    M.read (| slice |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                        M.get_function (| "core::slice::index::into_range_unchecked", [], [] |),
+                        [
+                          M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                          M.value_with_ty
+                            (M.read (| self |))
+                            (Ty.tuple
+                              [
+                                Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.path "usize" ];
+                                Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.path "usize" ]
+                              ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                    M.value_with_ty
+                      (M.read (| slice |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
                   ]
                 |)
               |)
@@ -2962,19 +3452,38 @@ Module str.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                      M.get_function (| "core::slice::index::into_slice_range", [], [] |),
-                      [
-                        M.call_closure (|
-                          Ty.path "usize",
-                          M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
-                        |);
-                        M.read (| self |)
-                      ]
-                    |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                        M.get_function (| "core::slice::index::into_slice_range", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (| Ty.path "str", "len", [], [] |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| slice |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                              ]
+                            |))
+                            (Ty.path "usize");
+                          M.value_with_ty
+                            (M.read (| self |))
+                            (Ty.tuple
+                              [
+                                Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.path "usize" ];
+                                Ty.apply (Ty.path "core::ops::range::Bound") [] [ Ty.path "usize" ]
+                              ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)
               |)
@@ -3019,19 +3528,44 @@ Module str.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                          M.get_function (| "core::slice::index::into_slice_range", [], [] |),
-                          [
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
-                            |);
-                            M.read (| self |)
-                          ]
-                        |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |)
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                            M.get_function (| "core::slice::index::into_slice_range", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (| Ty.path "str", "len", [], [] |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| slice |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                  ]
+                                |))
+                                (Ty.path "usize");
+                              M.value_with_ty
+                                (M.read (| self |))
+                                (Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::ops::range::Bound")
+                                      []
+                                      [ Ty.path "usize" ];
+                                    Ty.apply
+                                      (Ty.path "core::ops::range::Bound")
+                                      []
+                                      [ Ty.path "usize" ]
+                                  ])
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ])
                       ]
                     |)
                   |)
@@ -3109,63 +3643,78 @@ Module str.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  self,
-                                  "core::ops::range::RangeTo",
-                                  "end"
-                                |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                              M.value_with_ty
+                                (M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    self,
+                                    "core::ops::range::RangeTo",
+                                    "end"
+                                  |)
+                                |))
+                                (Ty.path "usize")
                             ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "*const") [] [ Ty.path "str" ],
-                                  M.get_trait_method (|
-                                    "core::slice::index::SliceIndex",
-                                    Ty.apply
-                                      (Ty.path "core::ops::range::RangeTo")
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "str" ],
+                                    M.get_trait_method (|
+                                      "core::slice::index::SliceIndex",
+                                      Ty.apply
+                                        (Ty.path "core::ops::range::RangeTo")
+                                        []
+                                        [ Ty.path "usize" ],
+                                      [],
+                                      [ Ty.path "str" ],
+                                      "get_unchecked",
+                                      [],
                                       []
-                                      [ Ty.path "usize" ],
-                                    [],
-                                    [ Ty.path "str" ],
-                                    "get_unchecked",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (| self |);
-                                    M.borrow (|
-                                      Pointer.Kind.ConstPointer,
-                                      M.deref (| M.read (| slice |) |)
-                                    |)
-                                  ]
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| self |))
+                                        (Ty.apply
+                                          (Ty.path "core::ops::range::RangeTo")
+                                          []
+                                          [ Ty.path "usize" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.ConstPointer,
+                                          M.deref (| M.read (| slice |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ Ty.path "str" ])
+                                    ]
+                                  |)
                                 |)
                               |)
                             |)
                           |)
-                        |)
-                      ]));
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3214,68 +3763,83 @@ Module str.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  self,
-                                  "core::ops::range::RangeTo",
-                                  "end"
-                                |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                              M.value_with_ty
+                                (M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    self,
+                                    "core::ops::range::RangeTo",
+                                    "end"
+                                  |)
+                                |))
+                                (Ty.path "usize")
                             ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ]
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ],
-                                      M.get_trait_method (|
-                                        "core::slice::index::SliceIndex",
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeTo")
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ],
+                                        M.get_trait_method (|
+                                          "core::slice::index::SliceIndex",
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ],
+                                          [],
+                                          [ Ty.path "str" ],
+                                          "get_unchecked_mut",
+                                          [],
                                           []
-                                          [ Ty.path "usize" ],
-                                        [],
-                                        [ Ty.path "str" ],
-                                        "get_unchecked_mut",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.read (| self |);
-                                        M.borrow (|
-                                          Pointer.Kind.MutPointer,
-                                          M.deref (| M.read (| slice |) |)
-                                        |)
-                                      ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| self |))
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::RangeTo")
+                                              []
+                                              [ Ty.path "usize" ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutPointer,
+                                              M.deref (| M.read (| slice |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
+                                        ]
+                                      |)
                                     |)
                                   |)
                                 |)
                               |)
                             |)
                           |)
-                        |)
-                      ]));
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ]
-                      []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3309,22 +3873,26 @@ Module str.
                 []
               |),
               [
-                Value.mkStructRecord
-                  "core::ops::range::Range"
-                  []
-                  [ Ty.path "usize" ]
-                  [
-                    ("start", Value.Integer IntegerKind.Usize 0);
-                    ("end_",
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          self,
-                          "core::ops::range::RangeTo",
-                          "end"
-                        |)
-                      |))
-                  ];
-                M.read (| slice |)
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.mkStructRecord
+                      "core::ops::range::Range"
+                      [
+                        ("start", Value.Integer IntegerKind.Usize 0);
+                        ("end_",
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              self,
+                              "core::ops::range::RangeTo",
+                              "end"
+                            |)
+                          |))
+                      ])
+                    (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]))
+                  (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                M.value_with_ty
+                  (M.read (| slice |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3358,22 +3926,26 @@ Module str.
                 []
               |),
               [
-                Value.mkStructRecord
-                  "core::ops::range::Range"
-                  []
-                  [ Ty.path "usize" ]
-                  [
-                    ("start", Value.Integer IntegerKind.Usize 0);
-                    ("end_",
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          self,
-                          "core::ops::range::RangeTo",
-                          "end"
-                        |)
-                      |))
-                  ];
-                M.read (| slice |)
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.mkStructRecord
+                      "core::ops::range::Range"
+                      [
+                        ("start", Value.Integer IntegerKind.Usize 0);
+                        ("end_",
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              self,
+                              "core::ops::range::RangeTo",
+                              "end"
+                            |)
+                          |))
+                      ])
+                    (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]))
+                  (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                M.value_with_ty
+                  (M.read (| slice |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3431,8 +4003,12 @@ Module str.
                         []
                       |),
                       [
-                        M.read (| self |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                        M.value_with_ty
+                          (M.read (| self |))
+                          (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)
                   |),
@@ -3455,9 +4031,11 @@ Module str.
                             Ty.path "never",
                             M.get_function (| "core::str::slice_error_fail", [], [] |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                              Value.Integer IntegerKind.Usize 0;
-                              M.read (| end_ |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize");
+                              M.value_with_ty (M.read (| end_ |)) (Ty.path "usize")
                             ]
                           |)
                         |)))
@@ -3514,17 +4092,21 @@ Module str.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| slice |) |)
-                                      |);
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          self,
-                                          "core::ops::range::RangeTo",
-                                          "end"
-                                        |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| slice |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                      M.value_with_ty
+                                        (M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            self,
+                                            "core::ops::range::RangeTo",
+                                            "end"
+                                          |)
+                                        |))
+                                        (Ty.path "usize")
                                     ]
                                   |)
                                 |)) in
@@ -3557,11 +4139,18 @@ Module str.
                                                 []
                                               |),
                                               [
-                                                M.read (| self |);
-                                                M.borrow (|
-                                                  Pointer.Kind.MutPointer,
-                                                  M.deref (| M.read (| slice |) |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.read (| self |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::ops::range::RangeTo")
+                                                    []
+                                                    [ Ty.path "usize" ]);
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutPointer,
+                                                    M.deref (| M.read (| slice |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
                                               ]
                                             |)
                                           |)
@@ -3579,15 +4168,24 @@ Module str.
                                 Ty.path "never",
                                 M.get_function (| "core::str::slice_error_fail", [], [] |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                                  Value.Integer IntegerKind.Usize 0;
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      self,
-                                      "core::ops::range::RangeTo",
-                                      "end"
-                                    |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| slice |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                  M.value_with_ty
+                                    (Value.Integer IntegerKind.Usize 0)
+                                    (Ty.path "usize");
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        self,
+                                        "core::ops::range::RangeTo",
+                                        "end"
+                                      |)
+                                    |))
+                                    (Ty.path "usize")
                                 ]
                               |)
                             |)))
@@ -3668,63 +4266,78 @@ Module str.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  self,
-                                  "core::ops::range::RangeFrom",
-                                  "start"
-                                |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                              M.value_with_ty
+                                (M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    self,
+                                    "core::ops::range::RangeFrom",
+                                    "start"
+                                  |)
+                                |))
+                                (Ty.path "usize")
                             ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "*const") [] [ Ty.path "str" ],
-                                  M.get_trait_method (|
-                                    "core::slice::index::SliceIndex",
-                                    Ty.apply
-                                      (Ty.path "core::ops::range::RangeFrom")
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "str" ],
+                                    M.get_trait_method (|
+                                      "core::slice::index::SliceIndex",
+                                      Ty.apply
+                                        (Ty.path "core::ops::range::RangeFrom")
+                                        []
+                                        [ Ty.path "usize" ],
+                                      [],
+                                      [ Ty.path "str" ],
+                                      "get_unchecked",
+                                      [],
                                       []
-                                      [ Ty.path "usize" ],
-                                    [],
-                                    [ Ty.path "str" ],
-                                    "get_unchecked",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (| self |);
-                                    M.borrow (|
-                                      Pointer.Kind.ConstPointer,
-                                      M.deref (| M.read (| slice |) |)
-                                    |)
-                                  ]
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| self |))
+                                        (Ty.apply
+                                          (Ty.path "core::ops::range::RangeFrom")
+                                          []
+                                          [ Ty.path "usize" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.ConstPointer,
+                                          M.deref (| M.read (| slice |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ Ty.path "str" ])
+                                    ]
+                                  |)
                                 |)
                               |)
                             |)
                           |)
-                        |)
-                      ]));
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3773,68 +4386,83 @@ Module str.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  self,
-                                  "core::ops::range::RangeFrom",
-                                  "start"
-                                |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                              M.value_with_ty
+                                (M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    self,
+                                    "core::ops::range::RangeFrom",
+                                    "start"
+                                  |)
+                                |))
+                                (Ty.path "usize")
                             ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ]
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ],
-                                      M.get_trait_method (|
-                                        "core::slice::index::SliceIndex",
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeFrom")
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ],
+                                        M.get_trait_method (|
+                                          "core::slice::index::SliceIndex",
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeFrom")
+                                            []
+                                            [ Ty.path "usize" ],
+                                          [],
+                                          [ Ty.path "str" ],
+                                          "get_unchecked_mut",
+                                          [],
                                           []
-                                          [ Ty.path "usize" ],
-                                        [],
-                                        [ Ty.path "str" ],
-                                        "get_unchecked_mut",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.read (| self |);
-                                        M.borrow (|
-                                          Pointer.Kind.MutPointer,
-                                          M.deref (| M.read (| slice |) |)
-                                        |)
-                                      ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| self |))
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::RangeFrom")
+                                              []
+                                              [ Ty.path "usize" ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutPointer,
+                                              M.deref (| M.read (| slice |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
+                                        ]
+                                      |)
                                     |)
                                   |)
                                 |)
                               |)
                             |)
                           |)
-                        |)
-                      ]));
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ]
-                      []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3871,12 +4499,17 @@ Module str.
                     []
                   |),
                   [
-                    M.cast
+                    M.value_with_ty
+                      (M.cast
+                        (Ty.apply
+                          (Ty.path "*const")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                        (M.read (| slice |)))
                       (Ty.apply
                         (Ty.path "*const")
                         []
                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
-                      (M.read (| slice |))
                   ]
                 |) in
               M.alloc (|
@@ -3893,22 +4526,26 @@ Module str.
                     []
                   |),
                   [
-                    Value.mkStructRecord
-                      "core::ops::range::Range"
-                      []
-                      [ Ty.path "usize" ]
-                      [
-                        ("start",
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              self,
-                              "core::ops::range::RangeFrom",
-                              "start"
-                            |)
-                          |));
-                        ("end_", M.read (| len |))
-                      ];
-                    M.read (| slice |)
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.mkStructRecord
+                          "core::ops::range::Range"
+                          [
+                            ("start",
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  self,
+                                  "core::ops::range::RangeFrom",
+                                  "start"
+                                |)
+                              |));
+                            ("end_", M.read (| len |))
+                          ])
+                        (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]))
+                      (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                    M.value_with_ty
+                      (M.read (| slice |))
+                      (Ty.apply (Ty.path "*const") [] [ Ty.path "str" ])
                   ]
                 |)
               |)
@@ -3944,12 +4581,17 @@ Module str.
                     []
                   |),
                   [
-                    M.cast
+                    M.value_with_ty
+                      (M.cast
+                        (Ty.apply
+                          (Ty.path "*mut")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                        (M.read (| slice |)))
                       (Ty.apply
                         (Ty.path "*mut")
                         []
                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
-                      (M.read (| slice |))
                   ]
                 |) in
               M.alloc (|
@@ -3966,22 +4608,26 @@ Module str.
                     []
                   |),
                   [
-                    Value.mkStructRecord
-                      "core::ops::range::Range"
-                      []
-                      [ Ty.path "usize" ]
-                      [
-                        ("start",
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              self,
-                              "core::ops::range::RangeFrom",
-                              "start"
-                            |)
-                          |));
-                        ("end_", M.read (| len |))
-                      ];
-                    M.read (| slice |)
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.mkStructRecord
+                          "core::ops::range::Range"
+                          [
+                            ("start",
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  self,
+                                  "core::ops::range::RangeFrom",
+                                  "start"
+                                |)
+                              |));
+                            ("end_", M.read (| len |))
+                          ])
+                        (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]))
+                      (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                    M.value_with_ty
+                      (M.read (| slice |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
                   ]
                 |)
               |)
@@ -4024,7 +4670,11 @@ Module str.
                     M.call_closure (|
                       Ty.path "usize",
                       M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
                     |)
                   ]
               |),
@@ -4057,8 +4707,15 @@ Module str.
                             []
                           |),
                           [
-                            M.read (| self |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                            M.value_with_ty
+                              (M.read (| self |))
+                              (Ty.apply
+                                (Ty.path "core::ops::range::RangeFrom")
+                                []
+                                [ Ty.path "usize" ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                           ]
                         |)
                       |),
@@ -4082,9 +4739,14 @@ Module str.
                                 Ty.path "never",
                                 M.get_function (| "core::str::slice_error_fail", [], [] |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                                  M.read (| start |);
-                                  M.read (| end_ |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| slice |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                  M.value_with_ty (M.read (| start |)) (Ty.path "usize");
+                                  M.value_with_ty (M.read (| end_ |)) (Ty.path "usize")
                                 ]
                               |)
                             |)))
@@ -4141,17 +4803,21 @@ Module str.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| slice |) |)
-                                      |);
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          self,
-                                          "core::ops::range::RangeFrom",
-                                          "start"
-                                        |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| slice |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                      M.value_with_ty
+                                        (M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            self,
+                                            "core::ops::range::RangeFrom",
+                                            "start"
+                                          |)
+                                        |))
+                                        (Ty.path "usize")
                                     ]
                                   |)
                                 |)) in
@@ -4184,11 +4850,18 @@ Module str.
                                                 []
                                               |),
                                               [
-                                                M.read (| self |);
-                                                M.borrow (|
-                                                  Pointer.Kind.MutPointer,
-                                                  M.deref (| M.read (| slice |) |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.read (| self |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::ops::range::RangeFrom")
+                                                    []
+                                                    [ Ty.path "usize" ]);
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutPointer,
+                                                    M.deref (| M.read (| slice |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
                                               ]
                                             |)
                                           |)
@@ -4206,24 +4879,35 @@ Module str.
                                 Ty.path "never",
                                 M.get_function (| "core::str::slice_error_fail", [], [] |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      self,
-                                      "core::ops::range::RangeFrom",
-                                      "start"
-                                    |)
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| slice |) |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| slice |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        self,
+                                        "core::ops::range::RangeFrom",
+                                        "start"
                                       |)
-                                    ]
-                                  |)
+                                    |))
+                                    (Ty.path "usize");
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (| Ty.path "str", "len", [], [] |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| slice |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                      ]
+                                    |))
+                                    (Ty.path "usize")
                                 ]
                               |)
                             |)))
@@ -4303,63 +4987,78 @@ Module str.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  self,
-                                  "core::range::RangeFrom",
-                                  "start"
-                                |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                              M.value_with_ty
+                                (M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    self,
+                                    "core::range::RangeFrom",
+                                    "start"
+                                  |)
+                                |))
+                                (Ty.path "usize")
                             ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "*const") [] [ Ty.path "str" ],
-                                  M.get_trait_method (|
-                                    "core::slice::index::SliceIndex",
-                                    Ty.apply
-                                      (Ty.path "core::range::RangeFrom")
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "str" ],
+                                    M.get_trait_method (|
+                                      "core::slice::index::SliceIndex",
+                                      Ty.apply
+                                        (Ty.path "core::range::RangeFrom")
+                                        []
+                                        [ Ty.path "usize" ],
+                                      [],
+                                      [ Ty.path "str" ],
+                                      "get_unchecked",
+                                      [],
                                       []
-                                      [ Ty.path "usize" ],
-                                    [],
-                                    [ Ty.path "str" ],
-                                    "get_unchecked",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.read (| self |);
-                                    M.borrow (|
-                                      Pointer.Kind.ConstPointer,
-                                      M.deref (| M.read (| slice |) |)
-                                    |)
-                                  ]
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| self |))
+                                        (Ty.apply
+                                          (Ty.path "core::range::RangeFrom")
+                                          []
+                                          [ Ty.path "usize" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.ConstPointer,
+                                          M.deref (| M.read (| slice |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ Ty.path "str" ])
+                                    ]
+                                  |)
                                 |)
                               |)
                             |)
                           |)
-                        |)
-                      ]));
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4408,68 +5107,83 @@ Module str.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  self,
-                                  "core::range::RangeFrom",
-                                  "start"
-                                |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                              M.value_with_ty
+                                (M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    self,
+                                    "core::range::RangeFrom",
+                                    "start"
+                                  |)
+                                |))
+                                (Ty.path "usize")
                             ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ]
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ],
-                                      M.get_trait_method (|
-                                        "core::slice::index::SliceIndex",
-                                        Ty.apply
-                                          (Ty.path "core::range::RangeFrom")
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ],
+                                        M.get_trait_method (|
+                                          "core::slice::index::SliceIndex",
+                                          Ty.apply
+                                            (Ty.path "core::range::RangeFrom")
+                                            []
+                                            [ Ty.path "usize" ],
+                                          [],
+                                          [ Ty.path "str" ],
+                                          "get_unchecked_mut",
+                                          [],
                                           []
-                                          [ Ty.path "usize" ],
-                                        [],
-                                        [ Ty.path "str" ],
-                                        "get_unchecked_mut",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.read (| self |);
-                                        M.borrow (|
-                                          Pointer.Kind.MutPointer,
-                                          M.deref (| M.read (| slice |) |)
-                                        |)
-                                      ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| self |))
+                                            (Ty.apply
+                                              (Ty.path "core::range::RangeFrom")
+                                              []
+                                              [ Ty.path "usize" ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutPointer,
+                                              M.deref (| M.read (| slice |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
+                                        ]
+                                      |)
                                     |)
                                   |)
                                 |)
                               |)
                             |)
                           |)
-                        |)
-                      ]));
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ]
-                      []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4506,12 +5220,17 @@ Module str.
                     []
                   |),
                   [
-                    M.cast
+                    M.value_with_ty
+                      (M.cast
+                        (Ty.apply
+                          (Ty.path "*const")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                        (M.read (| slice |)))
                       (Ty.apply
                         (Ty.path "*const")
                         []
                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
-                      (M.read (| slice |))
                   ]
                 |) in
               M.alloc (|
@@ -4528,22 +5247,26 @@ Module str.
                     []
                   |),
                   [
-                    Value.mkStructRecord
-                      "core::ops::range::Range"
-                      []
-                      [ Ty.path "usize" ]
-                      [
-                        ("start",
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              self,
-                              "core::range::RangeFrom",
-                              "start"
-                            |)
-                          |));
-                        ("end_", M.read (| len |))
-                      ];
-                    M.read (| slice |)
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.mkStructRecord
+                          "core::ops::range::Range"
+                          [
+                            ("start",
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  self,
+                                  "core::range::RangeFrom",
+                                  "start"
+                                |)
+                              |));
+                            ("end_", M.read (| len |))
+                          ])
+                        (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]))
+                      (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                    M.value_with_ty
+                      (M.read (| slice |))
+                      (Ty.apply (Ty.path "*const") [] [ Ty.path "str" ])
                   ]
                 |)
               |)
@@ -4579,12 +5302,17 @@ Module str.
                     []
                   |),
                   [
-                    M.cast
+                    M.value_with_ty
+                      (M.cast
+                        (Ty.apply
+                          (Ty.path "*mut")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                        (M.read (| slice |)))
                       (Ty.apply
                         (Ty.path "*mut")
                         []
                         [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
-                      (M.read (| slice |))
                   ]
                 |) in
               M.alloc (|
@@ -4601,22 +5329,26 @@ Module str.
                     []
                   |),
                   [
-                    Value.mkStructRecord
-                      "core::ops::range::Range"
-                      []
-                      [ Ty.path "usize" ]
-                      [
-                        ("start",
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              self,
-                              "core::range::RangeFrom",
-                              "start"
-                            |)
-                          |));
-                        ("end_", M.read (| len |))
-                      ];
-                    M.read (| slice |)
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.mkStructRecord
+                          "core::ops::range::Range"
+                          [
+                            ("start",
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  self,
+                                  "core::range::RangeFrom",
+                                  "start"
+                                |)
+                              |));
+                            ("end_", M.read (| len |))
+                          ])
+                        (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]))
+                      (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                    M.value_with_ty
+                      (M.read (| slice |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
                   ]
                 |)
               |)
@@ -4659,7 +5391,11 @@ Module str.
                     M.call_closure (|
                       Ty.path "usize",
                       M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
                     |)
                   ]
               |),
@@ -4692,8 +5428,12 @@ Module str.
                             []
                           |),
                           [
-                            M.read (| self |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                            M.value_with_ty
+                              (M.read (| self |))
+                              (Ty.apply (Ty.path "core::range::RangeFrom") [] [ Ty.path "usize" ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                           ]
                         |)
                       |),
@@ -4717,9 +5457,14 @@ Module str.
                                 Ty.path "never",
                                 M.get_function (| "core::str::slice_error_fail", [], [] |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                                  M.read (| start |);
-                                  M.read (| end_ |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| slice |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                  M.value_with_ty (M.read (| start |)) (Ty.path "usize");
+                                  M.value_with_ty (M.read (| end_ |)) (Ty.path "usize")
                                 ]
                               |)
                             |)))
@@ -4776,17 +5521,21 @@ Module str.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| slice |) |)
-                                      |);
-                                      M.read (|
-                                        M.SubPointer.get_struct_record_field (|
-                                          self,
-                                          "core::range::RangeFrom",
-                                          "start"
-                                        |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| slice |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                      M.value_with_ty
+                                        (M.read (|
+                                          M.SubPointer.get_struct_record_field (|
+                                            self,
+                                            "core::range::RangeFrom",
+                                            "start"
+                                          |)
+                                        |))
+                                        (Ty.path "usize")
                                     ]
                                   |)
                                 |)) in
@@ -4819,11 +5568,18 @@ Module str.
                                                 []
                                               |),
                                               [
-                                                M.read (| self |);
-                                                M.borrow (|
-                                                  Pointer.Kind.MutPointer,
-                                                  M.deref (| M.read (| slice |) |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.read (| self |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::range::RangeFrom")
+                                                    []
+                                                    [ Ty.path "usize" ]);
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutPointer,
+                                                    M.deref (| M.read (| slice |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
                                               ]
                                             |)
                                           |)
@@ -4841,24 +5597,35 @@ Module str.
                                 Ty.path "never",
                                 M.get_function (| "core::str::slice_error_fail", [], [] |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |);
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      self,
-                                      "core::range::RangeFrom",
-                                      "start"
-                                    |)
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| slice |) |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| slice |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        self,
+                                        "core::range::RangeFrom",
+                                        "start"
                                       |)
-                                    ]
-                                  |)
+                                    |))
+                                    (Ty.path "usize");
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (| Ty.path "str", "len", [], [] |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| slice |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                      ]
+                                    |))
+                                    (Ty.path "usize")
                                 ]
                               |)
                             |)))
@@ -4941,7 +5708,19 @@ Module str.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.Ref, self |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ops::range::RangeInclusive")
+                                              []
+                                              [ Ty.path "usize" ]
+                                          ])
+                                    ]
                                   |)
                                 |)
                               |);
@@ -4956,11 +5735,12 @@ Module str.
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])));
                 fun γ =>
                   ltac:(M.monadic
                     (M.call_closure (|
@@ -4978,20 +5758,31 @@ Module str.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                          M.get_associated_function (|
-                            Ty.apply
-                              (Ty.path "core::ops::range::RangeInclusive")
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::ops::range::RangeInclusive")
+                                []
+                                [ Ty.path "usize" ],
+                              "into_slice_range",
+                              [],
                               []
-                              [ Ty.path "usize" ],
-                            "into_slice_range",
-                            [],
-                            []
-                          |),
-                          [ M.read (| self |) ]
-                        |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| self |))
+                                (Ty.apply
+                                  (Ty.path "core::ops::range::RangeInclusive")
+                                  []
+                                  [ Ty.path "usize" ])
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)))
               ]
@@ -5044,7 +5835,19 @@ Module str.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.Ref, self |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ops::range::RangeInclusive")
+                                              []
+                                              [ Ty.path "usize" ]
+                                          ])
+                                    ]
                                   |)
                                 |)
                               |);
@@ -5059,11 +5862,12 @@ Module str.
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ]
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ])));
                 fun γ =>
                   ltac:(M.monadic
                     (M.call_closure (|
@@ -5081,20 +5885,31 @@ Module str.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                          M.get_associated_function (|
-                            Ty.apply
-                              (Ty.path "core::ops::range::RangeInclusive")
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::ops::range::RangeInclusive")
+                                []
+                                [ Ty.path "usize" ],
+                              "into_slice_range",
+                              [],
                               []
-                              [ Ty.path "usize" ],
-                            "into_slice_range",
-                            [],
-                            []
-                          |),
-                          [ M.read (| self |) ]
-                        |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |)
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| self |))
+                                (Ty.apply
+                                  (Ty.path "core::ops::range::RangeInclusive")
+                                  []
+                                  [ Ty.path "usize" ])
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ])
                       ]
                     |)))
               ]
@@ -5130,17 +5945,28 @@ Module str.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
-                    "into_slice_range",
-                    [],
-                    []
-                  |),
-                  [ M.read (| self |) ]
-                |);
-                M.read (| slice |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
+                      "into_slice_range",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.apply
+                          (Ty.path "core::ops::range::RangeInclusive")
+                          []
+                          [ Ty.path "usize" ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                M.value_with_ty
+                  (M.read (| slice |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5174,17 +6000,28 @@ Module str.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
-                    "into_slice_range",
-                    [],
-                    []
-                  |),
-                  [ M.read (| self |) ]
-                |);
-                M.read (| slice |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
+                      "into_slice_range",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.apply
+                          (Ty.path "core::ops::range::RangeInclusive")
+                          []
+                          [ Ty.path "usize" ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                M.value_with_ty
+                  (M.read (| slice |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5237,7 +6074,19 @@ Module str.
                                           [],
                                           []
                                         |),
-                                        [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, self |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::ops::range::RangeInclusive")
+                                                  []
+                                                  [ Ty.path "usize" ]
+                                              ])
+                                        ]
                                       |)
                                     |)
                                   |);
@@ -5283,20 +6132,31 @@ Module str.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                          M.get_associated_function (|
-                            Ty.apply
-                              (Ty.path "core::ops::range::RangeInclusive")
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::ops::range::RangeInclusive")
+                                []
+                                [ Ty.path "usize" ],
+                              "into_slice_range",
+                              [],
                               []
-                              [ Ty.path "usize" ],
-                            "into_slice_range",
-                            [],
-                            []
-                          |),
-                          [ M.read (| self |) ]
-                        |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| self |))
+                                (Ty.apply
+                                  (Ty.path "core::ops::range::RangeInclusive")
+                                  []
+                                  [ Ty.path "usize" ])
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)
                   |)
@@ -5356,7 +6216,19 @@ Module str.
                                               [],
                                               []
                                             |),
-                                            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (| Pointer.Kind.Ref, self |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ops::range::RangeInclusive")
+                                                      []
+                                                      [ Ty.path "usize" ]
+                                                  ])
+                                            ]
                                           |)
                                         |)
                                       |);
@@ -5403,20 +6275,31 @@ Module str.
                             []
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "core::ops::range::RangeInclusive")
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "core::ops::range::RangeInclusive")
+                                    []
+                                    [ Ty.path "usize" ],
+                                  "into_slice_range",
+                                  [],
                                   []
-                                  [ Ty.path "usize" ],
-                                "into_slice_range",
-                                [],
-                                []
-                              |),
-                              [ M.read (| self |) ]
-                            |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |)
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| self |))
+                                    (Ty.apply
+                                      (Ty.path "core::ops::range::RangeInclusive")
+                                      []
+                                      [ Ty.path "usize" ])
+                                ]
+                              |))
+                              (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ])
                           ]
                         |)
                       |)
@@ -5503,11 +6386,12 @@ Module str.
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])));
                 fun γ =>
                   ltac:(M.monadic
                     (M.call_closure (|
@@ -5525,17 +6409,31 @@ Module str.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Ty.path "usize" ],
-                            "into_slice_range",
-                            [],
-                            []
-                          |),
-                          [ M.read (| self |) ]
-                        |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::range::RangeInclusive")
+                                []
+                                [ Ty.path "usize" ],
+                              "into_slice_range",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| self |))
+                                (Ty.apply
+                                  (Ty.path "core::range::RangeInclusive")
+                                  []
+                                  [ Ty.path "usize" ])
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)))
               ]
@@ -5593,11 +6491,12 @@ Module str.
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                    Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ]
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ] ])));
                 fun γ =>
                   ltac:(M.monadic
                     (M.call_closure (|
@@ -5615,17 +6514,31 @@ Module str.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Ty.path "usize" ],
-                            "into_slice_range",
-                            [],
-                            []
-                          |),
-                          [ M.read (| self |) ]
-                        |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |)
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::range::RangeInclusive")
+                                []
+                                [ Ty.path "usize" ],
+                              "into_slice_range",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| self |))
+                                (Ty.apply
+                                  (Ty.path "core::range::RangeInclusive")
+                                  []
+                                  [ Ty.path "usize" ])
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ])
                       ]
                     |)))
               ]
@@ -5661,17 +6574,25 @@ Module str.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Ty.path "usize" ],
-                    "into_slice_range",
-                    [],
-                    []
-                  |),
-                  [ M.read (| self |) ]
-                |);
-                M.read (| slice |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Ty.path "usize" ],
+                      "into_slice_range",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Ty.path "usize" ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ]);
+                M.value_with_ty
+                  (M.read (| slice |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5705,17 +6626,25 @@ Module str.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Ty.path "usize" ],
-                    "into_slice_range",
-                    [],
-                    []
-                  |),
-                  [ M.read (| self |) ]
-                |);
-                M.read (| slice |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Ty.path "usize" ],
+                      "into_slice_range",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Ty.path "usize" ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ]);
+                M.value_with_ty
+                  (M.read (| slice |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5804,17 +6733,31 @@ Module str.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Ty.path "usize" ],
-                            "into_slice_range",
-                            [],
-                            []
-                          |),
-                          [ M.read (| self |) ]
-                        |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::range::RangeInclusive")
+                                []
+                                [ Ty.path "usize" ],
+                              "into_slice_range",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| self |))
+                                (Ty.apply
+                                  (Ty.path "core::range::RangeInclusive")
+                                  []
+                                  [ Ty.path "usize" ])
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                       ]
                     |)
                   |)
@@ -5911,20 +6854,31 @@ Module str.
                             []
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ],
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "core::range::RangeInclusive")
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "core::range::RangeInclusive")
+                                    []
+                                    [ Ty.path "usize" ],
+                                  "into_slice_range",
+                                  [],
                                   []
-                                  [ Ty.path "usize" ],
-                                "into_slice_range",
-                                [],
-                                []
-                              |),
-                              [ M.read (| self |) ]
-                            |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |)
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| self |))
+                                    (Ty.apply
+                                      (Ty.path "core::range::RangeInclusive")
+                                      []
+                                      [ Ty.path "usize" ])
+                                ]
+                              |))
+                              (Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ])
                           ]
                         |)
                       |)
@@ -5991,26 +6945,32 @@ Module str.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
-                    "new",
-                    [],
-                    []
-                  |),
-                  [
-                    Value.Integer IntegerKind.Usize 0;
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::ops::range::RangeToInclusive",
-                        "end"
-                      |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            self,
+                            "core::ops::range::RangeToInclusive",
+                            "end"
+                          |)
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6046,26 +7006,32 @@ Module str.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
-                    "new",
-                    [],
-                    []
-                  |),
-                  [
-                    Value.Integer IntegerKind.Usize 0;
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::ops::range::RangeToInclusive",
-                        "end"
-                      |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |)
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            self,
+                            "core::ops::range::RangeToInclusive",
+                            "end"
+                          |)
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6099,26 +7065,32 @@ Module str.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
-                    "new",
-                    [],
-                    []
-                  |),
-                  [
-                    Value.Integer IntegerKind.Usize 0;
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::ops::range::RangeToInclusive",
-                        "end"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| slice |)
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            self,
+                            "core::ops::range::RangeToInclusive",
+                            "end"
+                          |)
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ]);
+                M.value_with_ty
+                  (M.read (| slice |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6152,26 +7124,32 @@ Module str.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
-                    "new",
-                    [],
-                    []
-                  |),
-                  [
-                    Value.Integer IntegerKind.Usize 0;
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::ops::range::RangeToInclusive",
-                        "end"
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| slice |)
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            self,
+                            "core::ops::range::RangeToInclusive",
+                            "end"
+                          |)
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ]);
+                M.value_with_ty
+                  (M.read (| slice |))
+                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6207,29 +7185,41 @@ Module str.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
-                      M.get_associated_function (|
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.apply
                           (Ty.path "core::ops::range::RangeInclusive")
                           []
                           [ Ty.path "usize" ],
-                        "new",
-                        [],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::ops::range::RangeInclusive")
+                            []
+                            [ Ty.path "usize" ],
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                self,
+                                "core::ops::range::RangeToInclusive",
+                                "end"
+                              |)
+                            |))
+                            (Ty.path "usize")
+                        ]
+                      |))
+                      (Ty.apply
+                        (Ty.path "core::ops::range::RangeInclusive")
                         []
-                      |),
-                      [
-                        Value.Integer IntegerKind.Usize 0;
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            self,
-                            "core::ops::range::RangeToInclusive",
-                            "end"
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |)
+                        [ Ty.path "usize" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)
               |)
@@ -6273,32 +7263,41 @@ Module str.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::ops::range::RangeInclusive")
-                            []
-                            [ Ty.path "usize" ],
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.apply
                               (Ty.path "core::ops::range::RangeInclusive")
                               []
                               [ Ty.path "usize" ],
-                            "new",
-                            [],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::ops::range::RangeInclusive")
+                                []
+                                [ Ty.path "usize" ],
+                              "new",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize");
+                              M.value_with_ty
+                                (M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    self,
+                                    "core::ops::range::RangeToInclusive",
+                                    "end"
+                                  |)
+                                |))
+                                (Ty.path "usize")
+                            ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "core::ops::range::RangeInclusive")
                             []
-                          |),
-                          [
-                            Value.Integer IntegerKind.Usize 0;
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                self,
-                                "core::ops::range::RangeToInclusive",
-                                "end"
-                              |)
-                            |)
-                          ]
-                        |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |)
+                            [ Ty.path "usize" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| slice |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ])
                       ]
                     |)
                   |)
@@ -6360,27 +7359,36 @@ Module str.
                   ltac:(M.monadic
                     (let _ :=
                       is_constant_or_break_match (| M.read (| γ |), mk_str (| "true" |) |) in
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [ Ty.path "bool"; Ty.path "core::str::error::ParseBoolError" ]
-                      [ Value.Bool true ]));
+                    M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Ok" [ Value.Bool true ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.path "bool"; Ty.path "core::str::error::ParseBoolError" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let _ :=
                       is_constant_or_break_match (| M.read (| γ |), mk_str (| "false" |) |) in
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [ Ty.path "bool"; Ty.path "core::str::error::ParseBoolError" ]
-                      [ Value.Bool false ]));
+                    M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Ok" [ Value.Bool false ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.path "bool"; Ty.path "core::str::error::ParseBoolError" ])));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::result::Result::Err"
-                      []
-                      [ Ty.path "bool"; Ty.path "core::str::error::ParseBoolError" ]
-                      [ Value.StructTuple "core::str::error::ParseBoolError" [] [] [] ]))
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::result::Result::Err"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::str::error::ParseBoolError" [])
+                            (Ty.path "core::str::error::ParseBoolError")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.path "bool"; Ty.path "core::str::error::ParseBoolError" ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

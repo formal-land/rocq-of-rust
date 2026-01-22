@@ -38,7 +38,7 @@ Module algorithms.
                       [],
                       []
                     |),
-                    [ M.read (| high |) ]
+                    [ M.value_with_ty (M.read (| high |)) (Ty.path "u64") ]
                   |);
                   Value.Integer IntegerKind.I32 64
                 ]
@@ -54,7 +54,7 @@ Module algorithms.
                   [],
                   []
                 |),
-                [ M.read (| low |) ]
+                [ M.value_with_ty (M.read (| low |)) (Ty.path "u64") ]
               |)
             ]
           |)))
@@ -87,7 +87,7 @@ Module algorithms.
                   [],
                   []
                 |),
-                [ M.read (| a |) ]
+                [ M.value_with_ty (M.read (| a |)) (Ty.path "u64") ]
               |);
               M.call_closure (|
                 Ty.path "u128",
@@ -100,7 +100,7 @@ Module algorithms.
                   [],
                   []
                 |),
-                [ M.read (| b |) ]
+                [ M.value_with_ty (M.read (| b |)) (Ty.path "u64") ]
               |)
             ]
           |)))
@@ -133,7 +133,7 @@ Module algorithms.
                   [],
                   []
                 |),
-                [ M.read (| a |) ]
+                [ M.value_with_ty (M.read (| a |)) (Ty.path "u64") ]
               |);
               M.call_closure (|
                 Ty.path "u128",
@@ -146,7 +146,7 @@ Module algorithms.
                   [],
                   []
                 |),
-                [ M.read (| b |) ]
+                [ M.value_with_ty (M.read (| b |)) (Ty.path "u64") ]
               |)
             ]
           |)))
@@ -184,7 +184,7 @@ Module algorithms.
                       [],
                       []
                     |),
-                    [ M.read (| a |) ]
+                    [ M.value_with_ty (M.read (| a |)) (Ty.path "u64") ]
                   |);
                   M.call_closure (|
                     Ty.path "u128",
@@ -197,7 +197,7 @@ Module algorithms.
                       [],
                       []
                     |),
-                    [ M.read (| b |) ]
+                    [ M.value_with_ty (M.read (| b |)) (Ty.path "u64") ]
                   |)
                 ]
               |);
@@ -212,7 +212,7 @@ Module algorithms.
                   [],
                   []
                 |),
-                [ M.read (| c |) ]
+                [ M.value_with_ty (M.read (| c |)) (Ty.path "u64") ]
               |)
             ]
           |)))
@@ -255,7 +255,7 @@ Module algorithms.
                           [],
                           []
                         |),
-                        [ M.read (| a |) ]
+                        [ M.value_with_ty (M.read (| a |)) (Ty.path "u64") ]
                       |);
                       M.call_closure (|
                         Ty.path "u128",
@@ -268,7 +268,7 @@ Module algorithms.
                           [],
                           []
                         |),
-                        [ M.read (| b |) ]
+                        [ M.value_with_ty (M.read (| b |)) (Ty.path "u64") ]
                       |)
                     ]
                   |);
@@ -283,7 +283,7 @@ Module algorithms.
                       [],
                       []
                     |),
-                    [ M.read (| c |) ]
+                    [ M.value_with_ty (M.read (| c |)) (Ty.path "u64") ]
                   |)
                 ]
               |);
@@ -298,7 +298,7 @@ Module algorithms.
                   [],
                   []
                 |),
-                [ M.read (| d |) ]
+                [ M.value_with_ty (M.read (| d |)) (Ty.path "u64") ]
               |)
             ]
           |)))
@@ -362,7 +362,7 @@ Module algorithms.
                   [],
                   []
                 |),
-                [ M.read (| self |) ]
+                [ M.value_with_ty (M.read (| self |)) (Ty.path "u128") ]
               |);
               M.call_closure (|
                 Ty.path "u64",
@@ -375,7 +375,7 @@ Module algorithms.
                   [],
                   []
                 |),
-                [ M.read (| self |) ]
+                [ M.value_with_ty (M.read (| self |)) (Ty.path "u128") ]
               |)
             ]))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -449,26 +449,44 @@ Module algorithms.
                   Ty.path "usize",
                   M.get_function (| "core::cmp::min", [], [ Ty.path "usize" ] |),
                   [
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ],
-                        "len",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| left |) |) |) ]
-                    |);
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ],
-                        "len",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| right |) |) |) ]
-                    |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ],
+                          "len",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| left |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ])
+                        ]
+                      |))
+                      (Ty.path "usize");
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ],
+                          "len",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| right |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ])
+                        ]
+                      |))
+                      (Ty.path "usize")
                   ]
                 |) in
               let~ lhs :
@@ -488,12 +506,19 @@ Module algorithms.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| left |) |) |);
-                        Value.mkStructRecord
-                          "core::ops::range::RangeTo"
-                          []
-                          [ Ty.path "usize" ]
-                          [ ("end_", M.read (| l |)) ]
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| left |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ]);
+                        M.value_with_ty
+                          (M.value_with_ty
+                            (Value.mkStructRecord
+                              "core::ops::range::RangeTo"
+                              [ ("end_", M.read (| l |)) ])
+                            (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ]))
+                          (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ])
                       ]
                     |)
                   |)
@@ -515,12 +540,19 @@ Module algorithms.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| right |) |) |);
-                        Value.mkStructRecord
-                          "core::ops::range::RangeTo"
-                          []
-                          [ Ty.path "usize" ]
-                          [ ("end_", M.read (| l |)) ]
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| right |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ]);
+                        M.value_with_ty
+                          (M.value_with_ty
+                            (Value.mkStructRecord
+                              "core::ops::range::RangeTo"
+                              [ ("end_", M.read (| l |)) ])
+                            (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ]))
+                          (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ])
                       ]
                     |)
                   |)
@@ -561,8 +593,49 @@ Module algorithms.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::iter::adapters::rev::Rev")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ops::range::Range")
+                                        []
+                                        [ Ty.path "usize" ]
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::iter::traits::iterator::Iterator",
+                                    Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ],
+                                    [],
+                                    [],
+                                    "rev",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.mkStructRecord
+                                          "core::ops::range::Range"
+                                          [
+                                            ("start", Value.Integer IntegerKind.Usize 0);
+                                            ("end_", M.read (| l |))
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "core::ops::range::Range")
+                                          []
+                                          [ Ty.path "usize" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::ops::range::Range")
+                                        []
+                                        [ Ty.path "usize" ])
+                                  ]
+                                |))
+                                (Ty.apply
                                   (Ty.path "core::iter::adapters::rev::Rev")
                                   []
                                   [
@@ -570,30 +643,7 @@ Module algorithms.
                                       (Ty.path "core::ops::range::Range")
                                       []
                                       [ Ty.path "usize" ]
-                                  ],
-                                M.get_trait_method (|
-                                  "core::iter::traits::iterator::Iterator",
-                                  Ty.apply
-                                    (Ty.path "core::ops::range::Range")
-                                    []
-                                    [ Ty.path "usize" ],
-                                  [],
-                                  [],
-                                  "rev",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  Value.mkStructRecord
-                                    "core::ops::range::Range"
-                                    []
-                                    [ Ty.path "usize" ]
-                                    [
-                                      ("start", Value.Integer IntegerKind.Usize 0);
-                                      ("end_", M.read (| l |))
-                                    ]
-                                ]
-                              |)
+                                  ])
                             ]
                           |)
                         |),
@@ -646,12 +696,27 @@ Module algorithms.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (|
-                                                  M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::iter::adapters::rev::Rev")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::ops::range::Range")
+                                                          []
+                                                          [ Ty.path "usize" ]
+                                                      ]
+                                                  ])
                                             ]
                                           |)
                                         |),
@@ -693,24 +758,26 @@ Module algorithms.
                                                           []
                                                         |),
                                                         [
-                                                          M.call_closure (|
-                                                            Ty.path "bool",
-                                                            BinOp.gt,
-                                                            [
-                                                              M.read (|
-                                                                M.SubPointer.get_array_field (|
-                                                                  M.deref (| M.read (| lhs |) |),
-                                                                  M.read (| i |)
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              Ty.path "bool",
+                                                              BinOp.gt,
+                                                              [
+                                                                M.read (|
+                                                                  M.SubPointer.get_array_field (|
+                                                                    M.deref (| M.read (| lhs |) |),
+                                                                    M.read (| i |)
+                                                                  |)
+                                                                |);
+                                                                M.read (|
+                                                                  M.SubPointer.get_array_field (|
+                                                                    M.deref (| M.read (| rhs |) |),
+                                                                    M.read (| i |)
+                                                                  |)
                                                                 |)
-                                                              |);
-                                                              M.read (|
-                                                                M.SubPointer.get_array_field (|
-                                                                  M.deref (| M.read (| rhs |) |),
-                                                                  M.read (| i |)
-                                                                |)
-                                                              |)
-                                                            ]
-                                                          |)
+                                                              ]
+                                                            |))
+                                                            (Ty.path "bool")
                                                         ]
                                                       |);
                                                       M.call_closure (|
@@ -725,24 +792,26 @@ Module algorithms.
                                                           []
                                                         |),
                                                         [
-                                                          M.call_closure (|
-                                                            Ty.path "bool",
-                                                            BinOp.lt,
-                                                            [
-                                                              M.read (|
-                                                                M.SubPointer.get_array_field (|
-                                                                  M.deref (| M.read (| lhs |) |),
-                                                                  M.read (| i |)
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              Ty.path "bool",
+                                                              BinOp.lt,
+                                                              [
+                                                                M.read (|
+                                                                  M.SubPointer.get_array_field (|
+                                                                    M.deref (| M.read (| lhs |) |),
+                                                                    M.read (| i |)
+                                                                  |)
+                                                                |);
+                                                                M.read (|
+                                                                  M.SubPointer.get_array_field (|
+                                                                    M.deref (| M.read (| rhs |) |),
+                                                                    M.read (| i |)
+                                                                  |)
                                                                 |)
-                                                              |);
-                                                              M.read (|
-                                                                M.SubPointer.get_array_field (|
-                                                                  M.deref (| M.read (| rhs |) |),
-                                                                  M.read (| i |)
-                                                                |)
-                                                              |)
-                                                            ]
-                                                          |)
+                                                              ]
+                                                            |))
+                                                            (Ty.path "bool")
                                                         ]
                                                       |)
                                                     ]
@@ -759,11 +828,11 @@ Module algorithms.
                                                       M.never_to_any (|
                                                         M.read (|
                                                           M.return_ (|
-                                                            Value.StructTuple
-                                                              "core::cmp::Ordering::Less"
-                                                              []
-                                                              []
-                                                              []
+                                                            M.value_with_ty
+                                                              (Value.StructTuple
+                                                                "core::cmp::Ordering::Less"
+                                                                [])
+                                                              (Ty.path "core::cmp::Ordering")
                                                           |)
                                                         |)
                                                       |)));
@@ -785,11 +854,11 @@ Module algorithms.
                                                       M.never_to_any (|
                                                         M.read (|
                                                           M.return_ (|
-                                                            Value.StructTuple
-                                                              "core::cmp::Ordering::Greater"
-                                                              []
-                                                              []
-                                                              []
+                                                            M.value_with_ty
+                                                              (Value.StructTuple
+                                                                "core::cmp::Ordering::Greater"
+                                                                [])
+                                                              (Ty.path "core::cmp::Ordering")
                                                           |)
                                                         |)
                                                       |)));
@@ -823,43 +892,64 @@ Module algorithms.
                   Ty.path "core::cmp::Ordering",
                   M.get_trait_method (| "core::cmp::Ord", Ty.path "usize", [], [], "cmp", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "usize",
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.path "usize",
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ],
-                            "len",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| left |) |) |) ]
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
+                          M.call_closure (|
                             Ty.path "usize",
-                            M.call_closure (|
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ],
+                              "len",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| left |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ])
+                            ]
+                          |)
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
                               Ty.path "usize",
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ],
-                                "len",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| right |) |) |) ]
+                              M.call_closure (|
+                                Ty.path "usize",
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ],
+                                  "len",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| right |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ])
+                                ]
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
                   ]
                 |)
               |)

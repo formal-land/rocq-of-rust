@@ -14,11 +14,11 @@ Module iter.
         | [], [ A; F ], [ repeater ] =>
           ltac:(M.monadic
             (let repeater := M.alloc (| F, repeater |) in
-            Value.mkStructRecord
-              "core::iter::sources::repeat_with::RepeatWith"
-              []
-              [ F ]
-              [ ("repeater", M.read (| repeater |)) ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::iter::sources::repeat_with::RepeatWith"
+                [ ("repeater", M.read (| repeater |)) ])
+              (Ty.apply (Ty.path "core::iter::sources::repeat_with::RepeatWith") [] [ F ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -67,32 +67,34 @@ Module iter.
                     [ Ty.apply (Ty.path "core::iter::sources::repeat_with::RepeatWith") [] [ F ] ],
                   self
                 |) in
-              Value.mkStructRecord
-                "core::iter::sources::repeat_with::RepeatWith"
-                []
-                [ F ]
-                [
-                  ("repeater",
-                    M.call_closure (|
-                      F,
-                      M.get_trait_method (| "core::clone::Clone", F, [], [], "clone", [], [] |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "core::iter::sources::repeat_with::RepeatWith"
+                  [
+                    ("repeater",
+                      M.call_closure (|
+                        F,
+                        M.get_trait_method (| "core::clone::Clone", F, [], [], "clone", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
                               Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::iter::sources::repeat_with::RepeatWith",
-                                "repeater"
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::iter::sources::repeat_with::RepeatWith",
+                                    "repeater"
+                                  |)
+                                |)
                               |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |))
-                ]))
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ F ])
+                        ]
+                      |))
+                  ])
+                (Ty.apply (Ty.path "core::iter::sources::repeat_with::RepeatWith") [] [ F ])))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -142,25 +144,34 @@ Module iter.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.alloc (|
-                      Ty.path "core::fmt::builders::DebugStruct",
-                      M.call_closure (|
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.alloc (|
                         Ty.path "core::fmt::builders::DebugStruct",
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::Formatter",
-                          "debug_struct",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "RepeatWith" |) |) |)
-                        ]
+                        M.call_closure (|
+                          Ty.path "core::fmt::builders::DebugStruct",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Formatter",
+                            "debug_struct",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| mk_str (| "RepeatWith" |) |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -201,35 +212,37 @@ Module iter.
                     [ Ty.apply (Ty.path "core::iter::sources::repeat_with::RepeatWith") [] [ F ] ],
                   self
                 |) in
-              Value.StructTuple
-                "core::option::Option::Some"
-                []
-                [ A ]
-                [
-                  M.call_closure (|
-                    A,
-                    M.get_trait_method (|
-                      "core::ops::function::FnMut",
-                      F,
-                      [],
-                      [ Ty.tuple [] ],
-                      "call_mut",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::iter::sources::repeat_with::RepeatWith",
-                          "repeater"
-                        |)
-                      |);
-                      Value.Tuple []
-                    ]
-                  |)
-                ]))
+              M.value_with_ty
+                (Value.StructTuple
+                  "core::option::Option::Some"
+                  [
+                    M.call_closure (|
+                      A,
+                      M.get_trait_method (|
+                        "core::ops::function::FnMut",
+                        F,
+                        [],
+                        [ Ty.tuple [] ],
+                        "call_mut",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::iter::sources::repeat_with::RepeatWith",
+                              "repeater"
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "&mut") [] [ F ]);
+                        M.value_with_ty (Value.Tuple []) (Ty.tuple [])
+                      ]
+                    |)
+                  ])
+                (Ty.apply (Ty.path "core::option::Option") [] [ A ])))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -261,7 +274,9 @@ Module iter.
                   M.read (|
                     get_associated_constant (| Ty.path "usize", "MAX", Ty.path "usize" |)
                   |);
-                  Value.StructTuple "core::option::Option::None" [] [ Ty.path "usize" ] []
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                 ]))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
@@ -322,15 +337,17 @@ Module iter.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::sources::repeat_with::RepeatWith",
-                                    "repeater"
-                                  |)
-                                |);
-                                Value.Tuple []
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::iter::sources::repeat_with::RepeatWith",
+                                      "repeater"
+                                    |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                M.value_with_ty (Value.Tuple []) (Ty.tuple [])
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
@@ -374,22 +391,28 @@ Module iter.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        R,
-                                        M.get_trait_method (|
-                                          "core::ops::function::FnMut",
-                                          Fold,
-                                          [],
-                                          [ Ty.tuple [ Acc; A ] ],
-                                          "call_mut",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (| Pointer.Kind.MutRef, fold |);
-                                          Value.Tuple [ M.read (| init |); M.read (| item |) ]
-                                        ]
-                                      |)
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          R,
+                                          M.get_trait_method (|
+                                            "core::ops::function::FnMut",
+                                            Fold,
+                                            [],
+                                            [ Ty.tuple [ Acc; A ] ],
+                                            "call_mut",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.MutRef, fold |))
+                                              (Ty.apply (Ty.path "&mut") [] [ Fold ]);
+                                            M.value_with_ty
+                                              (Value.Tuple [ M.read (| init |); M.read (| item |) ])
+                                              (Ty.tuple [ Acc; A ])
+                                          ]
+                                        |))
+                                        R
                                     ]
                                   |)
                                 |),
@@ -433,7 +456,16 @@ Module iter.
                                                 [],
                                                 []
                                               |),
-                                              [ M.read (| residual |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| residual |))
+                                                  (Ty.associated_in_trait
+                                                    "core::ops::try_trait::Try"
+                                                    []
+                                                    []
+                                                    R
+                                                    "Residual")
+                                              ]
                                             |)
                                           |)
                                         |)

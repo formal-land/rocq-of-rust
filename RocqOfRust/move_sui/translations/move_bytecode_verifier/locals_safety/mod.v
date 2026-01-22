@@ -86,30 +86,49 @@ Module locals_safety.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path
+                                  "move_bytecode_verifier::locals_safety::abstract_state::AbstractState";
+                                Ty.path "move_binary_format::errors::PartialVMError"
+                              ],
+                            M.get_associated_function (|
+                              Ty.path
+                                "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
+                              "new",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "move_binary_format::file_format::CompiledModule" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| function_context |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "move_bytecode_verifier::absint::FunctionContext" ])
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
                             [
                               Ty.path
                                 "move_bytecode_verifier::locals_safety::abstract_state::AbstractState";
                               Ty.path "move_binary_format::errors::PartialVMError"
-                            ],
-                          M.get_associated_function (|
-                            Ty.path
-                              "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
-                            "new",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.read (| function_context |) |)
-                            |)
-                          ]
-                        |)
+                            ])
                       ]
                     |)
                   |),
@@ -167,7 +186,17 @@ Module locals_safety.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "move_binary_format::errors::PartialVMError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -209,20 +238,35 @@ Module locals_safety.
                     [ impl_Meter__plus___Sized ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.alloc (|
-                        Ty.path "move_bytecode_verifier::locals_safety::LocalsSafetyAnalysis",
-                        Value.StructTuple
-                          "move_bytecode_verifier::locals_safety::LocalsSafetyAnalysis"
-                          []
-                          []
-                          []
-                      |)
-                    |);
-                    M.read (| initial_state |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| function_context |) |) |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| meter |) |) |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.alloc (|
+                          Ty.path "move_bytecode_verifier::locals_safety::LocalsSafetyAnalysis",
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_bytecode_verifier::locals_safety::LocalsSafetyAnalysis"
+                              [])
+                            (Ty.path "move_bytecode_verifier::locals_safety::LocalsSafetyAnalysis")
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.path "move_bytecode_verifier::locals_safety::LocalsSafetyAnalysis" ]);
+                    M.value_with_ty
+                      (M.read (| initial_state |))
+                      (Ty.path
+                        "move_bytecode_verifier::locals_safety::abstract_state::AbstractState");
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| function_context |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "move_bytecode_verifier::absint::FunctionContext" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| meter |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ impl_Meter__plus___Sized ])
                   ]
                 |)
               |)
@@ -442,35 +486,49 @@ Module locals_safety.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
+                            M.get_trait_method (|
+                              "move_bytecode_verifier_meter::Meter",
+                              impl_Meter__plus___Sized,
+                              [],
+                              [],
+                              "add",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.read (| meter |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ impl_Meter__plus___Sized ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.StructTuple
+                                    "move_bytecode_verifier_meter::Scope::Function"
+                                    [])
+                                  (Ty.path "move_bytecode_verifier_meter::Scope"))
+                                (Ty.path "move_bytecode_verifier_meter::Scope");
+                              M.value_with_ty
+                                (M.read (|
+                                  get_constant (|
+                                    "move_bytecode_verifier::locals_safety::abstract_state::STEP_BASE_COST",
+                                    Ty.path "u128"
+                                  |)
+                                |))
+                                (Ty.path "u128")
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
-                            [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                          M.get_trait_method (|
-                            "move_bytecode_verifier_meter::Meter",
-                            impl_Meter__plus___Sized,
-                            [],
-                            [],
-                            "add",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| meter |) |) |);
-                            Value.StructTuple
-                              "move_bytecode_verifier_meter::Scope::Function"
-                              []
-                              []
-                              [];
-                            M.read (|
-                              get_constant (|
-                                "move_bytecode_verifier::locals_safety::abstract_state::STEP_BASE_COST",
-                                Ty.path "u128"
-                              |)
-                            |)
-                          ]
-                        |)
+                            [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
                       ]
                     |)
                   |),
@@ -528,7 +586,17 @@ Module locals_safety.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path "move_binary_format::errors::PartialVMError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -576,8 +644,21 @@ Module locals_safety.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| state |) |) |);
-                                M.read (| M.deref (| M.read (| idx |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| state |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.path
+                                        "move_bytecode_verifier::locals_safety::abstract_state::AbstractState"
+                                    ]);
+                                M.value_with_ty
+                                  (M.read (| M.deref (| M.read (| idx |) |) |))
+                                  (Ty.path "u8")
                               ]
                             |)
                           |),
@@ -626,26 +707,39 @@ Module locals_safety.
                                                       []
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.path
-                                                          "move_binary_format::file_format::AbilitySet",
-                                                        M.get_associated_function (|
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.path
-                                                            "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
-                                                          "local_abilities",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| state |) |)
-                                                          |);
-                                                          M.read (|
-                                                            M.deref (| M.read (| idx |) |)
-                                                          |)
-                                                        ]
-                                                      |)
+                                                            "move_binary_format::file_format::AbilitySet",
+                                                          M.get_associated_function (|
+                                                            Ty.path
+                                                              "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
+                                                            "local_abilities",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (| M.read (| state |) |)
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "move_bytecode_verifier::locals_safety::abstract_state::AbstractState"
+                                                                ]);
+                                                            M.value_with_ty
+                                                              (M.read (|
+                                                                M.deref (| M.read (| idx |) |)
+                                                              |))
+                                                              (Ty.path "u8")
+                                                          ]
+                                                        |))
+                                                        (Ty.path
+                                                          "move_binary_format::file_format::AbilitySet")
                                                     ]
                                                   |)
                                                 ]
@@ -659,39 +753,56 @@ Module locals_safety.
                                           M.never_to_any (|
                                             M.read (|
                                               M.return_ (|
-                                                Value.StructTuple
-                                                  "core::result::Result::Err"
-                                                  []
-                                                  [
-                                                    Ty.tuple [];
-                                                    Ty.path
-                                                      "move_binary_format::errors::PartialVMError"
-                                                  ]
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path
-                                                        "move_binary_format::errors::PartialVMError",
-                                                      M.get_associated_function (|
+                                                M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::result::Result::Err"
+                                                    [
+                                                      M.call_closure (|
                                                         Ty.path
-                                                          "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
-                                                        "error",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| state |) |)
-                                                        |);
-                                                        Value.StructTuple
-                                                          "move_core_types::vm_status::StatusCode::STLOC_UNSAFE_TO_DESTROY_ERROR"
+                                                          "move_binary_format::errors::PartialVMError",
+                                                        M.get_associated_function (|
+                                                          Ty.path
+                                                            "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
+                                                          "error",
+                                                          [],
                                                           []
-                                                          []
-                                                          [];
-                                                        M.read (| offset |)
-                                                      ]
-                                                    |)
-                                                  ]
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| state |) |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "move_bytecode_verifier::locals_safety::abstract_state::AbstractState"
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.value_with_ty
+                                                              (Value.StructTuple
+                                                                "move_core_types::vm_status::StatusCode::STLOC_UNSAFE_TO_DESTROY_ERROR"
+                                                                [])
+                                                              (Ty.path
+                                                                "move_core_types::vm_status::StatusCode"))
+                                                            (Ty.path
+                                                              "move_core_types::vm_status::StatusCode");
+                                                          M.value_with_ty
+                                                            (M.read (| offset |))
+                                                            (Ty.path "u16")
+                                                        ]
+                                                      |)
+                                                    ])
+                                                  (Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.tuple [];
+                                                      Ty.path
+                                                        "move_binary_format::errors::PartialVMError"
+                                                    ])
                                               |)
                                             |)
                                           |)))
@@ -710,11 +821,21 @@ Module locals_safety.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (| M.read (| state |) |)
-                                    |);
-                                    M.read (| M.deref (| M.read (| idx |) |) |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| state |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.path
+                                            "move_bytecode_verifier::locals_safety::abstract_state::AbstractState"
+                                        ]);
+                                    M.value_with_ty
+                                      (M.read (| M.deref (| M.read (| idx |) |) |))
+                                      (Ty.path "u8")
                                   ]
                                 |)))
                           ]
@@ -745,8 +866,21 @@ Module locals_safety.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| state |) |) |);
-                                M.read (| M.deref (| M.read (| idx |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| state |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.path
+                                        "move_bytecode_verifier::locals_safety::abstract_state::AbstractState"
+                                    ]);
+                                M.value_with_ty
+                                  (M.read (| M.deref (| M.read (| idx |) |) |))
+                                  (Ty.path "u8")
                               ]
                             |)
                           |),
@@ -781,39 +915,56 @@ Module locals_safety.
                                           (M.never_to_any (|
                                             M.read (|
                                               M.return_ (|
-                                                Value.StructTuple
-                                                  "core::result::Result::Err"
-                                                  []
-                                                  [
-                                                    Ty.tuple [];
-                                                    Ty.path
-                                                      "move_binary_format::errors::PartialVMError"
-                                                  ]
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path
-                                                        "move_binary_format::errors::PartialVMError",
-                                                      M.get_associated_function (|
+                                                M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::result::Result::Err"
+                                                    [
+                                                      M.call_closure (|
                                                         Ty.path
-                                                          "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
-                                                        "error",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| state |) |)
-                                                        |);
-                                                        Value.StructTuple
-                                                          "move_core_types::vm_status::StatusCode::MOVELOC_UNAVAILABLE_ERROR"
+                                                          "move_binary_format::errors::PartialVMError",
+                                                        M.get_associated_function (|
+                                                          Ty.path
+                                                            "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
+                                                          "error",
+                                                          [],
                                                           []
-                                                          []
-                                                          [];
-                                                        M.read (| offset |)
-                                                      ]
-                                                    |)
-                                                  ]
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| state |) |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "move_bytecode_verifier::locals_safety::abstract_state::AbstractState"
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.value_with_ty
+                                                              (Value.StructTuple
+                                                                "move_core_types::vm_status::StatusCode::MOVELOC_UNAVAILABLE_ERROR"
+                                                                [])
+                                                              (Ty.path
+                                                                "move_core_types::vm_status::StatusCode"))
+                                                            (Ty.path
+                                                              "move_core_types::vm_status::StatusCode");
+                                                          M.value_with_ty
+                                                            (M.read (| offset |))
+                                                            (Ty.path "u16")
+                                                        ]
+                                                      |)
+                                                    ])
+                                                  (Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.tuple [];
+                                                      Ty.path
+                                                        "move_binary_format::errors::PartialVMError"
+                                                    ])
                                               |)
                                             |)
                                           |)))
@@ -837,11 +988,21 @@ Module locals_safety.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (| M.read (| state |) |)
-                                    |);
-                                    M.read (| M.deref (| M.read (| idx |) |) |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| state |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.path
+                                            "move_bytecode_verifier::locals_safety::abstract_state::AbstractState"
+                                        ]);
+                                    M.value_with_ty
+                                      (M.read (| M.deref (| M.read (| idx |) |) |))
+                                      (Ty.path "u8")
                                   ]
                                 |)))
                           ]
@@ -872,8 +1033,21 @@ Module locals_safety.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| state |) |) |);
-                                M.read (| M.deref (| M.read (| idx |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| state |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.path
+                                        "move_bytecode_verifier::locals_safety::abstract_state::AbstractState"
+                                    ]);
+                                M.value_with_ty
+                                  (M.read (| M.deref (| M.read (| idx |) |) |))
+                                  (Ty.path "u8")
                               ]
                             |)
                           |),
@@ -908,39 +1082,56 @@ Module locals_safety.
                                           (M.never_to_any (|
                                             M.read (|
                                               M.return_ (|
-                                                Value.StructTuple
-                                                  "core::result::Result::Err"
-                                                  []
-                                                  [
-                                                    Ty.tuple [];
-                                                    Ty.path
-                                                      "move_binary_format::errors::PartialVMError"
-                                                  ]
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.path
-                                                        "move_binary_format::errors::PartialVMError",
-                                                      M.get_associated_function (|
+                                                M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::result::Result::Err"
+                                                    [
+                                                      M.call_closure (|
                                                         Ty.path
-                                                          "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
-                                                        "error",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| state |) |)
-                                                        |);
-                                                        Value.StructTuple
-                                                          "move_core_types::vm_status::StatusCode::COPYLOC_UNAVAILABLE_ERROR"
+                                                          "move_binary_format::errors::PartialVMError",
+                                                        M.get_associated_function (|
+                                                          Ty.path
+                                                            "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
+                                                          "error",
+                                                          [],
                                                           []
-                                                          []
-                                                          [];
-                                                        M.read (| offset |)
-                                                      ]
-                                                    |)
-                                                  ]
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| state |) |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "move_bytecode_verifier::locals_safety::abstract_state::AbstractState"
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.value_with_ty
+                                                              (Value.StructTuple
+                                                                "move_core_types::vm_status::StatusCode::COPYLOC_UNAVAILABLE_ERROR"
+                                                                [])
+                                                              (Ty.path
+                                                                "move_core_types::vm_status::StatusCode"))
+                                                            (Ty.path
+                                                              "move_core_types::vm_status::StatusCode");
+                                                          M.value_with_ty
+                                                            (M.read (| offset |))
+                                                            (Ty.path "u16")
+                                                        ]
+                                                      |)
+                                                    ])
+                                                  (Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.tuple [];
+                                                      Ty.path
+                                                        "move_binary_format::errors::PartialVMError"
+                                                    ])
                                               |)
                                             |)
                                           |)))
@@ -1009,11 +1200,21 @@ Module locals_safety.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| state |) |)
-                                          |);
-                                          M.read (| M.deref (| M.read (| idx |) |) |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| state |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.path
+                                                  "move_bytecode_verifier::locals_safety::abstract_state::AbstractState"
+                                              ]);
+                                          M.value_with_ty
+                                            (M.read (| M.deref (| M.read (| idx |) |) |))
+                                            (Ty.path "u8")
                                         ]
                                       |)
                                     |),
@@ -1048,39 +1249,58 @@ Module locals_safety.
                                                     (M.never_to_any (|
                                                       M.read (|
                                                         M.return_ (|
-                                                          Value.StructTuple
-                                                            "core::result::Result::Err"
-                                                            []
-                                                            [
-                                                              Ty.tuple [];
-                                                              Ty.path
-                                                                "move_binary_format::errors::PartialVMError"
-                                                            ]
-                                                            [
-                                                              M.call_closure (|
-                                                                Ty.path
-                                                                  "move_binary_format::errors::PartialVMError",
-                                                                M.get_associated_function (|
+                                                          M.value_with_ty
+                                                            (Value.StructTuple
+                                                              "core::result::Result::Err"
+                                                              [
+                                                                M.call_closure (|
                                                                   Ty.path
-                                                                    "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
-                                                                  "error",
-                                                                  [],
-                                                                  []
-                                                                |),
-                                                                [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.deref (| M.read (| state |) |)
-                                                                  |);
-                                                                  Value.StructTuple
-                                                                    "move_core_types::vm_status::StatusCode::BORROWLOC_UNAVAILABLE_ERROR"
+                                                                    "move_binary_format::errors::PartialVMError",
+                                                                  M.get_associated_function (|
+                                                                    Ty.path
+                                                                      "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
+                                                                    "error",
+                                                                    [],
                                                                     []
-                                                                    []
-                                                                    [];
-                                                                  M.read (| offset |)
-                                                                ]
-                                                              |)
-                                                            ]
+                                                                  |),
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          M.read (| state |)
+                                                                        |)
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "move_bytecode_verifier::locals_safety::abstract_state::AbstractState"
+                                                                        ]);
+                                                                    M.value_with_ty
+                                                                      (M.value_with_ty
+                                                                        (Value.StructTuple
+                                                                          "move_core_types::vm_status::StatusCode::BORROWLOC_UNAVAILABLE_ERROR"
+                                                                          [])
+                                                                        (Ty.path
+                                                                          "move_core_types::vm_status::StatusCode"))
+                                                                      (Ty.path
+                                                                        "move_core_types::vm_status::StatusCode");
+                                                                    M.value_with_ty
+                                                                      (M.read (| offset |))
+                                                                      (Ty.path "u16")
+                                                                  ]
+                                                                |)
+                                                              ])
+                                                            (Ty.apply
+                                                              (Ty.path "core::result::Result")
+                                                              []
+                                                              [
+                                                                Ty.tuple [];
+                                                                Ty.path
+                                                                  "move_binary_format::errors::PartialVMError"
+                                                              ])
                                                         |)
                                                       |)
                                                     |)))
@@ -1144,7 +1364,20 @@ Module locals_safety.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| state |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| state |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.path
+                                        "move_bytecode_verifier::locals_safety::abstract_state::AbstractState"
+                                    ])
+                              ]
                             |) in
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -1193,63 +1426,96 @@ Module locals_safety.
                                     []
                                   |),
                                   [
-                                    M.call_closure (|
-                                      Ty.apply
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::result::Result")
+                                          []
+                                          [
+                                            Ty.tuple [];
+                                            Ty.path "move_binary_format::errors::PartialVMError"
+                                          ],
+                                        M.get_trait_method (|
+                                          "move_bytecode_verifier_meter::Meter",
+                                          impl_Meter__plus___Sized,
+                                          [],
+                                          [],
+                                          "add_items",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.read (| meter |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ impl_Meter__plus___Sized ]);
+                                          M.value_with_ty
+                                            (M.value_with_ty
+                                              (Value.StructTuple
+                                                "move_bytecode_verifier_meter::Scope::Function"
+                                                [])
+                                              (Ty.path "move_bytecode_verifier_meter::Scope"))
+                                            (Ty.path "move_bytecode_verifier_meter::Scope");
+                                          M.value_with_ty
+                                            (M.read (|
+                                              get_constant (|
+                                                "move_bytecode_verifier::locals_safety::abstract_state::RET_PER_LOCAL_COST",
+                                                Ty.path "u128"
+                                              |)
+                                            |))
+                                            (Ty.path "u128");
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_associated_function (|
+                                                Ty.apply
+                                                  (Ty.path "alloc::vec::Vec")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
+                                                    Ty.path "alloc::alloc::Global"
+                                                  ],
+                                                "len",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| local_states |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "alloc::vec::Vec")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
+                                                          Ty.path "alloc::alloc::Global"
+                                                        ]
+                                                    ])
+                                              ]
+                                            |))
+                                            (Ty.path "usize")
+                                        ]
+                                      |))
+                                      (Ty.apply
                                         (Ty.path "core::result::Result")
                                         []
                                         [
                                           Ty.tuple [];
                                           Ty.path "move_binary_format::errors::PartialVMError"
-                                        ],
-                                      M.get_trait_method (|
-                                        "move_bytecode_verifier_meter::Meter",
-                                        impl_Meter__plus___Sized,
-                                        [],
-                                        [],
-                                        "add_items",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.read (| meter |) |)
-                                        |);
-                                        Value.StructTuple
-                                          "move_bytecode_verifier_meter::Scope::Function"
-                                          []
-                                          []
-                                          [];
-                                        M.read (|
-                                          get_constant (|
-                                            "move_bytecode_verifier::locals_safety::abstract_state::RET_PER_LOCAL_COST",
-                                            Ty.path "u128"
-                                          |)
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          M.get_associated_function (|
-                                            Ty.apply
-                                              (Ty.path "alloc::vec::Vec")
-                                              []
-                                              [
-                                                Ty.path
-                                                  "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
-                                                Ty.path "alloc::alloc::Global"
-                                              ],
-                                            "len",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| local_states |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
+                                        ])
                                   ]
                                 |)
                               |),
@@ -1309,7 +1575,18 @@ Module locals_safety.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| residual |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| residual |))
+                                                (Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.path "core::convert::Infallible";
+                                                    Ty.path
+                                                      "move_binary_format::errors::PartialVMError"
+                                                  ])
+                                            ]
                                           |)
                                         |)
                                       |)
@@ -1359,7 +1636,20 @@ Module locals_safety.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| state |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| state |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.path
+                                        "move_bytecode_verifier::locals_safety::abstract_state::AbstractState"
+                                    ])
+                              ]
                             |) in
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -1396,10 +1686,24 @@ Module locals_safety.
                                                       []
                                                     |),
                                                     [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| local_states |) |)
-                                                      |)
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| M.read (| local_states |) |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "alloc::vec::Vec")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
+                                                                Ty.path "alloc::alloc::Global"
+                                                              ]
+                                                          ])
                                                     ]
                                                   |);
                                                   M.call_closure (|
@@ -1418,12 +1722,26 @@ Module locals_safety.
                                                       []
                                                     |),
                                                     [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.read (| all_local_abilities |)
-                                                        |)
-                                                      |)
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.read (| all_local_abilities |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "alloc::vec::Vec")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "move_binary_format::file_format::AbilitySet";
+                                                                Ty.path "alloc::alloc::Global"
+                                                              ]
+                                                          ])
                                                     ]
                                                   |)
                                                 ]
@@ -1441,9 +1759,11 @@ Module locals_safety.
                                         Ty.path "never",
                                         M.get_function (| "core::panicking::panic", [], [] |),
                                         [
-                                          mk_str (|
-                                            "assertion failed: local_states.len() == all_local_abilities.len()"
-                                          |)
+                                          M.value_with_ty
+                                            (mk_str (|
+                                              "assertion failed: local_states.len() == all_local_abilities.len()"
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                         ]
                                       |)
                                     |)));
@@ -1515,8 +1835,176 @@ Module locals_safety.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::iter::adapters::zip::Zip")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::slice::iter::Iter")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
+                                                ];
+                                              Ty.apply
+                                                (Ty.path "core::slice::iter::Iter")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "move_binary_format::file_format::AbilitySet"
+                                                ]
+                                            ],
+                                          M.get_trait_method (|
+                                            "core::iter::traits::iterator::Iterator",
+                                            Ty.apply
+                                              (Ty.path "core::slice::iter::Iter")
+                                              []
+                                              [
+                                                Ty.path
+                                                  "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
+                                              ],
+                                            [],
+                                            [],
+                                            "zip",
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::vec::Vec")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "move_binary_format::file_format::AbilitySet";
+                                                      Ty.path "alloc::alloc::Global"
+                                                    ]
+                                                ]
+                                            ]
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::slice::iter::Iter")
+                                                  []
+                                                  [
+                                                    Ty.path
+                                                      "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
+                                                  ],
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "slice")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
+                                                    ],
+                                                  "iter",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
+                                                                ]
+                                                            ],
+                                                          M.get_trait_method (|
+                                                            "core::ops::deref::Deref",
+                                                            Ty.apply
+                                                              (Ty.path "alloc::vec::Vec")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
+                                                                Ty.path "alloc::alloc::Global"
+                                                              ],
+                                                            [],
+                                                            [],
+                                                            "deref",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.read (| local_states |)
+                                                                |)
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "alloc::vec::Vec")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
+                                                                      Ty.path "alloc::alloc::Global"
+                                                                    ]
+                                                                ])
+                                                          ]
+                                                        |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
+                                                          ]
+                                                      ])
+                                                ]
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "core::slice::iter::Iter")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
+                                                ]);
+                                            M.value_with_ty
+                                              (M.read (| all_local_abilities |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::vec::Vec")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "move_binary_format::file_format::AbilitySet";
+                                                      Ty.path "alloc::alloc::Global"
+                                                    ]
+                                                ])
+                                          ]
+                                        |))
+                                        (Ty.apply
                                           (Ty.path "core::iter::adapters::zip::Zip")
                                           []
                                           [
@@ -1534,104 +2022,7 @@ Module locals_safety.
                                                 Ty.path
                                                   "move_binary_format::file_format::AbilitySet"
                                               ]
-                                          ],
-                                        M.get_trait_method (|
-                                          "core::iter::traits::iterator::Iterator",
-                                          Ty.apply
-                                            (Ty.path "core::slice::iter::Iter")
-                                            []
-                                            [
-                                              Ty.path
-                                                "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
-                                            ],
-                                          [],
-                                          [],
-                                          "zip",
-                                          [],
-                                          [
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "alloc::vec::Vec")
-                                                  []
-                                                  [
-                                                    Ty.path
-                                                      "move_binary_format::file_format::AbilitySet";
-                                                    Ty.path "alloc::alloc::Global"
-                                                  ]
-                                              ]
-                                          ]
-                                        |),
-                                        [
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "core::slice::iter::Iter")
-                                              []
-                                              [
-                                                Ty.path
-                                                  "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
-                                              ],
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "slice")
-                                                []
-                                                [
-                                                  Ty.path
-                                                    "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
-                                                ],
-                                              "iter",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.call_closure (|
-                                                    Ty.apply
-                                                      (Ty.path "&")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "slice")
-                                                          []
-                                                          [
-                                                            Ty.path
-                                                              "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
-                                                          ]
-                                                      ],
-                                                    M.get_trait_method (|
-                                                      "core::ops::deref::Deref",
-                                                      Ty.apply
-                                                        (Ty.path "alloc::vec::Vec")
-                                                        []
-                                                        [
-                                                          Ty.path
-                                                            "move_bytecode_verifier::locals_safety::abstract_state::LocalState";
-                                                          Ty.path "alloc::alloc::Global"
-                                                        ],
-                                                      [],
-                                                      [],
-                                                      "deref",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| local_states |) |)
-                                                      |)
-                                                    ]
-                                                  |)
-                                                |)
-                                              |)
-                                            ]
-                                          |);
-                                          M.read (| all_local_abilities |)
-                                        ]
-                                      |)
+                                          ])
                                     ]
                                   |)
                                 |),
@@ -1740,12 +2131,40 @@ Module locals_safety.
                                                       []
                                                     |),
                                                     [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.deref (|
-                                                          M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                        |)
-                                                      |)
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.MutRef,
+                                                          M.deref (|
+                                                            M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&mut")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::iter::adapters::zip::Zip")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::slice::iter::Iter")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "move_bytecode_verifier::locals_safety::abstract_state::LocalState"
+                                                                  ];
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::slice::iter::Iter")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "move_binary_format::file_format::AbilitySet"
+                                                                  ]
+                                                              ]
+                                                          ])
                                                     ]
                                                   |)
                                                 |),
@@ -1856,13 +2275,16 @@ Module locals_safety.
                                                                                     []
                                                                                   |),
                                                                                   [
-                                                                                    M.read (|
-                                                                                      M.deref (|
-                                                                                        M.read (|
-                                                                                          local_abilities
+                                                                                    M.value_with_ty
+                                                                                      (M.read (|
+                                                                                        M.deref (|
+                                                                                          M.read (|
+                                                                                            local_abilities
+                                                                                          |)
                                                                                         |)
-                                                                                      |)
-                                                                                    |)
+                                                                                      |))
+                                                                                      (Ty.path
+                                                                                        "move_binary_format::file_format::AbilitySet")
                                                                                   ]
                                                                                 |)
                                                                               ]
@@ -1876,45 +2298,65 @@ Module locals_safety.
                                                                         M.never_to_any (|
                                                                           M.read (|
                                                                             M.return_ (|
-                                                                              Value.StructTuple
-                                                                                "core::result::Result::Err"
-                                                                                []
-                                                                                [
-                                                                                  Ty.tuple [];
-                                                                                  Ty.path
-                                                                                    "move_binary_format::errors::PartialVMError"
-                                                                                ]
-                                                                                [
-                                                                                  M.call_closure (|
-                                                                                    Ty.path
-                                                                                      "move_binary_format::errors::PartialVMError",
-                                                                                    M.get_associated_function (|
+                                                                              M.value_with_ty
+                                                                                (Value.StructTuple
+                                                                                  "core::result::Result::Err"
+                                                                                  [
+                                                                                    M.call_closure (|
                                                                                       Ty.path
-                                                                                        "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
-                                                                                      "error",
-                                                                                      [],
-                                                                                      []
-                                                                                    |),
-                                                                                    [
-                                                                                      M.borrow (|
-                                                                                        Pointer.Kind.Ref,
-                                                                                        M.deref (|
-                                                                                          M.read (|
-                                                                                            state
-                                                                                          |)
-                                                                                        |)
-                                                                                      |);
-                                                                                      Value.StructTuple
-                                                                                        "move_core_types::vm_status::StatusCode::UNSAFE_RET_UNUSED_VALUES_WITHOUT_DROP"
+                                                                                        "move_binary_format::errors::PartialVMError",
+                                                                                      M.get_associated_function (|
+                                                                                        Ty.path
+                                                                                          "move_bytecode_verifier::locals_safety::abstract_state::AbstractState",
+                                                                                        "error",
+                                                                                        [],
                                                                                         []
-                                                                                        []
-                                                                                        [];
-                                                                                      M.read (|
-                                                                                        offset
-                                                                                      |)
-                                                                                    ]
-                                                                                  |)
-                                                                                ]
+                                                                                      |),
+                                                                                      [
+                                                                                        M.value_with_ty
+                                                                                          (M.borrow (|
+                                                                                            Pointer.Kind.Ref,
+                                                                                            M.deref (|
+                                                                                              M.read (|
+                                                                                                state
+                                                                                              |)
+                                                                                            |)
+                                                                                          |))
+                                                                                          (Ty.apply
+                                                                                            (Ty.path
+                                                                                              "&")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "move_bytecode_verifier::locals_safety::abstract_state::AbstractState"
+                                                                                            ]);
+                                                                                        M.value_with_ty
+                                                                                          (M.value_with_ty
+                                                                                            (Value.StructTuple
+                                                                                              "move_core_types::vm_status::StatusCode::UNSAFE_RET_UNUSED_VALUES_WITHOUT_DROP"
+                                                                                              [])
+                                                                                            (Ty.path
+                                                                                              "move_core_types::vm_status::StatusCode"))
+                                                                                          (Ty.path
+                                                                                            "move_core_types::vm_status::StatusCode");
+                                                                                        M.value_with_ty
+                                                                                          (M.read (|
+                                                                                            offset
+                                                                                          |))
+                                                                                          (Ty.path
+                                                                                            "u16")
+                                                                                      ]
+                                                                                    |)
+                                                                                  ])
+                                                                                (Ty.apply
+                                                                                  (Ty.path
+                                                                                    "core::result::Result")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.tuple [];
+                                                                                    Ty.path
+                                                                                      "move_binary_format::errors::PartialVMError"
+                                                                                  ])
                                                                             |)
                                                                           |)
                                                                         |)))
@@ -2630,11 +3072,12 @@ Module locals_safety.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
               |)
             |)))
         |)))
@@ -2723,10 +3166,20 @@ Module locals_safety.
               [ impl_Meter__plus___Sized ]
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytecode |) |) |);
-              M.read (| index |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| meter |) |) |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.path "move_bytecode_verifier::locals_safety::abstract_state::AbstractState"
+                  ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytecode |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "move_binary_format::file_format::Bytecode" ]);
+              M.value_with_ty (M.read (| index |)) (Ty.path "u16");
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| meter |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ impl_Meter__plus___Sized ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

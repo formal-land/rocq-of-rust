@@ -40,9 +40,17 @@ Module processor.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| accounts |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| instruction_data |) |) |);
-              Value.Bool false
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| accounts |) |) |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "pinocchio::account_info::AccountInfo" ]
+                  ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| instruction_data |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+              M.value_with_ty (Value.Bool false) (Ty.path "bool")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

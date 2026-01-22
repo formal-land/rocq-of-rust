@@ -95,6 +95,13 @@ Lemma of_value_with_0 {A : Set} `{Link A} :
 Proof. now cbn. Qed.
 Smpl Add apply of_value_with_0 : of_value.
 
+Instance IsOfValueWith_0 {A : Set} `{Link A} :
+  OfValueWith.C (t A {| Integer.value := 0 |}) (Value.Array []) :=
+{
+  OfValueWith.value := Build_t A {| Integer.value := 0 |} ArrayEmpty.Make;
+  OfValueWith.eq := eq_refl;
+}.
+
 Definition of_value_0 (value0' : Value.t) :
   OfValue.t value0' ->
   OfValue.t (Value.Array []).
@@ -115,6 +122,17 @@ Lemma of_value_with_1 {A : Set} `{Link A}
   |}).
 Proof. now intros; subst. Qed.
 Smpl Add unshelve eapply of_value_with_1 : of_value.
+
+Instance IsOfValueWith_1 {A : Set} `{Link A}
+    (value1' : Value.t) {H_value1 : OfValueWith.C A value1'} :
+  OfValueWith.C (t A {| Integer.value := 1 |}) (Value.Array [value1']) :=
+{
+  OfValueWith.value := Build_t A {| Integer.value := 1 |} {|
+    ArrayPair.x := H_value1.(OfValueWith.value);
+    ArrayPair.xs := ArrayEmpty.Make;
+  |};
+  OfValueWith.eq := ltac:(destruct H_value1; subst; reflexivity);
+}.
 
 Definition of_value_1 (value1' : Value.t) :
   OfValue.t value1' ->
@@ -144,6 +162,21 @@ Proof.
 Qed.
 Smpl Add unshelve eapply of_value_with_2 : of_value.
 
+Instance IsOfValueWith_2 {A : Set} `{Link A}
+    (value1' : Value.t) {H_value1 : OfValueWith.C A value1'}
+    (value2' : Value.t) {H_value2 : OfValueWith.C A value2'} :
+  OfValueWith.C (t A {| Integer.value := 2 |}) (Value.Array [value1'; value2']) :=
+{
+  OfValueWith.value := Build_t A {| Integer.value := 2 |} {|
+    ArrayPair.x := H_value1.(OfValueWith.value);
+    ArrayPair.xs := {|
+      ArrayPair.x := H_value2.(OfValueWith.value);
+      ArrayPair.xs := ArrayEmpty.Make;
+    |};
+  |};
+  OfValueWith.eq := ltac:(destruct H_value1, H_value2; subst; reflexivity);
+}.
+
 Definition of_value_2
   (value1' : Value.t)
   (H_value1' : OfValue.t value1')
@@ -157,6 +190,25 @@ Proof.
   apply of_value_with_2; eassumption.
 Defined.
 Smpl Add unshelve eapply of_value_2 : of_value.
+
+Instance IsOfValueWith_3 {A : Set} `{Link A}
+    (value1' : Value.t) {H_value1 : OfValueWith.C A value1'}
+    (value2' : Value.t) {H_value2 : OfValueWith.C A value2'}
+    (value3' : Value.t) {H_value3 : OfValueWith.C A value3'} :
+  OfValueWith.C (t A {| Integer.value := 3 |}) (Value.Array [value1'; value2'; value3']) :=
+{
+  OfValueWith.value := Build_t A {| Integer.value := 3 |} {|
+    ArrayPair.x := H_value1.(OfValueWith.value);
+    ArrayPair.xs := {|
+      ArrayPair.x := H_value2.(OfValueWith.value);
+      ArrayPair.xs := {|
+        ArrayPair.x := H_value3.(OfValueWith.value);
+        ArrayPair.xs := ArrayEmpty.Make;
+      |};
+    |};
+  |};
+  OfValueWith.eq := ltac:(destruct H_value1, H_value2, H_value3; subst; reflexivity);
+}.
 
 Lemma of_value_with_4 {A : Set} `{Link A}
   (value1' : Value.t) (value1 : A)
@@ -185,6 +237,31 @@ Proof.
   now intros; subst.
 Qed.
 Smpl Add unshelve eapply of_value_with_4 : of_value.
+
+Instance IsOfValueWith_4 {A : Set} `{Link A}
+    (value1' : Value.t) {H_value1 : OfValueWith.C A value1'}
+    (value2' : Value.t) {H_value2 : OfValueWith.C A value2'}
+    (value3' : Value.t) {H_value3 : OfValueWith.C A value3'}
+    (value4' : Value.t) {H_value4 : OfValueWith.C A value4'} :
+  OfValueWith.C (t A {| Integer.value := 4 |}) (Value.Array [value1'; value2'; value3'; value4']) :=
+{
+  OfValueWith.value := Build_t A {| Integer.value := 4 |} {|
+    ArrayPair.x := H_value1.(OfValueWith.value);
+    ArrayPair.xs := {|
+      ArrayPair.x := H_value2.(OfValueWith.value);
+      ArrayPair.xs := {|
+        ArrayPair.x := H_value3.(OfValueWith.value);
+        ArrayPair.xs := {|
+          ArrayPair.x := H_value4.(OfValueWith.value);
+          ArrayPair.xs := ArrayEmpty.Make;
+        |};
+      |};
+    |};
+  |};
+  OfValueWith.eq := ltac:(
+    destruct H_value1, H_value2, H_value3, H_value4; subst; reflexivity
+  );
+}.
 
 Definition of_value_4
   (value1' : Value.t)
@@ -234,6 +311,35 @@ Definition of_value_with_5 {A : Set} `{Link A}
   |}).
 Proof. now intros; subst. Qed.
 Smpl Add unshelve eapply of_value_with_5 : of_value.
+
+Instance IsOfValueWith_5 {A : Set} `{Link A}
+    (value1' : Value.t) {H_value1 : OfValueWith.C A value1'}
+    (value2' : Value.t) {H_value2 : OfValueWith.C A value2'}
+    (value3' : Value.t) {H_value3 : OfValueWith.C A value3'}
+    (value4' : Value.t) {H_value4 : OfValueWith.C A value4'}
+    (value5' : Value.t) {H_value5 : OfValueWith.C A value5'} :
+  OfValueWith.C (t A {| Integer.value := 5 |}) (Value.Array [value1'; value2'; value3'; value4'; value5']) :=
+{
+  OfValueWith.value := Build_t A {| Integer.value := 5 |} {|
+    ArrayPair.x := H_value1.(OfValueWith.value);
+    ArrayPair.xs := {|
+      ArrayPair.x := H_value2.(OfValueWith.value);
+      ArrayPair.xs := {|
+        ArrayPair.x := H_value3.(OfValueWith.value);
+        ArrayPair.xs := {|
+          ArrayPair.x := H_value4.(OfValueWith.value);
+          ArrayPair.xs := {|
+            ArrayPair.x := H_value5.(OfValueWith.value);
+            ArrayPair.xs := ArrayEmpty.Make;
+          |};
+        |};
+      |};
+    |};
+  |};
+  OfValueWith.eq := ltac:(
+    destruct H_value1, H_value2, H_value3, H_value4, H_value5; subst; reflexivity
+  );
+}.
 
 Definition of_value_5
   (value1' : Value.t)
@@ -286,6 +392,15 @@ Proof.
   now rewrite repeat_nat_φ_eq.
 Qed.
 Smpl Add eapply of_value_with_repeat : of_value.
+
+Instance IsOfValueWith_repeat {A : Set} `{Link A}
+    (times : usize)
+    (value' : Value.t) {H_value : OfValueWith.C A value'} :
+  OfValueWith.C (t A times) (Value.Array (repeat_nat (Z.to_nat times.(Integer.value)) value')) :=
+{
+  OfValueWith.value := Build_t A times (ArrayPairs.repeat H_value.(OfValueWith.value) (Z.to_nat times.(Integer.value)));
+  OfValueWith.eq := ltac:(destruct H_value; subst; now apply repeat_nat_φ_eq);
+}.
 
 Definition of_value_repeat (times : Z) (value' : Value.t) :
   OfValue.t value' ->

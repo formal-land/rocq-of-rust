@@ -32,7 +32,7 @@ Module Stack.
   Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::interpreter::stack::Stack";
     φ x :=
-      Value.StructRecord "revm_interpreter::interpreter::stack::Stack" [] [] [
+      Value.StructRecord "revm_interpreter::interpreter::stack::Stack" [
         ("data", φ x.(data))
       ];
   }.
@@ -46,7 +46,7 @@ Module Stack.
   Instance IsOfValueWith
       (data' : Value.t) {H_data : OfValueWith.C (Vec.t aliases.U256.t Global.t) data'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_interpreter::interpreter::stack::Stack" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_interpreter::interpreter::stack::Stack" [
       ("data", data')
     ]) :=
   {
@@ -59,7 +59,7 @@ Module Stack.
   Instance IsOfValue
       (data' : Value.t) {H_data : OfValueWith.C (Vec.t aliases.U256.t Global.t) data'}
       :
-    OfValue.C (Value.StructRecord "revm_interpreter::interpreter::stack::Stack" [] [] [
+    OfValue.C (Value.StructRecord "revm_interpreter::interpreter::stack::Stack" [
       ("data", data')
     ]) :=
   {

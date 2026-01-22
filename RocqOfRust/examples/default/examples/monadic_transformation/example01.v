@@ -53,18 +53,20 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           M.call_closure (|
             Ty.path "u64",
             M.get_function (| "example01::id", [], [] |),
-            [ Value.Integer IntegerKind.U64 0 ]
+            [ M.value_with_ty (Value.Integer IntegerKind.U64 0) (Ty.path "u64") ]
           |) in
         let~ _ : Ty.path "u64" :=
           M.call_closure (|
             Ty.path "u64",
             M.get_function (| "example01::id", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_function (| "example01::id", [], [] |),
-                [ Value.Integer IntegerKind.U64 0 ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "u64",
+                  M.get_function (| "example01::id", [], [] |),
+                  [ M.value_with_ty (Value.Integer IntegerKind.U64 0) (Ty.path "u64") ]
+                |))
+                (Ty.path "u64")
             ]
           |) in
         let~ _ : Ty.path "u64" :=
@@ -72,41 +74,51 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             Ty.path "u64",
             M.get_function (| "example01::id", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_function (| "example01::id", [], [] |),
-                [
-                  M.call_closure (|
-                    Ty.path "u64",
-                    M.get_function (| "example01::id", [], [] |),
-                    [ Value.Integer IntegerKind.U64 0 ]
-                  |)
-                ]
-              |)
-            ]
-          |) in
-        let~ _ : Ty.path "u64" :=
-          M.call_closure (|
-            Ty.path "u64",
-            M.get_function (| "example01::id", [], [] |),
-            [
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_function (| "example01::id", [], [] |),
-                [
-                  M.call_closure (|
-                    Ty.path "u64",
-                    M.get_function (| "example01::id", [], [] |),
-                    [
-                      M.call_closure (|
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "u64",
+                  M.get_function (| "example01::id", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.path "u64",
                         M.get_function (| "example01::id", [], [] |),
-                        [ Value.Integer IntegerKind.U64 0 ]
-                      |)
-                    ]
-                  |)
-                ]
-              |)
+                        [ M.value_with_ty (Value.Integer IntegerKind.U64 0) (Ty.path "u64") ]
+                      |))
+                      (Ty.path "u64")
+                  ]
+                |))
+                (Ty.path "u64")
+            ]
+          |) in
+        let~ _ : Ty.path "u64" :=
+          M.call_closure (|
+            Ty.path "u64",
+            M.get_function (| "example01::id", [], [] |),
+            [
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "u64",
+                  M.get_function (| "example01::id", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "u64",
+                        M.get_function (| "example01::id", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "u64",
+                              M.get_function (| "example01::id", [], [] |),
+                              [ M.value_with_ty (Value.Integer IntegerKind.U64 0) (Ty.path "u64") ]
+                            |))
+                            (Ty.path "u64")
+                        ]
+                      |))
+                      (Ty.path "u64")
+                  ]
+                |))
+                (Ty.path "u64")
             ]
           |) in
         let~ _ : Ty.tuple [] :=
@@ -114,17 +126,21 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             Ty.tuple [],
             M.get_function (| "example01::tri", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_function (| "example01::id", [], [] |),
-                [ Value.Integer IntegerKind.U64 1 ]
-              |);
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_function (| "example01::id", [], [] |),
-                [ Value.Integer IntegerKind.U64 2 ]
-              |);
-              Value.Integer IntegerKind.U64 3
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "u64",
+                  M.get_function (| "example01::id", [], [] |),
+                  [ M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64") ]
+                |))
+                (Ty.path "u64");
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "u64",
+                  M.get_function (| "example01::id", [], [] |),
+                  [ M.value_with_ty (Value.Integer IntegerKind.U64 2) (Ty.path "u64") ]
+                |))
+                (Ty.path "u64");
+              M.value_with_ty (Value.Integer IntegerKind.U64 3) (Ty.path "u64")
             ]
           |) in
         M.alloc (| Ty.tuple [], Value.Tuple [] |)

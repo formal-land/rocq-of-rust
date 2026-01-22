@@ -22,11 +22,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     ltac:(M.monadic
       (M.read (|
         let~ years : Ty.path "generics_new_type_idiom_as_base_type::Years" :=
-          Value.StructTuple
-            "generics_new_type_idiom_as_base_type::Years"
-            []
-            []
-            [ Value.Integer IntegerKind.I64 42 ] in
+          M.value_with_ty
+            (Value.StructTuple
+              "generics_new_type_idiom_as_base_type::Years"
+              [ Value.Integer IntegerKind.I64 42 ])
+            (Ty.path "generics_new_type_idiom_as_base_type::Years") in
         let~ years_as_primitive_1 : Ty.path "i64" :=
           M.read (|
             M.SubPointer.get_struct_tuple_field (|

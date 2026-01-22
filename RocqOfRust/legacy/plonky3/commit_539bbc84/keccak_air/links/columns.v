@@ -43,7 +43,7 @@ Module KeccakCols.
   Global Instance IsLink {T : Set} `{Link T} : Link (t T) := {
     Φ := Ty.apply (Ty.path "p3_keccak_air::columns::KeccakCols") [] [Φ T];
     φ x :=
-      Value.StructRecord "p3_keccak_air::columns::KeccakCols" [] [Φ T] [
+      Value.StructRecord "p3_keccak_air::columns::KeccakCols" [
         ("step_flags", φ x.(step_flags));
         ("export", φ x.(export));
         ("preimage", φ x.(preimage));
@@ -89,7 +89,7 @@ Module KeccakCols.
     a_prime_prime' = φ a_prime_prime ->
     a_prime_prime_0_0_bits' = φ a_prime_prime_0_0_bits ->
     a_prime_prime_prime_0_0_limbs' = φ a_prime_prime_prime_0_0_limbs ->
-    Value.StructRecord "p3_keccak_air::columns::KeccakCols" [] [T'] [
+    Value.StructRecord "p3_keccak_air::columns::KeccakCols" [
       ("step_flags", step_flags');
       ("export", export');
       ("preimage", preimage');
@@ -129,7 +129,7 @@ Module KeccakCols.
     a_prime_prime_0_0_bits' = φ a_prime_prime_0_0_bits ->
     a_prime_prime_prime_0_0_limbs' = φ a_prime_prime_prime_0_0_limbs ->
     OfValue.t (
-      Value.StructRecord "p3_keccak_air::columns::KeccakCols" [] [T'] [
+      Value.StructRecord "p3_keccak_air::columns::KeccakCols" [
         ("step_flags", step_flags');
         ("export", export');
         ("preimage", preimage');

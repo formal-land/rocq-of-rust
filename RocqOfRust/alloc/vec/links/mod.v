@@ -24,7 +24,7 @@ Module Vec.
 
   Instance IsLink (T A : Set) `(Link T) `(Link A) : Link (t T A) := {
     Φ := Ty.apply (Ty.path "alloc::vec::Vec") [] [Φ T; Φ A];
-    φ x := Value.StructRecord "alloc::vec::Vec" [] [Φ T; Φ A] [
+    φ x := Value.StructRecord "alloc::vec::Vec" [
       ("buf", φ x.(buf));
       ("len", φ x.(len))
     ];
@@ -47,7 +47,7 @@ Module Vec.
     (len' : Value.t) (len : usize) :
     buf' = φ buf ->
     len' = φ len ->
-    Value.StructRecord "alloc::vec::Vec" [] [Φ T; Φ A] [("buf", buf'); ("len", len')] =
+    Value.StructRecord "alloc::vec::Vec" [("buf", buf'); ("len", len')] =
       φ ({| buf := buf; len := len |} : t T A).
   Proof.
     now intros; subst.
@@ -62,7 +62,7 @@ Module Vec.
     (len' : Value.t) (len : usize) :
     buf' = φ buf ->
     len' = φ len ->
-    OfValue.t (Value.StructRecord "alloc::vec::Vec" [] [T'; A'] [
+    OfValue.t (Value.StructRecord "alloc::vec::Vec" [
       ("buf", buf');
       ("len", len')
     ]).
@@ -117,7 +117,7 @@ Module Impl_DerefMut_for_Vec.
     eexists.
     { constructor.
       eapply IsTraitMethod.Defined.
-      { apply vec.Impl_core_ops_deref_DerefMut_where_core_alloc_Allocator_A_for_alloc_vec_Vec_T_A.Implements. }
+      { with_strategy transparent [Φ] apply vec.Impl_core_ops_deref_DerefMut_where_core_alloc_Allocator_A_for_alloc_vec_Vec_T_A.Implements. }
       { reflexivity. }
     }
     { typeclasses eauto. }
@@ -139,10 +139,6 @@ Module Impl_Vec_T.
   Proof.
     constructor.
     run_symbolic.
-    2: {
-      change (Ty.path "alloc::alloc::Global") with (Φ Global.t).
-      repeat smpl of_value.
-    }
   Defined.
   Global Opaque run_new.
 

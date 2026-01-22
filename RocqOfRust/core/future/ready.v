@@ -42,47 +42,53 @@ Module future.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Ready" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "core::option::Option") [] [ T ] ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "core::option::Option") [] [ T ] ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_tuple_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::future::ready::Ready",
-                                0
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Ready" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::option::Option") [] [ T ] ]
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "core::option::Option") [] [ T ] ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_tuple_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::future::ready::Ready",
+                                  0
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -115,39 +121,44 @@ Module future.
                   [ Ty.apply (Ty.path "core::future::ready::Ready") [] [ T ] ],
                 self
               |) in
-            Value.StructTuple
-              "core::future::ready::Ready"
-              []
-              [ T ]
-              [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+            M.value_with_ty
+              (Value.StructTuple
+                "core::future::ready::Ready"
+                [
+                  M.call_closure (|
                     Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.apply (Ty.path "core::option::Option") [] [ T ],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::future::ready::Ready",
-                            0
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::future::ready::Ready",
+                                0
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::option::Option") [] [ T ] ])
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::future::ready::Ready") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -208,71 +219,108 @@ Module future.
                 Ty.apply (Ty.path "&mut") [] [ Ty.path "core::task::wake::Context" ],
                 _cx
               |) in
-            Value.StructTuple
-              "core::task::poll::Poll::Ready"
-              []
-              [ T ]
-              [
-                M.call_closure (|
-                  T,
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                    "expect",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
+            M.value_with_ty
+              (Value.StructTuple
+                "core::task::poll::Poll::Ready"
+                [
+                  M.call_closure (|
+                    T,
+                    M.get_associated_function (|
                       Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                        "take",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [ Ty.apply (Ty.path "core::future::ready::Ready") [] [ T ] ],
-                                M.get_trait_method (|
-                                  "core::ops::deref::DerefMut",
-                                  Ty.apply
-                                    (Ty.path "core::pin::Pin")
-                                    []
-                                    [
+                      "expect",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "core::option::Option") [] [ T ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::option::Option") [] [ T ],
+                            "take",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_tuple_field (|
+                                  M.deref (|
+                                    M.call_closure (|
                                       Ty.apply
                                         (Ty.path "&mut")
                                         []
-                                        [ Ty.apply (Ty.path "core::future::ready::Ready") [] [ T ] ]
-                                    ],
-                                  [],
-                                  [],
-                                  "deref_mut",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.MutRef, self |) ]
-                              |)
-                            |),
-                            "core::future::ready::Ready",
-                            0
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "`Ready` polled after completion" |) |)
-                    |)
-                  ]
-                |)
-              ]))
+                                        [ Ty.apply (Ty.path "core::future::ready::Ready") [] [ T ]
+                                        ],
+                                      M.get_trait_method (|
+                                        "core::ops::deref::DerefMut",
+                                        Ty.apply
+                                          (Ty.path "core::pin::Pin")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::future::ready::Ready")
+                                                  []
+                                                  [ T ]
+                                              ]
+                                          ],
+                                        [],
+                                        [],
+                                        "deref_mut",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.MutRef, self |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::pin::Pin")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::future::ready::Ready")
+                                                        []
+                                                        [ T ]
+                                                    ]
+                                                ]
+                                            ])
+                                      ]
+                                    |)
+                                  |),
+                                  "core::future::ready::Ready",
+                                  0
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "core::option::Option") [] [ T ] ])
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "core::option::Option") [] [ T ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "`Ready` polled after completion" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::task::poll::Poll") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -311,13 +359,17 @@ Module future.
                 []
               |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::future::ready::Ready", 0 |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| mk_str (| "Called `into_inner()` on `Ready` after completion" |) |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (| self, "core::future::ready::Ready", 0 |)
+                  |))
+                  (Ty.apply (Ty.path "core::option::Option") [] [ T ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| mk_str (| "Called `into_inner()` on `Ready` after completion" |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -340,11 +392,15 @@ Module future.
       | [], [ T ], [ t ] =>
         ltac:(M.monadic
           (let t := M.alloc (| T, t |) in
-          Value.StructTuple
-            "core::future::ready::Ready"
-            []
-            [ T ]
-            [ Value.StructTuple "core::option::Option::Some" [] [ T ] [ M.read (| t |) ] ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "core::future::ready::Ready"
+              [
+                M.value_with_ty
+                  (Value.StructTuple "core::option::Option::Some" [ M.read (| t |) ])
+                  (Ty.apply (Ty.path "core::option::Option") [] [ T ])
+              ])
+            (Ty.apply (Ty.path "core::future::ready::Ready") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     

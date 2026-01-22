@@ -45,58 +45,66 @@ Module hash.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SipHasher13" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "hasher" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::hash::sip::Hasher")
-                              []
-                              [ Ty.path "core::hash::sip::Sip13Rounds" ]
-                          ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "core::hash::sip::Hasher")
-                                  []
-                                  [ Ty.path "core::hash::sip::Sip13Rounds" ]
-                              ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::hash::sip::SipHasher13",
-                                "hasher"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SipHasher13" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "hasher" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::hash::sip::Hasher")
+                                []
+                                [ Ty.path "core::hash::sip::Sip13Rounds" ]
+                            ]
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::hash::sip::Hasher")
+                                    []
+                                    [ Ty.path "core::hash::sip::Sip13Rounds" ]
+                                ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::hash::sip::SipHasher13",
+                                  "hasher"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -124,46 +132,56 @@ Module hash.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::hash::sip::SipHasher13" ],
                 self
               |) in
-            Value.mkStructRecord
-              "core::hash::sip::SipHasher13"
-              []
-              []
-              [
-                ("hasher",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::hash::sip::Hasher")
-                      []
-                      [ Ty.path "core::hash::sip::Sip13Rounds" ],
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::hash::sip::SipHasher13"
+                [
+                  ("hasher",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "core::hash::sip::Hasher")
                         []
                         [ Ty.path "core::hash::sip::Sip13Rounds" ],
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.apply
+                          (Ty.path "core::hash::sip::Hasher")
+                          []
+                          [ Ty.path "core::hash::sip::Sip13Rounds" ],
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::hash::sip::SipHasher13",
-                              "hasher"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::hash::sip::SipHasher13",
+                                  "hasher"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |))
-              ]))
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::hash::sip::Hasher")
+                                []
+                                [ Ty.path "core::hash::sip::Sip13Rounds" ]
+                            ])
+                      ]
+                    |))
+                ])
+              (Ty.path "core::hash::sip::SipHasher13")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -184,32 +202,32 @@ Module hash.
         match ε, τ, α with
         | [], [], [] =>
           ltac:(M.monadic
-            (Value.mkStructRecord
-              "core::hash::sip::SipHasher13"
-              []
-              []
-              [
-                ("hasher",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::hash::sip::Hasher")
-                      []
-                      [ Ty.path "core::hash::sip::Sip13Rounds" ],
-                    M.get_trait_method (|
-                      "core::default::Default",
+            (M.value_with_ty
+              (Value.mkStructRecord
+                "core::hash::sip::SipHasher13"
+                [
+                  ("hasher",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "core::hash::sip::Hasher")
                         []
                         [ Ty.path "core::hash::sip::Sip13Rounds" ],
-                      [],
-                      [],
-                      "default",
-                      [],
+                      M.get_trait_method (|
+                        "core::default::Default",
+                        Ty.apply
+                          (Ty.path "core::hash::sip::Hasher")
+                          []
+                          [ Ty.path "core::hash::sip::Sip13Rounds" ],
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |))
-              ]))
+                    |))
+                ])
+              (Ty.path "core::hash::sip::SipHasher13")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -264,58 +282,66 @@ Module hash.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SipHasher24" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "hasher" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::hash::sip::Hasher")
-                              []
-                              [ Ty.path "core::hash::sip::Sip24Rounds" ]
-                          ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "core::hash::sip::Hasher")
-                                  []
-                                  [ Ty.path "core::hash::sip::Sip24Rounds" ]
-                              ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::hash::sip::SipHasher24",
-                                "hasher"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SipHasher24" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "hasher" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::hash::sip::Hasher")
+                                []
+                                [ Ty.path "core::hash::sip::Sip24Rounds" ]
+                            ]
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::hash::sip::Hasher")
+                                    []
+                                    [ Ty.path "core::hash::sip::Sip24Rounds" ]
+                                ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::hash::sip::SipHasher24",
+                                  "hasher"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -343,46 +369,56 @@ Module hash.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::hash::sip::SipHasher24" ],
                 self
               |) in
-            Value.mkStructRecord
-              "core::hash::sip::SipHasher24"
-              []
-              []
-              [
-                ("hasher",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::hash::sip::Hasher")
-                      []
-                      [ Ty.path "core::hash::sip::Sip24Rounds" ],
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::hash::sip::SipHasher24"
+                [
+                  ("hasher",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "core::hash::sip::Hasher")
                         []
                         [ Ty.path "core::hash::sip::Sip24Rounds" ],
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.apply
+                          (Ty.path "core::hash::sip::Hasher")
+                          []
+                          [ Ty.path "core::hash::sip::Sip24Rounds" ],
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::hash::sip::SipHasher24",
-                              "hasher"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::hash::sip::SipHasher24",
+                                  "hasher"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |))
-              ]))
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::hash::sip::Hasher")
+                                []
+                                [ Ty.path "core::hash::sip::Sip24Rounds" ]
+                            ])
+                      ]
+                    |))
+                ])
+              (Ty.path "core::hash::sip::SipHasher24")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -403,32 +439,32 @@ Module hash.
         match ε, τ, α with
         | [], [], [] =>
           ltac:(M.monadic
-            (Value.mkStructRecord
-              "core::hash::sip::SipHasher24"
-              []
-              []
-              [
-                ("hasher",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::hash::sip::Hasher")
-                      []
-                      [ Ty.path "core::hash::sip::Sip24Rounds" ],
-                    M.get_trait_method (|
-                      "core::default::Default",
+            (M.value_with_ty
+              (Value.mkStructRecord
+                "core::hash::sip::SipHasher24"
+                [
+                  ("hasher",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "core::hash::sip::Hasher")
                         []
                         [ Ty.path "core::hash::sip::Sip24Rounds" ],
-                      [],
-                      [],
-                      "default",
-                      [],
+                      M.get_trait_method (|
+                        "core::default::Default",
+                        Ty.apply
+                          (Ty.path "core::hash::sip::Hasher")
+                          []
+                          [ Ty.path "core::hash::sip::Sip24Rounds" ],
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |))
-              ]))
+                    |))
+                ])
+              (Ty.path "core::hash::sip::SipHasher24")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -476,39 +512,45 @@ Module hash.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SipHasher" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "core::hash::sip::SipHasher24" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "core::hash::sip::SipHasher24" ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_tuple_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::hash::sip::SipHasher",
-                                0
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "SipHasher" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "core::hash::sip::SipHasher24" ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "core::hash::sip::SipHasher24" ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_tuple_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::hash::sip::SipHasher",
+                                  0
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -536,39 +578,41 @@ Module hash.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::hash::sip::SipHasher" ],
                 self
               |) in
-            Value.StructTuple
-              "core::hash::sip::SipHasher"
-              []
-              []
-              [
-                M.call_closure (|
-                  Ty.path "core::hash::sip::SipHasher24",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+            M.value_with_ty
+              (Value.StructTuple
+                "core::hash::sip::SipHasher"
+                [
+                  M.call_closure (|
                     Ty.path "core::hash::sip::SipHasher24",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "core::hash::sip::SipHasher24",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::hash::sip::SipHasher",
-                            0
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::hash::sip::SipHasher",
+                                0
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "core::hash::sip::SipHasher24" ])
+                    ]
+                  |)
+                ])
+              (Ty.path "core::hash::sip::SipHasher")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -589,25 +633,25 @@ Module hash.
         match ε, τ, α with
         | [], [], [] =>
           ltac:(M.monadic
-            (Value.StructTuple
-              "core::hash::sip::SipHasher"
-              []
-              []
-              [
-                M.call_closure (|
-                  Ty.path "core::hash::sip::SipHasher24",
-                  M.get_trait_method (|
-                    "core::default::Default",
+            (M.value_with_ty
+              (Value.StructTuple
+                "core::hash::sip::SipHasher"
+                [
+                  M.call_closure (|
                     Ty.path "core::hash::sip::SipHasher24",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "core::hash::sip::SipHasher24",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |)
-              ]))
+                  |)
+                ])
+              (Ty.path "core::hash::sip::SipHasher")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -991,30 +1035,15 @@ Module hash.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Hasher" |) |) |);
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "slice")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                        ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 7 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                          ])
-                        (Ty.apply
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Hasher" |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
                           (Ty.path "&")
                           []
                           [
@@ -1022,10 +1051,54 @@ Module hash.
                               (Ty.path "slice")
                               []
                               [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                          ]),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| names |) |) |) ]
-                    |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| values |) |) |)
+                          ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 7 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            ]),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| names |) |) |) ]
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| values |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                            ]
+                        ])
                   ]
                 |)
               |)
@@ -1081,106 +1154,126 @@ Module hash.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "State" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "v0" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::hash::sip::State",
-                            "v0"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "State" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "v0" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::hash::sip::State",
+                              "v0"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "v2" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::hash::sip::State",
-                            "v2"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "v2" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::hash::sip::State",
+                              "v2"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "v1" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::hash::sip::State",
-                            "v1"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "v1" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::hash::sip::State",
+                              "v1"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "v3" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::hash::sip::State",
-                                "v3"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "v3" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::hash::sip::State",
+                                  "v3"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1315,7 +1408,11 @@ Module hash.
                                     M.call_closure (|
                                       Ty.path "never",
                                       M.get_function (| "core::panicking::panic", [], [] |),
-                                      [ mk_str (| "assertion failed: len < 8" |) ]
+                                      [
+                                        M.value_with_ty
+                                          (mk_str (| "assertion failed: len < 8" |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                      ]
                                     |)
                                   |)));
                               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -1429,12 +1526,22 @@ Module hash.
                                                                         []
                                                                       |),
                                                                       [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.read (| buf |)
-                                                                          |)
-                                                                        |)
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (| buf |)
+                                                                            |)
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path "slice")
+                                                                                []
+                                                                                [ Ty.path "u8" ]
+                                                                            ])
                                                                       ]
                                                                     |)
                                                                   ]
@@ -1456,9 +1563,14 @@ Module hash.
                                                             []
                                                           |),
                                                           [
-                                                            mk_str (|
-                                                              "assertion failed: start + i + mem::size_of::<u32>() <= buf.len()"
-                                                            |)
+                                                            M.value_with_ty
+                                                              (mk_str (|
+                                                                "assertion failed: start + i + mem::size_of::<u32>() <= buf.len()"
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [ Ty.path "str" ])
                                                           ]
                                                         |)
                                                       |)));
@@ -1484,60 +1596,80 @@ Module hash.
                                       [ Ty.path "u8" ]
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.call_closure (|
+                                          M.get_associated_function (|
                                             Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                            M.get_associated_function (|
-                                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                              "as_ptr",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| buf |) |)
-                                              |)
-                                            ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.add,
-                                            [ M.read (| start |); M.read (| i |) ]
-                                          |)
-                                        ]
-                                      |);
-                                      M.cast
-                                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                                        (M.read (|
-                                          M.use
-                                            (M.alloc (|
-                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
-                                              M.borrow (|
-                                                Pointer.Kind.MutPointer,
-                                                M.deref (|
-                                                  M.borrow (| Pointer.Kind.MutRef, data |)
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                                M.get_associated_function (|
+                                                  Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                                  "as_ptr",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| buf |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ])
+                                                ]
+                                              |))
+                                              (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.path "usize",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| start |); M.read (| i |) ]
+                                              |))
+                                              (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (M.cast
+                                          (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                          (M.read (|
+                                            M.use
+                                              (M.alloc (|
+                                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u32" ],
+                                                M.borrow (|
+                                                  Pointer.Kind.MutPointer,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.MutRef, data |)
+                                                  |)
                                                 |)
-                                              |)
-                                            |))
-                                        |));
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_function (|
-                                          "core::mem::size_of",
-                                          [],
-                                          [ Ty.path "u32" ]
-                                        |),
-                                        []
-                                      |)
+                                              |))
+                                          |)))
+                                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_function (|
+                                            "core::mem::size_of",
+                                            [],
+                                            [ Ty.path "u32" ]
+                                          |),
+                                          []
+                                        |))
+                                        (Ty.path "usize")
                                     ]
                                   |) in
                                 M.alloc (|
@@ -1545,7 +1677,7 @@ Module hash.
                                   M.call_closure (|
                                     Ty.path "u32",
                                     M.get_associated_function (| Ty.path "u32", "to_le", [], [] |),
-                                    [ M.read (| data |) ]
+                                    [ M.value_with_ty (M.read (| data |)) (Ty.path "u32") ]
                                   |)
                                 |)
                               |))
@@ -1683,12 +1815,28 @@ Module hash.
                                                                                 []
                                                                               |),
                                                                               [
-                                                                                M.borrow (|
-                                                                                  Pointer.Kind.Ref,
-                                                                                  M.deref (|
-                                                                                    M.read (| buf |)
-                                                                                  |)
-                                                                                |)
+                                                                                M.value_with_ty
+                                                                                  (M.borrow (|
+                                                                                    Pointer.Kind.Ref,
+                                                                                    M.deref (|
+                                                                                      M.read (|
+                                                                                        buf
+                                                                                      |)
+                                                                                    |)
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path "&")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "slice")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "u8"
+                                                                                        ]
+                                                                                    ])
                                                                               ]
                                                                             |)
                                                                           ]
@@ -1710,9 +1858,14 @@ Module hash.
                                                                     []
                                                                   |),
                                                                   [
-                                                                    mk_str (|
-                                                                      "assertion failed: start + i + mem::size_of::<u16>() <= buf.len()"
-                                                                    |)
+                                                                    M.value_with_ty
+                                                                      (mk_str (|
+                                                                        "assertion failed: start + i + mem::size_of::<u16>() <= buf.len()"
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ Ty.path "str" ])
                                                                   ]
                                                                 |)
                                                               |)));
@@ -1741,66 +1894,92 @@ Module hash.
                                               [ Ty.path "u8" ]
                                             |),
                                             [
-                                              M.call_closure (|
-                                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                                M.get_associated_function (|
+                                              M.value_with_ty
+                                                (M.call_closure (|
                                                   Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                                  "add",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.call_closure (|
+                                                  M.get_associated_function (|
                                                     Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path "slice")
+                                                    "add",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.call_closure (|
+                                                        Ty.apply
+                                                          (Ty.path "*const")
+                                                          []
+                                                          [ Ty.path "u8" ],
+                                                        M.get_associated_function (|
+                                                          Ty.apply
+                                                            (Ty.path "slice")
+                                                            []
+                                                            [ Ty.path "u8" ],
+                                                          "as_ptr",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| buf |) |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "slice")
+                                                                  []
+                                                                  [ Ty.path "u8" ]
+                                                              ])
+                                                        ]
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "*const")
                                                         []
-                                                        [ Ty.path "u8" ],
-                                                      "as_ptr",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| buf |) |)
-                                                      |)
-                                                    ]
-                                                  |);
-                                                  M.call_closure (|
-                                                    Ty.path "usize",
-                                                    BinOp.Wrap.add,
-                                                    [ M.read (| start |); M.read (| i |) ]
-                                                  |)
-                                                ]
-                                              |);
-                                              M.cast
-                                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                                                (M.read (|
-                                                  M.use
-                                                    (M.alloc (|
-                                                      Ty.apply
-                                                        (Ty.path "*mut")
-                                                        []
-                                                        [ Ty.path "u16" ],
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutPointer,
-                                                        M.deref (|
-                                                          M.borrow (| Pointer.Kind.MutRef, data |)
+                                                        [ Ty.path "u8" ]);
+                                                    M.value_with_ty
+                                                      (M.call_closure (|
+                                                        Ty.path "usize",
+                                                        BinOp.Wrap.add,
+                                                        [ M.read (| start |); M.read (| i |) ]
+                                                      |))
+                                                      (Ty.path "usize")
+                                                  ]
+                                                |))
+                                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                              M.value_with_ty
+                                                (M.cast
+                                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                                  (M.read (|
+                                                    M.use
+                                                      (M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "*mut")
+                                                          []
+                                                          [ Ty.path "u16" ],
+                                                        M.borrow (|
+                                                          Pointer.Kind.MutPointer,
+                                                          M.deref (|
+                                                            M.borrow (| Pointer.Kind.MutRef, data |)
+                                                          |)
                                                         |)
-                                                      |)
-                                                    |))
-                                                |));
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                M.get_function (|
-                                                  "core::mem::size_of",
-                                                  [],
-                                                  [ Ty.path "u16" ]
-                                                |),
-                                                []
-                                              |)
+                                                      |))
+                                                  |)))
+                                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_function (|
+                                                    "core::mem::size_of",
+                                                    [],
+                                                    [ Ty.path "u16" ]
+                                                  |),
+                                                  []
+                                                |))
+                                                (Ty.path "usize")
                                             ]
                                           |) in
                                         M.alloc (|
@@ -1813,7 +1992,7 @@ Module hash.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| data |) ]
+                                            [ M.value_with_ty (M.read (| data |)) (Ty.path "u16") ]
                                           |)
                                         |)
                                       |));
@@ -1888,15 +2067,23 @@ Module hash.
                                               [ Ty.path "usize" ]
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| buf |) |)
-                                              |);
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                BinOp.Wrap.add,
-                                                [ M.read (| start |); M.read (| i |) ]
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| buf |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                  ]);
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.path "usize",
+                                                  BinOp.Wrap.add,
+                                                  [ M.read (| start |); M.read (| i |) ]
+                                                |))
+                                                (Ty.path "usize")
                                             ]
                                           |)
                                         |)
@@ -1968,7 +2155,11 @@ Module hash.
                                     M.call_closure (|
                                       Ty.path "never",
                                       M.get_function (| "core::panicking::panic", [], [] |),
-                                      [ mk_str (| "assertion failed: i == len" |) ]
+                                      [
+                                        M.value_with_ty
+                                          (mk_str (| "assertion failed: i == len" |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                      ]
                                     |)
                                   |)));
                               fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -2009,7 +2200,10 @@ Module hash.
                 [],
                 []
               |),
-              [ Value.Integer IntegerKind.U64 0; Value.Integer IntegerKind.U64 0 ]
+              [
+                M.value_with_ty (Value.Integer IntegerKind.U64 0) (Ty.path "u64");
+                M.value_with_ty (Value.Integer IntegerKind.U64 0) (Ty.path "u64")
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -2029,35 +2223,38 @@ Module hash.
           ltac:(M.monadic
             (let key0 := M.alloc (| Ty.path "u64", key0 |) in
             let key1 := M.alloc (| Ty.path "u64", key1 |) in
-            Value.StructTuple
-              "core::hash::sip::SipHasher"
-              []
-              []
-              [
-                Value.mkStructRecord
-                  "core::hash::sip::SipHasher24"
-                  []
-                  []
-                  [
-                    ("hasher",
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::hash::sip::Hasher")
-                          []
-                          [ Ty.path "core::hash::sip::Sip24Rounds" ],
-                        M.get_associated_function (|
-                          Ty.apply
-                            (Ty.path "core::hash::sip::Hasher")
-                            []
-                            [ Ty.path "core::hash::sip::Sip24Rounds" ],
-                          "new_with_keys",
-                          [],
-                          []
-                        |),
-                        [ M.read (| key0 |); M.read (| key1 |) ]
-                      |))
-                  ]
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::hash::sip::SipHasher"
+                [
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "core::hash::sip::SipHasher24"
+                      [
+                        ("hasher",
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::hash::sip::Hasher")
+                              []
+                              [ Ty.path "core::hash::sip::Sip24Rounds" ],
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "core::hash::sip::Hasher")
+                                []
+                                [ Ty.path "core::hash::sip::Sip24Rounds" ],
+                              "new_with_keys",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty (M.read (| key0 |)) (Ty.path "u64");
+                              M.value_with_ty (M.read (| key1 |)) (Ty.path "u64")
+                            ]
+                          |))
+                      ])
+                    (Ty.path "core::hash::sip::SipHasher24")
+                ])
+              (Ty.path "core::hash::sip::SipHasher")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2087,7 +2284,10 @@ Module hash.
                 [],
                 []
               |),
-              [ Value.Integer IntegerKind.U64 0; Value.Integer IntegerKind.U64 0 ]
+              [
+                M.value_with_ty (Value.Integer IntegerKind.U64 0) (Ty.path "u64");
+                M.value_with_ty (Value.Integer IntegerKind.U64 0) (Ty.path "u64")
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -2107,29 +2307,32 @@ Module hash.
           ltac:(M.monadic
             (let key0 := M.alloc (| Ty.path "u64", key0 |) in
             let key1 := M.alloc (| Ty.path "u64", key1 |) in
-            Value.mkStructRecord
-              "core::hash::sip::SipHasher13"
-              []
-              []
-              [
-                ("hasher",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::hash::sip::Hasher")
-                      []
-                      [ Ty.path "core::hash::sip::Sip13Rounds" ],
-                    M.get_associated_function (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::hash::sip::SipHasher13"
+                [
+                  ("hasher",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "core::hash::sip::Hasher")
                         []
                         [ Ty.path "core::hash::sip::Sip13Rounds" ],
-                      "new_with_keys",
-                      [],
-                      []
-                    |),
-                    [ M.read (| key0 |); M.read (| key1 |) ]
-                  |))
-              ]))
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "core::hash::sip::Hasher")
+                          []
+                          [ Ty.path "core::hash::sip::Sip13Rounds" ],
+                        "new_with_keys",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty (M.read (| key0 |)) (Ty.path "u64");
+                        M.value_with_ty (M.read (| key1 |)) (Ty.path "u64")
+                      ]
+                    |))
+                ])
+              (Ty.path "core::hash::sip::SipHasher13")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2171,29 +2374,32 @@ Module hash.
             let key1 := M.alloc (| Ty.path "u64", key1 |) in
             M.read (|
               let~ state : Ty.apply (Ty.path "core::hash::sip::Hasher") [] [ S ] :=
-                Value.mkStructRecord
-                  "core::hash::sip::Hasher"
-                  []
-                  [ S ]
-                  [
-                    ("k0", M.read (| key0 |));
-                    ("k1", M.read (| key1 |));
-                    ("length", Value.Integer IntegerKind.Usize 0);
-                    ("state",
-                      Value.mkStructRecord
-                        "core::hash::sip::State"
-                        []
-                        []
-                        [
-                          ("v0", Value.Integer IntegerKind.U64 0);
-                          ("v1", Value.Integer IntegerKind.U64 0);
-                          ("v2", Value.Integer IntegerKind.U64 0);
-                          ("v3", Value.Integer IntegerKind.U64 0)
-                        ]);
-                    ("tail", Value.Integer IntegerKind.U64 0);
-                    ("ntail", Value.Integer IntegerKind.Usize 0);
-                    ("_marker", Value.StructTuple "core::marker::PhantomData" [] [ S ] [])
-                  ] in
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::hash::sip::Hasher"
+                    [
+                      ("k0", M.read (| key0 |));
+                      ("k1", M.read (| key1 |));
+                      ("length", Value.Integer IntegerKind.Usize 0);
+                      ("state",
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "core::hash::sip::State"
+                            [
+                              ("v0", Value.Integer IntegerKind.U64 0);
+                              ("v1", Value.Integer IntegerKind.U64 0);
+                              ("v2", Value.Integer IntegerKind.U64 0);
+                              ("v3", Value.Integer IntegerKind.U64 0)
+                            ])
+                          (Ty.path "core::hash::sip::State"));
+                      ("tail", Value.Integer IntegerKind.U64 0);
+                      ("ntail", Value.Integer IntegerKind.Usize 0);
+                      ("_marker",
+                        M.value_with_ty
+                          (Value.StructTuple "core::marker::PhantomData" [])
+                          (Ty.apply (Ty.path "core::marker::PhantomData") [] [ S ]))
+                    ])
+                  (Ty.apply (Ty.path "core::hash::sip::Hasher") [] [ S ]) in
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
                   Ty.tuple [],
@@ -2203,7 +2409,14 @@ Module hash.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.MutRef, state |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, state |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "core::hash::sip::Hasher") [] [ S ] ])
+                  ]
                 |) in
               state
             |)))
@@ -2411,19 +2624,31 @@ Module hash.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::hash::sip::SipHasher",
-                      0
-                    |),
-                    "core::hash::sip::SipHasher24",
-                    "hasher"
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::hash::sip::SipHasher",
+                        0
+                      |),
+                      "core::hash::sip::SipHasher24",
+                      "hasher"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "core::hash::sip::Hasher")
+                        []
+                        [ Ty.path "core::hash::sip::Sip24Rounds" ]
+                    ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2461,19 +2686,31 @@ Module hash.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::hash::sip::SipHasher",
-                          0
-                        |),
-                        "core::hash::sip::SipHasher24",
-                        "hasher"
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::hash::sip::SipHasher",
+                            0
+                          |),
+                          "core::hash::sip::SipHasher24",
+                          "hasher"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::hash::sip::Hasher")
+                            []
+                            [ Ty.path "core::hash::sip::Sip24Rounds" ]
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2510,18 +2747,28 @@ Module hash.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::hash::sip::SipHasher",
-                      0
-                    |),
-                    "core::hash::sip::SipHasher24",
-                    "hasher"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::hash::sip::SipHasher",
+                        0
+                      |),
+                      "core::hash::sip::SipHasher24",
+                      "hasher"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "core::hash::sip::Hasher")
+                        []
+                        [ Ty.path "core::hash::sip::Sip24Rounds" ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2578,15 +2825,27 @@ Module hash.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::hash::sip::SipHasher13",
-                    "hasher"
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::hash::sip::SipHasher13",
+                      "hasher"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "core::hash::sip::Hasher")
+                        []
+                        [ Ty.path "core::hash::sip::Sip13Rounds" ]
+                    ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2624,15 +2883,27 @@ Module hash.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::hash::sip::SipHasher13",
-                        "hasher"
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::hash::sip::SipHasher13",
+                          "hasher"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::hash::sip::Hasher")
+                            []
+                            [ Ty.path "core::hash::sip::Sip13Rounds" ]
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2669,14 +2940,24 @@ Module hash.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::hash::sip::SipHasher13",
-                    "hasher"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::hash::sip::SipHasher13",
+                      "hasher"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "core::hash::sip::Hasher")
+                        []
+                        [ Ty.path "core::hash::sip::Sip13Rounds" ]
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2776,7 +3057,14 @@ Module hash.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                      ]
                     |) in
                   let~ _ : Ty.tuple [] :=
                     let β :=
@@ -2867,20 +3155,37 @@ Module hash.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| msg |) |)
-                                              |);
-                                              Value.Integer IntegerKind.Usize 0;
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                M.get_function (|
-                                                  "core::cmp::min",
-                                                  [],
-                                                  [ Ty.path "usize" ]
-                                                |),
-                                                [ M.read (| length |); M.read (| needed |) ]
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| msg |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                  ]);
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.Usize 0)
+                                                (Ty.path "usize");
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.path "usize",
+                                                  M.get_function (|
+                                                    "core::cmp::min",
+                                                    [],
+                                                    [ Ty.path "usize" ]
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.read (| length |))
+                                                      (Ty.path "usize");
+                                                    M.value_with_ty
+                                                      (M.read (| needed |))
+                                                      (Ty.path "usize")
+                                                  ]
+                                                |))
+                                                (Ty.path "usize")
                                             ]
                                           |);
                                           M.call_closure (|
@@ -2989,19 +3294,24 @@ Module hash.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.MutRef,
-                                                      M.SubPointer.get_struct_record_field (|
-                                                        M.deref (| M.read (| self |) |),
-                                                        "core::hash::sip::Hasher",
-                                                        "state"
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.borrow (|
+                                                        Pointer.Kind.MutRef,
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "core::hash::sip::Hasher",
+                                                          "state"
+                                                        |)
                                                       |)
                                                     |)
-                                                  |)
-                                                |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [ Ty.path "core::hash::sip::State" ])
                                               ]
                                             |) in
                                           let~ _ : Ty.tuple [] :=
@@ -3172,14 +3482,28 @@ Module hash.
                                                                                   []
                                                                                 |),
                                                                                 [
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.Ref,
-                                                                                    M.deref (|
-                                                                                      M.read (|
-                                                                                        msg
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
+                                                                                      Pointer.Kind.Ref,
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          msg
+                                                                                        |)
                                                                                       |)
-                                                                                    |)
-                                                                                  |)
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "slice")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "u8"
+                                                                                          ]
+                                                                                      ])
                                                                                 ]
                                                                               |)
                                                                             ]
@@ -3201,9 +3525,14 @@ Module hash.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      mk_str (|
-                                                                        "assertion failed: i + mem::size_of::<u64>() <= msg.len()"
-                                                                      |)
+                                                                      M.value_with_ty
+                                                                        (mk_str (|
+                                                                          "assertion failed: i + mem::size_of::<u64>() <= msg.len()"
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [ Ty.path "str" ])
                                                                     ]
                                                                   |)
                                                                 |)));
@@ -3233,65 +3562,94 @@ Module hash.
                                                 [ Ty.path "u8" ]
                                               |),
                                               [
-                                                M.call_closure (|
-                                                  Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                                  M.get_associated_function (|
+                                                M.value_with_ty
+                                                  (M.call_closure (|
                                                     Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                                    "add",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.call_closure (|
+                                                    M.get_associated_function (|
                                                       Ty.apply
                                                         (Ty.path "*const")
                                                         []
                                                         [ Ty.path "u8" ],
-                                                      M.get_associated_function (|
-                                                        Ty.apply
-                                                          (Ty.path "slice")
+                                                      "add",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "*const")
+                                                            []
+                                                            [ Ty.path "u8" ],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "slice")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "as_ptr",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (| M.read (| msg |) |)
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [ Ty.path "u8" ]
+                                                                ])
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*const")
                                                           []
-                                                          [ Ty.path "u8" ],
-                                                        "as_ptr",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| msg |) |)
-                                                        |)
-                                                      ]
-                                                    |);
-                                                    M.read (| i |)
-                                                  ]
-                                                |);
-                                                M.cast
-                                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                                                  (M.read (|
-                                                    M.use
-                                                      (M.alloc (|
-                                                        Ty.apply
-                                                          (Ty.path "*mut")
-                                                          []
-                                                          [ Ty.path "u64" ],
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutPointer,
-                                                          M.deref (|
-                                                            M.borrow (| Pointer.Kind.MutRef, data |)
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (M.read (| i |))
+                                                        (Ty.path "usize")
+                                                    ]
+                                                  |))
+                                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                                M.value_with_ty
+                                                  (M.cast
+                                                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                                    (M.read (|
+                                                      M.use
+                                                        (M.alloc (|
+                                                          Ty.apply
+                                                            (Ty.path "*mut")
+                                                            []
+                                                            [ Ty.path "u64" ],
+                                                          M.borrow (|
+                                                            Pointer.Kind.MutPointer,
+                                                            M.deref (|
+                                                              M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                data
+                                                              |)
+                                                            |)
                                                           |)
-                                                        |)
-                                                      |))
-                                                  |));
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  M.get_function (|
-                                                    "core::mem::size_of",
-                                                    [],
-                                                    [ Ty.path "u64" ]
-                                                  |),
-                                                  []
-                                                |)
+                                                        |))
+                                                    |)))
+                                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.path "usize",
+                                                    M.get_function (|
+                                                      "core::mem::size_of",
+                                                      [],
+                                                      [ Ty.path "u64" ]
+                                                    |),
+                                                    []
+                                                  |))
+                                                  (Ty.path "usize")
                                               ]
                                             |) in
                                           M.alloc (|
@@ -3304,7 +3662,8 @@ Module hash.
                                                 [],
                                                 []
                                               |),
-                                              [ M.read (| data |) ]
+                                              [ M.value_with_ty (M.read (| data |)) (Ty.path "u64")
+                                              ]
                                             |)
                                           |)
                                         |) in
@@ -3340,19 +3699,24 @@ Module hash.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (|
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "core::hash::sip::Hasher",
-                                                    "state"
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "core::hash::sip::Hasher",
+                                                      "state"
+                                                    |)
                                                   |)
                                                 |)
-                                              |)
-                                            |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.path "core::hash::sip::State" ])
                                           ]
                                         |) in
                                       let~ _ : Ty.tuple [] :=
@@ -3411,9 +3775,14 @@ Module hash.
                         Ty.path "u64",
                         M.get_function (| "core::hash::sip::u8to64_le", [], [] |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |);
-                          M.read (| i |);
-                          M.read (| left |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                          M.value_with_ty (M.read (| i |)) (Ty.path "usize");
+                          M.value_with_ty (M.read (| left |)) (Ty.path "usize")
                         ]
                       |)
                     |) in
@@ -3468,20 +3837,31 @@ Module hash.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "core::hash::sip::Hasher") [] [ S ] ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -3497,8 +3877,13 @@ Module hash.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    Value.Integer IntegerKind.U8 255
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "core::hash::sip::Hasher") [] [ S ] ]);
+                    M.value_with_ty (Value.Integer IntegerKind.U8 255) (Ty.path "u8")
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3598,10 +3983,12 @@ Module hash.
                   Ty.tuple [],
                   M.get_trait_method (| "core::hash::sip::Sip", S, [], [], "c_rounds", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (| M.borrow (| Pointer.Kind.MutRef, state |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (| M.borrow (| Pointer.Kind.MutRef, state |) |)
+                      |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::hash::sip::State" ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -3639,10 +4026,12 @@ Module hash.
                   Ty.tuple [],
                   M.get_trait_method (| "core::hash::sip::Sip", S, [], [], "d_rounds", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (| M.borrow (| Pointer.Kind.MutRef, state |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (| M.borrow (| Pointer.Kind.MutRef, state |) |)
+                      |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::hash::sip::State" ])
                   ]
                 |) in
               M.alloc (|
@@ -3739,68 +4128,68 @@ Module hash.
                 Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::hash::sip::Hasher") [] [ S ] ],
                 self
               |) in
-            Value.mkStructRecord
-              "core::hash::sip::Hasher"
-              []
-              [ S ]
-              [
-                ("k0",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::hash::sip::Hasher",
-                      "k0"
-                    |)
-                  |));
-                ("k1",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::hash::sip::Hasher",
-                      "k1"
-                    |)
-                  |));
-                ("length",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::hash::sip::Hasher",
-                      "length"
-                    |)
-                  |));
-                ("state",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::hash::sip::Hasher",
-                      "state"
-                    |)
-                  |));
-                ("tail",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::hash::sip::Hasher",
-                      "tail"
-                    |)
-                  |));
-                ("ntail",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::hash::sip::Hasher",
-                      "ntail"
-                    |)
-                  |));
-                ("_marker",
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::hash::sip::Hasher",
-                      "_marker"
-                    |)
-                  |))
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::hash::sip::Hasher"
+                [
+                  ("k0",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::hash::sip::Hasher",
+                        "k0"
+                      |)
+                    |));
+                  ("k1",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::hash::sip::Hasher",
+                        "k1"
+                      |)
+                    |));
+                  ("length",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::hash::sip::Hasher",
+                        "length"
+                      |)
+                    |));
+                  ("state",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::hash::sip::Hasher",
+                        "state"
+                      |)
+                    |));
+                  ("tail",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::hash::sip::Hasher",
+                        "tail"
+                      |)
+                    |));
+                  ("ntail",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::hash::sip::Hasher",
+                        "ntail"
+                      |)
+                    |));
+                  ("_marker",
+                    M.read (|
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::hash::sip::Hasher",
+                        "_marker"
+                      |)
+                    |))
+                ])
+              (Ty.apply (Ty.path "core::hash::sip::Hasher") [] [ S ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -3835,7 +4224,10 @@ Module hash.
                 [],
                 []
               |),
-              [ Value.Integer IntegerKind.U64 0; Value.Integer IntegerKind.U64 0 ]
+              [
+                M.value_with_ty (Value.Integer IntegerKind.U64 0) (Ty.path "u64");
+                M.value_with_ty (Value.Integer IntegerKind.U64 0) (Ty.path "u64")
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -3883,8 +4275,12 @@ Module hash.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Sip13Rounds" |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Sip13Rounds" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3912,7 +4308,9 @@ Module hash.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::hash::sip::Sip13Rounds" ],
                 self
               |) in
-            Value.StructTuple "core::hash::sip::Sip13Rounds" [] [] []))
+            M.value_with_ty
+              (Value.StructTuple "core::hash::sip::Sip13Rounds" [])
+              (Ty.path "core::hash::sip::Sip13Rounds")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -3931,7 +4329,11 @@ Module hash.
       (* Default *)
       Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
-        | [], [], [] => ltac:(M.monadic (Value.StructTuple "core::hash::sip::Sip13Rounds" [] [] []))
+        | [], [], [] =>
+          ltac:(M.monadic
+            (M.value_with_ty
+              (Value.StructTuple "core::hash::sip::Sip13Rounds" [])
+              (Ty.path "core::hash::sip::Sip13Rounds")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -3975,20 +4377,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -4003,20 +4409,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -4031,14 +4441,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 13) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -4077,14 +4489,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 16) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -4123,14 +4537,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -4145,20 +4561,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -4173,20 +4593,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -4201,14 +4625,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 17) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -4247,14 +4673,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 21) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -4293,14 +4721,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -4341,20 +4771,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -4369,20 +4803,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -4397,14 +4835,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 13) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -4443,14 +4883,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 16) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -4489,14 +4931,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -4511,20 +4955,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -4539,20 +4987,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -4567,14 +5019,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 17) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -4613,14 +5067,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 21) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -4659,14 +5115,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -4685,20 +5143,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -4713,20 +5175,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -4741,14 +5207,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 13) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -4787,14 +5255,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 16) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -4833,14 +5303,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -4855,20 +5327,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -4883,20 +5359,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -4911,14 +5391,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 17) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -4957,14 +5439,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 21) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -5003,14 +5487,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -5029,20 +5515,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -5057,20 +5547,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -5085,14 +5579,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 13) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -5131,14 +5627,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 16) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -5177,14 +5675,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -5199,20 +5699,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -5227,20 +5731,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -5255,14 +5763,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 17) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -5301,14 +5811,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 21) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -5347,14 +5859,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -5406,8 +5920,12 @@ Module hash.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Sip24Rounds" |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Sip24Rounds" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5435,7 +5953,9 @@ Module hash.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::hash::sip::Sip24Rounds" ],
                 self
               |) in
-            Value.StructTuple "core::hash::sip::Sip24Rounds" [] [] []))
+            M.value_with_ty
+              (Value.StructTuple "core::hash::sip::Sip24Rounds" [])
+              (Ty.path "core::hash::sip::Sip24Rounds")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5454,7 +5974,11 @@ Module hash.
       (* Default *)
       Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
         match ε, τ, α with
-        | [], [], [] => ltac:(M.monadic (Value.StructTuple "core::hash::sip::Sip24Rounds" [] [] []))
+        | [], [], [] =>
+          ltac:(M.monadic
+            (M.value_with_ty
+              (Value.StructTuple "core::hash::sip::Sip24Rounds" [])
+              (Ty.path "core::hash::sip::Sip24Rounds")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5499,20 +6023,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -5527,20 +6055,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -5555,14 +6087,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 13) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -5601,14 +6135,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 16) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -5647,14 +6183,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -5669,20 +6207,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -5697,20 +6239,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -5725,14 +6271,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 17) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -5771,14 +6319,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 21) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -5817,14 +6367,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -5843,20 +6395,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -5871,20 +6427,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -5899,14 +6459,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 13) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -5945,14 +6507,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 16) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -5991,14 +6555,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -6013,20 +6579,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -6041,20 +6611,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -6069,14 +6643,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 17) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -6115,14 +6691,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 21) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -6161,14 +6739,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -6210,20 +6790,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -6238,20 +6822,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -6266,14 +6854,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 13) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -6312,14 +6902,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 16) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -6358,14 +6950,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -6380,20 +6974,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -6408,20 +7006,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -6436,14 +7038,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 17) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -6482,14 +7086,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 21) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -6528,14 +7134,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -6554,20 +7162,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -6582,20 +7194,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -6610,14 +7226,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 13) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -6656,14 +7274,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 16) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -6702,14 +7322,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -6724,20 +7346,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -6752,20 +7378,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -6780,14 +7410,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 17) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -6826,14 +7458,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 21) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -6872,14 +7506,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -6898,20 +7534,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -6926,20 +7566,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -6954,14 +7598,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 13) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -7000,14 +7646,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 16) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -7046,14 +7694,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -7068,20 +7718,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -7096,20 +7750,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -7124,14 +7782,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 17) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -7170,14 +7830,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 21) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -7216,14 +7878,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -7242,20 +7906,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -7270,20 +7938,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -7298,14 +7970,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 13
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 13) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -7344,14 +8018,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 16
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 16) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -7390,14 +8066,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -7412,20 +8090,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -7440,20 +8122,24 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v0"
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v0"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64")
                         ]
                       |)
                     |) in
@@ -7468,14 +8154,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v1"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 17
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v1"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 17) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -7514,14 +8202,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v3"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 21
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v3"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 21) (Ty.path "u32")
                         ]
                       |)
                     |) in
@@ -7560,14 +8250,16 @@ Module hash.
                         Ty.path "u64",
                         M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| state |) |),
-                              "core::hash::sip::State",
-                              "v2"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.U32 32
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| state |) |),
+                                "core::hash::sip::State",
+                                "v2"
+                              |)
+                            |))
+                            (Ty.path "u64");
+                          M.value_with_ty (Value.Integer IntegerKind.U32 32) (Ty.path "u32")
                         ]
                       |)
                     |) in

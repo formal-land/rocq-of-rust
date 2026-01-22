@@ -87,31 +87,35 @@ Module signed.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.match_operator (|
-                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                  self,
-                  [
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "alloy_primitives::signed::sign::Sign::Negative"
-                          |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Negative" |) |) |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "alloy_primitives::signed::sign::Sign::Positive"
-                          |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Positive" |) |) |)))
-                  ]
-                |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.match_operator (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                    self,
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "alloy_primitives::signed::sign::Sign::Negative"
+                            |) in
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Negative" |) |) |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "alloy_primitives::signed::sign::Sign::Positive"
+                            |) in
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Positive" |) |) |)))
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -165,7 +169,11 @@ Module signed.
                     [],
                     [ Ty.path "alloy_primitives::signed::sign::Sign" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::signed::sign::Sign" ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "i8" :=
                 M.call_closure (|
@@ -175,7 +183,11 @@ Module signed.
                     [],
                     [ Ty.path "alloy_primitives::signed::sign::Sign" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::signed::sign::Sign" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "bool",
@@ -276,7 +288,9 @@ Module signed.
                         γ0_1,
                         "alloy_primitives::signed::sign::Sign::Positive"
                       |) in
-                    Value.StructTuple "alloy_primitives::signed::sign::Sign::Positive" [] [] []));
+                    M.value_with_ty
+                      (Value.StructTuple "alloy_primitives::signed::sign::Sign::Positive" [])
+                      (Ty.path "alloy_primitives::signed::sign::Sign")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
@@ -291,7 +305,9 @@ Module signed.
                         γ0_1,
                         "alloy_primitives::signed::sign::Sign::Negative"
                       |) in
-                    Value.StructTuple "alloy_primitives::signed::sign::Sign::Negative" [] [] []));
+                    M.value_with_ty
+                      (Value.StructTuple "alloy_primitives::signed::sign::Sign::Negative" [])
+                      (Ty.path "alloy_primitives::signed::sign::Sign")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
@@ -306,7 +322,9 @@ Module signed.
                         γ0_1,
                         "alloy_primitives::signed::sign::Sign::Positive"
                       |) in
-                    Value.StructTuple "alloy_primitives::signed::sign::Sign::Negative" [] [] []));
+                    M.value_with_ty
+                      (Value.StructTuple "alloy_primitives::signed::sign::Sign::Negative" [])
+                      (Ty.path "alloy_primitives::signed::sign::Sign")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
@@ -321,7 +339,9 @@ Module signed.
                         γ0_1,
                         "alloy_primitives::signed::sign::Sign::Negative"
                       |) in
-                    Value.StructTuple "alloy_primitives::signed::sign::Sign::Positive" [] [] []))
+                    M.value_with_ty
+                      (Value.StructTuple "alloy_primitives::signed::sign::Sign::Positive" [])
+                      (Ty.path "alloy_primitives::signed::sign::Sign")))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -364,12 +384,16 @@ Module signed.
                   ltac:(M.monadic
                     (let _ :=
                       M.is_struct_tuple (| γ, "alloy_primitives::signed::sign::Sign::Positive" |) in
-                    Value.StructTuple "alloy_primitives::signed::sign::Sign::Negative" [] [] []));
+                    M.value_with_ty
+                      (Value.StructTuple "alloy_primitives::signed::sign::Sign::Negative" [])
+                      (Ty.path "alloy_primitives::signed::sign::Sign")));
                 fun γ =>
                   ltac:(M.monadic
                     (let _ :=
                       M.is_struct_tuple (| γ, "alloy_primitives::signed::sign::Sign::Negative" |) in
-                    Value.StructTuple "alloy_primitives::signed::sign::Sign::Positive" [] [] []))
+                    M.value_with_ty
+                      (Value.StructTuple "alloy_primitives::signed::sign::Sign::Positive" [])
+                      (Ty.path "alloy_primitives::signed::sign::Sign")))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -412,12 +436,16 @@ Module signed.
                   ltac:(M.monadic
                     (let _ :=
                       M.is_struct_tuple (| γ, "alloy_primitives::signed::sign::Sign::Positive" |) in
-                    Value.StructTuple "alloy_primitives::signed::sign::Sign::Negative" [] [] []));
+                    M.value_with_ty
+                      (Value.StructTuple "alloy_primitives::signed::sign::Sign::Negative" [])
+                      (Ty.path "alloy_primitives::signed::sign::Sign")));
                 fun γ =>
                   ltac:(M.monadic
                     (let _ :=
                       M.is_struct_tuple (| γ, "alloy_primitives::signed::sign::Sign::Negative" |) in
-                    Value.StructTuple "alloy_primitives::signed::sign::Sign::Positive" [] [] []))
+                    M.value_with_ty
+                      (Value.StructTuple "alloy_primitives::signed::sign::Sign::Positive" [])
+                      (Ty.path "alloy_primitives::signed::sign::Sign")))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -477,7 +505,11 @@ Module signed.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Formatter" ])
+                      ]
                     |)
                   ]
               |),
@@ -493,11 +525,12 @@ Module signed.
                         "alloy_primitives::signed::sign::Sign::Positive"
                       |) in
                     let _ := is_constant_or_break_match (| M.read (| γ0_1 |), Value.Bool false |) in
-                    Value.StructTuple
-                      "core::result::Result::Ok"
-                      []
-                      [ Ty.tuple []; Ty.path "core::fmt::Error" ]
-                      [ Value.Tuple [] ]));
+                    M.value_with_ty
+                      (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                      (Ty.apply
+                        (Ty.path "core::result::Result")
+                        []
+                        [ Ty.tuple []; Ty.path "core::fmt::Error" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (M.call_closure (|
@@ -515,17 +548,28 @@ Module signed.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.call_closure (|
-                          Ty.path "char",
-                          M.get_associated_function (|
-                            Ty.path "alloy_primitives::signed::sign::Sign",
-                            "as_char",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.path "char",
+                            M.get_associated_function (|
+                              Ty.path "alloy_primitives::signed::sign::Sign",
+                              "as_char",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "alloy_primitives::signed::sign::Sign" ])
+                            ]
+                          |))
+                          (Ty.path "char")
                       ]
                     |)))
               ]

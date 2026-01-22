@@ -34,68 +34,72 @@ Module interface.
               Ty.apply (Ty.path "&") [] [ Ty.path "revm_precompile::interface::PrecompileOutput" ],
               self
             |) in
-          Value.mkStructRecord
-            "revm_precompile::interface::PrecompileOutput"
-            []
-            []
-            [
-              ("gas_used",
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "revm_precompile::interface::PrecompileOutput"
+              [
+                ("gas_used",
+                  M.call_closure (|
                     Ty.path "u64",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "u64",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_precompile::interface::PrecompileOutput",
-                            "gas_used"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_precompile::interface::PrecompileOutput",
+                                "gas_used"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("bytes",
-                M.call_closure (|
-                  Ty.path "alloy_primitives::bytes_::Bytes",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                    ]
+                  |));
+                ("bytes",
+                  M.call_closure (|
                     Ty.path "alloy_primitives::bytes_::Bytes",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_precompile::interface::PrecompileOutput",
-                            "bytes"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_precompile::interface::PrecompileOutput",
+                                "bytes"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                    ]
+                  |))
+              ])
+            (Ty.path "revm_precompile::interface::PrecompileOutput")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -135,63 +139,75 @@ Module interface.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PrecompileOutput" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "gas_used" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_precompile::interface::PrecompileOutput",
-                          "gas_used"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PrecompileOutput" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "gas_used" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_precompile::interface::PrecompileOutput",
+                            "gas_used"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "bytes" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_precompile::interface::PrecompileOutput",
-                              "bytes"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "bytes" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_precompile::interface::PrecompileOutput",
+                                "bytes"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -270,22 +286,26 @@ Module interface.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_precompile::interface::PrecompileOutput",
-                      "bytes"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "revm_precompile::interface::PrecompileOutput",
-                      "bytes"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_precompile::interface::PrecompileOutput",
+                        "bytes"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "revm_precompile::interface::PrecompileOutput",
+                        "bytes"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
                 ]
               |)))
           |)))
@@ -372,20 +392,24 @@ Module interface.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_precompile::interface::PrecompileOutput",
-                          "gas_used"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_precompile::interface::PrecompileOutput",
+                            "gas_used"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             M.alloc (|
@@ -402,20 +426,24 @@ Module interface.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "revm_precompile::interface::PrecompileOutput",
-                          "bytes"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "revm_precompile::interface::PrecompileOutput",
+                            "bytes"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)
@@ -446,11 +474,11 @@ Module interface.
         ltac:(M.monadic
           (let gas_used := M.alloc (| Ty.path "u64", gas_used |) in
           let bytes := M.alloc (| Ty.path "alloy_primitives::bytes_::Bytes", bytes |) in
-          Value.mkStructRecord
-            "revm_precompile::interface::PrecompileOutput"
-            []
-            []
-            [ ("gas_used", M.read (| gas_used |)); ("bytes", M.read (| bytes |)) ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "revm_precompile::interface::PrecompileOutput"
+              [ ("gas_used", M.read (| gas_used |)); ("bytes", M.read (| bytes |)) ])
+            (Ty.path "revm_precompile::interface::PrecompileOutput")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -529,25 +557,32 @@ Module interface.
                         [ Ty.path "revm_precompile::interface::PrecompileError" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "revm_precompile::interface::PrecompileErrors::Error"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "revm_precompile::interface::PrecompileError",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_precompile::interface::PrecompileErrors::Error"
+                      [
+                        M.call_closure (|
                           Ty.path "revm_precompile::interface::PrecompileError",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "revm_precompile::interface::PrecompileError",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "revm_precompile::interface::PrecompileError" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "revm_precompile::interface::PrecompileErrors")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -562,26 +597,33 @@ Module interface.
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
                       γ1_0
                     |) in
-                  Value.mkStructRecord
-                    "revm_precompile::interface::PrecompileErrors::Fatal"
-                    []
-                    []
-                    [
-                      ("msg",
-                        M.call_closure (|
-                          Ty.path "alloc::string::String",
-                          M.get_trait_method (|
-                            "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "revm_precompile::interface::PrecompileErrors::Fatal"
+                      [
+                        ("msg",
+                          M.call_closure (|
                             Ty.path "alloc::string::String",
-                            [],
-                            [],
-                            "clone",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                        |))
-                    ]))
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Ty.path "alloc::string::String",
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ])
+                            ]
+                          |))
+                      ])
+                    (Ty.path "revm_precompile::interface::PrecompileErrors")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -647,32 +689,38 @@ Module interface.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Error" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "revm_precompile::interface::PrecompileError" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Error" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "revm_precompile::interface::PrecompileError" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -701,28 +749,36 @@ Module interface.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Fatal" |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "msg" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Fatal" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "msg" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)))
             ]
@@ -778,7 +834,14 @@ Module interface.
                   [],
                   [ Ty.path "revm_precompile::interface::PrecompileErrors" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_precompile::interface::PrecompileErrors" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -788,7 +851,14 @@ Module interface.
                   [],
                   [ Ty.path "revm_precompile::interface::PrecompileErrors" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_precompile::interface::PrecompileErrors" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -870,8 +940,28 @@ Module interface.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "revm_precompile::interface::PrecompileError" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "revm_precompile::interface::PrecompileError" ]
+                                  ])
                             ]
                           |)));
                       fun γ =>
@@ -914,8 +1004,19 @@ Module interface.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ])
                             ]
                           |)));
                       fun γ =>
@@ -1010,7 +1111,14 @@ Module interface.
                   [],
                   [ Ty.path "revm_precompile::interface::PrecompileErrors" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_precompile::interface::PrecompileErrors" ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
@@ -1025,11 +1133,15 @@ Module interface.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             M.alloc (|
@@ -1067,8 +1179,15 @@ Module interface.
                           [ __H ]
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "revm_precompile::interface::PrecompileError" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ __H ])
                         ]
                       |)));
                   fun γ =>
@@ -1097,8 +1216,12 @@ Module interface.
                           [ __H ]
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ __H ])
                         ]
                       |)))
                 ]
@@ -1133,25 +1256,32 @@ Module interface.
         ltac:(M.monadic
           (let value :=
             M.alloc (| Ty.path "revm_precompile::interface::PrecompileErrors", value |) in
-          Value.StructTuple
-            "revm_context_interface::result::EVMError::Precompile"
-            []
-            [ DB; TXERROR ]
-            [
-              M.call_closure (|
-                Ty.path "alloc::string::String",
-                M.get_trait_method (|
-                  "alloc::string::ToString",
-                  Ty.path "revm_precompile::interface::PrecompileErrors",
-                  [],
-                  [],
-                  "to_string",
-                  [],
-                  []
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, value |) ]
-              |)
-            ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "revm_context_interface::result::EVMError::Precompile"
+              [
+                M.call_closure (|
+                  Ty.path "alloc::string::String",
+                  M.get_trait_method (|
+                    "alloc::string::ToString",
+                    Ty.path "revm_precompile::interface::PrecompileErrors",
+                    [],
+                    [],
+                    "to_string",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, value |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "revm_precompile::interface::PrecompileErrors" ])
+                  ]
+                |)
+              ])
+            (Ty.apply (Ty.path "revm_context_interface::result::EVMError") [] [ DB; TXERROR ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1238,8 +1368,15 @@ Module interface.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| e |) |) |);
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| e |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "revm_precompile::interface::PrecompileError" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)));
               fun γ =>
@@ -1268,25 +1405,33 @@ Module interface.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                            M.get_trait_method (|
-                              "core::ops::deref::Deref",
-                              Ty.path "alloc::string::String",
-                              [],
-                              [],
-                              "deref",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |) ]
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                              M.get_trait_method (|
+                                "core::ops::deref::Deref",
+                                Ty.path "alloc::string::String",
+                                [],
+                                [],
+                                "deref",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| msg |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ])
+                              ]
+                            |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)))
             ]
@@ -1418,11 +1563,9 @@ Module interface.
                       γ,
                       "revm_precompile::interface::PrecompileError::OutOfGas"
                     |) in
-                  Value.StructTuple
-                    "revm_precompile::interface::PrecompileError::OutOfGas"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "revm_precompile::interface::PrecompileError::OutOfGas" [])
+                    (Ty.path "revm_precompile::interface::PrecompileError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -1431,11 +1574,11 @@ Module interface.
                       γ,
                       "revm_precompile::interface::PrecompileError::Blake2WrongLength"
                     |) in
-                  Value.StructTuple
-                    "revm_precompile::interface::PrecompileError::Blake2WrongLength"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_precompile::interface::PrecompileError::Blake2WrongLength"
+                      [])
+                    (Ty.path "revm_precompile::interface::PrecompileError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -1444,11 +1587,11 @@ Module interface.
                       γ,
                       "revm_precompile::interface::PrecompileError::Blake2WrongFinalIndicatorFlag"
                     |) in
-                  Value.StructTuple
-                    "revm_precompile::interface::PrecompileError::Blake2WrongFinalIndicatorFlag"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_precompile::interface::PrecompileError::Blake2WrongFinalIndicatorFlag"
+                      [])
+                    (Ty.path "revm_precompile::interface::PrecompileError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -1457,11 +1600,11 @@ Module interface.
                       γ,
                       "revm_precompile::interface::PrecompileError::ModexpExpOverflow"
                     |) in
-                  Value.StructTuple
-                    "revm_precompile::interface::PrecompileError::ModexpExpOverflow"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_precompile::interface::PrecompileError::ModexpExpOverflow"
+                      [])
+                    (Ty.path "revm_precompile::interface::PrecompileError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -1470,11 +1613,11 @@ Module interface.
                       γ,
                       "revm_precompile::interface::PrecompileError::ModexpBaseOverflow"
                     |) in
-                  Value.StructTuple
-                    "revm_precompile::interface::PrecompileError::ModexpBaseOverflow"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_precompile::interface::PrecompileError::ModexpBaseOverflow"
+                      [])
+                    (Ty.path "revm_precompile::interface::PrecompileError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -1483,11 +1626,11 @@ Module interface.
                       γ,
                       "revm_precompile::interface::PrecompileError::ModexpModOverflow"
                     |) in
-                  Value.StructTuple
-                    "revm_precompile::interface::PrecompileError::ModexpModOverflow"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_precompile::interface::PrecompileError::ModexpModOverflow"
+                      [])
+                    (Ty.path "revm_precompile::interface::PrecompileError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -1496,11 +1639,11 @@ Module interface.
                       γ,
                       "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember"
                     |) in
-                  Value.StructTuple
-                    "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_precompile::interface::PrecompileError::Bn128FieldPointNotAMember"
+                      [])
+                    (Ty.path "revm_precompile::interface::PrecompileError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -1509,11 +1652,11 @@ Module interface.
                       γ,
                       "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate"
                     |) in
-                  Value.StructTuple
-                    "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_precompile::interface::PrecompileError::Bn128AffineGFailedToCreate"
+                      [])
+                    (Ty.path "revm_precompile::interface::PrecompileError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -1522,11 +1665,11 @@ Module interface.
                       γ,
                       "revm_precompile::interface::PrecompileError::Bn128PairLength"
                     |) in
-                  Value.StructTuple
-                    "revm_precompile::interface::PrecompileError::Bn128PairLength"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_precompile::interface::PrecompileError::Bn128PairLength"
+                      [])
+                    (Ty.path "revm_precompile::interface::PrecompileError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -1535,11 +1678,11 @@ Module interface.
                       γ,
                       "revm_precompile::interface::PrecompileError::BlobInvalidInputLength"
                     |) in
-                  Value.StructTuple
-                    "revm_precompile::interface::PrecompileError::BlobInvalidInputLength"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_precompile::interface::PrecompileError::BlobInvalidInputLength"
+                      [])
+                    (Ty.path "revm_precompile::interface::PrecompileError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -1548,11 +1691,11 @@ Module interface.
                       γ,
                       "revm_precompile::interface::PrecompileError::BlobMismatchedVersion"
                     |) in
-                  Value.StructTuple
-                    "revm_precompile::interface::PrecompileError::BlobMismatchedVersion"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_precompile::interface::PrecompileError::BlobMismatchedVersion"
+                      [])
+                    (Ty.path "revm_precompile::interface::PrecompileError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -1561,11 +1704,11 @@ Module interface.
                       γ,
                       "revm_precompile::interface::PrecompileError::BlobVerifyKzgProofFailed"
                     |) in
-                  Value.StructTuple
-                    "revm_precompile::interface::PrecompileError::BlobVerifyKzgProofFailed"
-                    []
-                    []
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_precompile::interface::PrecompileError::BlobVerifyKzgProofFailed"
+                      [])
+                    (Ty.path "revm_precompile::interface::PrecompileError")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -1580,25 +1723,29 @@ Module interface.
                       Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "revm_precompile::interface::PrecompileError::Other"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "alloc::string::String",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "revm_precompile::interface::PrecompileError::Other"
+                      [
+                        M.call_closure (|
                           Ty.path "alloc::string::String",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]))
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "alloc::string::String",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "revm_precompile::interface::PrecompileError")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1655,8 +1802,12 @@ Module interface.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OutOfGas" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OutOfGas" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1679,11 +1830,15 @@ Module interface.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Blake2WrongLength" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Blake2WrongLength" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1706,11 +1861,15 @@ Module interface.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Blake2WrongFinalIndicatorFlag" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Blake2WrongFinalIndicatorFlag" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1733,11 +1892,15 @@ Module interface.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "ModexpExpOverflow" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "ModexpExpOverflow" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1760,11 +1923,15 @@ Module interface.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "ModexpBaseOverflow" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "ModexpBaseOverflow" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1787,11 +1954,15 @@ Module interface.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "ModexpModOverflow" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "ModexpModOverflow" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1814,11 +1985,15 @@ Module interface.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Bn128FieldPointNotAMember" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Bn128FieldPointNotAMember" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1841,11 +2016,15 @@ Module interface.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "Bn128AffineGFailedToCreate" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Bn128AffineGFailedToCreate" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1868,8 +2047,15 @@ Module interface.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Bn128PairLength" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Bn128PairLength" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1892,11 +2078,15 @@ Module interface.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BlobInvalidInputLength" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BlobInvalidInputLength" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1919,11 +2109,15 @@ Module interface.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BlobMismatchedVersion" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BlobMismatchedVersion" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1946,11 +2140,15 @@ Module interface.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BlobVerifyKzgProofFailed" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "BlobVerifyKzgProofFailed" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -1979,27 +2177,33 @@ Module interface.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Other" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Other" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)))
             ]
@@ -2055,7 +2259,14 @@ Module interface.
                   [],
                   [ Ty.path "revm_precompile::interface::PrecompileError" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_precompile::interface::PrecompileError" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -2065,7 +2276,14 @@ Module interface.
                   [],
                   [ Ty.path "revm_precompile::interface::PrecompileError" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_precompile::interface::PrecompileError" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -2133,8 +2351,19 @@ Module interface.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ] ])
                             ]
                           |)));
                       fun γ => ltac:(M.monadic (Value.Bool true))
@@ -2213,7 +2442,14 @@ Module interface.
                   [],
                   [ Ty.path "revm_precompile::interface::PrecompileError" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "revm_precompile::interface::PrecompileError" ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
@@ -2228,11 +2464,15 @@ Module interface.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             M.alloc (|
@@ -2267,8 +2507,12 @@ Module interface.
                           [ __H ]
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ __H ])
                         ]
                       |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -2301,25 +2545,25 @@ Module interface.
       | [], [ impl_Into_String_ ], [ err ] =>
         ltac:(M.monadic
           (let err := M.alloc (| impl_Into_String_, err |) in
-          Value.StructTuple
-            "revm_precompile::interface::PrecompileError::Other"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "alloc::string::String",
-                M.get_trait_method (|
-                  "core::convert::Into",
-                  impl_Into_String_,
-                  [],
-                  [ Ty.path "alloc::string::String" ],
-                  "into",
-                  [],
-                  []
-                |),
-                [ M.read (| err |) ]
-              |)
-            ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "revm_precompile::interface::PrecompileError::Other"
+              [
+                M.call_closure (|
+                  Ty.path "alloc::string::String",
+                  M.get_trait_method (|
+                    "core::convert::Into",
+                    impl_Into_String_,
+                    [],
+                    [ Ty.path "alloc::string::String" ],
+                    "into",
+                    [],
+                    []
+                  |),
+                  [ M.value_with_ty (M.read (| err |)) impl_Into_String_ ]
+                |)
+              ])
+            (Ty.path "revm_precompile::interface::PrecompileError")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2378,11 +2622,11 @@ Module interface.
       | [], [], [ err ] =>
         ltac:(M.monadic
           (let err := M.alloc (| Ty.path "revm_precompile::interface::PrecompileError", err |) in
-          Value.StructTuple
-            "revm_precompile::interface::PrecompileErrors::Error"
-            []
-            []
-            [ M.read (| err |) ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "revm_precompile::interface::PrecompileErrors::Error"
+              [ M.read (| err |) ])
+            (Ty.path "revm_precompile::interface::PrecompileErrors")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2616,7 +2860,11 @@ Module interface.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "alloc::string::String" ])
+                            ]
                           |)
                         |)
                       |)))
@@ -2634,8 +2882,12 @@ Module interface.
                   [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                 M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                 ]
               |)
             |)

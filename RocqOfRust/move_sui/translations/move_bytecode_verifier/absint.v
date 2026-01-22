@@ -85,31 +85,35 @@ Module absint.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_bytecode_verifier::absint::JoinResult::Changed"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Changed" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "move_bytecode_verifier::absint::JoinResult::Unchanged"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Unchanged" |) |) |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_bytecode_verifier::absint::JoinResult::Changed"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Changed" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "move_bytecode_verifier::absint::JoinResult::Unchanged"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Unchanged" |) |) |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -151,32 +155,34 @@ Module absint.
                 ],
               self
             |) in
-          Value.mkStructRecord
-            "move_bytecode_verifier::absint::BlockInvariant"
-            []
-            [ State ]
-            [
-              ("pre",
-                M.call_closure (|
-                  State,
-                  M.get_trait_method (| "core::clone::Clone", State, [], [], "clone", [], [] |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "move_bytecode_verifier::absint::BlockInvariant"
+              [
+                ("pre",
+                  M.call_closure (|
+                    State,
+                    M.get_trait_method (| "core::clone::Clone", State, [], [], "clone", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "move_bytecode_verifier::absint::BlockInvariant",
-                            "pre"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "move_bytecode_verifier::absint::BlockInvariant",
+                                "pre"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ State ])
+                    ]
+                  |))
+              ])
+            (Ty.apply (Ty.path "move_bytecode_verifier::absint::BlockInvariant") [] [ State ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -332,35 +338,50 @@ Module absint.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError"
+                                ],
+                              M.get_trait_method (|
+                                "move_bytecode_verifier_meter::Meter",
+                                impl_Meter__plus___Sized,
+                                [],
+                                [],
+                                "add",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| meter |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ impl_Meter__plus___Sized ]);
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.StructTuple
+                                      "move_bytecode_verifier_meter::Scope::Function"
+                                      [])
+                                    (Ty.path "move_bytecode_verifier_meter::Scope"))
+                                  (Ty.path "move_bytecode_verifier_meter::Scope");
+                                M.value_with_ty
+                                  (M.read (|
+                                    get_constant (|
+                                      "move_bytecode_verifier::absint::ANALYZE_FUNCTION_BASE_COST",
+                                      Ty.path "u128"
+                                    |)
+                                  |))
+                                  (Ty.path "u128")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
-                              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                            M.get_trait_method (|
-                              "move_bytecode_verifier_meter::Meter",
-                              impl_Meter__plus___Sized,
-                              [],
-                              [],
-                              "add",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| meter |) |) |);
-                              Value.StructTuple
-                                "move_bytecode_verifier_meter::Scope::Function"
-                                []
-                                []
-                                [];
-                              M.read (|
-                                get_constant (|
-                                  "move_bytecode_verifier::absint::ANALYZE_FUNCTION_BASE_COST",
-                                  Ty.path "u128"
-                                |)
-                              |)
-                            ]
-                          |)
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
                         ]
                       |)
                     |),
@@ -418,7 +439,17 @@ Module absint.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "move_binary_format::errors::PartialVMError"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -511,38 +542,48 @@ Module absint.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.path "move_binary_format::control_flow_graph::VMControlFlowGraph"
-                              ],
-                            M.get_associated_function (|
-                              Ty.path "move_bytecode_verifier::absint::FunctionContext",
-                              "cfg",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| M.read (| function_context |) |)
-                              |)
-                            ]
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.path
+                                    "move_binary_format::control_flow_graph::VMControlFlowGraph"
+                                ],
+                              M.get_associated_function (|
+                                Ty.path "move_bytecode_verifier::absint::FunctionContext",
+                                "cfg",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| function_context |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_bytecode_verifier::absint::FunctionContext" ])
+                              ]
+                            |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_binary_format::control_flow_graph::VMControlFlowGraph" ])
                     ]
                   |) in
                 let~ next_block : Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ] :=
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "u16" ]
-                    [ M.read (| entry_block_id |) ] in
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| entry_block_id |) ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u16" ]) in
                 let~ _ :
                     Ty.apply
                       (Ty.path "core::option::Option")
@@ -601,20 +642,59 @@ Module absint.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, inv_map |);
-                      M.read (| entry_block_id |);
-                      Value.mkStructRecord
-                        "move_bytecode_verifier::absint::BlockInvariant"
-                        []
-                        [
-                          Ty.associated_in_trait
-                            "move_bytecode_verifier::absint::TransferFunctions"
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, inv_map |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::collections::btree::map::BTreeMap")
+                              []
+                              [
+                                Ty.path "u16";
+                                Ty.apply
+                                  (Ty.path "move_bytecode_verifier::absint::BlockInvariant")
+                                  []
+                                  [
+                                    Ty.associated_in_trait
+                                      "move_bytecode_verifier::absint::TransferFunctions"
+                                      []
+                                      []
+                                      Self
+                                      "State"
+                                  ];
+                                Ty.path "alloc::alloc::Global"
+                              ]
+                          ]);
+                      M.value_with_ty (M.read (| entry_block_id |)) (Ty.path "u16");
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.mkStructRecord
+                            "move_bytecode_verifier::absint::BlockInvariant"
+                            [ ("pre", M.read (| initial_state |)) ])
+                          (Ty.apply
+                            (Ty.path "move_bytecode_verifier::absint::BlockInvariant")
                             []
-                            []
-                            Self
-                            "State"
-                        ]
-                        [ ("pre", M.read (| initial_state |)) ]
+                            [
+                              Ty.associated_in_trait
+                                "move_bytecode_verifier::absint::TransferFunctions"
+                                []
+                                []
+                                Self
+                                "State"
+                            ]))
+                        (Ty.apply
+                          (Ty.path "move_bytecode_verifier::absint::BlockInvariant")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "move_bytecode_verifier::absint::TransferFunctions"
+                              []
+                              []
+                              Self
+                              "State"
+                          ])
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -746,13 +826,41 @@ Module absint.
                                               [ Ty.path "u16" ]
                                             |),
                                             [
-                                              M.borrow (| Pointer.Kind.MutRef, inv_map |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (| Pointer.Kind.Ref, block_id |)
-                                                |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (| Pointer.Kind.MutRef, inv_map |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "alloc::collections::btree::map::BTreeMap")
+                                                      []
+                                                      [
+                                                        Ty.path "u16";
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "move_bytecode_verifier::absint::BlockInvariant")
+                                                          []
+                                                          [
+                                                            Ty.associated_in_trait
+                                                              "move_bytecode_verifier::absint::TransferFunctions"
+                                                              []
+                                                              []
+                                                              Self
+                                                              "State"
+                                                          ];
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ]
+                                                  ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, block_id |)
+                                                  |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
                                             ]
                                           |)
                                         |),
@@ -815,36 +923,56 @@ Module absint.
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.call_closure (|
-                                                                Ty.apply
-                                                                  (Ty.path "&")
-                                                                  []
-                                                                  [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (|
+                                                                M.call_closure (|
+                                                                  Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_binary_format::control_flow_graph::VMControlFlowGraph"
+                                                                    ],
+                                                                  M.get_associated_function (|
                                                                     Ty.path
-                                                                      "move_binary_format::control_flow_graph::VMControlFlowGraph"
-                                                                  ],
-                                                                M.get_associated_function (|
-                                                                  Ty.path
-                                                                    "move_bytecode_verifier::absint::FunctionContext",
-                                                                  "cfg",
-                                                                  [],
-                                                                  []
-                                                                |),
-                                                                [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.deref (|
-                                                                      M.read (| function_context |)
-                                                                    |)
-                                                                  |)
-                                                                ]
+                                                                      "move_bytecode_verifier::absint::FunctionContext",
+                                                                    "cfg",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          M.read (|
+                                                                            function_context
+                                                                          |)
+                                                                        |)
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "move_bytecode_verifier::absint::FunctionContext"
+                                                                        ])
+                                                                  ]
+                                                                |)
                                                               |)
-                                                            |)
-                                                          |);
-                                                          M.read (| block_id |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "move_binary_format::control_flow_graph::VMControlFlowGraph"
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.read (| block_id |))
+                                                            (Ty.path "u16")
                                                         ]
                                                       |)
                                                     |) in
@@ -949,8 +1077,80 @@ Module absint.
                                               []
                                             |),
                                             [
-                                              M.call_closure (|
-                                                Ty.apply
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.associated_in_trait
+                                                        "move_bytecode_verifier::absint::TransferFunctions"
+                                                        []
+                                                        []
+                                                        Self
+                                                        "State";
+                                                      Ty.path
+                                                        "move_binary_format::errors::PartialVMError"
+                                                    ],
+                                                  M.get_trait_method (|
+                                                    "move_bytecode_verifier::absint::AbstractInterpreter",
+                                                    Self,
+                                                    [],
+                                                    [],
+                                                    "execute_block",
+                                                    [],
+                                                    [ impl_Meter__plus___Sized ]
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.MutRef,
+                                                        M.deref (| M.read (| self |) |)
+                                                      |))
+                                                      (Ty.apply (Ty.path "&mut") [] [ Self ]);
+                                                    M.value_with_ty
+                                                      (M.read (| block_id |))
+                                                      (Ty.path "u16");
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| pre_state |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.associated_in_trait
+                                                            "move_bytecode_verifier::absint::TransferFunctions"
+                                                            []
+                                                            []
+                                                            Self
+                                                            "State"
+                                                        ]);
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| function_context |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_bytecode_verifier::absint::FunctionContext"
+                                                        ]);
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.MutRef,
+                                                        M.deref (| M.read (| meter |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [ impl_Meter__plus___Sized ])
+                                                  ]
+                                                |))
+                                                (Ty.apply
                                                   (Ty.path "core::result::Result")
                                                   []
                                                   [
@@ -962,36 +1162,7 @@ Module absint.
                                                       "State";
                                                     Ty.path
                                                       "move_binary_format::errors::PartialVMError"
-                                                  ],
-                                                M.get_trait_method (|
-                                                  "move_bytecode_verifier::absint::AbstractInterpreter",
-                                                  Self,
-                                                  [],
-                                                  [],
-                                                  "execute_block",
-                                                  [],
-                                                  [ impl_Meter__plus___Sized ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.deref (| M.read (| self |) |)
-                                                  |);
-                                                  M.read (| block_id |);
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| pre_state |) |)
-                                                  |);
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| function_context |) |)
-                                                  |);
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.deref (| M.read (| meter |) |)
-                                                  |)
-                                                ]
-                                              |)
+                                                  ])
                                             ]
                                           |)
                                         |),
@@ -1053,7 +1224,18 @@ Module absint.
                                                         [],
                                                         []
                                                       |),
-                                                      [ M.read (| residual |) ]
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| residual |))
+                                                          (Ty.apply
+                                                            (Ty.path "core::result::Result")
+                                                            []
+                                                            [
+                                                              Ty.path "core::convert::Infallible";
+                                                              Ty.path
+                                                                "move_binary_format::errors::PartialVMError"
+                                                            ])
+                                                      ]
                                                     |)
                                                   |)
                                                 |)
@@ -1100,34 +1282,50 @@ Module absint.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "move_binary_format::control_flow_graph::VMControlFlowGraph"
+                                                    ],
+                                                  M.get_associated_function (|
                                                     Ty.path
-                                                      "move_binary_format::control_flow_graph::VMControlFlowGraph"
-                                                  ],
-                                                M.get_associated_function (|
-                                                  Ty.path
-                                                    "move_bytecode_verifier::absint::FunctionContext",
-                                                  "cfg",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| function_context |) |)
-                                                  |)
-                                                ]
+                                                      "move_bytecode_verifier::absint::FunctionContext",
+                                                    "cfg",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| function_context |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_bytecode_verifier::absint::FunctionContext"
+                                                        ])
+                                                  ]
+                                                |)
                                               |)
-                                            |)
-                                          |);
-                                          M.read (| block_id |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.path
+                                                  "move_binary_format::control_flow_graph::VMControlFlowGraph"
+                                              ]);
+                                          M.value_with_ty (M.read (| block_id |)) (Ty.path "u16")
                                         ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
@@ -1168,8 +1366,84 @@ Module absint.
                                                     []
                                                   |),
                                                   [
-                                                    M.call_closure (|
-                                                      Ty.apply
+                                                    M.value_with_ty
+                                                      (M.call_closure (|
+                                                        Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "alloc::vec::Vec")
+                                                              []
+                                                              [
+                                                                Ty.path "u16";
+                                                                Ty.path "alloc::alloc::Global"
+                                                              ]
+                                                          ],
+                                                        M.get_trait_method (|
+                                                          "move_binary_format::control_flow_graph::ControlFlowGraph",
+                                                          Ty.path
+                                                            "move_binary_format::control_flow_graph::VMControlFlowGraph",
+                                                          [],
+                                                          [],
+                                                          "successors",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (|
+                                                                M.call_closure (|
+                                                                  Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "move_binary_format::control_flow_graph::VMControlFlowGraph"
+                                                                    ],
+                                                                  M.get_associated_function (|
+                                                                    Ty.path
+                                                                      "move_bytecode_verifier::absint::FunctionContext",
+                                                                    "cfg",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          M.read (|
+                                                                            function_context
+                                                                          |)
+                                                                        |)
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "move_bytecode_verifier::absint::FunctionContext"
+                                                                        ])
+                                                                  ]
+                                                                |)
+                                                              |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "move_binary_format::control_flow_graph::VMControlFlowGraph"
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.read (| block_id |))
+                                                            (Ty.path "u16")
+                                                        ]
+                                                      |))
+                                                      (Ty.apply
                                                         (Ty.path "&")
                                                         []
                                                         [
@@ -1180,50 +1454,7 @@ Module absint.
                                                               Ty.path "u16";
                                                               Ty.path "alloc::alloc::Global"
                                                             ]
-                                                        ],
-                                                      M.get_trait_method (|
-                                                        "move_binary_format::control_flow_graph::ControlFlowGraph",
-                                                        Ty.path
-                                                          "move_binary_format::control_flow_graph::VMControlFlowGraph",
-                                                        [],
-                                                        [],
-                                                        "successors",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.call_closure (|
-                                                              Ty.apply
-                                                                (Ty.path "&")
-                                                                []
-                                                                [
-                                                                  Ty.path
-                                                                    "move_binary_format::control_flow_graph::VMControlFlowGraph"
-                                                                ],
-                                                              M.get_associated_function (|
-                                                                Ty.path
-                                                                  "move_bytecode_verifier::absint::FunctionContext",
-                                                                "cfg",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.read (| function_context |)
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          |)
-                                                        |);
-                                                        M.read (| block_id |)
-                                                      ]
-                                                    |)
+                                                        ])
                                                   ]
                                                 |)
                                               |),
@@ -1277,15 +1508,26 @@ Module absint.
                                                                     []
                                                                   |),
                                                                   [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.MutRef,
-                                                                      M.deref (|
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.MutRef,
-                                                                          iter
+                                                                    M.value_with_ty
+                                                                      (M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        M.deref (|
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.MutRef,
+                                                                            iter
+                                                                          |)
                                                                         |)
-                                                                      |)
-                                                                    |)
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&mut")
+                                                                        []
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "core::slice::iter::Iter")
+                                                                            []
+                                                                            [ Ty.path "u16" ]
+                                                                        ])
                                                                   ]
                                                                 |)
                                                               |),
@@ -1374,8 +1616,65 @@ Module absint.
                                                                                 []
                                                                               |),
                                                                               [
-                                                                                M.call_closure (|
-                                                                                  Ty.apply
+                                                                                M.value_with_ty
+                                                                                  (M.call_closure (|
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "core::result::Result")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.tuple [];
+                                                                                        Ty.path
+                                                                                          "move_binary_format::errors::PartialVMError"
+                                                                                      ],
+                                                                                    M.get_trait_method (|
+                                                                                      "move_bytecode_verifier_meter::Meter",
+                                                                                      impl_Meter__plus___Sized,
+                                                                                      [],
+                                                                                      [],
+                                                                                      "add",
+                                                                                      [],
+                                                                                      []
+                                                                                    |),
+                                                                                    [
+                                                                                      M.value_with_ty
+                                                                                        (M.borrow (|
+                                                                                          Pointer.Kind.MutRef,
+                                                                                          M.deref (|
+                                                                                            M.read (|
+                                                                                              meter
+                                                                                            |)
+                                                                                          |)
+                                                                                        |))
+                                                                                        (Ty.apply
+                                                                                          (Ty.path
+                                                                                            "&mut")
+                                                                                          []
+                                                                                          [
+                                                                                            impl_Meter__plus___Sized
+                                                                                          ]);
+                                                                                      M.value_with_ty
+                                                                                        (M.value_with_ty
+                                                                                          (Value.StructTuple
+                                                                                            "move_bytecode_verifier_meter::Scope::Function"
+                                                                                            [])
+                                                                                          (Ty.path
+                                                                                            "move_bytecode_verifier_meter::Scope"))
+                                                                                        (Ty.path
+                                                                                          "move_bytecode_verifier_meter::Scope");
+                                                                                      M.value_with_ty
+                                                                                        (M.read (|
+                                                                                          get_constant (|
+                                                                                            "move_bytecode_verifier::absint::PER_SUCCESSOR_COST",
+                                                                                            Ty.path
+                                                                                              "u128"
+                                                                                          |)
+                                                                                        |))
+                                                                                        (Ty.path
+                                                                                          "u128")
+                                                                                    ]
+                                                                                  |))
+                                                                                  (Ty.apply
                                                                                     (Ty.path
                                                                                       "core::result::Result")
                                                                                     []
@@ -1383,39 +1682,7 @@ Module absint.
                                                                                       Ty.tuple [];
                                                                                       Ty.path
                                                                                         "move_binary_format::errors::PartialVMError"
-                                                                                    ],
-                                                                                  M.get_trait_method (|
-                                                                                    "move_bytecode_verifier_meter::Meter",
-                                                                                    impl_Meter__plus___Sized,
-                                                                                    [],
-                                                                                    [],
-                                                                                    "add",
-                                                                                    [],
-                                                                                    []
-                                                                                  |),
-                                                                                  [
-                                                                                    M.borrow (|
-                                                                                      Pointer.Kind.MutRef,
-                                                                                      M.deref (|
-                                                                                        M.read (|
-                                                                                          meter
-                                                                                        |)
-                                                                                      |)
-                                                                                    |);
-                                                                                    Value.StructTuple
-                                                                                      "move_bytecode_verifier_meter::Scope::Function"
-                                                                                      []
-                                                                                      []
-                                                                                      [];
-                                                                                    M.read (|
-                                                                                      get_constant (|
-                                                                                        "move_bytecode_verifier::absint::PER_SUCCESSOR_COST",
-                                                                                        Ty.path
-                                                                                          "u128"
-                                                                                      |)
-                                                                                    |)
-                                                                                  ]
-                                                                                |)
+                                                                                    ])
                                                                               ]
                                                                             |)
                                                                           |),
@@ -1486,9 +1753,20 @@ Module absint.
                                                                                           []
                                                                                         |),
                                                                                         [
-                                                                                          M.read (|
-                                                                                            residual
-                                                                                          |)
+                                                                                          M.value_with_ty
+                                                                                            (M.read (|
+                                                                                              residual
+                                                                                            |))
+                                                                                            (Ty.apply
+                                                                                              (Ty.path
+                                                                                                "core::result::Result")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "core::convert::Infallible";
+                                                                                                Ty.path
+                                                                                                  "move_binary_format::errors::PartialVMError"
+                                                                                              ])
                                                                                         ]
                                                                                       |)
                                                                                     |)
@@ -1589,18 +1867,52 @@ Module absint.
                                                                                 [ Ty.path "u16" ]
                                                                               |),
                                                                               [
-                                                                                M.borrow (|
-                                                                                  Pointer.Kind.MutRef,
-                                                                                  inv_map
-                                                                                |);
-                                                                                M.borrow (|
-                                                                                  Pointer.Kind.Ref,
-                                                                                  M.deref (|
-                                                                                    M.read (|
-                                                                                      successor_block_id
+                                                                                M.value_with_ty
+                                                                                  (M.borrow (|
+                                                                                    Pointer.Kind.MutRef,
+                                                                                    inv_map
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path "&mut")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "alloc::collections::btree::map::BTreeMap")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "u16";
+                                                                                          Ty.apply
+                                                                                            (Ty.path
+                                                                                              "move_bytecode_verifier::absint::BlockInvariant")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.associated_in_trait
+                                                                                                "move_bytecode_verifier::absint::TransferFunctions"
+                                                                                                []
+                                                                                                []
+                                                                                                Self
+                                                                                                "State"
+                                                                                            ];
+                                                                                          Ty.path
+                                                                                            "alloc::alloc::Global"
+                                                                                        ]
+                                                                                    ]);
+                                                                                M.value_with_ty
+                                                                                  (M.borrow (|
+                                                                                    Pointer.Kind.Ref,
+                                                                                    M.deref (|
+                                                                                      M.read (|
+                                                                                        successor_block_id
+                                                                                      |)
                                                                                     |)
-                                                                                  |)
-                                                                                |)
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path "&")
+                                                                                    []
+                                                                                    [ Ty.path "u16"
+                                                                                    ])
                                                                               ]
                                                                             |)
                                                                           |),
@@ -1700,45 +2012,35 @@ Module absint.
                                                                                             []
                                                                                           |),
                                                                                           [
-                                                                                            M.read (|
-                                                                                              let~
-                                                                                                    old_pre :
-                                                                                                  Ty.apply
-                                                                                                    (Ty.path
-                                                                                                      "&mut")
-                                                                                                    []
-                                                                                                    [
-                                                                                                      Ty.associated_in_trait
-                                                                                                        "move_bytecode_verifier::absint::TransferFunctions"
-                                                                                                        []
-                                                                                                        []
-                                                                                                        Self
-                                                                                                        "State"
-                                                                                                    ] :=
-                                                                                                M.borrow (|
-                                                                                                  Pointer.Kind.MutRef,
-                                                                                                  M.SubPointer.get_struct_record_field (|
-                                                                                                    M.deref (|
-                                                                                                      M.read (|
-                                                                                                        next_block_invariant
-                                                                                                      |)
-                                                                                                    |),
-                                                                                                    "move_bytecode_verifier::absint::BlockInvariant",
-                                                                                                    "pre"
-                                                                                                  |)
-                                                                                                |) in
-                                                                                              M.alloc (|
-                                                                                                Ty.apply
-                                                                                                  (Ty.path
-                                                                                                    "core::result::Result")
-                                                                                                  []
-                                                                                                  [
-                                                                                                    Ty.path
-                                                                                                      "move_bytecode_verifier::absint::JoinResult";
-                                                                                                    Ty.path
-                                                                                                      "move_binary_format::errors::PartialVMError"
-                                                                                                  ],
-                                                                                                M.call_closure (|
+                                                                                            M.value_with_ty
+                                                                                              (M.read (|
+                                                                                                let~
+                                                                                                      old_pre :
+                                                                                                    Ty.apply
+                                                                                                      (Ty.path
+                                                                                                        "&mut")
+                                                                                                      []
+                                                                                                      [
+                                                                                                        Ty.associated_in_trait
+                                                                                                          "move_bytecode_verifier::absint::TransferFunctions"
+                                                                                                          []
+                                                                                                          []
+                                                                                                          Self
+                                                                                                          "State"
+                                                                                                      ] :=
+                                                                                                  M.borrow (|
+                                                                                                    Pointer.Kind.MutRef,
+                                                                                                    M.SubPointer.get_struct_record_field (|
+                                                                                                      M.deref (|
+                                                                                                        M.read (|
+                                                                                                          next_block_invariant
+                                                                                                        |)
+                                                                                                      |),
+                                                                                                      "move_bytecode_verifier::absint::BlockInvariant",
+                                                                                                      "pre"
+                                                                                                    |)
+                                                                                                  |) in
+                                                                                                M.alloc (|
                                                                                                   Ty.apply
                                                                                                     (Ty.path
                                                                                                       "core::result::Result")
@@ -1749,52 +2051,107 @@ Module absint.
                                                                                                       Ty.path
                                                                                                         "move_binary_format::errors::PartialVMError"
                                                                                                     ],
-                                                                                                  M.get_trait_method (|
-                                                                                                    "move_bytecode_verifier::absint::AbstractDomain",
-                                                                                                    Ty.associated_in_trait
-                                                                                                      "move_bytecode_verifier::absint::TransferFunctions"
+                                                                                                  M.call_closure (|
+                                                                                                    Ty.apply
+                                                                                                      (Ty.path
+                                                                                                        "core::result::Result")
                                                                                                       []
-                                                                                                      []
-                                                                                                      Self
-                                                                                                      "State",
-                                                                                                    [],
-                                                                                                    [],
-                                                                                                    "join",
-                                                                                                    [],
+                                                                                                      [
+                                                                                                        Ty.path
+                                                                                                          "move_bytecode_verifier::absint::JoinResult";
+                                                                                                        Ty.path
+                                                                                                          "move_binary_format::errors::PartialVMError"
+                                                                                                      ],
+                                                                                                    M.get_trait_method (|
+                                                                                                      "move_bytecode_verifier::absint::AbstractDomain",
+                                                                                                      Ty.associated_in_trait
+                                                                                                        "move_bytecode_verifier::absint::TransferFunctions"
+                                                                                                        []
+                                                                                                        []
+                                                                                                        Self
+                                                                                                        "State",
+                                                                                                      [],
+                                                                                                      [],
+                                                                                                      "join",
+                                                                                                      [],
+                                                                                                      [
+                                                                                                        impl_Meter__plus___Sized
+                                                                                                      ]
+                                                                                                    |),
                                                                                                     [
-                                                                                                      impl_Meter__plus___Sized
-                                                                                                    ]
-                                                                                                  |),
-                                                                                                  [
-                                                                                                    M.borrow (|
-                                                                                                      Pointer.Kind.MutRef,
-                                                                                                      M.deref (|
-                                                                                                        M.read (|
-                                                                                                          old_pre
-                                                                                                        |)
-                                                                                                      |)
-                                                                                                    |);
-                                                                                                    M.borrow (|
-                                                                                                      Pointer.Kind.Ref,
-                                                                                                      M.deref (|
-                                                                                                        M.borrow (|
+                                                                                                      M.value_with_ty
+                                                                                                        (M.borrow (|
+                                                                                                          Pointer.Kind.MutRef,
+                                                                                                          M.deref (|
+                                                                                                            M.read (|
+                                                                                                              old_pre
+                                                                                                            |)
+                                                                                                          |)
+                                                                                                        |))
+                                                                                                        (Ty.apply
+                                                                                                          (Ty.path
+                                                                                                            "&mut")
+                                                                                                          []
+                                                                                                          [
+                                                                                                            Ty.associated_in_trait
+                                                                                                              "move_bytecode_verifier::absint::TransferFunctions"
+                                                                                                              []
+                                                                                                              []
+                                                                                                              Self
+                                                                                                              "State"
+                                                                                                          ]);
+                                                                                                      M.value_with_ty
+                                                                                                        (M.borrow (|
                                                                                                           Pointer.Kind.Ref,
-                                                                                                          post_state
-                                                                                                        |)
-                                                                                                      |)
-                                                                                                    |);
-                                                                                                    M.borrow (|
-                                                                                                      Pointer.Kind.MutRef,
-                                                                                                      M.deref (|
-                                                                                                        M.read (|
-                                                                                                          meter
-                                                                                                        |)
-                                                                                                      |)
-                                                                                                    |)
-                                                                                                  ]
+                                                                                                          M.deref (|
+                                                                                                            M.borrow (|
+                                                                                                              Pointer.Kind.Ref,
+                                                                                                              post_state
+                                                                                                            |)
+                                                                                                          |)
+                                                                                                        |))
+                                                                                                        (Ty.apply
+                                                                                                          (Ty.path
+                                                                                                            "&")
+                                                                                                          []
+                                                                                                          [
+                                                                                                            Ty.associated_in_trait
+                                                                                                              "move_bytecode_verifier::absint::TransferFunctions"
+                                                                                                              []
+                                                                                                              []
+                                                                                                              Self
+                                                                                                              "State"
+                                                                                                          ]);
+                                                                                                      M.value_with_ty
+                                                                                                        (M.borrow (|
+                                                                                                          Pointer.Kind.MutRef,
+                                                                                                          M.deref (|
+                                                                                                            M.read (|
+                                                                                                              meter
+                                                                                                            |)
+                                                                                                          |)
+                                                                                                        |))
+                                                                                                        (Ty.apply
+                                                                                                          (Ty.path
+                                                                                                            "&mut")
+                                                                                                          []
+                                                                                                          [
+                                                                                                            impl_Meter__plus___Sized
+                                                                                                          ])
+                                                                                                    ]
+                                                                                                  |)
                                                                                                 |)
-                                                                                              |)
-                                                                                            |)
+                                                                                              |))
+                                                                                              (Ty.apply
+                                                                                                (Ty.path
+                                                                                                  "core::result::Result")
+                                                                                                []
+                                                                                                [
+                                                                                                  Ty.path
+                                                                                                    "move_bytecode_verifier::absint::JoinResult";
+                                                                                                  Ty.path
+                                                                                                    "move_binary_format::errors::PartialVMError"
+                                                                                                ])
                                                                                           ]
                                                                                         |)
                                                                                       |),
@@ -1867,9 +2224,20 @@ Module absint.
                                                                                                       []
                                                                                                     |),
                                                                                                     [
-                                                                                                      M.read (|
-                                                                                                        residual
-                                                                                                      |)
+                                                                                                      M.value_with_ty
+                                                                                                        (M.read (|
+                                                                                                          residual
+                                                                                                        |))
+                                                                                                        (Ty.apply
+                                                                                                          (Ty.path
+                                                                                                            "core::result::Result")
+                                                                                                          []
+                                                                                                          [
+                                                                                                            Ty.path
+                                                                                                              "core::convert::Infallible";
+                                                                                                            Ty.path
+                                                                                                              "move_binary_format::errors::PartialVMError"
+                                                                                                          ])
                                                                                                     ]
                                                                                                   |)
                                                                                                 |)
@@ -1953,48 +2321,72 @@ Module absint.
                                                                                                               []
                                                                                                             |),
                                                                                                             [
-                                                                                                              M.borrow (|
-                                                                                                                Pointer.Kind.Ref,
-                                                                                                                M.deref (|
-                                                                                                                  M.call_closure (|
-                                                                                                                    Ty.apply
-                                                                                                                      (Ty.path
-                                                                                                                        "&")
-                                                                                                                      []
-                                                                                                                      [
+                                                                                                              M.value_with_ty
+                                                                                                                (M.borrow (|
+                                                                                                                  Pointer.Kind.Ref,
+                                                                                                                  M.deref (|
+                                                                                                                    M.call_closure (|
+                                                                                                                      Ty.apply
+                                                                                                                        (Ty.path
+                                                                                                                          "&")
+                                                                                                                        []
+                                                                                                                        [
+                                                                                                                          Ty.path
+                                                                                                                            "move_binary_format::control_flow_graph::VMControlFlowGraph"
+                                                                                                                        ],
+                                                                                                                      M.get_associated_function (|
                                                                                                                         Ty.path
-                                                                                                                          "move_binary_format::control_flow_graph::VMControlFlowGraph"
-                                                                                                                      ],
-                                                                                                                    M.get_associated_function (|
-                                                                                                                      Ty.path
-                                                                                                                        "move_bytecode_verifier::absint::FunctionContext",
-                                                                                                                      "cfg",
-                                                                                                                      [],
-                                                                                                                      []
-                                                                                                                    |),
-                                                                                                                    [
-                                                                                                                      M.borrow (|
-                                                                                                                        Pointer.Kind.Ref,
-                                                                                                                        M.deref (|
-                                                                                                                          M.read (|
-                                                                                                                            function_context
-                                                                                                                          |)
-                                                                                                                        |)
-                                                                                                                      |)
-                                                                                                                    ]
+                                                                                                                          "move_bytecode_verifier::absint::FunctionContext",
+                                                                                                                        "cfg",
+                                                                                                                        [],
+                                                                                                                        []
+                                                                                                                      |),
+                                                                                                                      [
+                                                                                                                        M.value_with_ty
+                                                                                                                          (M.borrow (|
+                                                                                                                            Pointer.Kind.Ref,
+                                                                                                                            M.deref (|
+                                                                                                                              M.read (|
+                                                                                                                                function_context
+                                                                                                                              |)
+                                                                                                                            |)
+                                                                                                                          |))
+                                                                                                                          (Ty.apply
+                                                                                                                            (Ty.path
+                                                                                                                              "&")
+                                                                                                                            []
+                                                                                                                            [
+                                                                                                                              Ty.path
+                                                                                                                                "move_bytecode_verifier::absint::FunctionContext"
+                                                                                                                            ])
+                                                                                                                      ]
+                                                                                                                    |)
                                                                                                                   |)
-                                                                                                                |)
-                                                                                                              |);
-                                                                                                              M.read (|
-                                                                                                                block_id
-                                                                                                              |);
-                                                                                                              M.read (|
-                                                                                                                M.deref (|
-                                                                                                                  M.read (|
-                                                                                                                    successor_block_id
+                                                                                                                |))
+                                                                                                                (Ty.apply
+                                                                                                                  (Ty.path
+                                                                                                                    "&")
+                                                                                                                  []
+                                                                                                                  [
+                                                                                                                    Ty.path
+                                                                                                                      "move_binary_format::control_flow_graph::VMControlFlowGraph"
+                                                                                                                  ]);
+                                                                                                              M.value_with_ty
+                                                                                                                (M.read (|
+                                                                                                                  block_id
+                                                                                                                |))
+                                                                                                                (Ty.path
+                                                                                                                  "u16");
+                                                                                                              M.value_with_ty
+                                                                                                                (M.read (|
+                                                                                                                  M.deref (|
+                                                                                                                    M.read (|
+                                                                                                                      successor_block_id
+                                                                                                                    |)
                                                                                                                   |)
-                                                                                                                |)
-                                                                                                              |)
+                                                                                                                |))
+                                                                                                                (Ty.path
+                                                                                                                  "u16")
                                                                                                             ]
                                                                                                           |)
                                                                                                         |)) in
@@ -2073,8 +2465,66 @@ Module absint.
                                                                                                                   []
                                                                                                                 |),
                                                                                                                 [
-                                                                                                                  M.call_closure (|
-                                                                                                                    Ty.apply
+                                                                                                                  M.value_with_ty
+                                                                                                                    (M.call_closure (|
+                                                                                                                      Ty.apply
+                                                                                                                        (Ty.path
+                                                                                                                          "core::result::Result")
+                                                                                                                        []
+                                                                                                                        [
+                                                                                                                          Ty.tuple
+                                                                                                                            [];
+                                                                                                                          Ty.path
+                                                                                                                            "move_binary_format::errors::PartialVMError"
+                                                                                                                        ],
+                                                                                                                      M.get_trait_method (|
+                                                                                                                        "move_bytecode_verifier_meter::Meter",
+                                                                                                                        impl_Meter__plus___Sized,
+                                                                                                                        [],
+                                                                                                                        [],
+                                                                                                                        "add",
+                                                                                                                        [],
+                                                                                                                        []
+                                                                                                                      |),
+                                                                                                                      [
+                                                                                                                        M.value_with_ty
+                                                                                                                          (M.borrow (|
+                                                                                                                            Pointer.Kind.MutRef,
+                                                                                                                            M.deref (|
+                                                                                                                              M.read (|
+                                                                                                                                meter
+                                                                                                                              |)
+                                                                                                                            |)
+                                                                                                                          |))
+                                                                                                                          (Ty.apply
+                                                                                                                            (Ty.path
+                                                                                                                              "&mut")
+                                                                                                                            []
+                                                                                                                            [
+                                                                                                                              impl_Meter__plus___Sized
+                                                                                                                            ]);
+                                                                                                                        M.value_with_ty
+                                                                                                                          (M.value_with_ty
+                                                                                                                            (Value.StructTuple
+                                                                                                                              "move_bytecode_verifier_meter::Scope::Function"
+                                                                                                                              [])
+                                                                                                                            (Ty.path
+                                                                                                                              "move_bytecode_verifier_meter::Scope"))
+                                                                                                                          (Ty.path
+                                                                                                                            "move_bytecode_verifier_meter::Scope");
+                                                                                                                        M.value_with_ty
+                                                                                                                          (M.read (|
+                                                                                                                            get_constant (|
+                                                                                                                              "move_bytecode_verifier::absint::PER_BACKEDGE_COST",
+                                                                                                                              Ty.path
+                                                                                                                                "u128"
+                                                                                                                            |)
+                                                                                                                          |))
+                                                                                                                          (Ty.path
+                                                                                                                            "u128")
+                                                                                                                      ]
+                                                                                                                    |))
+                                                                                                                    (Ty.apply
                                                                                                                       (Ty.path
                                                                                                                         "core::result::Result")
                                                                                                                       []
@@ -2083,39 +2533,7 @@ Module absint.
                                                                                                                           [];
                                                                                                                         Ty.path
                                                                                                                           "move_binary_format::errors::PartialVMError"
-                                                                                                                      ],
-                                                                                                                    M.get_trait_method (|
-                                                                                                                      "move_bytecode_verifier_meter::Meter",
-                                                                                                                      impl_Meter__plus___Sized,
-                                                                                                                      [],
-                                                                                                                      [],
-                                                                                                                      "add",
-                                                                                                                      [],
-                                                                                                                      []
-                                                                                                                    |),
-                                                                                                                    [
-                                                                                                                      M.borrow (|
-                                                                                                                        Pointer.Kind.MutRef,
-                                                                                                                        M.deref (|
-                                                                                                                          M.read (|
-                                                                                                                            meter
-                                                                                                                          |)
-                                                                                                                        |)
-                                                                                                                      |);
-                                                                                                                      Value.StructTuple
-                                                                                                                        "move_bytecode_verifier_meter::Scope::Function"
-                                                                                                                        []
-                                                                                                                        []
-                                                                                                                        [];
-                                                                                                                      M.read (|
-                                                                                                                        get_constant (|
-                                                                                                                          "move_bytecode_verifier::absint::PER_BACKEDGE_COST",
-                                                                                                                          Ty.path
-                                                                                                                            "u128"
-                                                                                                                        |)
-                                                                                                                      |)
-                                                                                                                    ]
-                                                                                                                  |)
+                                                                                                                      ])
                                                                                                                 ]
                                                                                                               |)
                                                                                                             |),
@@ -2189,9 +2607,20 @@ Module absint.
                                                                                                                             []
                                                                                                                           |),
                                                                                                                           [
-                                                                                                                            M.read (|
-                                                                                                                              residual
-                                                                                                                            |)
+                                                                                                                            M.value_with_ty
+                                                                                                                              (M.read (|
+                                                                                                                                residual
+                                                                                                                              |))
+                                                                                                                              (Ty.apply
+                                                                                                                                (Ty.path
+                                                                                                                                  "core::result::Result")
+                                                                                                                                []
+                                                                                                                                [
+                                                                                                                                  Ty.path
+                                                                                                                                    "core::convert::Infallible";
+                                                                                                                                  Ty.path
+                                                                                                                                    "move_binary_format::errors::PartialVMError"
+                                                                                                                                ])
                                                                                                                           ]
                                                                                                                         |)
                                                                                                                       |)
@@ -2225,22 +2654,26 @@ Module absint.
                                                                                                               [] :=
                                                                                                           M.write (|
                                                                                                             next_block_candidate,
-                                                                                                            Value.StructTuple
-                                                                                                              "core::option::Option::Some"
-                                                                                                              []
-                                                                                                              [
-                                                                                                                Ty.path
-                                                                                                                  "u16"
-                                                                                                              ]
-                                                                                                              [
-                                                                                                                M.read (|
-                                                                                                                  M.deref (|
-                                                                                                                    M.read (|
-                                                                                                                      successor_block_id
+                                                                                                            M.value_with_ty
+                                                                                                              (Value.StructTuple
+                                                                                                                "core::option::Option::Some"
+                                                                                                                [
+                                                                                                                  M.read (|
+                                                                                                                    M.deref (|
+                                                                                                                      M.read (|
+                                                                                                                        successor_block_id
+                                                                                                                      |)
                                                                                                                     |)
                                                                                                                   |)
-                                                                                                                |)
-                                                                                                              ]
+                                                                                                                ])
+                                                                                                              (Ty.apply
+                                                                                                                (Ty.path
+                                                                                                                  "core::option::Option")
+                                                                                                                []
+                                                                                                                [
+                                                                                                                  Ty.path
+                                                                                                                    "u16"
+                                                                                                                ])
                                                                                                           |) in
                                                                                                         M.break (||)
                                                                                                       |)
@@ -2330,59 +2763,121 @@ Module absint.
                                                                                         []
                                                                                       |),
                                                                                       [
-                                                                                        M.borrow (|
-                                                                                          Pointer.Kind.MutRef,
-                                                                                          inv_map
-                                                                                        |);
-                                                                                        M.read (|
-                                                                                          M.deref (|
-                                                                                            M.read (|
-                                                                                              successor_block_id
+                                                                                        M.value_with_ty
+                                                                                          (M.borrow (|
+                                                                                            Pointer.Kind.MutRef,
+                                                                                            inv_map
+                                                                                          |))
+                                                                                          (Ty.apply
+                                                                                            (Ty.path
+                                                                                              "&mut")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.apply
+                                                                                                (Ty.path
+                                                                                                  "alloc::collections::btree::map::BTreeMap")
+                                                                                                []
+                                                                                                [
+                                                                                                  Ty.path
+                                                                                                    "u16";
+                                                                                                  Ty.apply
+                                                                                                    (Ty.path
+                                                                                                      "move_bytecode_verifier::absint::BlockInvariant")
+                                                                                                    []
+                                                                                                    [
+                                                                                                      Ty.associated_in_trait
+                                                                                                        "move_bytecode_verifier::absint::TransferFunctions"
+                                                                                                        []
+                                                                                                        []
+                                                                                                        Self
+                                                                                                        "State"
+                                                                                                    ];
+                                                                                                  Ty.path
+                                                                                                    "alloc::alloc::Global"
+                                                                                                ]
+                                                                                            ]);
+                                                                                        M.value_with_ty
+                                                                                          (M.read (|
+                                                                                            M.deref (|
+                                                                                              M.read (|
+                                                                                                successor_block_id
+                                                                                              |)
                                                                                             |)
-                                                                                          |)
-                                                                                        |);
-                                                                                        Value.mkStructRecord
-                                                                                          "move_bytecode_verifier::absint::BlockInvariant"
-                                                                                          []
-                                                                                          [
-                                                                                            Ty.associated_in_trait
-                                                                                              "move_bytecode_verifier::absint::TransferFunctions"
+                                                                                          |))
+                                                                                          (Ty.path
+                                                                                            "u16");
+                                                                                        M.value_with_ty
+                                                                                          (M.value_with_ty
+                                                                                            (Value.mkStructRecord
+                                                                                              "move_bytecode_verifier::absint::BlockInvariant"
+                                                                                              [
+                                                                                                ("pre",
+                                                                                                  M.call_closure (|
+                                                                                                    Ty.associated_in_trait
+                                                                                                      "move_bytecode_verifier::absint::TransferFunctions"
+                                                                                                      []
+                                                                                                      []
+                                                                                                      Self
+                                                                                                      "State",
+                                                                                                    M.get_trait_method (|
+                                                                                                      "core::clone::Clone",
+                                                                                                      Ty.associated_in_trait
+                                                                                                        "move_bytecode_verifier::absint::TransferFunctions"
+                                                                                                        []
+                                                                                                        []
+                                                                                                        Self
+                                                                                                        "State",
+                                                                                                      [],
+                                                                                                      [],
+                                                                                                      "clone",
+                                                                                                      [],
+                                                                                                      []
+                                                                                                    |),
+                                                                                                    [
+                                                                                                      M.value_with_ty
+                                                                                                        (M.borrow (|
+                                                                                                          Pointer.Kind.Ref,
+                                                                                                          post_state
+                                                                                                        |))
+                                                                                                        (Ty.apply
+                                                                                                          (Ty.path
+                                                                                                            "&")
+                                                                                                          []
+                                                                                                          [
+                                                                                                            Ty.associated_in_trait
+                                                                                                              "move_bytecode_verifier::absint::TransferFunctions"
+                                                                                                              []
+                                                                                                              []
+                                                                                                              Self
+                                                                                                              "State"
+                                                                                                          ])
+                                                                                                    ]
+                                                                                                  |))
+                                                                                              ])
+                                                                                            (Ty.apply
+                                                                                              (Ty.path
+                                                                                                "move_bytecode_verifier::absint::BlockInvariant")
                                                                                               []
-                                                                                              []
-                                                                                              Self
-                                                                                              "State"
-                                                                                          ]
-                                                                                          [
-                                                                                            ("pre",
-                                                                                              M.call_closure (|
+                                                                                              [
                                                                                                 Ty.associated_in_trait
                                                                                                   "move_bytecode_verifier::absint::TransferFunctions"
                                                                                                   []
                                                                                                   []
                                                                                                   Self
-                                                                                                  "State",
-                                                                                                M.get_trait_method (|
-                                                                                                  "core::clone::Clone",
-                                                                                                  Ty.associated_in_trait
-                                                                                                    "move_bytecode_verifier::absint::TransferFunctions"
-                                                                                                    []
-                                                                                                    []
-                                                                                                    Self
-                                                                                                    "State",
-                                                                                                  [],
-                                                                                                  [],
-                                                                                                  "clone",
-                                                                                                  [],
-                                                                                                  []
-                                                                                                |),
-                                                                                                [
-                                                                                                  M.borrow (|
-                                                                                                    Pointer.Kind.Ref,
-                                                                                                    post_state
-                                                                                                  |)
-                                                                                                ]
-                                                                                              |))
-                                                                                          ]
+                                                                                                  "State"
+                                                                                              ]))
+                                                                                          (Ty.apply
+                                                                                            (Ty.path
+                                                                                              "move_bytecode_verifier::absint::BlockInvariant")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.associated_in_trait
+                                                                                                "move_bytecode_verifier::absint::TransferFunctions"
+                                                                                                []
+                                                                                                []
+                                                                                                Self
+                                                                                                "State"
+                                                                                            ])
                                                                                       ]
                                                                                     |) in
                                                                                   M.alloc (|
@@ -2429,11 +2924,12 @@ Module absint.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
                 |)
               |)))
           |)))
@@ -2540,35 +3036,50 @@ Module absint.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError"
+                                ],
+                              M.get_trait_method (|
+                                "move_bytecode_verifier_meter::Meter",
+                                impl_Meter__plus___Sized,
+                                [],
+                                [],
+                                "add",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| meter |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ impl_Meter__plus___Sized ]);
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.StructTuple
+                                      "move_bytecode_verifier_meter::Scope::Function"
+                                      [])
+                                    (Ty.path "move_bytecode_verifier_meter::Scope"))
+                                  (Ty.path "move_bytecode_verifier_meter::Scope");
+                                M.value_with_ty
+                                  (M.read (|
+                                    get_constant (|
+                                      "move_bytecode_verifier::absint::EXECUTE_BLOCK_BASE_COST",
+                                      Ty.path "u128"
+                                    |)
+                                  |))
+                                  (Ty.path "u128")
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::result::Result")
                               []
-                              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                            M.get_trait_method (|
-                              "move_bytecode_verifier_meter::Meter",
-                              impl_Meter__plus___Sized,
-                              [],
-                              [],
-                              "add",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| meter |) |) |);
-                              Value.StructTuple
-                                "move_bytecode_verifier_meter::Scope::Function"
-                                []
-                                []
-                                [];
-                              M.read (|
-                                get_constant (|
-                                  "move_bytecode_verifier::absint::EXECUTE_BLOCK_BASE_COST",
-                                  Ty.path "u128"
-                                |)
-                              |)
-                            ]
-                          |)
+                              [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
                         ]
                       |)
                     |),
@@ -2636,7 +3147,17 @@ Module absint.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [
+                                          Ty.path "core::convert::Infallible";
+                                          Ty.path "move_binary_format::errors::PartialVMError"
+                                        ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -2681,7 +3202,21 @@ Module absint.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| pre_state |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| pre_state |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "move_bytecode_verifier::absint::TransferFunctions"
+                              []
+                              []
+                              Self
+                              "State"
+                          ])
+                    ]
                   |) in
                 let~ block_end : Ty.path "u16" :=
                   M.call_closure (|
@@ -2696,31 +3231,43 @@ Module absint.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.path "move_binary_format::control_flow_graph::VMControlFlowGraph"
-                              ],
-                            M.get_associated_function (|
-                              Ty.path "move_bytecode_verifier::absint::FunctionContext",
-                              "cfg",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| M.read (| function_context |) |)
-                              |)
-                            ]
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.path
+                                    "move_binary_format::control_flow_graph::VMControlFlowGraph"
+                                ],
+                              M.get_associated_function (|
+                                Ty.path "move_bytecode_verifier::absint::FunctionContext",
+                                "cfg",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| function_context |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_bytecode_verifier::absint::FunctionContext" ])
+                              ]
+                            |)
                           |)
-                        |)
-                      |);
-                      M.read (| block_id |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_binary_format::control_flow_graph::VMControlFlowGraph" ]);
+                      M.value_with_ty (M.read (| block_id |)) (Ty.path "u16")
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -2763,56 +3310,81 @@ Module absint.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "alloc::boxed::Box")
+                                      []
+                                      [
+                                        Ty.dyn
+                                          [ ("core::iter::traits::iterator::Iterator::Trait", []) ];
+                                        Ty.path "alloc::alloc::Global"
+                                      ],
+                                    M.get_trait_method (|
+                                      "move_binary_format::control_flow_graph::ControlFlowGraph",
+                                      Ty.path
+                                        "move_binary_format::control_flow_graph::VMControlFlowGraph",
+                                      [],
+                                      [],
+                                      "instr_indexes",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "move_binary_format::control_flow_graph::VMControlFlowGraph"
+                                                ],
+                                              M.get_associated_function (|
+                                                Ty.path
+                                                  "move_bytecode_verifier::absint::FunctionContext",
+                                                "cfg",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| function_context |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.path
+                                                        "move_bytecode_verifier::absint::FunctionContext"
+                                                    ])
+                                              ]
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.path
+                                              "move_binary_format::control_flow_graph::VMControlFlowGraph"
+                                          ]);
+                                      M.value_with_ty (M.read (| block_id |)) (Ty.path "u16")
+                                    ]
+                                  |))
+                                  (Ty.apply
                                     (Ty.path "alloc::boxed::Box")
                                     []
                                     [
                                       Ty.dyn
                                         [ ("core::iter::traits::iterator::Iterator::Trait", []) ];
                                       Ty.path "alloc::alloc::Global"
-                                    ],
-                                  M.get_trait_method (|
-                                    "move_binary_format::control_flow_graph::ControlFlowGraph",
-                                    Ty.path
-                                      "move_binary_format::control_flow_graph::VMControlFlowGraph",
-                                    [],
-                                    [],
-                                    "instr_indexes",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.path
-                                                "move_binary_format::control_flow_graph::VMControlFlowGraph"
-                                            ],
-                                          M.get_associated_function (|
-                                            Ty.path
-                                              "move_bytecode_verifier::absint::FunctionContext",
-                                            "cfg",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| function_context |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      |)
-                                    |);
-                                    M.read (| block_id |)
-                                  ]
-                                |)
+                                    ])
                               ]
                             |)
                           |),
@@ -2866,12 +3438,29 @@ Module absint.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "alloc::boxed::Box")
+                                                        []
+                                                        [
+                                                          Ty.dyn
+                                                            [
+                                                              ("core::iter::traits::iterator::Iterator::Trait",
+                                                                [])
+                                                            ];
+                                                          Ty.path "alloc::alloc::Global"
+                                                        ]
+                                                    ])
                                               ]
                                             |)
                                           |),
@@ -2930,44 +3519,68 @@ Module absint.
                                                             []
                                                           |),
                                                           [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.SubPointer.get_struct_record_field (|
-                                                                M.deref (|
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "&")
-                                                                      []
-                                                                      [
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  M.deref (|
+                                                                    M.call_closure (|
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "move_binary_format::file_format::CodeUnit"
+                                                                        ],
+                                                                      M.get_associated_function (|
                                                                         Ty.path
-                                                                          "move_binary_format::file_format::CodeUnit"
-                                                                      ],
-                                                                    M.get_associated_function (|
-                                                                      Ty.path
-                                                                        "move_bytecode_verifier::absint::FunctionContext",
-                                                                      "code",
-                                                                      [],
-                                                                      []
-                                                                    |),
+                                                                          "move_bytecode_verifier::absint::FunctionContext",
+                                                                        "code",
+                                                                        [],
+                                                                        []
+                                                                      |),
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (|
+                                                                                function_context
+                                                                              |)
+                                                                            |)
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "move_bytecode_verifier::absint::FunctionContext"
+                                                                            ])
+                                                                      ]
+                                                                    |)
+                                                                  |),
+                                                                  "move_binary_format::file_format::CodeUnit",
+                                                                  "code"
+                                                                |)
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "alloc::vec::Vec")
+                                                                    []
                                                                     [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.read (|
-                                                                            function_context
-                                                                          |)
-                                                                        |)
-                                                                      |)
+                                                                      Ty.path
+                                                                        "move_binary_format::file_format::Bytecode";
+                                                                      Ty.path "alloc::alloc::Global"
                                                                     ]
-                                                                  |)
-                                                                |),
-                                                                "move_binary_format::file_format::CodeUnit",
-                                                                "code"
-                                                              |)
-                                                            |);
-                                                            M.cast
+                                                                ]);
+                                                            M.value_with_ty
+                                                              (M.cast
+                                                                (Ty.path "usize")
+                                                                (M.read (| offset |)))
                                                               (Ty.path "usize")
-                                                              (M.read (| offset |))
                                                           ]
                                                         |)
                                                       |)
@@ -3026,50 +3639,99 @@ Module absint.
                                                             []
                                                           |),
                                                           [
-                                                            M.call_closure (|
-                                                              Ty.apply
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path "core::result::Result")
+                                                                  []
+                                                                  [
+                                                                    Ty.tuple [];
+                                                                    Ty.path
+                                                                      "move_binary_format::errors::PartialVMError"
+                                                                  ],
+                                                                M.get_trait_method (|
+                                                                  "move_bytecode_verifier::absint::TransferFunctions",
+                                                                  Self,
+                                                                  [],
+                                                                  [],
+                                                                  "execute",
+                                                                  [],
+                                                                  [ impl_Meter__plus___Sized ]
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      M.deref (|
+                                                                        M.read (| self |)
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [ Self ]);
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      M.deref (|
+                                                                        M.borrow (|
+                                                                          Pointer.Kind.MutRef,
+                                                                          state_acc
+                                                                        |)
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [
+                                                                        Ty.associated_in_trait
+                                                                          "move_bytecode_verifier::absint::TransferFunctions"
+                                                                          []
+                                                                          []
+                                                                          Self
+                                                                          "State"
+                                                                      ]);
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        M.read (| instr |)
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "move_binary_format::file_format::Bytecode"
+                                                                      ]);
+                                                                  M.value_with_ty
+                                                                    (M.read (| offset |))
+                                                                    (Ty.path "u16");
+                                                                  M.value_with_ty
+                                                                    (M.read (| block_end |))
+                                                                    (Ty.path "u16");
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      M.deref (|
+                                                                        M.read (| meter |)
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [ impl_Meter__plus___Sized ])
+                                                                ]
+                                                              |))
+                                                              (Ty.apply
                                                                 (Ty.path "core::result::Result")
                                                                 []
                                                                 [
                                                                   Ty.tuple [];
                                                                   Ty.path
                                                                     "move_binary_format::errors::PartialVMError"
-                                                                ],
-                                                              M.get_trait_method (|
-                                                                "move_bytecode_verifier::absint::TransferFunctions",
-                                                                Self,
-                                                                [],
-                                                                [],
-                                                                "execute",
-                                                                [],
-                                                                [ impl_Meter__plus___Sized ]
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  M.deref (| M.read (| self |) |)
-                                                                |);
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  M.deref (|
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.MutRef,
-                                                                      state_acc
-                                                                    |)
-                                                                  |)
-                                                                |);
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| M.read (| instr |) |)
-                                                                |);
-                                                                M.read (| offset |);
-                                                                M.read (| block_end |);
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  M.deref (| M.read (| meter |) |)
-                                                                |)
-                                                              ]
-                                                            |)
+                                                                ])
                                                           ]
                                                         |)
                                                       |),
@@ -3146,7 +3808,20 @@ Module absint.
                                                                       [],
                                                                       []
                                                                     |),
-                                                                    [ M.read (| residual |) ]
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.read (| residual |))
+                                                                        (Ty.apply
+                                                                          (Ty.path
+                                                                            "core::result::Result")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "core::convert::Infallible";
+                                                                            Ty.path
+                                                                              "move_binary_format::errors::PartialVMError"
+                                                                          ])
+                                                                    ]
                                                                   |)
                                                                 |)
                                                               |)
@@ -3188,19 +3863,20 @@ Module absint.
                         "State";
                       Ty.path "move_binary_format::errors::PartialVMError"
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "move_bytecode_verifier::absint::TransferFunctions"
-                        []
-                        []
-                        Self
-                        "State";
-                      Ty.path "move_binary_format::errors::PartialVMError"
-                    ]
-                    [ M.read (| state_acc |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ M.read (| state_acc |) ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.associated_in_trait
+                          "move_bytecode_verifier::absint::TransferFunctions"
+                          []
+                          []
+                          Self
+                          "State";
+                        Ty.path "move_binary_format::errors::PartialVMError"
+                      ])
                 |)
               |)))
           |)))
@@ -3265,208 +3941,266 @@ Module absint.
                 [ Ty.path "move_binary_format::file_format::FunctionHandle" ],
               function_handle
             |) in
-          Value.mkStructRecord
-            "move_bytecode_verifier::absint::FunctionContext"
-            []
-            []
-            [
-              ("index",
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.path "move_binary_format::file_format::FunctionDefinitionIndex" ]
-                  [ M.read (| index |) ]);
-              ("code", M.read (| code |));
-              ("parameters",
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.path "move_binary_format::file_format::Signature" ],
-                      M.get_associated_function (|
-                        Ty.path "move_binary_format::file_format::CompiledModule",
-                        "signature_at",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |);
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| function_handle |) |),
-                            "move_binary_format::file_format::FunctionHandle",
-                            "parameters"
-                          |)
-                        |)
-                      ]
-                    |)
-                  |)
-                |));
-              ("return_",
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.path "move_binary_format::file_format::Signature" ],
-                      M.get_associated_function (|
-                        Ty.path "move_binary_format::file_format::CompiledModule",
-                        "signature_at",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |);
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| function_handle |) |),
-                            "move_binary_format::file_format::FunctionHandle",
-                            "return_"
-                          |)
-                        |)
-                      ]
-                    |)
-                  |)
-                |));
-              ("locals",
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.path "move_binary_format::file_format::Signature" ],
-                      M.get_associated_function (|
-                        Ty.path "move_binary_format::file_format::CompiledModule",
-                        "signature_at",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |);
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| code |) |),
-                            "move_binary_format::file_format::CodeUnit",
-                            "locals"
-                          |)
-                        |)
-                      ]
-                    |)
-                  |)
-                |));
-              ("type_parameters",
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "slice")
-                            []
-                            [ Ty.path "move_binary_format::file_format::AbilitySet" ]
-                        ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "move_bytecode_verifier::absint::FunctionContext"
+              [
+                ("index",
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| index |) ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "move_binary_format::file_format::FunctionDefinitionIndex" ]));
+                ("code", M.read (| code |));
+                ("parameters",
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
                         Ty.apply
-                          (Ty.path "alloc::vec::Vec")
+                          (Ty.path "&")
                           []
-                          [
-                            Ty.path "move_binary_format::file_format::AbilitySet";
-                            Ty.path "alloc::alloc::Global"
-                          ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
+                          [ Ty.path "move_binary_format::file_format::Signature" ],
+                        M.get_associated_function (|
+                          Ty.path "move_binary_format::file_format::CompiledModule",
+                          "signature_at",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "move_binary_format::file_format::CompiledModule" ]);
+                          M.value_with_ty
+                            (M.read (|
                               M.SubPointer.get_struct_record_field (|
                                 M.deref (| M.read (| function_handle |) |),
                                 "move_binary_format::file_format::FunctionHandle",
-                                "type_parameters"
+                                "parameters"
                               |)
-                            |)
-                          |)
-                        |)
-                      ]
+                            |))
+                            (Ty.path "move_binary_format::file_format::SignatureIndex")
+                        ]
+                      |)
                     |)
-                  |)
-                |));
-              ("cfg",
-                M.call_closure (|
-                  Ty.path "move_binary_format::control_flow_graph::VMControlFlowGraph",
-                  M.get_associated_function (|
-                    Ty.path "move_binary_format::control_flow_graph::VMControlFlowGraph",
-                    "new",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
+                  |));
+                ("return_",
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_binary_format::file_format::Signature" ],
+                        M.get_associated_function (|
+                          Ty.path "move_binary_format::file_format::CompiledModule",
+                          "signature_at",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "move_binary_format::file_format::CompiledModule" ]);
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| function_handle |) |),
+                                "move_binary_format::file_format::FunctionHandle",
+                                "return_"
+                              |)
+                            |))
+                            (Ty.path "move_binary_format::file_format::SignatureIndex")
+                        ]
+                      |)
+                    |)
+                  |));
+                ("locals",
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "move_binary_format::file_format::Signature" ],
+                        M.get_associated_function (|
+                          Ty.path "move_binary_format::file_format::CompiledModule",
+                          "signature_at",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| module |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "move_binary_format::file_format::CompiledModule" ]);
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| code |) |),
+                                "move_binary_format::file_format::CodeUnit",
+                                "locals"
+                              |)
+                            |))
+                            (Ty.path "move_binary_format::file_format::SignatureIndex")
+                        ]
+                      |)
+                    |)
+                  |));
+                ("type_parameters",
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [ Ty.path "move_binary_format::file_format::AbilitySet" ]
+                          ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
                           Ty.apply
-                            (Ty.path "&")
+                            (Ty.path "alloc::vec::Vec")
                             []
                             [
-                              Ty.apply
-                                (Ty.path "slice")
-                                []
-                                [ Ty.path "move_binary_format::file_format::Bytecode" ]
+                              Ty.path "move_binary_format::file_format::AbilitySet";
+                              Ty.path "alloc::alloc::Global"
                             ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::vec::Vec")
-                              []
-                              [
-                                Ty.path "move_binary_format::file_format::Bytecode";
-                                Ty.path "alloc::alloc::Global"
-                              ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
+                          [],
+                          [],
+                          "deref",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
                               Pointer.Kind.Ref,
                               M.deref (|
                                 M.borrow (|
                                   Pointer.Kind.Ref,
                                   M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| code |) |),
-                                    "move_binary_format::file_format::CodeUnit",
-                                    "code"
+                                    M.deref (| M.read (| function_handle |) |),
+                                    "move_binary_format::file_format::FunctionHandle",
+                                    "type_parameters"
                                   |)
                                 |)
                               |)
-                            |)
-                          ]
-                        |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
+                                  []
+                                  [
+                                    Ty.path "move_binary_format::file_format::AbilitySet";
+                                    Ty.path "alloc::alloc::Global"
+                                  ]
+                              ])
+                        ]
                       |)
                     |)
-                  ]
-                |))
-            ]))
+                  |));
+                ("cfg",
+                  M.call_closure (|
+                    Ty.path "move_binary_format::control_flow_graph::VMControlFlowGraph",
+                    M.get_associated_function (|
+                      Ty.path "move_binary_format::control_flow_graph::VMControlFlowGraph",
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.path "move_binary_format::file_format::Bytecode" ]
+                                ],
+                              M.get_trait_method (|
+                                "core::ops::deref::Deref",
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
+                                  []
+                                  [
+                                    Ty.path "move_binary_format::file_format::Bytecode";
+                                    Ty.path "alloc::alloc::Global"
+                                  ],
+                                [],
+                                [],
+                                "deref",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| code |) |),
+                                          "move_binary_format::file_format::CodeUnit",
+                                          "code"
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::vec::Vec")
+                                        []
+                                        [
+                                          Ty.path "move_binary_format::file_format::Bytecode";
+                                          Ty.path "alloc::alloc::Global"
+                                        ]
+                                    ])
+                              ]
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [ Ty.path "move_binary_format::file_format::Bytecode" ]
+                          ])
+                    ]
+                  |))
+              ])
+            (Ty.path "move_bytecode_verifier::absint::FunctionContext")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     

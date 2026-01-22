@@ -82,12 +82,16 @@ Module gas.
                             []
                           |),
                           [
-                            M.read (| spec_id |);
-                            Value.StructTuple
-                              "revm_specification::hardfork::SpecId::ISTANBUL"
-                              []
-                              []
-                              []
+                            M.value_with_ty
+                              (M.read (| spec_id |))
+                              (Ty.path "revm_specification::hardfork::SpecId");
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_specification::hardfork::SpecId::ISTANBUL"
+                                  [])
+                                (Ty.path "revm_specification::hardfork::SpecId"))
+                              (Ty.path "revm_specification::hardfork::SpecId")
                           ]
                         |)
                       |)) in
@@ -113,12 +117,16 @@ Module gas.
                                         []
                                       |),
                                       [
-                                        M.read (| spec_id |);
-                                        Value.StructTuple
-                                          "revm_specification::hardfork::SpecId::LONDON"
-                                          []
-                                          []
-                                          []
+                                        M.value_with_ty
+                                          (M.read (| spec_id |))
+                                          (Ty.path "revm_specification::hardfork::SpecId");
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple
+                                              "revm_specification::hardfork::SpecId::LONDON"
+                                              [])
+                                            (Ty.path "revm_specification::hardfork::SpecId"))
+                                          (Ty.path "revm_specification::hardfork::SpecId")
                                       ]
                                     |)
                                   |)) in
@@ -187,10 +195,16 @@ Module gas.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| vals |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| vals |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "revm_context_interface::host::SStoreResult"
+                                            ])
                                       ]
                                     |)
                                   |)) in
@@ -220,10 +234,18 @@ Module gas.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| vals |) |)
-                                                  |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| vals |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.path
+                                                          "revm_context_interface::host::SStoreResult"
+                                                      ])
                                                 ]
                                               |),
                                               ltac:(M.monadic
@@ -237,10 +259,18 @@ Module gas.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| vals |) |)
-                                                    |)
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| vals |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "revm_context_interface::host::SStoreResult"
+                                                        ])
                                                   ]
                                                 |)))
                                             |)
@@ -281,10 +311,18 @@ Module gas.
                                                                 []
                                                               |),
                                                               [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| M.read (| vals |) |)
-                                                                |)
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (| M.read (| vals |) |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "revm_context_interface::host::SStoreResult"
+                                                                    ])
                                                               ]
                                                             |)
                                                           ]
@@ -315,12 +353,20 @@ Module gas.
                                                                     []
                                                                   |),
                                                                   [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.deref (|
-                                                                        M.read (| vals |)
-                                                                      |)
-                                                                    |)
+                                                                    M.value_with_ty
+                                                                      (M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          M.read (| vals |)
+                                                                        |)
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "revm_context_interface::host::SStoreResult"
+                                                                        ])
                                                                   ]
                                                                 |)
                                                               |)) in
@@ -375,12 +421,20 @@ Module gas.
                                                                             []
                                                                           |),
                                                                           [
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.deref (|
-                                                                                M.read (| vals |)
-                                                                              |)
-                                                                            |)
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.deref (|
+                                                                                  M.read (| vals |)
+                                                                                |)
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "revm_context_interface::host::SStoreResult"
+                                                                                ])
                                                                           ]
                                                                         |)
                                                                       |)) in
@@ -440,10 +494,18 @@ Module gas.
                                                             []
                                                           |),
                                                           [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (| M.read (| vals |) |)
-                                                            |)
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (| M.read (| vals |) |)
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "revm_context_interface::host::SStoreResult"
+                                                                ])
                                                           ]
                                                         |)
                                                       |)) in
@@ -476,12 +538,19 @@ Module gas.
                                                                         []
                                                                       |),
                                                                       [
-                                                                        M.read (| spec_id |);
-                                                                        Value.StructTuple
-                                                                          "revm_specification::hardfork::SpecId::BERLIN"
-                                                                          []
-                                                                          []
-                                                                          []
+                                                                        M.value_with_ty
+                                                                          (M.read (| spec_id |))
+                                                                          (Ty.path
+                                                                            "revm_specification::hardfork::SpecId");
+                                                                        M.value_with_ty
+                                                                          (M.value_with_ty
+                                                                            (Value.StructTuple
+                                                                              "revm_specification::hardfork::SpecId::BERLIN"
+                                                                              [])
+                                                                            (Ty.path
+                                                                              "revm_specification::hardfork::SpecId"))
+                                                                          (Ty.path
+                                                                            "revm_specification::hardfork::SpecId")
                                                                       ]
                                                                     |)
                                                                   |)) in
@@ -535,8 +604,13 @@ Module gas.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.read (| spec_id |);
-                                                                      Value.Bool false
+                                                                      M.value_with_ty
+                                                                        (M.read (| spec_id |))
+                                                                        (Ty.path
+                                                                          "revm_specification::hardfork::SpecId");
+                                                                      M.value_with_ty
+                                                                        (Value.Bool false)
+                                                                        (Ty.path "bool")
                                                                     ]
                                                                   |)
                                                                 ]))
@@ -583,12 +657,20 @@ Module gas.
                                                                             []
                                                                           |),
                                                                           [
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.deref (|
-                                                                                M.read (| vals |)
-                                                                              |)
-                                                                            |)
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.deref (|
+                                                                                  M.read (| vals |)
+                                                                                |)
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "revm_context_interface::host::SStoreResult"
+                                                                                ])
                                                                           ]
                                                                         |)
                                                                       |)) in
@@ -707,10 +789,16 @@ Module gas.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| vals |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| vals |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "revm_context_interface::host::SStoreResult"
+                                              ])
                                         ]
                                       |)
                                     ]
@@ -725,10 +813,16 @@ Module gas.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| vals |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| vals |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "revm_context_interface::host::SStoreResult"
+                                            ])
                                       ]
                                     |)))
                                 |)
@@ -770,54 +864,58 @@ Module gas.
                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
                 M.get_associated_function (| Ty.path "u64", "checked_add", [], [] |),
                 [
-                  M.read (|
-                    get_constant (| "revm_interpreter::gas::constants::CREATE", Ty.path "u64" |)
-                  |);
-                  M.match_operator (|
-                    Ty.path "u64",
-                    M.alloc (|
-                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                      M.call_closure (|
+                  M.value_with_ty
+                    (M.read (|
+                      get_constant (| "revm_interpreter::gas::constants::CREATE", Ty.path "u64" |)
+                    |))
+                    (Ty.path "u64");
+                  M.value_with_ty
+                    (M.match_operator (|
+                      Ty.path "u64",
+                      M.alloc (|
                         Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                        M.get_function (| "revm_interpreter::gas::calc::cost_per_word", [], [] |),
-                        [
-                          M.read (| len |);
-                          M.read (|
-                            get_constant (|
-                              "revm_interpreter::gas::constants::KECCAK256WORD",
-                              Ty.path "u64"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |),
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::option::Option::Some",
-                              0
-                            |) in
-                          let v := M.copy (| Ty.path "u64", γ0_0 |) in
-                          M.read (| v |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-                          M.never_to_any (|
-                            M.read (|
-                              M.return_ (|
-                                Value.StructTuple
-                                  "core::option::Option::None"
-                                  []
-                                  [ Ty.path "u64" ]
-                                  []
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                          M.get_function (| "revm_interpreter::gas::calc::cost_per_word", [], [] |),
+                          [
+                            M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                            M.value_with_ty
+                              (M.read (|
+                                get_constant (|
+                                  "revm_interpreter::gas::constants::KECCAK256WORD",
+                                  Ty.path "u64"
+                                |)
+                              |))
+                              (Ty.path "u64")
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::option::Option::Some",
+                                0
+                              |) in
+                            let v := M.copy (| Ty.path "u64", γ0_0 |) in
+                            M.read (| v |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  M.value_with_ty
+                                    (Value.StructTuple "core::option::Option::None" [])
+                                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ])
+                                |)
                               |)
-                            |)
-                          |)))
-                    ]
-                  |)
+                            |)))
+                      ]
+                    |))
+                    (Ty.path "u64")
                 ]
               |)))
           |)))
@@ -914,7 +1012,22 @@ Module gas.
                                                       [],
                                                       []
                                                     |),
-                                                    [ M.borrow (| Pointer.Kind.Ref, value |) ]
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (| Pointer.Kind.Ref, value |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "ruint::Uint")
+                                                              [
+                                                                Value.Integer IntegerKind.Usize 256;
+                                                                Value.Integer IntegerKind.Usize 4
+                                                              ]
+                                                              []
+                                                          ])
+                                                    ]
                                                   |)
                                                 |),
                                                 M.read (| i |)
@@ -965,38 +1078,67 @@ Module gas.
                                                   []
                                                 |),
                                                 [
-                                                  M.read (|
-                                                    M.SubPointer.get_array_field (|
-                                                      M.deref (|
-                                                        M.call_closure (|
-                                                          Ty.apply
-                                                            (Ty.path "&")
-                                                            []
-                                                            [
-                                                              Ty.apply
-                                                                (Ty.path "array")
-                                                                [ Value.Integer IntegerKind.Usize 4
-                                                                ]
-                                                                [ Ty.path "u64" ]
-                                                            ],
-                                                          M.get_associated_function (|
+                                                  M.value_with_ty
+                                                    (M.read (|
+                                                      M.SubPointer.get_array_field (|
+                                                        M.deref (|
+                                                          M.call_closure (|
                                                             Ty.apply
-                                                              (Ty.path "ruint::Uint")
+                                                              (Ty.path "&")
+                                                              []
                                                               [
-                                                                Value.Integer IntegerKind.Usize 256;
-                                                                Value.Integer IntegerKind.Usize 4
-                                                              ]
+                                                                Ty.apply
+                                                                  (Ty.path "array")
+                                                                  [
+                                                                    Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      4
+                                                                  ]
+                                                                  [ Ty.path "u64" ]
+                                                              ],
+                                                            M.get_associated_function (|
+                                                              Ty.apply
+                                                                (Ty.path "ruint::Uint")
+                                                                [
+                                                                  Value.Integer
+                                                                    IntegerKind.Usize
+                                                                    256;
+                                                                  Value.Integer IntegerKind.Usize 4
+                                                                ]
+                                                                [],
+                                                              "as_limbs",
                                                               [],
-                                                            "as_limbs",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [ M.borrow (| Pointer.Kind.Ref, value |) ]
-                                                        |)
-                                                      |),
-                                                      M.read (| i |)
-                                                    |)
-                                                  |)
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  value
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "ruint::Uint")
+                                                                      [
+                                                                        Value.Integer
+                                                                          IntegerKind.Usize
+                                                                          256;
+                                                                        Value.Integer
+                                                                          IntegerKind.Usize
+                                                                          4
+                                                                      ]
+                                                                      []
+                                                                  ])
+                                                            ]
+                                                          |)
+                                                        |),
+                                                        M.read (| i |)
+                                                      |)
+                                                    |))
+                                                    (Ty.path "u64")
                                                 ]
                                               |))
                                           ]
@@ -1160,22 +1302,37 @@ Module gas.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, power |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, power |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ])
+                              ]
                             |)
                           |)) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.path "u64" ]
-                        [
-                          M.read (|
-                            get_constant (|
-                              "revm_interpreter::gas::constants::EXP",
-                              Ty.path "u64"
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [
+                            M.read (|
+                              get_constant (|
+                                "revm_interpreter::gas::constants::EXP",
+                                Ty.path "u64"
+                              |)
                             |)
-                          |)
-                        ]));
+                          ])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ])));
                   fun γ =>
                     ltac:(M.monadic
                       (M.read (|
@@ -1208,43 +1365,51 @@ Module gas.
                               [ Ty.path "i32" ]
                             |),
                             [
-                              M.match_operator (|
-                                Ty.path "i32",
-                                M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let γ :=
-                                        M.use
-                                          (M.alloc (|
-                                            Ty.path "bool",
-                                            M.call_closure (|
+                              M.value_with_ty
+                                (M.match_operator (|
+                                  Ty.path "i32",
+                                  M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ :=
+                                          M.use
+                                            (M.alloc (|
                                               Ty.path "bool",
-                                              M.get_associated_function (|
-                                                Ty.path "revm_specification::hardfork::SpecId",
-                                                "is_enabled_in",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.read (| spec_id |);
-                                                Value.StructTuple
-                                                  "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON"
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                M.get_associated_function (|
+                                                  Ty.path "revm_specification::hardfork::SpecId",
+                                                  "is_enabled_in",
+                                                  [],
                                                   []
-                                                  []
-                                                  []
-                                              ]
-                                            |)
-                                          |)) in
-                                      let _ :=
-                                        is_constant_or_break_match (|
-                                          M.read (| γ |),
-                                          Value.Bool true
-                                        |) in
-                                      Value.Integer IntegerKind.I32 50));
-                                  fun γ => ltac:(M.monadic (Value.Integer IntegerKind.I32 10))
-                                ]
-                              |)
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| spec_id |))
+                                                    (Ty.path
+                                                      "revm_specification::hardfork::SpecId");
+                                                  M.value_with_ty
+                                                    (M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON"
+                                                        [])
+                                                      (Ty.path
+                                                        "revm_specification::hardfork::SpecId"))
+                                                    (Ty.path "revm_specification::hardfork::SpecId")
+                                                ]
+                                              |)
+                                            |)) in
+                                        let _ :=
+                                          is_constant_or_break_match (|
+                                            M.read (| γ |),
+                                            Value.Bool true
+                                          |) in
+                                        Value.Integer IntegerKind.I32 50));
+                                    fun γ => ltac:(M.monadic (Value.Integer IntegerKind.I32 10))
+                                  ]
+                                |))
+                                (Ty.path "i32")
                             ]
                           |) in
                         let~ gas :
@@ -1318,8 +1483,356 @@ Module gas.
                                   []
                                 |),
                                 [
-                                  M.call_closure (|
-                                    Ty.apply
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [
+                                              Value.Integer IntegerKind.Usize 256;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ]
+                                            []
+                                        ],
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          [],
+                                        "checked_add",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              [],
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "ruint::Uint")
+                                                [
+                                                  Value.Integer IntegerKind.Usize 256;
+                                                  Value.Integer IntegerKind.Usize 4
+                                                ]
+                                                [],
+                                              "from",
+                                              [],
+                                              [ Ty.path "u64" ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.read (|
+                                                  get_constant (|
+                                                    "revm_interpreter::gas::constants::EXP",
+                                                    Ty.path "u64"
+                                                  |)
+                                                |))
+                                                (Ty.path "u64")
+                                            ]
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [
+                                              Value.Integer IntegerKind.Usize 256;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ]
+                                            []);
+                                        M.value_with_ty
+                                          (M.match_operator (|
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              [],
+                                            M.alloc (|
+                                              Ty.apply
+                                                (Ty.path "core::ops::control_flow::ControlFlow")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [ Ty.path "core::convert::Infallible" ];
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 256;
+                                                      Value.Integer IntegerKind.Usize 4
+                                                    ]
+                                                    []
+                                                ],
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::ops::control_flow::ControlFlow")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::option::Option")
+                                                      []
+                                                      [ Ty.path "core::convert::Infallible" ];
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [
+                                                        Value.Integer IntegerKind.Usize 256;
+                                                        Value.Integer IntegerKind.Usize 4
+                                                      ]
+                                                      []
+                                                  ],
+                                                M.get_trait_method (|
+                                                  "core::ops::try_trait::Try",
+                                                  Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [
+                                                          Value.Integer IntegerKind.Usize 256;
+                                                          Value.Integer IntegerKind.Usize 4
+                                                        ]
+                                                        []
+                                                    ],
+                                                  [],
+                                                  [],
+                                                  "branch",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "core::option::Option")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [
+                                                              Value.Integer IntegerKind.Usize 256;
+                                                              Value.Integer IntegerKind.Usize 4
+                                                            ]
+                                                            []
+                                                        ],
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path "ruint::Uint")
+                                                          [
+                                                            Value.Integer IntegerKind.Usize 256;
+                                                            Value.Integer IntegerKind.Usize 4
+                                                          ]
+                                                          [],
+                                                        "checked_mul",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| gas_byte |))
+                                                          (Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [
+                                                              Value.Integer IntegerKind.Usize 256;
+                                                              Value.Integer IntegerKind.Usize 4
+                                                            ]
+                                                            []);
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "ruint::Uint")
+                                                              [
+                                                                Value.Integer IntegerKind.Usize 256;
+                                                                Value.Integer IntegerKind.Usize 4
+                                                              ]
+                                                              [],
+                                                            M.get_associated_function (|
+                                                              Ty.apply
+                                                                (Ty.path "ruint::Uint")
+                                                                [
+                                                                  Value.Integer
+                                                                    IntegerKind.Usize
+                                                                    256;
+                                                                  Value.Integer IntegerKind.Usize 4
+                                                                ]
+                                                                [],
+                                                              "from",
+                                                              [],
+                                                              [ Ty.path "u64" ]
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.call_closure (|
+                                                                  Ty.path "u64",
+                                                                  BinOp.Wrap.add,
+                                                                  [
+                                                                    M.call_closure (|
+                                                                      Ty.path "u64",
+                                                                      BinOp.Wrap.div,
+                                                                      [
+                                                                        M.call_closure (|
+                                                                          Ty.path "u64",
+                                                                          M.get_function (|
+                                                                            "revm_interpreter::gas::calc::log2floor",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.read (| power |))
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "ruint::Uint")
+                                                                                [
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    256;
+                                                                                  Value.Integer
+                                                                                    IntegerKind.Usize
+                                                                                    4
+                                                                                ]
+                                                                                [])
+                                                                          ]
+                                                                        |);
+                                                                        Value.Integer
+                                                                          IntegerKind.U64
+                                                                          8
+                                                                      ]
+                                                                    |);
+                                                                    Value.Integer IntegerKind.U64 1
+                                                                  ]
+                                                                |))
+                                                                (Ty.path "u64")
+                                                            ]
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [
+                                                              Value.Integer IntegerKind.Usize 256;
+                                                              Value.Integer IntegerKind.Usize 4
+                                                            ]
+                                                            [])
+                                                      ]
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::option::Option")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "ruint::Uint")
+                                                          [
+                                                            Value.Integer IntegerKind.Usize 256;
+                                                            Value.Integer IntegerKind.Usize 4
+                                                          ]
+                                                          []
+                                                      ])
+                                                ]
+                                              |)
+                                            |),
+                                            [
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (let γ0_0 :=
+                                                    M.SubPointer.get_struct_tuple_field (|
+                                                      γ,
+                                                      "core::ops::control_flow::ControlFlow::Break",
+                                                      0
+                                                    |) in
+                                                  let residual :=
+                                                    M.copy (|
+                                                      Ty.apply
+                                                        (Ty.path "core::option::Option")
+                                                        []
+                                                        [ Ty.path "core::convert::Infallible" ],
+                                                      γ0_0
+                                                    |) in
+                                                  M.never_to_any (|
+                                                    M.read (|
+                                                      M.return_ (|
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "core::option::Option")
+                                                            []
+                                                            [ Ty.path "u64" ],
+                                                          M.get_trait_method (|
+                                                            "core::ops::try_trait::FromResidual",
+                                                            Ty.apply
+                                                              (Ty.path "core::option::Option")
+                                                              []
+                                                              [ Ty.path "u64" ],
+                                                            [],
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "core::option::Option")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "core::convert::Infallible"
+                                                                ]
+                                                            ],
+                                                            "from_residual",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| residual |))
+                                                              (Ty.apply
+                                                                (Ty.path "core::option::Option")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "core::convert::Infallible"
+                                                                ])
+                                                          ]
+                                                        |)
+                                                      |)
+                                                    |)
+                                                  |)));
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (let γ0_0 :=
+                                                    M.SubPointer.get_struct_tuple_field (|
+                                                      γ,
+                                                      "core::ops::control_flow::ControlFlow::Continue",
+                                                      0
+                                                    |) in
+                                                  let val :=
+                                                    M.copy (|
+                                                      Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [
+                                                          Value.Integer IntegerKind.Usize 256;
+                                                          Value.Integer IntegerKind.Usize 4
+                                                        ]
+                                                        [],
+                                                      γ0_0
+                                                    |) in
+                                                  M.read (| val |)))
+                                            ]
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [
+                                              Value.Integer IntegerKind.Usize 256;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ]
+                                            [])
+                                      ]
+                                    |))
+                                    (Ty.apply
                                       (Ty.path "core::option::Option")
                                       []
                                       [
@@ -1330,261 +1843,7 @@ Module gas.
                                             Value.Integer IntegerKind.Usize 4
                                           ]
                                           []
-                                      ],
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "ruint::Uint")
-                                        [
-                                          Value.Integer IntegerKind.Usize 256;
-                                          Value.Integer IntegerKind.Usize 4
-                                        ]
-                                        [],
-                                      "checked_add",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "ruint::Uint")
-                                          [
-                                            Value.Integer IntegerKind.Usize 256;
-                                            Value.Integer IntegerKind.Usize 4
-                                          ]
-                                          [],
-                                        M.get_associated_function (|
-                                          Ty.apply
-                                            (Ty.path "ruint::Uint")
-                                            [
-                                              Value.Integer IntegerKind.Usize 256;
-                                              Value.Integer IntegerKind.Usize 4
-                                            ]
-                                            [],
-                                          "from",
-                                          [],
-                                          [ Ty.path "u64" ]
-                                        |),
-                                        [
-                                          M.read (|
-                                            get_constant (|
-                                              "revm_interpreter::gas::constants::EXP",
-                                              Ty.path "u64"
-                                            |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.match_operator (|
-                                        Ty.apply
-                                          (Ty.path "ruint::Uint")
-                                          [
-                                            Value.Integer IntegerKind.Usize 256;
-                                            Value.Integer IntegerKind.Usize 4
-                                          ]
-                                          [],
-                                        M.alloc (|
-                                          Ty.apply
-                                            (Ty.path "core::ops::control_flow::ControlFlow")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "core::option::Option")
-                                                []
-                                                [ Ty.path "core::convert::Infallible" ];
-                                              Ty.apply
-                                                (Ty.path "ruint::Uint")
-                                                [
-                                                  Value.Integer IntegerKind.Usize 256;
-                                                  Value.Integer IntegerKind.Usize 4
-                                                ]
-                                                []
-                                            ],
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "core::ops::control_flow::ControlFlow")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::option::Option")
-                                                  []
-                                                  [ Ty.path "core::convert::Infallible" ];
-                                                Ty.apply
-                                                  (Ty.path "ruint::Uint")
-                                                  [
-                                                    Value.Integer IntegerKind.Usize 256;
-                                                    Value.Integer IntegerKind.Usize 4
-                                                  ]
-                                                  []
-                                              ],
-                                            M.get_trait_method (|
-                                              "core::ops::try_trait::Try",
-                                              Ty.apply
-                                                (Ty.path "core::option::Option")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "ruint::Uint")
-                                                    [
-                                                      Value.Integer IntegerKind.Usize 256;
-                                                      Value.Integer IntegerKind.Usize 4
-                                                    ]
-                                                    []
-                                                ],
-                                              [],
-                                              [],
-                                              "branch",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::option::Option")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "ruint::Uint")
-                                                      [
-                                                        Value.Integer IntegerKind.Usize 256;
-                                                        Value.Integer IntegerKind.Usize 4
-                                                      ]
-                                                      []
-                                                  ],
-                                                M.get_associated_function (|
-                                                  Ty.apply
-                                                    (Ty.path "ruint::Uint")
-                                                    [
-                                                      Value.Integer IntegerKind.Usize 256;
-                                                      Value.Integer IntegerKind.Usize 4
-                                                    ]
-                                                    [],
-                                                  "checked_mul",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.read (| gas_byte |);
-                                                  M.call_closure (|
-                                                    Ty.apply
-                                                      (Ty.path "ruint::Uint")
-                                                      [
-                                                        Value.Integer IntegerKind.Usize 256;
-                                                        Value.Integer IntegerKind.Usize 4
-                                                      ]
-                                                      [],
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path "ruint::Uint")
-                                                        [
-                                                          Value.Integer IntegerKind.Usize 256;
-                                                          Value.Integer IntegerKind.Usize 4
-                                                        ]
-                                                        [],
-                                                      "from",
-                                                      [],
-                                                      [ Ty.path "u64" ]
-                                                    |),
-                                                    [
-                                                      M.call_closure (|
-                                                        Ty.path "u64",
-                                                        BinOp.Wrap.add,
-                                                        [
-                                                          M.call_closure (|
-                                                            Ty.path "u64",
-                                                            BinOp.Wrap.div,
-                                                            [
-                                                              M.call_closure (|
-                                                                Ty.path "u64",
-                                                                M.get_function (|
-                                                                  "revm_interpreter::gas::calc::log2floor",
-                                                                  [],
-                                                                  []
-                                                                |),
-                                                                [ M.read (| power |) ]
-                                                              |);
-                                                              Value.Integer IntegerKind.U64 8
-                                                            ]
-                                                          |);
-                                                          Value.Integer IntegerKind.U64 1
-                                                        ]
-                                                      |)
-                                                    ]
-                                                  |)
-                                                ]
-                                              |)
-                                            ]
-                                          |)
-                                        |),
-                                        [
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (let γ0_0 :=
-                                                M.SubPointer.get_struct_tuple_field (|
-                                                  γ,
-                                                  "core::ops::control_flow::ControlFlow::Break",
-                                                  0
-                                                |) in
-                                              let residual :=
-                                                M.copy (|
-                                                  Ty.apply
-                                                    (Ty.path "core::option::Option")
-                                                    []
-                                                    [ Ty.path "core::convert::Infallible" ],
-                                                  γ0_0
-                                                |) in
-                                              M.never_to_any (|
-                                                M.read (|
-                                                  M.return_ (|
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "core::option::Option")
-                                                        []
-                                                        [ Ty.path "u64" ],
-                                                      M.get_trait_method (|
-                                                        "core::ops::try_trait::FromResidual",
-                                                        Ty.apply
-                                                          (Ty.path "core::option::Option")
-                                                          []
-                                                          [ Ty.path "u64" ],
-                                                        [],
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "core::option::Option")
-                                                            []
-                                                            [ Ty.path "core::convert::Infallible" ]
-                                                        ],
-                                                        "from_residual",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [ M.read (| residual |) ]
-                                                    |)
-                                                  |)
-                                                |)
-                                              |)));
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (let γ0_0 :=
-                                                M.SubPointer.get_struct_tuple_field (|
-                                                  γ,
-                                                  "core::ops::control_flow::ControlFlow::Continue",
-                                                  0
-                                                |) in
-                                              let val :=
-                                                M.copy (|
-                                                  Ty.apply
-                                                    (Ty.path "ruint::Uint")
-                                                    [
-                                                      Value.Integer IntegerKind.Usize 256;
-                                                      Value.Integer IntegerKind.Usize 4
-                                                    ]
-                                                    [],
-                                                  γ0_0
-                                                |) in
-                                              M.read (| val |)))
-                                        ]
-                                      |)
-                                    ]
-                                  |)
+                                      ])
                                 ]
                               |)
                             |),
@@ -1630,7 +1889,14 @@ Module gas.
                                             [],
                                             []
                                           |),
-                                          [ M.read (| residual |) ]
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| residual |))
+                                              (Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "core::convert::Infallible" ])
+                                          ]
                                         |)
                                       |)
                                     |)
@@ -1677,8 +1943,48 @@ Module gas.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "u64";
+                                      Ty.apply
+                                        (Ty.path "ruint::from::FromUintError")
+                                        []
+                                        [ Ty.path "u64" ]
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::convert::TryFrom",
+                                    Ty.path "u64",
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ],
+                                    "try_from",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| gas |))
+                                      (Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        [])
+                                  ]
+                                |))
+                                (Ty.apply
                                   (Ty.path "core::result::Result")
                                   []
                                   [
@@ -1687,26 +1993,7 @@ Module gas.
                                       (Ty.path "ruint::from::FromUintError")
                                       []
                                       [ Ty.path "u64" ]
-                                  ],
-                                M.get_trait_method (|
-                                  "core::convert::TryFrom",
-                                  Ty.path "u64",
-                                  [],
-                                  [
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  ],
-                                  "try_from",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| gas |) ]
-                              |)
+                                  ])
                             ]
                           |)
                         |)
@@ -1736,10 +2023,12 @@ Module gas.
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
             M.get_function (| "revm_interpreter::gas::calc::copy_cost", [], [] |),
             [
-              M.read (|
-                get_constant (| "revm_interpreter::gas::constants::VERYLOW", Ty.path "u64" |)
-              |);
-              M.read (| len |)
+              M.value_with_ty
+                (M.read (|
+                  get_constant (| "revm_interpreter::gas::constants::VERYLOW", Ty.path "u64" |)
+                |))
+                (Ty.path "u64");
+              M.value_with_ty (M.read (| len |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1801,12 +2090,16 @@ Module gas.
                                 []
                               |),
                               [
-                                M.read (| spec_id |);
-                                Value.StructTuple
-                                  "revm_specification::hardfork::SpecId::BERLIN"
-                                  []
-                                  []
-                                  []
+                                M.value_with_ty
+                                  (M.read (| spec_id |))
+                                  (Ty.path "revm_specification::hardfork::SpecId");
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.StructTuple
+                                      "revm_specification::hardfork::SpecId::BERLIN"
+                                      [])
+                                    (Ty.path "revm_specification::hardfork::SpecId"))
+                                  (Ty.path "revm_specification::hardfork::SpecId")
                               ]
                             |)
                           |)) in
@@ -1818,7 +2111,14 @@ Module gas.
                           [],
                           []
                         |),
-                        [ M.read (| load |) ]
+                        [
+                          M.value_with_ty
+                            (M.read (| load |))
+                            (Ty.apply
+                              (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+                              []
+                              [ Ty.tuple [] ])
+                        ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -1841,12 +2141,16 @@ Module gas.
                                         []
                                       |),
                                       [
-                                        M.read (| spec_id |);
-                                        Value.StructTuple
-                                          "revm_specification::hardfork::SpecId::TANGERINE"
-                                          []
-                                          []
-                                          []
+                                        M.value_with_ty
+                                          (M.read (| spec_id |))
+                                          (Ty.path "revm_specification::hardfork::SpecId");
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple
+                                              "revm_specification::hardfork::SpecId::TANGERINE"
+                                              [])
+                                            (Ty.path "revm_specification::hardfork::SpecId"))
+                                          (Ty.path "revm_specification::hardfork::SpecId")
                                       ]
                                     |)
                                   |)) in
@@ -1863,7 +2167,10 @@ Module gas.
               M.call_closure (|
                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
                 M.get_function (| "revm_interpreter::gas::calc::copy_cost", [], [] |),
-                [ M.read (| base_gas |); M.read (| len |) ]
+                [
+                  M.value_with_ty (M.read (| base_gas |)) (Ty.path "u64");
+                  M.value_with_ty (M.read (| len |)) (Ty.path "usize")
+                ]
               |)
             |)
           |)))
@@ -1892,52 +2199,54 @@ Module gas.
                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
                 M.get_associated_function (| Ty.path "u64", "checked_add", [], [] |),
                 [
-                  M.read (| base_cost |);
-                  M.match_operator (|
-                    Ty.path "u64",
-                    M.alloc (|
-                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                      M.call_closure (|
+                  M.value_with_ty (M.read (| base_cost |)) (Ty.path "u64");
+                  M.value_with_ty
+                    (M.match_operator (|
+                      Ty.path "u64",
+                      M.alloc (|
                         Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                        M.get_function (| "revm_interpreter::gas::calc::cost_per_word", [], [] |),
-                        [
-                          M.read (| len |);
-                          M.read (|
-                            get_constant (|
-                              "revm_interpreter::gas::constants::COPY",
-                              Ty.path "u64"
-                            |)
-                          |)
-                        ]
-                      |)
-                    |),
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::option::Option::Some",
-                              0
-                            |) in
-                          let v := M.copy (| Ty.path "u64", γ0_0 |) in
-                          M.read (| v |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-                          M.never_to_any (|
-                            M.read (|
-                              M.return_ (|
-                                Value.StructTuple
-                                  "core::option::Option::None"
-                                  []
-                                  [ Ty.path "u64" ]
-                                  []
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                          M.get_function (| "revm_interpreter::gas::calc::cost_per_word", [], [] |),
+                          [
+                            M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                            M.value_with_ty
+                              (M.read (|
+                                get_constant (|
+                                  "revm_interpreter::gas::constants::COPY",
+                                  Ty.path "u64"
+                                |)
+                              |))
+                              (Ty.path "u64")
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::option::Option::Some",
+                                0
+                              |) in
+                            let v := M.copy (| Ty.path "u64", γ0_0 |) in
+                            M.read (| v |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  M.value_with_ty
+                                    (Value.StructTuple "core::option::Option::None" [])
+                                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ])
+                                |)
                               |)
-                            |)
-                          |)))
-                    ]
-                  |)
+                            |)))
+                      ]
+                    |))
+                    (Ty.path "u64")
                 ]
               |)))
           |)))
@@ -1966,114 +2275,123 @@ Module gas.
                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
                 M.get_associated_function (| Ty.path "u64", "checked_add", [], [] |),
                 [
-                  M.match_operator (|
-                    Ty.path "u64",
-                    M.alloc (|
-                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                      M.call_closure (|
+                  M.value_with_ty
+                    (M.match_operator (|
+                      Ty.path "u64",
+                      M.alloc (|
                         Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                        M.get_associated_function (| Ty.path "u64", "checked_add", [], [] |),
-                        [
-                          M.read (|
-                            get_constant (|
-                              "revm_interpreter::gas::constants::LOG",
-                              Ty.path "u64"
-                            |)
-                          |);
-                          M.match_operator (|
-                            Ty.path "u64",
-                            M.alloc (|
-                              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                              M.call_closure (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                                M.get_associated_function (|
-                                  Ty.path "u64",
-                                  "checked_mul",
-                                  [],
-                                  []
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                          M.get_associated_function (| Ty.path "u64", "checked_add", [], [] |),
+                          [
+                            M.value_with_ty
+                              (M.read (|
+                                get_constant (|
+                                  "revm_interpreter::gas::constants::LOG",
+                                  Ty.path "u64"
+                                |)
+                              |))
+                              (Ty.path "u64");
+                            M.value_with_ty
+                              (M.match_operator (|
+                                Ty.path "u64",
+                                M.alloc (|
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                  M.call_closure (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                                    M.get_associated_function (|
+                                      Ty.path "u64",
+                                      "checked_mul",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (|
+                                          get_constant (|
+                                            "revm_interpreter::gas::constants::LOGDATA",
+                                            Ty.path "u64"
+                                          |)
+                                        |))
+                                        (Ty.path "u64");
+                                      M.value_with_ty (M.read (| len |)) (Ty.path "u64")
+                                    ]
+                                  |)
                                 |),
                                 [
-                                  M.read (|
-                                    get_constant (|
-                                      "revm_interpreter::gas::constants::LOGDATA",
-                                      Ty.path "u64"
-                                    |)
-                                  |);
-                                  M.read (| len |)
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::option::Option::Some",
+                                          0
+                                        |) in
+                                      let v := M.copy (| Ty.path "u64", γ0_0 |) in
+                                      M.read (| v |)));
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let _ :=
+                                        M.is_struct_tuple (| γ, "core::option::Option::None" |) in
+                                      M.never_to_any (|
+                                        M.read (|
+                                          M.return_ (|
+                                            M.value_with_ty
+                                              (Value.StructTuple "core::option::Option::None" [])
+                                              (Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "u64" ])
+                                          |)
+                                        |)
+                                      |)))
                                 ]
-                              |)
-                            |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let γ0_0 :=
-                                    M.SubPointer.get_struct_tuple_field (|
-                                      γ,
-                                      "core::option::Option::Some",
-                                      0
-                                    |) in
-                                  let v := M.copy (| Ty.path "u64", γ0_0 |) in
-                                  M.read (| v |)));
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let _ :=
-                                    M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-                                  M.never_to_any (|
-                                    M.read (|
-                                      M.return_ (|
-                                        Value.StructTuple
-                                          "core::option::Option::None"
-                                          []
-                                          [ Ty.path "u64" ]
-                                          []
-                                      |)
-                                    |)
-                                  |)))
-                            ]
-                          |)
-                        ]
-                      |)
-                    |),
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::option::Option::Some",
-                              0
-                            |) in
-                          let v := M.copy (| Ty.path "u64", γ0_0 |) in
-                          M.read (| v |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-                          M.never_to_any (|
-                            M.read (|
-                              M.return_ (|
-                                Value.StructTuple
-                                  "core::option::Option::None"
-                                  []
-                                  [ Ty.path "u64" ]
-                                  []
-                              |)
-                            |)
-                          |)))
-                    ]
-                  |);
-                  M.call_closure (|
-                    Ty.path "u64",
-                    BinOp.Wrap.mul,
-                    [
-                      M.read (|
-                        get_constant (|
-                          "revm_interpreter::gas::constants::LOGTOPIC",
-                          Ty.path "u64"
+                              |))
+                              (Ty.path "u64")
+                          ]
                         |)
-                      |);
-                      M.cast (Ty.path "u64") (M.read (| n |))
-                    ]
-                  |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::option::Option::Some",
+                                0
+                              |) in
+                            let v := M.copy (| Ty.path "u64", γ0_0 |) in
+                            M.read (| v |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  M.value_with_ty
+                                    (Value.StructTuple "core::option::Option::None" [])
+                                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ])
+                                |)
+                              |)
+                            |)))
+                      ]
+                    |))
+                    (Ty.path "u64");
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "u64",
+                      BinOp.Wrap.mul,
+                      [
+                        M.read (|
+                          get_constant (|
+                            "revm_interpreter::gas::constants::LOGTOPIC",
+                            Ty.path "u64"
+                          |)
+                        |);
+                        M.cast (Ty.path "u64") (M.read (| n |))
+                      ]
+                    |))
+                    (Ty.path "u64")
                 ]
               |)))
           |)))
@@ -2101,54 +2419,61 @@ Module gas.
                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
                 M.get_associated_function (| Ty.path "u64", "checked_add", [], [] |),
                 [
-                  M.read (|
-                    get_constant (| "revm_interpreter::gas::constants::KECCAK256", Ty.path "u64" |)
-                  |);
-                  M.match_operator (|
-                    Ty.path "u64",
-                    M.alloc (|
-                      Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                      M.call_closure (|
-                        Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
-                        M.get_function (| "revm_interpreter::gas::calc::cost_per_word", [], [] |),
-                        [
-                          M.read (| len |);
-                          M.read (|
-                            get_constant (|
-                              "revm_interpreter::gas::constants::KECCAK256WORD",
-                              Ty.path "u64"
-                            |)
-                          |)
-                        ]
+                  M.value_with_ty
+                    (M.read (|
+                      get_constant (|
+                        "revm_interpreter::gas::constants::KECCAK256",
+                        Ty.path "u64"
                       |)
-                    |),
-                    [
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let γ0_0 :=
-                            M.SubPointer.get_struct_tuple_field (|
-                              γ,
-                              "core::option::Option::Some",
-                              0
-                            |) in
-                          let v := M.copy (| Ty.path "u64", γ0_0 |) in
-                          M.read (| v |)));
-                      fun γ =>
-                        ltac:(M.monadic
-                          (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-                          M.never_to_any (|
-                            M.read (|
-                              M.return_ (|
-                                Value.StructTuple
-                                  "core::option::Option::None"
-                                  []
-                                  [ Ty.path "u64" ]
-                                  []
+                    |))
+                    (Ty.path "u64");
+                  M.value_with_ty
+                    (M.match_operator (|
+                      Ty.path "u64",
+                      M.alloc (|
+                        Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
+                          M.get_function (| "revm_interpreter::gas::calc::cost_per_word", [], [] |),
+                          [
+                            M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                            M.value_with_ty
+                              (M.read (|
+                                get_constant (|
+                                  "revm_interpreter::gas::constants::KECCAK256WORD",
+                                  Ty.path "u64"
+                                |)
+                              |))
+                              (Ty.path "u64")
+                          ]
+                        |)
+                      |),
+                      [
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let γ0_0 :=
+                              M.SubPointer.get_struct_tuple_field (|
+                                γ,
+                                "core::option::Option::Some",
+                                0
+                              |) in
+                            let v := M.copy (| Ty.path "u64", γ0_0 |) in
+                            M.read (| v |)));
+                        fun γ =>
+                          ltac:(M.monadic
+                            (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
+                            M.never_to_any (|
+                              M.read (|
+                                M.return_ (|
+                                  M.value_with_ty
+                                    (Value.StructTuple "core::option::Option::None" [])
+                                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ])
+                                |)
                               |)
-                            |)
-                          |)))
-                    ]
-                  |)
+                            |)))
+                      ]
+                    |))
+                    (Ty.path "u64")
                 ]
               |)))
           |)))
@@ -2175,18 +2500,20 @@ Module gas.
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
             M.get_associated_function (| Ty.path "u64", "checked_mul", [], [] |),
             [
-              M.read (| multiple |);
-              M.cast
+              M.value_with_ty (M.read (| multiple |)) (Ty.path "u64");
+              M.value_with_ty
+                (M.cast
+                  (Ty.path "u64")
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    M.get_function (|
+                      "revm_interpreter::interpreter::shared_memory::num_words",
+                      [],
+                      []
+                    |),
+                    [ M.value_with_ty (M.read (| len |)) (Ty.path "usize") ]
+                  |)))
                 (Ty.path "u64")
-                (M.call_closure (|
-                  Ty.path "usize",
-                  M.get_function (|
-                    "revm_interpreter::interpreter::shared_memory::num_words",
-                    [],
-                    []
-                  |),
-                  [ M.read (| len |) ]
-                |))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2218,13 +2545,15 @@ Module gas.
                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
                 M.get_function (| "revm_interpreter::gas::calc::cost_per_word", [], [] |),
                 [
-                  M.read (| len |);
-                  M.read (|
-                    get_constant (|
-                      "revm_interpreter::gas::constants::INITCODE_WORD_COST",
-                      Ty.path "u64"
-                    |)
-                  |)
+                  M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                  M.value_with_ty
+                    (M.read (|
+                      get_constant (|
+                        "revm_interpreter::gas::constants::INITCODE_WORD_COST",
+                        Ty.path "u64"
+                      |)
+                    |))
+                    (Ty.path "u64")
                 ]
               |)
             |),
@@ -2241,32 +2570,44 @@ Module gas.
                     Ty.path "never",
                     M.get_function (| "core::panicking::panic_fmt", [], [] |),
                     [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "initcode cost overflow" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "initcode cost overflow" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)))
             ]
@@ -2323,12 +2664,16 @@ Module gas.
                             []
                           |),
                           [
-                            M.read (| spec_id |);
-                            Value.StructTuple
-                              "revm_specification::hardfork::SpecId::BERLIN"
-                              []
-                              []
-                              []
+                            M.value_with_ty
+                              (M.read (| spec_id |))
+                              (Ty.path "revm_specification::hardfork::SpecId");
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_specification::hardfork::SpecId::BERLIN"
+                                  [])
+                                (Ty.path "revm_specification::hardfork::SpecId"))
+                              (Ty.path "revm_specification::hardfork::SpecId")
                           ]
                         |)
                       |)) in
@@ -2379,12 +2724,16 @@ Module gas.
                                     []
                                   |),
                                   [
-                                    M.read (| spec_id |);
-                                    Value.StructTuple
-                                      "revm_specification::hardfork::SpecId::ISTANBUL"
-                                      []
-                                      []
-                                      []
+                                    M.value_with_ty
+                                      (M.read (| spec_id |))
+                                      (Ty.path "revm_specification::hardfork::SpecId");
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple
+                                          "revm_specification::hardfork::SpecId::ISTANBUL"
+                                          [])
+                                        (Ty.path "revm_specification::hardfork::SpecId"))
+                                      (Ty.path "revm_specification::hardfork::SpecId")
                                   ]
                                 |)
                               |)) in
@@ -2417,12 +2766,16 @@ Module gas.
                                             []
                                           |),
                                           [
-                                            M.read (| spec_id |);
-                                            Value.StructTuple
-                                              "revm_specification::hardfork::SpecId::TANGERINE"
-                                              []
-                                              []
-                                              []
+                                            M.value_with_ty
+                                              (M.read (| spec_id |))
+                                              (Ty.path "revm_specification::hardfork::SpecId");
+                                            M.value_with_ty
+                                              (M.value_with_ty
+                                                (Value.StructTuple
+                                                  "revm_specification::hardfork::SpecId::TANGERINE"
+                                                  [])
+                                                (Ty.path "revm_specification::hardfork::SpecId"))
+                                              (Ty.path "revm_specification::hardfork::SpecId")
                                           ]
                                         |)
                                       |)) in
@@ -2496,12 +2849,16 @@ Module gas.
                             []
                           |),
                           [
-                            M.read (| spec_id |);
-                            Value.StructTuple
-                              "revm_specification::hardfork::SpecId::BERLIN"
-                              []
-                              []
-                              []
+                            M.value_with_ty
+                              (M.read (| spec_id |))
+                              (Ty.path "revm_specification::hardfork::SpecId");
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "revm_specification::hardfork::SpecId::BERLIN"
+                                  [])
+                                (Ty.path "revm_specification::hardfork::SpecId"))
+                              (Ty.path "revm_specification::hardfork::SpecId")
                           ]
                         |)
                       |)) in
@@ -2515,7 +2872,14 @@ Module gas.
                           [ Value.Integer IntegerKind.U64 100; Value.Integer IntegerKind.U64 2900 ],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "revm_context_interface::host::SStoreResult" ])
+                        ]
                       |) in
                     let~ _ : Ty.tuple [] :=
                       M.match_operator (|
@@ -2574,12 +2938,16 @@ Module gas.
                                     []
                                   |),
                                   [
-                                    M.read (| spec_id |);
-                                    Value.StructTuple
-                                      "revm_specification::hardfork::SpecId::ISTANBUL"
-                                      []
-                                      []
-                                      []
+                                    M.value_with_ty
+                                      (M.read (| spec_id |))
+                                      (Ty.path "revm_specification::hardfork::SpecId");
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple
+                                          "revm_specification::hardfork::SpecId::ISTANBUL"
+                                          [])
+                                        (Ty.path "revm_specification::hardfork::SpecId"))
+                                      (Ty.path "revm_specification::hardfork::SpecId")
                                   ]
                                 |)
                               |)) in
@@ -2595,7 +2963,14 @@ Module gas.
                               ],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "revm_context_interface::host::SStoreResult" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -2606,7 +2981,14 @@ Module gas.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "revm_context_interface::host::SStoreResult" ])
+                            ]
                           |)))
                     ]
                   |)))
@@ -2662,7 +3044,14 @@ Module gas.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "revm_context_interface::host::SStoreResult" ])
+                          ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -2689,10 +3078,15 @@ Module gas.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| vals |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| vals |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "revm_context_interface::host::SStoreResult" ])
                                     ]
                                   |),
                                   ltac:(M.monadic
@@ -2705,10 +3099,16 @@ Module gas.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| vals |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| vals |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "revm_context_interface::host::SStoreResult"
+                                            ])
                                       ]
                                     |)))
                                 |)
@@ -2742,10 +3142,18 @@ Module gas.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| vals |) |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| vals |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "revm_context_interface::host::SStoreResult"
+                                                ])
                                           ]
                                         |)
                                       |)) in
@@ -2807,7 +3215,14 @@ Module gas.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "revm_context_interface::host::SStoreResult" ])
+                            ]
                           |),
                           ltac:(M.monadic
                             (M.call_closure (|
@@ -2822,7 +3237,16 @@ Module gas.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| vals |) |) |)
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| vals |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "revm_context_interface::host::SStoreResult" ])
                                   ]
                                 |)
                               ]
@@ -2916,12 +3340,16 @@ Module gas.
                                 []
                               |),
                               [
-                                M.read (| spec_id |);
-                                Value.StructTuple
-                                  "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON"
-                                  []
-                                  []
-                                  []
+                                M.value_with_ty
+                                  (M.read (| spec_id |))
+                                  (Ty.path "revm_specification::hardfork::SpecId");
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.StructTuple
+                                      "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON"
+                                      [])
+                                    (Ty.path "revm_specification::hardfork::SpecId"))
+                                  (Ty.path "revm_specification::hardfork::SpecId")
                               ]
                             |)
                           |)) in
@@ -2999,12 +3427,16 @@ Module gas.
                                   []
                                 |),
                                 [
-                                  M.read (| spec_id |);
-                                  Value.StructTuple
-                                    "revm_specification::hardfork::SpecId::TANGERINE"
-                                    []
-                                    []
-                                    []
+                                  M.value_with_ty
+                                    (M.read (| spec_id |))
+                                    (Ty.path "revm_specification::hardfork::SpecId");
+                                  M.value_with_ty
+                                    (M.value_with_ty
+                                      (Value.StructTuple
+                                        "revm_specification::hardfork::SpecId::TANGERINE"
+                                        [])
+                                      (Ty.path "revm_specification::hardfork::SpecId"))
+                                    (Ty.path "revm_specification::hardfork::SpecId")
                                 ]
                               |),
                               ltac:(M.monadic (M.read (| should_charge_topup |)))
@@ -3035,12 +3467,16 @@ Module gas.
                                 []
                               |),
                               [
-                                M.read (| spec_id |);
-                                Value.StructTuple
-                                  "revm_specification::hardfork::SpecId::TANGERINE"
-                                  []
-                                  []
-                                  []
+                                M.value_with_ty
+                                  (M.read (| spec_id |))
+                                  (Ty.path "revm_specification::hardfork::SpecId");
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.StructTuple
+                                      "revm_specification::hardfork::SpecId::TANGERINE"
+                                      [])
+                                    (Ty.path "revm_specification::hardfork::SpecId"))
+                                  (Ty.path "revm_specification::hardfork::SpecId")
                               ]
                             |)
                           |)) in
@@ -3076,12 +3512,16 @@ Module gas.
                                   []
                                 |),
                                 [
-                                  M.read (| spec_id |);
-                                  Value.StructTuple
-                                    "revm_specification::hardfork::SpecId::BERLIN"
-                                    []
-                                    []
-                                    []
+                                  M.value_with_ty
+                                    (M.read (| spec_id |))
+                                    (Ty.path "revm_specification::hardfork::SpecId");
+                                  M.value_with_ty
+                                    (M.value_with_ty
+                                      (Value.StructTuple
+                                        "revm_specification::hardfork::SpecId::BERLIN"
+                                        [])
+                                      (Ty.path "revm_specification::hardfork::SpecId"))
+                                    (Ty.path "revm_specification::hardfork::SpecId")
                                 ]
                               |),
                               ltac:(M.monadic
@@ -3190,12 +3630,16 @@ Module gas.
                                 []
                               |),
                               [
-                                M.read (| spec_id |);
-                                Value.StructTuple
-                                  "revm_specification::hardfork::SpecId::BERLIN"
-                                  []
-                                  []
-                                  []
+                                M.value_with_ty
+                                  (M.read (| spec_id |))
+                                  (Ty.path "revm_specification::hardfork::SpecId");
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.StructTuple
+                                      "revm_specification::hardfork::SpecId::BERLIN"
+                                      [])
+                                    (Ty.path "revm_specification::hardfork::SpecId"))
+                                  (Ty.path "revm_specification::hardfork::SpecId")
                               ]
                             |)
                           |)) in
@@ -3208,13 +3652,18 @@ Module gas.
                           []
                         |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              account_load,
-                              "revm_context_interface::journaled_state::AccountLoad",
-                              "load"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                account_load,
+                                "revm_context_interface::journaled_state::AccountLoad",
+                                "load"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+                              []
+                              [ Ty.tuple [] ])
                         ]
                       |)));
                   fun γ =>
@@ -3238,12 +3687,16 @@ Module gas.
                                         []
                                       |),
                                       [
-                                        M.read (| spec_id |);
-                                        Value.StructTuple
-                                          "revm_specification::hardfork::SpecId::TANGERINE"
-                                          []
-                                          []
-                                          []
+                                        M.value_with_ty
+                                          (M.read (| spec_id |))
+                                          (Ty.path "revm_specification::hardfork::SpecId");
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple
+                                              "revm_specification::hardfork::SpecId::TANGERINE"
+                                              [])
+                                            (Ty.path "revm_specification::hardfork::SpecId"))
+                                          (Ty.path "revm_specification::hardfork::SpecId")
                                       ]
                                     |)
                                   |)) in
@@ -3322,12 +3775,16 @@ Module gas.
                                         []
                                       |),
                                       [
-                                        M.read (| spec_id |);
-                                        Value.StructTuple
-                                          "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON"
-                                          []
-                                          []
-                                          []
+                                        M.value_with_ty
+                                          (M.read (| spec_id |))
+                                          (Ty.path "revm_specification::hardfork::SpecId");
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple
+                                              "revm_specification::hardfork::SpecId::SPURIOUS_DRAGON"
+                                              [])
+                                            (Ty.path "revm_specification::hardfork::SpecId"))
+                                          (Ty.path "revm_specification::hardfork::SpecId")
                                       ]
                                     |)
                                   |)) in
@@ -3484,17 +3941,19 @@ Module gas.
                 Ty.path "u64",
                 M.get_function (| "revm_interpreter::gas::calc::warm_cold_cost", [], [] |),
                 [
-                  M.read (|
-                    M.SubPointer.get_struct_record_field (|
+                  M.value_with_ty
+                    (M.read (|
                       M.SubPointer.get_struct_record_field (|
-                        load,
-                        "revm_context_interface::journaled_state::Eip7702CodeLoad",
-                        "state_load"
-                      |),
-                      "revm_context_interface::journaled_state::StateLoad",
-                      "is_cold"
-                    |)
-                  |)
+                        M.SubPointer.get_struct_record_field (|
+                          load,
+                          "revm_context_interface::journaled_state::Eip7702CodeLoad",
+                          "state_load"
+                        |),
+                        "revm_context_interface::journaled_state::StateLoad",
+                        "is_cold"
+                      |)
+                    |))
+                    (Ty.path "bool")
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -3534,7 +3993,7 @@ Module gas.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| is_cold |) ]
+                                  [ M.value_with_ty (M.read (| is_cold |)) (Ty.path "bool") ]
                                 |)
                               ]
                             |)
@@ -3577,28 +4036,40 @@ Module gas.
                 Ty.path "u64",
                 M.get_associated_function (| Ty.path "u64", "saturating_add", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "u64",
-                    M.get_associated_function (| Ty.path "u64", "saturating_mul", [], [] |),
-                    [
-                      M.read (|
-                        get_constant (| "revm_interpreter::gas::constants::MEMORY", Ty.path "u64" |)
-                      |);
-                      M.read (| num_words |)
-                    ]
-                  |);
-                  M.call_closure (|
-                    Ty.path "u64",
-                    BinOp.Wrap.div,
-                    [
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_associated_function (| Ty.path "u64", "saturating_mul", [], [] |),
-                        [ M.read (| num_words |); M.read (| num_words |) ]
-                      |);
-                      Value.Integer IntegerKind.U64 512
-                    ]
-                  |)
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "u64",
+                      M.get_associated_function (| Ty.path "u64", "saturating_mul", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.read (|
+                            get_constant (|
+                              "revm_interpreter::gas::constants::MEMORY",
+                              Ty.path "u64"
+                            |)
+                          |))
+                          (Ty.path "u64");
+                        M.value_with_ty (M.read (| num_words |)) (Ty.path "u64")
+                      ]
+                    |))
+                    (Ty.path "u64");
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "u64",
+                      BinOp.Wrap.div,
+                      [
+                        M.call_closure (|
+                          Ty.path "u64",
+                          M.get_associated_function (| Ty.path "u64", "saturating_mul", [], [] |),
+                          [
+                            M.value_with_ty (M.read (| num_words |)) (Ty.path "u64");
+                            M.value_with_ty (M.read (| num_words |)) (Ty.path "u64")
+                          ]
+                        |);
+                        Value.Integer IntegerKind.U64 512
+                      ]
+                    |))
+                    (Ty.path "u64")
                 ]
               |)
             |)
@@ -3712,8 +4183,117 @@ Module gas.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::filter::Filter")
+                          []
+                          [
+                            Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ];
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ]
+                              ]
+                              (Ty.path "bool")
+                          ],
+                        M.get_trait_method (|
+                          "core::iter::traits::iterator::Iterator",
+                          Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
+                          [],
+                          [],
+                          "filter",
+                          [],
+                          [
+                            Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ]
+                              ]
+                              (Ty.path "bool")
+                          ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                "iter",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| input |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ]);
+                          M.value_with_ty
+                            (M.closure
+                              (fun γ =>
+                                ltac:(M.monadic
+                                  match γ with
+                                  | [ α0 ] =>
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "bool",
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
+                                          α0
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let v :=
+                                                M.copy (|
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                BinOp.eq,
+                                                [
+                                                  M.read (|
+                                                    M.deref (|
+                                                      M.read (| M.deref (| M.read (| v |) |) |)
+                                                    |)
+                                                  |);
+                                                  Value.Integer IntegerKind.U8 0
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                  | _ => M.impossible "wrong number of arguments"
+                                  end)))
+                            (Ty.function
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ]
+                              ]
+                              (Ty.path "bool"))
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "core::iter::adapters::filter::Filter")
                         []
                         [
@@ -3726,80 +4306,7 @@ Module gas.
                                 [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ]
                             ]
                             (Ty.path "bool")
-                        ],
-                      M.get_trait_method (|
-                        "core::iter::traits::iterator::Iterator",
-                        Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
-                        [],
-                        [],
-                        "filter",
-                        [],
-                        [
-                          Ty.function
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ]
-                            ]
-                            (Ty.path "bool")
-                        ]
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                            "iter",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |) ]
-                        |);
-                        M.closure
-                          (fun γ =>
-                            ltac:(M.monadic
-                              match γ with
-                              | [ α0 ] =>
-                                ltac:(M.monadic
-                                  (M.match_operator (|
-                                    Ty.path "bool",
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
-                                      α0
-                                    |),
-                                    [
-                                      fun γ =>
-                                        ltac:(M.monadic
-                                          (let v :=
-                                            M.copy (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
-                                              γ
-                                            |) in
-                                          M.call_closure (|
-                                            Ty.path "bool",
-                                            BinOp.eq,
-                                            [
-                                              M.read (|
-                                                M.deref (|
-                                                  M.read (| M.deref (| M.read (| v |) |) |)
-                                                |)
-                                              |);
-                                              Value.Integer IntegerKind.U8 0
-                                            ]
-                                          |)))
-                                    ]
-                                  |)))
-                              | _ => M.impossible "wrong number of arguments"
-                              end))
-                      ]
-                    |)
+                        ])
                   ]
                 |)) in
             let~ non_zero_data_len : Ty.path "u64" :=
@@ -3817,7 +4324,14 @@ Module gas.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                      ]
                     |));
                   M.read (| zero_data_len |)
                 ]
@@ -3880,12 +4394,16 @@ Module gas.
                                           []
                                         |),
                                         [
-                                          M.read (| spec_id |);
-                                          Value.StructTuple
-                                            "revm_specification::hardfork::SpecId::ISTANBUL"
-                                            []
-                                            []
-                                            []
+                                          M.value_with_ty
+                                            (M.read (| spec_id |))
+                                            (Ty.path "revm_specification::hardfork::SpecId");
+                                          M.value_with_ty
+                                            (M.value_with_ty
+                                              (Value.StructTuple
+                                                "revm_specification::hardfork::SpecId::ISTANBUL"
+                                                [])
+                                              (Ty.path "revm_specification::hardfork::SpecId"))
+                                            (Ty.path "revm_specification::hardfork::SpecId")
                                         ]
                                       |)
                                     |)) in
@@ -3935,10 +4453,12 @@ Module gas.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| M.read (| access_list |) |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| access_list |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ AccessListT ])
                             ]
                           |)
                         |),
@@ -4044,12 +4564,16 @@ Module gas.
                                               []
                                             |),
                                             [
-                                              M.read (| spec_id |);
-                                              Value.StructTuple
-                                                "revm_specification::hardfork::SpecId::HOMESTEAD"
-                                                []
-                                                []
-                                                []
+                                              M.value_with_ty
+                                                (M.read (| spec_id |))
+                                                (Ty.path "revm_specification::hardfork::SpecId");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "revm_specification::hardfork::SpecId::HOMESTEAD"
+                                                    [])
+                                                  (Ty.path "revm_specification::hardfork::SpecId"))
+                                                (Ty.path "revm_specification::hardfork::SpecId")
                                             ]
                                           |)
                                         |)) in
@@ -4089,12 +4613,16 @@ Module gas.
                                   []
                                 |),
                                 [
-                                  M.read (| spec_id |);
-                                  Value.StructTuple
-                                    "revm_specification::hardfork::SpecId::SHANGHAI"
-                                    []
-                                    []
-                                    []
+                                  M.value_with_ty
+                                    (M.read (| spec_id |))
+                                    (Ty.path "revm_specification::hardfork::SpecId");
+                                  M.value_with_ty
+                                    (M.value_with_ty
+                                      (Value.StructTuple
+                                        "revm_specification::hardfork::SpecId::SHANGHAI"
+                                        [])
+                                      (Ty.path "revm_specification::hardfork::SpecId"))
+                                    (Ty.path "revm_specification::hardfork::SpecId")
                                 ]
                               |),
                               ltac:(M.monadic (M.read (| is_create |)))
@@ -4117,21 +4645,28 @@ Module gas.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  M.get_associated_function (|
-                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                    "len",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| input |) |)
-                                    |)
-                                  ]
-                                |)
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_associated_function (|
+                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                      "len",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| input |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                    ]
+                                  |))
+                                  (Ty.path "usize")
                               ]
                             |)
                           ]
@@ -4160,12 +4695,16 @@ Module gas.
                                 []
                               |),
                               [
-                                M.read (| spec_id |);
-                                Value.StructTuple
-                                  "revm_specification::hardfork::SpecId::PRAGUE"
-                                  []
-                                  []
-                                  []
+                                M.value_with_ty
+                                  (M.read (| spec_id |))
+                                  (Ty.path "revm_specification::hardfork::SpecId");
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.StructTuple
+                                      "revm_specification::hardfork::SpecId::PRAGUE"
+                                      [])
+                                    (Ty.path "revm_specification::hardfork::SpecId"))
+                                  (Ty.path "revm_specification::hardfork::SpecId")
                               ]
                             |)
                           |)) in

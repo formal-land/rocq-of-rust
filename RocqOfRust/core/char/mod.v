@@ -108,7 +108,7 @@ Module char.
             [ Ty.associated_in_trait "core::iter::traits::collect::IntoIterator" [] [] I "IntoIter"
             ],
           M.get_function (| "core::char::decode::decode_utf16", [], [ I ] |),
-          [ M.read (| iter |) ]
+          [ M.value_with_ty (M.read (| iter |)) I ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -131,7 +131,7 @@ Module char.
         M.call_closure (|
           Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ],
           M.get_function (| "core::char::convert::from_u32", [], [] |),
-          [ M.read (| i |) ]
+          [ M.value_with_ty (M.read (| i |)) (Ty.path "u32") ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -154,7 +154,7 @@ Module char.
         M.call_closure (|
           Ty.path "char",
           M.get_function (| "core::char::convert::from_u32_unchecked", [], [] |),
-          [ M.read (| i |) ]
+          [ M.value_with_ty (M.read (| i |)) (Ty.path "u32") ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -178,7 +178,10 @@ Module char.
         M.call_closure (|
           Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ],
           M.get_function (| "core::char::convert::from_digit", [], [] |),
-          [ M.read (| num |); M.read (| radix |) ]
+          [
+            M.value_with_ty (M.read (| num |)) (Ty.path "u32");
+            M.value_with_ty (M.read (| radix |)) (Ty.path "u32")
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -212,45 +215,55 @@ Module char.
         ltac:(M.monadic
           (let self :=
             M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::char::EscapeUnicode" ], self |) in
-          Value.StructTuple
-            "core::char::EscapeUnicode"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "core::escape::EscapeIterInner")
-                  [ Value.Integer IntegerKind.Usize 10 ]
-                  [],
-                M.get_trait_method (|
-                  "core::clone::Clone",
+          M.value_with_ty
+            (Value.StructTuple
+              "core::char::EscapeUnicode"
+              [
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 10 ]
                     [],
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 10 ]
+                      [],
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::char::EscapeUnicode",
-                          0
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::char::EscapeUnicode",
+                              0
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
-            ]))
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::escape::EscapeIterInner")
+                            [ Value.Integer IntegerKind.Usize 10 ]
+                            []
+                        ])
+                  ]
+                |)
+              ])
+            (Ty.path "core::char::EscapeUnicode")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -287,57 +300,63 @@ Module char.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EscapeUnicode" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::escape::EscapeIterInner")
-                            [ Value.Integer IntegerKind.Usize 10 ]
-                            []
-                        ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "core::escape::EscapeIterInner")
-                                [ Value.Integer IntegerKind.Usize 10 ]
-                                []
-                            ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::char::EscapeUnicode",
-                              0
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EscapeUnicode" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::escape::EscapeIterInner")
+                              [ Value.Integer IntegerKind.Usize 10 ]
+                              []
+                          ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::escape::EscapeIterInner")
+                                  [ Value.Integer IntegerKind.Usize 10 ]
+                                  []
+                              ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::char::EscapeUnicode",
+                                0
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -365,28 +384,28 @@ Module char.
       | [], [], [ c ] =>
         ltac:(M.monadic
           (let c := M.alloc (| Ty.path "char", c |) in
-          Value.StructTuple
-            "core::char::EscapeUnicode"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "core::escape::EscapeIterInner")
-                  [ Value.Integer IntegerKind.Usize 10 ]
-                  [],
-                M.get_associated_function (|
+          M.value_with_ty
+            (Value.StructTuple
+              "core::char::EscapeUnicode"
+              [
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 10 ]
                     [],
-                  "unicode",
-                  [],
-                  []
-                |),
-                [ M.read (| c |) ]
-              |)
-            ]))
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 10 ]
+                      [],
+                    "unicode",
+                    [],
+                    []
+                  |),
+                  [ M.value_with_ty (M.read (| c |)) (Ty.path "char") ]
+                |)
+              ])
+            (Ty.path "core::char::EscapeUnicode")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -424,37 +443,51 @@ Module char.
               [ Ty.path "char"; Ty.function [ Ty.path "u8" ] (Ty.path "char") ]
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                M.get_associated_function (|
-                  Ty.apply
-                    (Ty.path "core::escape::EscapeIterInner")
-                    [ Value.Integer IntegerKind.Usize 10 ]
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 10 ]
+                      [],
+                    "next",
                     [],
-                  "next",
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::char::EscapeUnicode",
+                          0
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::escape::EscapeIterInner")
+                            [ Value.Integer IntegerKind.Usize 10 ]
+                            []
+                        ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ]);
+              M.value_with_ty
+                (M.get_trait_method (|
+                  "core::convert::From",
+                  Ty.path "char",
+                  [],
+                  [ Ty.path "u8" ],
+                  "from",
                   [],
                   []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::char::EscapeUnicode",
-                      0
-                    |)
-                  |)
-                ]
-              |);
-              M.get_trait_method (|
-                "core::convert::From",
-                Ty.path "char",
-                [],
-                [ Ty.path "u8" ],
-                "from",
-                [],
-                []
-              |)
+                |))
+                (Ty.function [ Ty.path "u8" ] (Ty.path "char"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -486,14 +519,24 @@ Module char.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::char::EscapeUnicode",
-                      0
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::char::EscapeUnicode",
+                        0
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::escape::EscapeIterInner")
+                          [ Value.Integer IntegerKind.Usize 10 ]
+                          []
+                      ])
                 ]
               |) in
             M.alloc (|
@@ -503,11 +546,9 @@ Module char.
               Value.Tuple
                 [
                   M.read (| n |);
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "usize" ]
-                    [ M.read (| n |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| n |) ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                 ]
             |)
           |)))
@@ -536,10 +577,20 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (| self, "core::char::EscapeUnicode", 0 |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (| self, "core::char::EscapeUnicode", 0 |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 10 ]
+                      []
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -564,33 +615,51 @@ Module char.
               [ Ty.path "char"; Ty.function [ Ty.path "u8" ] (Ty.path "char") ]
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                M.get_associated_function (|
-                  Ty.apply
-                    (Ty.path "core::escape::EscapeIterInner")
-                    [ Value.Integer IntegerKind.Usize 10 ]
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 10 ]
+                      [],
+                    "next_back",
                     [],
-                  "next_back",
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::char::EscapeUnicode",
+                          0
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::escape::EscapeIterInner")
+                            [ Value.Integer IntegerKind.Usize 10 ]
+                            []
+                        ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ]);
+              M.value_with_ty
+                (M.get_trait_method (|
+                  "core::convert::From",
+                  Ty.path "char",
+                  [],
+                  [ Ty.path "u8" ],
+                  "from",
                   [],
                   []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (| self, "core::char::EscapeUnicode", 0 |)
-                  |)
-                ]
-              |);
-              M.get_trait_method (|
-                "core::convert::From",
-                Ty.path "char",
-                [],
-                [ Ty.path "u8" ],
-                "from",
-                [],
-                []
-              |)
+                |))
+                (Ty.function [ Ty.path "u8" ] (Ty.path "char"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -627,15 +696,25 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::EscapeUnicode",
-                  0
-                |)
-              |);
-              M.read (| n |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::EscapeUnicode",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 10 ]
+                      []
+                  ]);
+              M.value_with_ty (M.read (| n |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -684,14 +763,24 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::EscapeUnicode",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::EscapeUnicode",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 10 ]
+                      []
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -741,34 +830,48 @@ Module char.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "core::escape::EscapeIterInner")
-                        [ Value.Integer IntegerKind.Usize 10 ]
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "core::escape::EscapeIterInner")
+                          [ Value.Integer IntegerKind.Usize 10 ]
+                          [],
+                        "as_str",
                         [],
-                      "as_str",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::char::EscapeUnicode",
-                          0
-                        |)
-                      |)
-                    ]
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::char::EscapeUnicode",
+                              0
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::escape::EscapeIterInner")
+                                [ Value.Integer IntegerKind.Usize 10 ]
+                                []
+                            ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -807,45 +910,55 @@ Module char.
         ltac:(M.monadic
           (let self :=
             M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::char::EscapeDefault" ], self |) in
-          Value.StructTuple
-            "core::char::EscapeDefault"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "core::escape::EscapeIterInner")
-                  [ Value.Integer IntegerKind.Usize 10 ]
-                  [],
-                M.get_trait_method (|
-                  "core::clone::Clone",
+          M.value_with_ty
+            (Value.StructTuple
+              "core::char::EscapeDefault"
+              [
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 10 ]
                     [],
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 10 ]
+                      [],
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::char::EscapeDefault",
-                          0
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::char::EscapeDefault",
+                              0
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
-            ]))
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::escape::EscapeIterInner")
+                            [ Value.Integer IntegerKind.Usize 10 ]
+                            []
+                        ])
+                  ]
+                |)
+              ])
+            (Ty.path "core::char::EscapeDefault")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -882,57 +995,63 @@ Module char.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EscapeDefault" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::escape::EscapeIterInner")
-                            [ Value.Integer IntegerKind.Usize 10 ]
-                            []
-                        ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "core::escape::EscapeIterInner")
-                                [ Value.Integer IntegerKind.Usize 10 ]
-                                []
-                            ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::char::EscapeDefault",
-                              0
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EscapeDefault" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::escape::EscapeIterInner")
+                              [ Value.Integer IntegerKind.Usize 10 ]
+                              []
+                          ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::escape::EscapeIterInner")
+                                  [ Value.Integer IntegerKind.Usize 10 ]
+                                  []
+                              ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::char::EscapeDefault",
+                                0
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -960,39 +1079,45 @@ Module char.
       | [], [], [ c ] =>
         ltac:(M.monadic
           (let c := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", c |) in
-          Value.StructTuple
-            "core::char::EscapeDefault"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "core::escape::EscapeIterInner")
-                  [ Value.Integer IntegerKind.Usize 10 ]
-                  [],
-                M.get_associated_function (|
+          M.value_with_ty
+            (Value.StructTuple
+              "core::char::EscapeDefault"
+              [
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 10 ]
                     [],
-                  "ascii",
-                  [],
-                  []
-                |),
-                [
-                  M.call_closure (|
-                    Ty.path "u8",
-                    M.get_associated_function (|
-                      Ty.path "core::ascii::ascii_char::AsciiChar",
-                      "to_u8",
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 10 ]
                       [],
-                      []
-                    |),
-                    [ M.read (| c |) ]
-                  |)
-                ]
-              |)
-            ]))
+                    "ascii",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "u8",
+                        M.get_associated_function (|
+                          Ty.path "core::ascii::ascii_char::AsciiChar",
+                          "to_u8",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| c |))
+                            (Ty.path "core::ascii::ascii_char::AsciiChar")
+                        ]
+                      |))
+                      (Ty.path "u8")
+                  ]
+                |)
+              ])
+            (Ty.path "core::char::EscapeDefault")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1011,28 +1136,29 @@ Module char.
       | [], [], [ c ] =>
         ltac:(M.monadic
           (let c := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", c |) in
-          Value.StructTuple
-            "core::char::EscapeDefault"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "core::escape::EscapeIterInner")
-                  [ Value.Integer IntegerKind.Usize 10 ]
-                  [],
-                M.get_associated_function (|
+          M.value_with_ty
+            (Value.StructTuple
+              "core::char::EscapeDefault"
+              [
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 10 ]
                     [],
-                  "backslash",
-                  [],
-                  []
-                |),
-                [ M.read (| c |) ]
-              |)
-            ]))
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 10 ]
+                      [],
+                    "backslash",
+                    [],
+                    []
+                  |),
+                  [ M.value_with_ty (M.read (| c |)) (Ty.path "core::ascii::ascii_char::AsciiChar")
+                  ]
+                |)
+              ])
+            (Ty.path "core::char::EscapeDefault")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1051,28 +1177,28 @@ Module char.
       | [], [], [ c ] =>
         ltac:(M.monadic
           (let c := M.alloc (| Ty.path "char", c |) in
-          Value.StructTuple
-            "core::char::EscapeDefault"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "core::escape::EscapeIterInner")
-                  [ Value.Integer IntegerKind.Usize 10 ]
-                  [],
-                M.get_associated_function (|
+          M.value_with_ty
+            (Value.StructTuple
+              "core::char::EscapeDefault"
+              [
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 10 ]
                     [],
-                  "unicode",
-                  [],
-                  []
-                |),
-                [ M.read (| c |) ]
-              |)
-            ]))
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 10 ]
+                      [],
+                    "unicode",
+                    [],
+                    []
+                  |),
+                  [ M.value_with_ty (M.read (| c |)) (Ty.path "char") ]
+                |)
+              ])
+            (Ty.path "core::char::EscapeDefault")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1110,37 +1236,51 @@ Module char.
               [ Ty.path "char"; Ty.function [ Ty.path "u8" ] (Ty.path "char") ]
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                M.get_associated_function (|
-                  Ty.apply
-                    (Ty.path "core::escape::EscapeIterInner")
-                    [ Value.Integer IntegerKind.Usize 10 ]
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 10 ]
+                      [],
+                    "next",
                     [],
-                  "next",
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::char::EscapeDefault",
+                          0
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::escape::EscapeIterInner")
+                            [ Value.Integer IntegerKind.Usize 10 ]
+                            []
+                        ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ]);
+              M.value_with_ty
+                (M.get_trait_method (|
+                  "core::convert::From",
+                  Ty.path "char",
+                  [],
+                  [ Ty.path "u8" ],
+                  "from",
                   [],
                   []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::char::EscapeDefault",
-                      0
-                    |)
-                  |)
-                ]
-              |);
-              M.get_trait_method (|
-                "core::convert::From",
-                Ty.path "char",
-                [],
-                [ Ty.path "u8" ],
-                "from",
-                [],
-                []
-              |)
+                |))
+                (Ty.function [ Ty.path "u8" ] (Ty.path "char"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1172,14 +1312,24 @@ Module char.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::char::EscapeDefault",
-                      0
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::char::EscapeDefault",
+                        0
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::escape::EscapeIterInner")
+                          [ Value.Integer IntegerKind.Usize 10 ]
+                          []
+                      ])
                 ]
               |) in
             M.alloc (|
@@ -1189,11 +1339,9 @@ Module char.
               Value.Tuple
                 [
                   M.read (| n |);
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "usize" ]
-                    [ M.read (| n |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| n |) ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                 ]
             |)
           |)))
@@ -1222,10 +1370,20 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (| self, "core::char::EscapeDefault", 0 |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (| self, "core::char::EscapeDefault", 0 |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 10 ]
+                      []
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1250,33 +1408,51 @@ Module char.
               [ Ty.path "char"; Ty.function [ Ty.path "u8" ] (Ty.path "char") ]
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                M.get_associated_function (|
-                  Ty.apply
-                    (Ty.path "core::escape::EscapeIterInner")
-                    [ Value.Integer IntegerKind.Usize 10 ]
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 10 ]
+                      [],
+                    "next_back",
                     [],
-                  "next_back",
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::char::EscapeDefault",
+                          0
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::escape::EscapeIterInner")
+                            [ Value.Integer IntegerKind.Usize 10 ]
+                            []
+                        ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ]);
+              M.value_with_ty
+                (M.get_trait_method (|
+                  "core::convert::From",
+                  Ty.path "char",
+                  [],
+                  [ Ty.path "u8" ],
+                  "from",
                   [],
                   []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (| self, "core::char::EscapeDefault", 0 |)
-                  |)
-                ]
-              |);
-              M.get_trait_method (|
-                "core::convert::From",
-                Ty.path "char",
-                [],
-                [ Ty.path "u8" ],
-                "from",
-                [],
-                []
-              |)
+                |))
+                (Ty.function [ Ty.path "u8" ] (Ty.path "char"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1313,15 +1489,25 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::EscapeDefault",
-                  0
-                |)
-              |);
-              M.read (| n |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::EscapeDefault",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 10 ]
+                      []
+                  ]);
+              M.value_with_ty (M.read (| n |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1370,14 +1556,24 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::EscapeDefault",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::EscapeDefault",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 10 ]
+                      []
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1427,34 +1623,48 @@ Module char.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "core::escape::EscapeIterInner")
-                        [ Value.Integer IntegerKind.Usize 10 ]
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "core::escape::EscapeIterInner")
+                          [ Value.Integer IntegerKind.Usize 10 ]
+                          [],
+                        "as_str",
                         [],
-                      "as_str",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::char::EscapeDefault",
-                          0
-                        |)
-                      |)
-                    ]
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::char::EscapeDefault",
+                              0
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::escape::EscapeIterInner")
+                                [ Value.Integer IntegerKind.Usize 10 ]
+                                []
+                            ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1487,39 +1697,41 @@ Module char.
         ltac:(M.monadic
           (let self :=
             M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::char::EscapeDebug" ], self |) in
-          Value.StructTuple
-            "core::char::EscapeDebug"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "core::char::EscapeDebugInner",
-                M.get_trait_method (|
-                  "core::clone::Clone",
+          M.value_with_ty
+            (Value.StructTuple
+              "core::char::EscapeDebug"
+              [
+                M.call_closure (|
                   Ty.path "core::char::EscapeDebugInner",
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "core::char::EscapeDebugInner",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::char::EscapeDebug",
-                          0
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::char::EscapeDebug",
+                              0
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
-            ]))
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::char::EscapeDebugInner" ])
+                  ]
+                |)
+              ])
+            (Ty.path "core::char::EscapeDebug")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1556,39 +1768,45 @@ Module char.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EscapeDebug" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "core::char::EscapeDebugInner" ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "core::char::EscapeDebugInner" ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::char::EscapeDebug",
-                              0
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EscapeDebug" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "core::char::EscapeDebugInner" ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "core::char::EscapeDebugInner" ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::char::EscapeDebug",
+                                0
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1673,31 +1891,43 @@ Module char.
                         ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "core::char::EscapeDebugInner::Bytes"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::escape::EscapeIterInner")
-                          [ Value.Integer IntegerKind.Usize 10 ]
-                          [],
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::char::EscapeDebugInner::Bytes"
+                      [
+                        M.call_closure (|
                           Ty.apply
                             (Ty.path "core::escape::EscapeIterInner")
                             [ Value.Integer IntegerKind.Usize 10 ]
                             [],
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]));
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.apply
+                              (Ty.path "core::escape::EscapeIterInner")
+                              [ Value.Integer IntegerKind.Usize 10 ]
+                              [],
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::escape::EscapeIterInner")
+                                    [ Value.Integer IntegerKind.Usize 10 ]
+                                    []
+                                ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "core::char::EscapeDebugInner")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -1709,25 +1939,29 @@ Module char.
                     |) in
                   let __self_0 :=
                     M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "char" ], γ1_0 |) in
-                  Value.StructTuple
-                    "core::char::EscapeDebugInner::Char"
-                    []
-                    []
-                    [
-                      M.call_closure (|
-                        Ty.path "char",
-                        M.get_trait_method (|
-                          "core::clone::Clone",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::char::EscapeDebugInner::Char"
+                      [
+                        M.call_closure (|
                           Ty.path "char",
-                          [],
-                          [],
-                          "clone",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |)
-                    ]))
+                          M.get_trait_method (|
+                            "core::clone::Clone",
+                            Ty.path "char",
+                            [],
+                            [],
+                            "clone",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "char" ])
+                          ]
+                        |)
+                      ])
+                    (Ty.path "core::char::EscapeDebugInner")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1798,37 +2032,43 @@ Module char.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Bytes" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::escape::EscapeIterInner")
-                                    [ Value.Integer IntegerKind.Usize 10 ]
-                                    []
-                                ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Bytes" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::escape::EscapeIterInner")
+                                      [ Value.Integer IntegerKind.Usize 10 ]
+                                      []
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -1854,27 +2094,33 @@ Module char.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Char" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "char" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Char" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "char" ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)))
             ]
@@ -1904,11 +2150,15 @@ Module char.
       | [], [], [ chr ] =>
         ltac:(M.monadic
           (let chr := M.alloc (| Ty.path "char", chr |) in
-          Value.StructTuple
-            "core::char::EscapeDebug"
-            []
-            []
-            [ Value.StructTuple "core::char::EscapeDebugInner::Char" [] [] [ M.read (| chr |) ] ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "core::char::EscapeDebug"
+              [
+                M.value_with_ty
+                  (Value.StructTuple "core::char::EscapeDebugInner::Char" [ M.read (| chr |) ])
+                  (Ty.path "core::char::EscapeDebugInner")
+              ])
+            (Ty.path "core::char::EscapeDebug")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1927,34 +2177,38 @@ Module char.
       | [], [], [ c ] =>
         ltac:(M.monadic
           (let c := M.alloc (| Ty.path "core::ascii::ascii_char::AsciiChar", c |) in
-          Value.StructTuple
-            "core::char::EscapeDebug"
-            []
-            []
-            [
-              Value.StructTuple
-                "core::char::EscapeDebugInner::Bytes"
-                []
-                []
-                [
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::escape::EscapeIterInner")
-                      [ Value.Integer IntegerKind.Usize 10 ]
-                      [],
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "core::escape::EscapeIterInner")
-                        [ Value.Integer IntegerKind.Usize 10 ]
-                        [],
-                      "backslash",
-                      [],
-                      []
-                    |),
-                    [ M.read (| c |) ]
-                  |)
-                ]
-            ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "core::char::EscapeDebug"
+              [
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::char::EscapeDebugInner::Bytes"
+                    [
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::escape::EscapeIterInner")
+                          [ Value.Integer IntegerKind.Usize 10 ]
+                          [],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::escape::EscapeIterInner")
+                            [ Value.Integer IntegerKind.Usize 10 ]
+                            [],
+                          "backslash",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| c |))
+                            (Ty.path "core::ascii::ascii_char::AsciiChar")
+                        ]
+                      |)
+                    ])
+                  (Ty.path "core::char::EscapeDebugInner")
+              ])
+            (Ty.path "core::char::EscapeDebug")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1973,34 +2227,34 @@ Module char.
       | [], [], [ c ] =>
         ltac:(M.monadic
           (let c := M.alloc (| Ty.path "char", c |) in
-          Value.StructTuple
-            "core::char::EscapeDebug"
-            []
-            []
-            [
-              Value.StructTuple
-                "core::char::EscapeDebugInner::Bytes"
-                []
-                []
-                [
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::escape::EscapeIterInner")
-                      [ Value.Integer IntegerKind.Usize 10 ]
-                      [],
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "core::escape::EscapeIterInner")
-                        [ Value.Integer IntegerKind.Usize 10 ]
-                        [],
-                      "unicode",
-                      [],
-                      []
-                    |),
-                    [ M.read (| c |) ]
-                  |)
-                ]
-            ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "core::char::EscapeDebug"
+              [
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::char::EscapeDebugInner::Bytes"
+                    [
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::escape::EscapeIterInner")
+                          [ Value.Integer IntegerKind.Usize 10 ]
+                          [],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::escape::EscapeIterInner")
+                            [ Value.Integer IntegerKind.Usize 10 ]
+                            [],
+                          "unicode",
+                          [],
+                          []
+                        |),
+                        [ M.value_with_ty (M.read (| c |)) (Ty.path "char") ]
+                      |)
+                    ])
+                  (Ty.path "core::char::EscapeDebugInner")
+              ])
+            (Ty.path "core::char::EscapeDebug")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2030,28 +2284,28 @@ Module char.
                   "core::char::EscapeDebug",
                   0
                 |),
-                Value.StructTuple
-                  "core::char::EscapeDebugInner::Bytes"
-                  []
-                  []
-                  [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "core::escape::EscapeIterInner")
-                        [ Value.Integer IntegerKind.Usize 10 ]
-                        [],
-                      M.get_associated_function (|
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::char::EscapeDebugInner::Bytes"
+                    [
+                      M.call_closure (|
                         Ty.apply
                           (Ty.path "core::escape::EscapeIterInner")
                           [ Value.Integer IntegerKind.Usize 10 ]
                           [],
-                        "empty",
-                        [],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::escape::EscapeIterInner")
+                            [ Value.Integer IntegerKind.Usize 10 ]
+                            [],
+                          "empty",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
-                    |)
-                  ]
+                      |)
+                    ])
+                  (Ty.path "core::char::EscapeDebugInner")
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -2127,28 +2381,44 @@ Module char.
                       [ Ty.path "char"; Ty.function [ Ty.path "u8" ] (Ty.path "char") ]
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
-                        M.get_associated_function (|
-                          Ty.apply
-                            (Ty.path "core::escape::EscapeIterInner")
-                            [ Value.Integer IntegerKind.Usize 10 ]
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "core::escape::EscapeIterInner")
+                              [ Value.Integer IntegerKind.Usize 10 ]
+                              [],
+                            "next",
                             [],
-                          "next",
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| bytes |) |) |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::escape::EscapeIterInner")
+                                    [ Value.Integer IntegerKind.Usize 10 ]
+                                    []
+                                ])
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u8" ]);
+                      M.value_with_ty
+                        (M.get_trait_method (|
+                          "core::convert::From",
+                          Ty.path "char",
+                          [],
+                          [ Ty.path "u8" ],
+                          "from",
                           [],
                           []
-                        |),
-                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| bytes |) |) |) ]
-                      |);
-                      M.get_trait_method (|
-                        "core::convert::From",
-                        Ty.path "char",
-                        [],
-                        [ Ty.path "u8" ],
-                        "from",
-                        [],
-                        []
-                      |)
+                        |))
+                        (Ty.function [ Ty.path "u8" ] (Ty.path "char"))
                     ]
                   |)));
               fun γ =>
@@ -2170,15 +2440,17 @@ Module char.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::char::EscapeDebug" ])
+                        ]
                       |) in
                     M.alloc (|
                       Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ],
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.path "char" ]
-                        [ M.read (| chr |) ]
+                      M.value_with_ty
+                        (Value.StructTuple "core::option::Option::Some" [ M.read (| chr |) ])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ])
                     |)
                   |)))
             ]
@@ -2211,7 +2483,11 @@ Module char.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::char::EscapeDebug" ])
+                ]
               |) in
             M.alloc (|
               Ty.tuple
@@ -2220,11 +2496,9 @@ Module char.
               Value.Tuple
                 [
                   M.read (| n |);
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "usize" ]
-                    [ M.read (| n |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| n |) ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                 ]
             |)
           |)))
@@ -2252,7 +2526,11 @@ Module char.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, self |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, self |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "core::char::EscapeDebug" ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -2336,7 +2614,19 @@ Module char.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytes |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytes |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::escape::EscapeIterInner")
+                              [ Value.Integer IntegerKind.Usize 10 ]
+                              []
+                          ])
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -2444,25 +2734,44 @@ Module char.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "core::escape::EscapeIterInner")
-                                [ Value.Integer IntegerKind.Usize 10 ]
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "core::escape::EscapeIterInner")
+                                  [ Value.Integer IntegerKind.Usize 10 ]
+                                  [],
+                                "as_str",
                                 [],
-                              "as_str",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytes |) |) |) ]
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| bytes |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::escape::EscapeIterInner")
+                                        [ Value.Integer IntegerKind.Usize 10 ]
+                                        []
+                                    ])
+                              ]
+                            |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -2490,8 +2799,10 @@ Module char.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.read (| M.deref (| M.read (| chr |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty (M.read (| M.deref (| M.read (| chr |) |) |)) (Ty.path "char")
                     ]
                   |)))
             ]
@@ -2540,39 +2851,45 @@ Module char.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ToLowercase" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::char::ToLowercase",
-                              0
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ToLowercase" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::char::ToLowercase",
+                                0
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2597,39 +2914,41 @@ Module char.
         ltac:(M.monadic
           (let self :=
             M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::char::ToLowercase" ], self |) in
-          Value.StructTuple
-            "core::char::ToLowercase"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "core::char::CaseMappingIter",
-                M.get_trait_method (|
-                  "core::clone::Clone",
+          M.value_with_ty
+            (Value.StructTuple
+              "core::char::ToLowercase"
+              [
+                M.call_closure (|
                   Ty.path "core::char::CaseMappingIter",
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "core::char::CaseMappingIter",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::char::ToLowercase",
-                          0
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::char::ToLowercase",
+                              0
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
-            ]))
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ])
+                  ]
+                |)
+              ])
+            (Ty.path "core::char::ToLowercase")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2674,14 +2993,16 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::ToLowercase",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::ToLowercase",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::char::CaseMappingIter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2711,14 +3032,16 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::ToLowercase",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::ToLowercase",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2751,11 +3074,13 @@ Module char.
               [ Acc; Fold ]
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (| self, "core::char::ToLowercase", 0 |)
-              |);
-              M.read (| init |);
-              M.read (| fold |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_tuple_field (| self, "core::char::ToLowercase", 0 |)
+                |))
+                (Ty.path "core::char::CaseMappingIter");
+              M.value_with_ty (M.read (| init |)) Acc;
+              M.value_with_ty (M.read (| fold |)) Fold
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2783,9 +3108,11 @@ Module char.
               []
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (| self, "core::char::ToLowercase", 0 |)
-              |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_tuple_field (| self, "core::char::ToLowercase", 0 |)
+                |))
+                (Ty.path "core::char::CaseMappingIter")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2813,9 +3140,11 @@ Module char.
               []
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (| self, "core::char::ToLowercase", 0 |)
-              |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_tuple_field (| self, "core::char::ToLowercase", 0 |)
+                |))
+                (Ty.path "core::char::CaseMappingIter")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2852,15 +3181,17 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::ToLowercase",
-                  0
-                |)
-              |);
-              M.read (| n |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::ToLowercase",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::char::CaseMappingIter" ]);
+              M.value_with_ty (M.read (| n |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2894,15 +3225,17 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::ToLowercase",
-                  0
-                |)
-              |);
-              M.read (| idx |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::ToLowercase",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::char::CaseMappingIter" ]);
+              M.value_with_ty (M.read (| idx |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2956,14 +3289,16 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::ToLowercase",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::ToLowercase",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::char::CaseMappingIter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2996,11 +3331,13 @@ Module char.
               [ Acc; Fold ]
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (| self, "core::char::ToLowercase", 0 |)
-              |);
-              M.read (| init |);
-              M.read (| rfold |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_tuple_field (| self, "core::char::ToLowercase", 0 |)
+                |))
+                (Ty.path "core::char::CaseMappingIter");
+              M.value_with_ty (M.read (| init |)) Acc;
+              M.value_with_ty (M.read (| rfold |)) Fold
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3037,15 +3374,17 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::ToLowercase",
-                  0
-                |)
-              |);
-              M.read (| n |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::ToLowercase",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::char::CaseMappingIter" ]);
+              M.value_with_ty (M.read (| n |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3103,14 +3442,16 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::ToLowercase",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::ToLowercase",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3139,14 +3480,16 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::ToLowercase",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::ToLowercase",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3239,20 +3582,24 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::char::ToLowercase",
-                      0
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::char::ToLowercase",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3299,39 +3646,45 @@ Module char.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ToUppercase" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::char::ToUppercase",
-                              0
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ToUppercase" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::char::ToUppercase",
+                                0
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3356,39 +3709,41 @@ Module char.
         ltac:(M.monadic
           (let self :=
             M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::char::ToUppercase" ], self |) in
-          Value.StructTuple
-            "core::char::ToUppercase"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "core::char::CaseMappingIter",
-                M.get_trait_method (|
-                  "core::clone::Clone",
+          M.value_with_ty
+            (Value.StructTuple
+              "core::char::ToUppercase"
+              [
+                M.call_closure (|
                   Ty.path "core::char::CaseMappingIter",
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.path "core::char::CaseMappingIter",
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::char::ToUppercase",
-                          0
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::char::ToUppercase",
+                              0
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
-            ]))
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ])
+                  ]
+                |)
+              ])
+            (Ty.path "core::char::ToUppercase")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3433,14 +3788,16 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::ToUppercase",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::ToUppercase",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::char::CaseMappingIter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3470,14 +3827,16 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::ToUppercase",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::ToUppercase",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3510,11 +3869,13 @@ Module char.
               [ Acc; Fold ]
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (| self, "core::char::ToUppercase", 0 |)
-              |);
-              M.read (| init |);
-              M.read (| fold |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_tuple_field (| self, "core::char::ToUppercase", 0 |)
+                |))
+                (Ty.path "core::char::CaseMappingIter");
+              M.value_with_ty (M.read (| init |)) Acc;
+              M.value_with_ty (M.read (| fold |)) Fold
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3542,9 +3903,11 @@ Module char.
               []
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (| self, "core::char::ToUppercase", 0 |)
-              |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_tuple_field (| self, "core::char::ToUppercase", 0 |)
+                |))
+                (Ty.path "core::char::CaseMappingIter")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3572,9 +3935,11 @@ Module char.
               []
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (| self, "core::char::ToUppercase", 0 |)
-              |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_tuple_field (| self, "core::char::ToUppercase", 0 |)
+                |))
+                (Ty.path "core::char::CaseMappingIter")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3611,15 +3976,17 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::ToUppercase",
-                  0
-                |)
-              |);
-              M.read (| n |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::ToUppercase",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::char::CaseMappingIter" ]);
+              M.value_with_ty (M.read (| n |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3653,15 +4020,17 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::ToUppercase",
-                  0
-                |)
-              |);
-              M.read (| idx |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::ToUppercase",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::char::CaseMappingIter" ]);
+              M.value_with_ty (M.read (| idx |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3715,14 +4084,16 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::ToUppercase",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::ToUppercase",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::char::CaseMappingIter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3755,11 +4126,13 @@ Module char.
               [ Acc; Fold ]
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (| self, "core::char::ToUppercase", 0 |)
-              |);
-              M.read (| init |);
-              M.read (| rfold |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_tuple_field (| self, "core::char::ToUppercase", 0 |)
+                |))
+                (Ty.path "core::char::CaseMappingIter");
+              M.value_with_ty (M.read (| init |)) Acc;
+              M.value_with_ty (M.read (| rfold |)) Fold
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3796,15 +4169,17 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::ToUppercase",
-                  0
-                |)
-              |);
-              M.read (| n |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::ToUppercase",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::char::CaseMappingIter" ]);
+              M.value_with_ty (M.read (| n |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3862,14 +4237,16 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::ToUppercase",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::ToUppercase",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3898,14 +4275,16 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::ToUppercase",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::ToUppercase",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3998,20 +4377,24 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::char::ToUppercase",
-                      0
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::char::ToUppercase",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4067,57 +4450,63 @@ Module char.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CaseMappingIter" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::array::iter::IntoIter")
-                            [ Value.Integer IntegerKind.Usize 3 ]
-                            [ Ty.path "char" ]
-                        ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "core::array::iter::IntoIter")
-                                [ Value.Integer IntegerKind.Usize 3 ]
-                                [ Ty.path "char" ]
-                            ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::char::CaseMappingIter",
-                              0
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CaseMappingIter" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::array::iter::IntoIter")
+                              [ Value.Integer IntegerKind.Usize 3 ]
+                              [ Ty.path "char" ]
+                          ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::array::iter::IntoIter")
+                                  [ Value.Integer IntegerKind.Usize 3 ]
+                                  [ Ty.path "char" ]
+                              ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::char::CaseMappingIter",
+                                0
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4145,45 +4534,55 @@ Module char.
               Ty.apply (Ty.path "&") [] [ Ty.path "core::char::CaseMappingIter" ],
               self
             |) in
-          Value.StructTuple
-            "core::char::CaseMappingIter"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "core::array::iter::IntoIter")
-                  [ Value.Integer IntegerKind.Usize 3 ]
-                  [ Ty.path "char" ],
-                M.get_trait_method (|
-                  "core::clone::Clone",
+          M.value_with_ty
+            (Value.StructTuple
+              "core::char::CaseMappingIter"
+              [
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "core::array::iter::IntoIter")
                     [ Value.Integer IntegerKind.Usize 3 ]
                     [ Ty.path "char" ],
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.apply
+                      (Ty.path "core::array::iter::IntoIter")
+                      [ Value.Integer IntegerKind.Usize 3 ]
+                      [ Ty.path "char" ],
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::char::CaseMappingIter",
-                          0
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::char::CaseMappingIter",
+                              0
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
-            ]))
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::array::iter::IntoIter")
+                            [ Value.Integer IntegerKind.Usize 3 ]
+                            [ Ty.path "char" ]
+                        ])
+                  ]
+                |)
+              ])
+            (Ty.path "core::char::CaseMappingIter")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -4246,7 +4645,14 @@ Module char.
                   [],
                   []
                 |),
-                [ M.read (| chars |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| chars |))
+                    (Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 3 ]
+                      [ Ty.path "char" ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.match_operator (|
@@ -4290,7 +4696,19 @@ Module char.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.MutRef, iter |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.MutRef, iter |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::array::iter::IntoIter")
+                                      [ Value.Integer IntegerKind.Usize 3 ]
+                                      [ Ty.path "char" ]
+                                  ])
+                            ]
                           |) in
                         M.alloc (|
                           Ty.tuple [],
@@ -4346,7 +4764,19 @@ Module char.
                                           [],
                                           []
                                         |),
-                                        [ M.borrow (| Pointer.Kind.MutRef, iter |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.MutRef, iter |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::array::iter::IntoIter")
+                                                  [ Value.Integer IntegerKind.Usize 3 ]
+                                                  [ Ty.path "char" ]
+                                              ])
+                                        ]
                                       |) in
                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                   |)));
@@ -4360,7 +4790,9 @@ Module char.
               |) in
             M.alloc (|
               Ty.path "core::char::CaseMappingIter",
-              Value.StructTuple "core::char::CaseMappingIter" [] [] [ M.read (| iter |) ]
+              M.value_with_ty
+                (Value.StructTuple "core::char::CaseMappingIter" [ M.read (| iter |) ])
+                (Ty.path "core::char::CaseMappingIter")
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4406,14 +4838,24 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::CaseMappingIter",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::CaseMappingIter",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::array::iter::IntoIter")
+                      [ Value.Integer IntegerKind.Usize 3 ]
+                      [ Ty.path "char" ]
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4449,14 +4891,24 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::CaseMappingIter",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::CaseMappingIter",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::array::iter::IntoIter")
+                      [ Value.Integer IntegerKind.Usize 3 ]
+                      [ Ty.path "char" ]
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4492,11 +4944,16 @@ Module char.
               [ Acc; Fold ]
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (| self, "core::char::CaseMappingIter", 0 |)
-              |);
-              M.read (| init |);
-              M.read (| fold |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_tuple_field (| self, "core::char::CaseMappingIter", 0 |)
+                |))
+                (Ty.apply
+                  (Ty.path "core::array::iter::IntoIter")
+                  [ Value.Integer IntegerKind.Usize 3 ]
+                  [ Ty.path "char" ]);
+              M.value_with_ty (M.read (| init |)) Acc;
+              M.value_with_ty (M.read (| fold |)) Fold
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4527,9 +4984,14 @@ Module char.
               []
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (| self, "core::char::CaseMappingIter", 0 |)
-              |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_tuple_field (| self, "core::char::CaseMappingIter", 0 |)
+                |))
+                (Ty.apply
+                  (Ty.path "core::array::iter::IntoIter")
+                  [ Value.Integer IntegerKind.Usize 3 ]
+                  [ Ty.path "char" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4560,9 +5022,14 @@ Module char.
               []
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (| self, "core::char::CaseMappingIter", 0 |)
-              |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_tuple_field (| self, "core::char::CaseMappingIter", 0 |)
+                |))
+                (Ty.apply
+                  (Ty.path "core::array::iter::IntoIter")
+                  [ Value.Integer IntegerKind.Usize 3 ]
+                  [ Ty.path "char" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4602,15 +5069,25 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::CaseMappingIter",
-                  0
-                |)
-              |);
-              M.read (| n |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::CaseMappingIter",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::array::iter::IntoIter")
+                      [ Value.Integer IntegerKind.Usize 3 ]
+                      [ Ty.path "char" ]
+                  ]);
+              M.value_with_ty (M.read (| n |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4647,15 +5124,25 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::CaseMappingIter",
-                  0
-                |)
-              |);
-              M.read (| idx |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::CaseMappingIter",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::array::iter::IntoIter")
+                      [ Value.Integer IntegerKind.Usize 3 ]
+                      [ Ty.path "char" ]
+                  ]);
+              M.value_with_ty (M.read (| idx |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4712,14 +5199,24 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::CaseMappingIter",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::CaseMappingIter",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::array::iter::IntoIter")
+                      [ Value.Integer IntegerKind.Usize 3 ]
+                      [ Ty.path "char" ]
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4755,11 +5252,16 @@ Module char.
               [ Acc; Fold ]
             |),
             [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (| self, "core::char::CaseMappingIter", 0 |)
-              |);
-              M.read (| init |);
-              M.read (| rfold |)
+              M.value_with_ty
+                (M.read (|
+                  M.SubPointer.get_struct_tuple_field (| self, "core::char::CaseMappingIter", 0 |)
+                |))
+                (Ty.apply
+                  (Ty.path "core::array::iter::IntoIter")
+                  [ Value.Integer IntegerKind.Usize 3 ]
+                  [ Ty.path "char" ]);
+              M.value_with_ty (M.read (| init |)) Acc;
+              M.value_with_ty (M.read (| rfold |)) Fold
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4799,15 +5301,25 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::CaseMappingIter",
-                  0
-                |)
-              |);
-              M.read (| n |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::CaseMappingIter",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::array::iter::IntoIter")
+                      [ Value.Integer IntegerKind.Usize 3 ]
+                      [ Ty.path "char" ]
+                  ]);
+              M.value_with_ty (M.read (| n |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4859,14 +5371,24 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::CaseMappingIter",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::CaseMappingIter",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::array::iter::IntoIter")
+                      [ Value.Integer IntegerKind.Usize 3 ]
+                      [ Ty.path "char" ]
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4901,14 +5423,24 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::CaseMappingIter",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::CaseMappingIter",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::array::iter::IntoIter")
+                      [ Value.Integer IntegerKind.Usize 3 ]
+                      [ Ty.path "char" ]
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5041,34 +5573,49 @@ Module char.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::array::iter::IntoIter")
-                                    [ Value.Integer IntegerKind.Usize 3 ]
-                                    [ Ty.path "char" ],
-                                  M.get_trait_method (|
-                                    "core::clone::Clone",
+                                M.value_with_ty
+                                  (M.call_closure (|
                                     Ty.apply
                                       (Ty.path "core::array::iter::IntoIter")
                                       [ Value.Integer IntegerKind.Usize 3 ]
                                       [ Ty.path "char" ],
-                                    [],
-                                    [],
-                                    "clone",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_tuple_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "core::char::CaseMappingIter",
-                                        0
-                                      |)
-                                    |)
-                                  ]
-                                |)
+                                    M.get_trait_method (|
+                                      "core::clone::Clone",
+                                      Ty.apply
+                                        (Ty.path "core::array::iter::IntoIter")
+                                        [ Value.Integer IntegerKind.Usize 3 ]
+                                        [ Ty.path "char" ],
+                                      [],
+                                      [],
+                                      "clone",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "core::char::CaseMappingIter",
+                                            0
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::array::iter::IntoIter")
+                                              [ Value.Integer IntegerKind.Usize 3 ]
+                                              [ Ty.path "char" ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::array::iter::IntoIter")
+                                    [ Value.Integer IntegerKind.Usize 3 ]
+                                    [ Ty.path "char" ])
                               ]
                             |)
                           |),
@@ -5111,12 +5658,22 @@ Module char.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::array::iter::IntoIter")
+                                                        [ Value.Integer IntegerKind.Usize 3 ]
+                                                        [ Ty.path "char" ]
+                                                    ])
                                               ]
                                             |)
                                           |),
@@ -5189,31 +5746,49 @@ Module char.
                                                             []
                                                           |),
                                                           [
-                                                            M.call_closure (|
-                                                              Ty.apply
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path "core::result::Result")
+                                                                  []
+                                                                  [
+                                                                    Ty.tuple [];
+                                                                    Ty.path "core::fmt::Error"
+                                                                  ],
+                                                                M.get_trait_method (|
+                                                                  "core::fmt::Write",
+                                                                  Ty.path "core::fmt::Formatter",
+                                                                  [],
+                                                                  [],
+                                                                  "write_char",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      M.deref (| M.read (| f |) |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "core::fmt::Formatter"
+                                                                      ]);
+                                                                  M.value_with_ty
+                                                                    (M.read (| c |))
+                                                                    (Ty.path "char")
+                                                                ]
+                                                              |))
+                                                              (Ty.apply
                                                                 (Ty.path "core::result::Result")
                                                                 []
                                                                 [
                                                                   Ty.tuple [];
                                                                   Ty.path "core::fmt::Error"
-                                                                ],
-                                                              M.get_trait_method (|
-                                                                "core::fmt::Write",
-                                                                Ty.path "core::fmt::Formatter",
-                                                                [],
-                                                                [],
-                                                                "write_char",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  M.deref (| M.read (| f |) |)
-                                                                |);
-                                                                M.read (| c |)
-                                                              ]
-                                                            |)
+                                                                ])
                                                           ]
                                                         |)
                                                       |),
@@ -5277,7 +5852,20 @@ Module char.
                                                                       [],
                                                                       []
                                                                     |),
-                                                                    [ M.read (| residual |) ]
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.read (| residual |))
+                                                                        (Ty.apply
+                                                                          (Ty.path
+                                                                            "core::result::Result")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "core::convert::Infallible";
+                                                                            Ty.path
+                                                                              "core::fmt::Error"
+                                                                          ])
+                                                                    ]
                                                                   |)
                                                                 |)
                                                               |)
@@ -5311,11 +5899,12 @@ Module char.
                     (Ty.path "core::result::Result")
                     []
                     [ Ty.tuple []; Ty.path "core::fmt::Error" ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [ Ty.tuple []; Ty.path "core::fmt::Error" ]
-                    [ Value.Tuple [] ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.tuple []; Ty.path "core::fmt::Error" ])
                 |)
               |)))
           |)))
@@ -5366,36 +5955,42 @@ Module char.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "TryFromCharError" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.tuple [] ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::char::TryFromCharError",
-                              0
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "TryFromCharError" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.tuple [] ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::char::TryFromCharError",
+                                0
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5494,22 +6089,26 @@ Module char.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::char::TryFromCharError",
-                  0
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| other |) |),
-                  "core::char::TryFromCharError",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::char::TryFromCharError",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.tuple [] ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| other |) |),
+                    "core::char::TryFromCharError",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.tuple [] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5585,11 +6184,15 @@ Module char.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_trait_method (| "core::fmt::Display", Ty.path "str", [], [], "fmt", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (| mk_str (| "unicode code point out of range" |) |)
-              |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| mk_str (| "unicode code point out of range" |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

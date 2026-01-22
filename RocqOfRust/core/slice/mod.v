@@ -26,398 +26,457 @@ Module slice.
             []
             [ Ty.tuple [ Ty.path "core::slice::Direction"; Ty.path "usize" ] ]) (|
           ltac:(M.monadic
-            (Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.tuple [ Ty.path "core::slice::Direction"; Ty.path "usize" ] ]
-              [
-                M.match_operator (|
-                  Ty.tuple [ Ty.path "core::slice::Direction"; Ty.path "usize" ],
-                  M.alloc (|
-                    Ty.tuple
-                      [
-                        Ty.apply
-                          (Ty.path "core::ops::range::Bound")
-                          []
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ];
-                        Ty.apply
-                          (Ty.path "core::ops::range::Bound")
-                          []
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
-                      ],
-                    Value.Tuple
-                      [
-                        M.call_closure (|
+            (M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.match_operator (|
+                    Ty.tuple [ Ty.path "core::slice::Direction"; Ty.path "usize" ],
+                    M.alloc (|
+                      Ty.tuple
+                        [
                           Ty.apply
                             (Ty.path "core::ops::range::Bound")
                             []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
-                          M.get_trait_method (|
-                            "core::ops::range::RangeBounds",
-                            impl_OneSidedRange_usize_,
-                            [],
-                            [ Ty.path "usize" ],
-                            "start_bound",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, range |) ]
-                        |);
-                        M.call_closure (|
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ];
                           Ty.apply
                             (Ty.path "core::ops::range::Bound")
                             []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
-                          M.get_trait_method (|
-                            "core::ops::range::RangeBounds",
-                            impl_OneSidedRange_usize_,
-                            [],
-                            [ Ty.path "usize" ],
-                            "end_bound",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, range |) ]
-                        |)
-                      ]
-                  |),
-                  [
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                        let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                        let _ :=
-                          M.is_struct_tuple (| γ0_0, "core::ops::range::Bound::Unbounded" |) in
-                        let γ1_0 :=
-                          M.SubPointer.get_struct_tuple_field (|
-                            γ0_1,
-                            "core::ops::range::Bound::Excluded",
-                            0
-                          |) in
-                        let i := M.copy (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
-                        Value.Tuple
-                          [
-                            Value.StructTuple "core::slice::Direction::Front" [] [] [];
-                            M.read (| M.deref (| M.read (| i |) |) |)
-                          ]));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                        let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                        let _ :=
-                          M.is_struct_tuple (| γ0_0, "core::ops::range::Bound::Unbounded" |) in
-                        let γ1_0 :=
-                          M.SubPointer.get_struct_tuple_field (|
-                            γ0_1,
-                            "core::ops::range::Bound::Included",
-                            0
-                          |) in
-                        let i := M.copy (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
-                        Value.Tuple
-                          [
-                            Value.StructTuple "core::slice::Direction::Front" [] [] [];
-                            M.match_operator (|
-                              Ty.path "usize",
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "core::ops::control_flow::ControlFlow")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::option::Option")
-                                      []
-                                      [ Ty.path "core::convert::Infallible" ];
-                                    Ty.path "usize"
-                                  ],
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::ops::control_flow::ControlFlow")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::option::Option")
-                                        []
-                                        [ Ty.path "core::convert::Infallible" ];
-                                      Ty.path "usize"
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::ops::try_trait::Try",
-                                    Ty.apply
-                                      (Ty.path "core::option::Option")
-                                      []
-                                      [ Ty.path "usize" ],
-                                    [],
-                                    [],
-                                    "branch",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "core::option::Option")
-                                        []
-                                        [ Ty.path "usize" ],
-                                      M.get_associated_function (|
-                                        Ty.path "usize",
-                                        "checked_add",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.read (| M.deref (| M.read (| i |) |) |);
-                                        Value.Integer IntegerKind.Usize 1
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let γ0_0 :=
-                                      M.SubPointer.get_struct_tuple_field (|
-                                        γ,
-                                        "core::ops::control_flow::ControlFlow::Break",
-                                        0
-                                      |) in
-                                    let residual :=
-                                      M.copy (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "core::convert::Infallible" ],
-                                        γ0_0
-                                      |) in
-                                    M.never_to_any (|
-                                      M.read (|
-                                        M.return_ (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "core::option::Option")
-                                              []
-                                              [
-                                                Ty.tuple
-                                                  [
-                                                    Ty.path "core::slice::Direction";
-                                                    Ty.path "usize"
-                                                  ]
-                                              ],
-                                            M.get_trait_method (|
-                                              "core::ops::try_trait::FromResidual",
-                                              Ty.apply
-                                                (Ty.path "core::option::Option")
-                                                []
-                                                [
-                                                  Ty.tuple
-                                                    [
-                                                      Ty.path "core::slice::Direction";
-                                                      Ty.path "usize"
-                                                    ]
-                                                ],
-                                              [],
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::option::Option")
-                                                  []
-                                                  [ Ty.path "core::convert::Infallible" ]
-                                              ],
-                                              "from_residual",
-                                              [],
-                                              []
-                                            |),
-                                            [ M.read (| residual |) ]
-                                          |)
-                                        |)
-                                      |)
-                                    |)));
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let γ0_0 :=
-                                      M.SubPointer.get_struct_tuple_field (|
-                                        γ,
-                                        "core::ops::control_flow::ControlFlow::Continue",
-                                        0
-                                      |) in
-                                    let val := M.copy (| Ty.path "usize", γ0_0 |) in
-                                    M.read (| val |)))
-                              ]
-                            |)
-                          ]));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                        let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                        let γ1_0 :=
-                          M.SubPointer.get_struct_tuple_field (|
-                            γ0_0,
-                            "core::ops::range::Bound::Excluded",
-                            0
-                          |) in
-                        let i := M.copy (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
-                        let _ :=
-                          M.is_struct_tuple (| γ0_1, "core::ops::range::Bound::Unbounded" |) in
-                        Value.Tuple
-                          [
-                            Value.StructTuple "core::slice::Direction::Back" [] [] [];
-                            M.match_operator (|
-                              Ty.path "usize",
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "core::ops::control_flow::ControlFlow")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::option::Option")
-                                      []
-                                      [ Ty.path "core::convert::Infallible" ];
-                                    Ty.path "usize"
-                                  ],
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::ops::control_flow::ControlFlow")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::option::Option")
-                                        []
-                                        [ Ty.path "core::convert::Infallible" ];
-                                      Ty.path "usize"
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::ops::try_trait::Try",
-                                    Ty.apply
-                                      (Ty.path "core::option::Option")
-                                      []
-                                      [ Ty.path "usize" ],
-                                    [],
-                                    [],
-                                    "branch",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "core::option::Option")
-                                        []
-                                        [ Ty.path "usize" ],
-                                      M.get_associated_function (|
-                                        Ty.path "usize",
-                                        "checked_add",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.read (| M.deref (| M.read (| i |) |) |);
-                                        Value.Integer IntegerKind.Usize 1
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let γ0_0 :=
-                                      M.SubPointer.get_struct_tuple_field (|
-                                        γ,
-                                        "core::ops::control_flow::ControlFlow::Break",
-                                        0
-                                      |) in
-                                    let residual :=
-                                      M.copy (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "core::convert::Infallible" ],
-                                        γ0_0
-                                      |) in
-                                    M.never_to_any (|
-                                      M.read (|
-                                        M.return_ (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "core::option::Option")
-                                              []
-                                              [
-                                                Ty.tuple
-                                                  [
-                                                    Ty.path "core::slice::Direction";
-                                                    Ty.path "usize"
-                                                  ]
-                                              ],
-                                            M.get_trait_method (|
-                                              "core::ops::try_trait::FromResidual",
-                                              Ty.apply
-                                                (Ty.path "core::option::Option")
-                                                []
-                                                [
-                                                  Ty.tuple
-                                                    [
-                                                      Ty.path "core::slice::Direction";
-                                                      Ty.path "usize"
-                                                    ]
-                                                ],
-                                              [],
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::option::Option")
-                                                  []
-                                                  [ Ty.path "core::convert::Infallible" ]
-                                              ],
-                                              "from_residual",
-                                              [],
-                                              []
-                                            |),
-                                            [ M.read (| residual |) ]
-                                          |)
-                                        |)
-                                      |)
-                                    |)));
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let γ0_0 :=
-                                      M.SubPointer.get_struct_tuple_field (|
-                                        γ,
-                                        "core::ops::control_flow::ControlFlow::Continue",
-                                        0
-                                      |) in
-                                    let val := M.copy (| Ty.path "usize", γ0_0 |) in
-                                    M.read (| val |)))
-                              ]
-                            |)
-                          ]));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                        let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                        let γ1_0 :=
-                          M.SubPointer.get_struct_tuple_field (|
-                            γ0_0,
-                            "core::ops::range::Bound::Included",
-                            0
-                          |) in
-                        let i := M.copy (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
-                        let _ :=
-                          M.is_struct_tuple (| γ0_1, "core::ops::range::Bound::Unbounded" |) in
-                        Value.Tuple
-                          [
-                            Value.StructTuple "core::slice::Direction::Back" [] [] [];
-                            M.read (| M.deref (| M.read (| i |) |) |)
-                          ]));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (M.never_to_any (|
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
+                        ],
+                      Value.Tuple
+                        [
                           M.call_closure (|
-                            Ty.path "never",
-                            M.get_function (| "core::panicking::panic", [], [] |),
-                            [ mk_str (| "internal error: entered unreachable code" |) ]
+                            Ty.apply
+                              (Ty.path "core::ops::range::Bound")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
+                            M.get_trait_method (|
+                              "core::ops::range::RangeBounds",
+                              impl_OneSidedRange_usize_,
+                              [],
+                              [ Ty.path "usize" ],
+                              "start_bound",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, range |))
+                                (Ty.apply (Ty.path "&") [] [ impl_OneSidedRange_usize_ ])
+                            ]
+                          |);
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::ops::range::Bound")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
+                            M.get_trait_method (|
+                              "core::ops::range::RangeBounds",
+                              impl_OneSidedRange_usize_,
+                              [],
+                              [ Ty.path "usize" ],
+                              "end_bound",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, range |))
+                                (Ty.apply (Ty.path "&") [] [ impl_OneSidedRange_usize_ ])
+                            ]
                           |)
-                        |)))
-                  ]
-                |)
-              ]))
+                        ]
+                    |),
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let _ :=
+                            M.is_struct_tuple (| γ0_0, "core::ops::range::Bound::Unbounded" |) in
+                          let γ1_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ0_1,
+                              "core::ops::range::Bound::Excluded",
+                              0
+                            |) in
+                          let i :=
+                            M.copy (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                          Value.Tuple
+                            [
+                              M.value_with_ty
+                                (Value.StructTuple "core::slice::Direction::Front" [])
+                                (Ty.path "core::slice::Direction");
+                              M.read (| M.deref (| M.read (| i |) |) |)
+                            ]));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let _ :=
+                            M.is_struct_tuple (| γ0_0, "core::ops::range::Bound::Unbounded" |) in
+                          let γ1_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ0_1,
+                              "core::ops::range::Bound::Included",
+                              0
+                            |) in
+                          let i :=
+                            M.copy (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                          Value.Tuple
+                            [
+                              M.value_with_ty
+                                (Value.StructTuple "core::slice::Direction::Front" [])
+                                (Ty.path "core::slice::Direction");
+                              M.match_operator (|
+                                Ty.path "usize",
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::ops::control_flow::ControlFlow")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ];
+                                      Ty.path "usize"
+                                    ],
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::ops::control_flow::ControlFlow")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::convert::Infallible" ];
+                                        Ty.path "usize"
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::ops::try_trait::Try",
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "usize" ],
+                                      [],
+                                      [],
+                                      "branch",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "usize" ],
+                                          M.get_associated_function (|
+                                            Ty.path "usize",
+                                            "checked_add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| M.deref (| M.read (| i |) |) |))
+                                              (Ty.path "usize");
+                                            M.value_with_ty
+                                              (Value.Integer IntegerKind.Usize 1)
+                                              (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "usize" ])
+                                    ]
+                                  |)
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::ops::control_flow::ControlFlow::Break",
+                                          0
+                                        |) in
+                                      let residual :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::convert::Infallible" ],
+                                          γ0_0
+                                        |) in
+                                      M.never_to_any (|
+                                        M.read (|
+                                          M.return_ (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [
+                                                  Ty.tuple
+                                                    [
+                                                      Ty.path "core::slice::Direction";
+                                                      Ty.path "usize"
+                                                    ]
+                                                ],
+                                              M.get_trait_method (|
+                                                "core::ops::try_trait::FromResidual",
+                                                Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [
+                                                    Ty.tuple
+                                                      [
+                                                        Ty.path "core::slice::Direction";
+                                                        Ty.path "usize"
+                                                      ]
+                                                  ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [ Ty.path "core::convert::Infallible" ]
+                                                ],
+                                                "from_residual",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| residual |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [ Ty.path "core::convert::Infallible" ])
+                                              ]
+                                            |)
+                                          |)
+                                        |)
+                                      |)));
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::ops::control_flow::ControlFlow::Continue",
+                                          0
+                                        |) in
+                                      let val := M.copy (| Ty.path "usize", γ0_0 |) in
+                                      M.read (| val |)))
+                                ]
+                              |)
+                            ]));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ1_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ0_0,
+                              "core::ops::range::Bound::Excluded",
+                              0
+                            |) in
+                          let i :=
+                            M.copy (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                          let _ :=
+                            M.is_struct_tuple (| γ0_1, "core::ops::range::Bound::Unbounded" |) in
+                          Value.Tuple
+                            [
+                              M.value_with_ty
+                                (Value.StructTuple "core::slice::Direction::Back" [])
+                                (Ty.path "core::slice::Direction");
+                              M.match_operator (|
+                                Ty.path "usize",
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::ops::control_flow::ControlFlow")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ];
+                                      Ty.path "usize"
+                                    ],
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::ops::control_flow::ControlFlow")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::convert::Infallible" ];
+                                        Ty.path "usize"
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::ops::try_trait::Try",
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "usize" ],
+                                      [],
+                                      [],
+                                      "branch",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "usize" ],
+                                          M.get_associated_function (|
+                                            Ty.path "usize",
+                                            "checked_add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| M.deref (| M.read (| i |) |) |))
+                                              (Ty.path "usize");
+                                            M.value_with_ty
+                                              (Value.Integer IntegerKind.Usize 1)
+                                              (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "usize" ])
+                                    ]
+                                  |)
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::ops::control_flow::ControlFlow::Break",
+                                          0
+                                        |) in
+                                      let residual :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::convert::Infallible" ],
+                                          γ0_0
+                                        |) in
+                                      M.never_to_any (|
+                                        M.read (|
+                                          M.return_ (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [
+                                                  Ty.tuple
+                                                    [
+                                                      Ty.path "core::slice::Direction";
+                                                      Ty.path "usize"
+                                                    ]
+                                                ],
+                                              M.get_trait_method (|
+                                                "core::ops::try_trait::FromResidual",
+                                                Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [
+                                                    Ty.tuple
+                                                      [
+                                                        Ty.path "core::slice::Direction";
+                                                        Ty.path "usize"
+                                                      ]
+                                                  ],
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [ Ty.path "core::convert::Infallible" ]
+                                                ],
+                                                "from_residual",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| residual |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [ Ty.path "core::convert::Infallible" ])
+                                              ]
+                                            |)
+                                          |)
+                                        |)
+                                      |)));
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let γ0_0 :=
+                                        M.SubPointer.get_struct_tuple_field (|
+                                          γ,
+                                          "core::ops::control_flow::ControlFlow::Continue",
+                                          0
+                                        |) in
+                                      let val := M.copy (| Ty.path "usize", γ0_0 |) in
+                                      M.read (| val |)))
+                                ]
+                              |)
+                            ]));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                          let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                          let γ1_0 :=
+                            M.SubPointer.get_struct_tuple_field (|
+                              γ0_0,
+                              "core::ops::range::Bound::Included",
+                              0
+                            |) in
+                          let i :=
+                            M.copy (| Ty.apply (Ty.path "&") [] [ Ty.path "usize" ], γ1_0 |) in
+                          let _ :=
+                            M.is_struct_tuple (| γ0_1, "core::ops::range::Bound::Unbounded" |) in
+                          Value.Tuple
+                            [
+                              M.value_with_ty
+                                (Value.StructTuple "core::slice::Direction::Back" [])
+                                (Ty.path "core::slice::Direction");
+                              M.read (| M.deref (| M.read (| i |) |) |)
+                            ]));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (M.never_to_any (|
+                            M.call_closure (|
+                              Ty.path "never",
+                              M.get_function (| "core::panicking::panic", [], [] |),
+                              [
+                                M.value_with_ty
+                                  (mk_str (| "internal error: entered unreachable code" |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                              ]
+                            |)
+                          |)))
+                    ]
+                  |)
+                ])
+              (Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [ Ty.tuple [ Ty.path "core::slice::Direction"; Ty.path "usize" ] ])))
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -471,7 +530,11 @@ Module slice.
               [],
               [ Ty.apply (Ty.path "slice") [] [ T ] ]
             |),
-            [ M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| self |) |) |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -501,7 +564,11 @@ Module slice.
               M.call_closure (|
                 Ty.path "usize",
                 M.get_associated_function (| Ty.apply (Ty.path "slice") [] [ T ], "len", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                ]
               |);
               Value.Integer IntegerKind.Usize 0
             ]
@@ -538,18 +605,22 @@ Module slice.
                   let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
                   let first := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ T ] ]
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| first |) |) |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| first |) |) |) ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ T ] ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ T ] ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ T ] ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -587,18 +658,22 @@ Module slice.
                   let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 1, 0 |) in
                   let first := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_0 |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| first |) |) |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| first |) |) |) ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&mut") [] [ T ] ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&mut") [] [ T ] ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -647,36 +722,40 @@ Module slice.
                       Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                       γ1_rest
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&") [] [ T ];
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                        ]
-                    ]
-                    [
-                      Value.Tuple
-                        [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| first |) |) |);
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| tail |) |) |)
-                        ]
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        Value.Tuple
+                          [
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| first |) |) |);
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| tail |) |) |)
+                          ]
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&") [] [ T ];
+                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                          ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&") [] [ T ];
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                        ]
-                    ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&") [] [ T ];
+                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                          ]
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -733,36 +812,40 @@ Module slice.
                       Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                       γ1_rest
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&mut") [] [ T ];
-                          Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                        ]
-                    ]
-                    [
-                      Value.Tuple
-                        [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| first |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| tail |) |) |)
-                        ]
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        Value.Tuple
+                          [
+                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| first |) |) |);
+                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| tail |) |) |)
+                          ]
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&mut") [] [ T ];
+                            Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                          ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&mut") [] [ T ];
-                          Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                        ]
-                    ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&mut") [] [ T ];
+                            Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                          ]
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -811,36 +894,40 @@ Module slice.
                       γ1_rest
                     |) in
                   let last := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_rev0 |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&") [] [ T ];
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                        ]
-                    ]
-                    [
-                      Value.Tuple
-                        [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| last |) |) |);
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| init |) |) |)
-                        ]
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        Value.Tuple
+                          [
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| last |) |) |);
+                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| init |) |) |)
+                          ]
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&") [] [ T ];
+                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                          ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&") [] [ T ];
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                        ]
-                    ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&") [] [ T ];
+                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                          ]
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -897,36 +984,40 @@ Module slice.
                       γ1_rest
                     |) in
                   let last := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_rev0 |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&mut") [] [ T ];
-                          Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                        ]
-                    ]
-                    [
-                      Value.Tuple
-                        [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| last |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| init |) |) |)
-                        ]
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        Value.Tuple
+                          [
+                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| last |) |) |);
+                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| init |) |) |)
+                          ]
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&mut") [] [ T ];
+                            Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                          ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&mut") [] [ T ];
-                          Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                        ]
-                    ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&mut") [] [ T ];
+                            Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                          ]
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -961,18 +1052,22 @@ Module slice.
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 0, 1 |) in
                   let γ1_rev0 := M.SubPointer.get_slice_rev_index (| γ, 0 |) in
                   let last := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_rev0 |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ T ] ]
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| last |) |) |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| last |) |) |) ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ T ] ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ T ] ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ T ] ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1010,18 +1105,22 @@ Module slice.
                   let γ1_rest := M.SubPointer.get_slice_rest (| γ, 0, 1 |) in
                   let γ1_rev0 := M.SubPointer.get_slice_rev_index (| γ, 0 |) in
                   let last := M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], γ1_rev0 |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| last |) |) |) ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| last |) |) |) ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&mut") [] [ T ] ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&mut") [] [ T ] ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1076,65 +1175,83 @@ Module slice.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
                             |);
                             N
                           ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ]
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ]
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "*const")
-                                  []
-                                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "*const") [] [ T ],
-                                  "cast",
-                                  [],
-                                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
-                                |),
-                                [
-                                  M.call_closure (|
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "*const")
+                                    []
+                                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                  M.get_associated_function (|
                                     Ty.apply (Ty.path "*const") [] [ T ],
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      "as_ptr",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
+                                    "cast",
+                                    [],
+                                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply (Ty.path "*const") [] [ T ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "slice") [] [ T ],
+                                          "as_ptr",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                        ]
+                                      |))
+                                      (Ty.apply (Ty.path "*const") [] [ T ])
+                                  ]
+                                |)
                               |)
                             |)
                           |)
                         |)
-                      |)
-                    ]))
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1198,70 +1315,89 @@ Module slice.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
                             |);
                             N
                           ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ]
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ]
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "*mut")
-                                      []
-                                      [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "*mut") [] [ T ],
-                                      "cast",
-                                      [],
-                                      [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
-                                    |),
-                                    [
-                                      M.call_closure (|
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "*mut")
+                                        []
+                                        [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                      M.get_associated_function (|
                                         Ty.apply (Ty.path "*mut") [] [ T ],
-                                        M.get_associated_function (|
-                                          Ty.apply (Ty.path "slice") [] [ T ],
-                                          "as_mut_ptr",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
+                                        "cast",
+                                        [],
+                                        [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.apply (Ty.path "*mut") [] [ T ],
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "slice") [] [ T ],
+                                              "as_mut_ptr",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                            ]
+                                          |))
+                                          (Ty.apply (Ty.path "*mut") [] [ T ])
+                                      ]
+                                    |)
                                   |)
                                 |)
                               |)
                             |)
                           |)
                         |)
-                      |)
-                    ]))
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1330,24 +1466,32 @@ Module slice.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
                             |);
                             N
                           ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ];
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                        ]
-                    ]
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ];
+                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                          ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (M.match_operator (|
@@ -1379,7 +1523,12 @@ Module slice.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |); N ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                          M.value_with_ty N (Ty.path "usize")
+                        ]
                       |)
                     |),
                     [
@@ -1397,64 +1546,77 @@ Module slice.
                               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                               γ0_1
                             |) in
-                          Value.StructTuple
-                            "core::option::Option::Some"
-                            []
-                            [
-                              Ty.tuple
-                                [
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ];
-                                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                                ]
-                            ]
-                            [
-                              Value.Tuple
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "*const")
-                                              []
-                                              [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                            M.get_associated_function (|
-                                              Ty.apply (Ty.path "*const") [] [ T ],
-                                              "cast",
-                                              [],
-                                              [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
-                                            |),
-                                            [
-                                              M.call_closure (|
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::option::Option::Some"
+                              [
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "*const")
+                                                []
+                                                [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                              M.get_associated_function (|
                                                 Ty.apply (Ty.path "*const") [] [ T ],
-                                                M.get_associated_function (|
-                                                  Ty.apply (Ty.path "slice") [] [ T ],
-                                                  "as_ptr",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| first |) |)
-                                                  |)
-                                                ]
-                                              |)
-                                            ]
+                                                "cast",
+                                                [],
+                                                [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.apply (Ty.path "*const") [] [ T ],
+                                                    M.get_associated_function (|
+                                                      Ty.apply (Ty.path "slice") [] [ T ],
+                                                      "as_ptr",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| M.read (| first |) |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                                    ]
+                                                  |))
+                                                  (Ty.apply (Ty.path "*const") [] [ T ])
+                                              ]
+                                            |)
                                           |)
                                         |)
                                       |)
-                                    |)
-                                  |);
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| tail |) |) |)
-                                ]
-                            ]))
+                                    |);
+                                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| tail |) |) |)
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "array") [ N ] [ T ] ];
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                  ]
+                              ])))
                     ]
                   |)))
             ]
@@ -1531,24 +1693,32 @@ Module slice.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
                             |);
                             N
                           ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ];
-                          Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                        ]
-                    ]
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ];
+                            Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                          ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (M.match_operator (|
@@ -1580,7 +1750,12 @@ Module slice.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |); N ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                          M.value_with_ty N (Ty.path "usize")
+                        ]
                       |)
                     |),
                     [
@@ -1598,75 +1773,86 @@ Module slice.
                               Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                               γ0_1
                             |) in
-                          Value.StructTuple
-                            "core::option::Option::Some"
-                            []
-                            [
-                              Ty.tuple
-                                [
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ];
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                                ]
-                            ]
-                            [
-                              Value.Tuple
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "*mut")
-                                                  []
-                                                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                                M.get_associated_function (|
-                                                  Ty.apply (Ty.path "*mut") [] [ T ],
-                                                  "cast",
-                                                  [],
-                                                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
-                                                |),
-                                                [
-                                                  M.call_closure (|
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::option::Option::Some"
+                              [
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (|
+                                                M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "*mut")
+                                                    []
+                                                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                                  M.get_associated_function (|
                                                     Ty.apply (Ty.path "*mut") [] [ T ],
-                                                    M.get_associated_function (|
-                                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                                      "as_mut_ptr",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.deref (| M.read (| first |) |)
-                                                      |)
-                                                    ]
-                                                  |)
-                                                ]
+                                                    "cast",
+                                                    [],
+                                                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.call_closure (|
+                                                        Ty.apply (Ty.path "*mut") [] [ T ],
+                                                        M.get_associated_function (|
+                                                          Ty.apply (Ty.path "slice") [] [ T ],
+                                                          "as_mut_ptr",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.deref (| M.read (| first |) |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [ Ty.apply (Ty.path "slice") [] [ T ]
+                                                              ])
+                                                        ]
+                                                      |))
+                                                      (Ty.apply (Ty.path "*mut") [] [ T ])
+                                                  ]
+                                                |)
                                               |)
                                             |)
                                           |)
                                         |)
                                       |)
+                                    |);
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| tail |) |)
                                     |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| tail |) |)
-                                  |)
-                                ]
-                            ]))
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "array") [ N ] [ T ] ];
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                  ]
+                              ])))
                     ]
                   |)))
             ]
@@ -1737,24 +1923,32 @@ Module slice.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
                             |);
                             N
                           ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
-                        ]
-                    ]
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
+                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                          ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (M.match_operator (|
@@ -1787,24 +1981,38 @@ Module slice.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                          M.call_closure (|
-                            Ty.path "usize",
-                            BinOp.Wrap.sub,
-                            [
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "slice") [] [ T ],
-                                  "len",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                              |);
-                              N
-                            ]
-                          |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.sub,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ T ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                  ]
+                                |);
+                                N
+                              ]
+                            |))
+                            (Ty.path "usize")
                         ]
                       |)
                     |),
@@ -1823,64 +2031,80 @@ Module slice.
                               Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                               γ0_1
                             |) in
-                          Value.StructTuple
-                            "core::option::Option::Some"
-                            []
-                            [
-                              Ty.tuple
-                                [
-                                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
-                                ]
-                            ]
-                            [
-                              Value.Tuple
-                                [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| init |) |) |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "*const")
-                                              []
-                                              [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                            M.get_associated_function (|
-                                              Ty.apply (Ty.path "*const") [] [ T ],
-                                              "cast",
-                                              [],
-                                              [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
-                                            |),
-                                            [
-                                              M.call_closure (|
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::option::Option::Some"
+                              [
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| init |) |)
+                                    |);
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "*const")
+                                                []
+                                                [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                              M.get_associated_function (|
                                                 Ty.apply (Ty.path "*const") [] [ T ],
-                                                M.get_associated_function (|
-                                                  Ty.apply (Ty.path "slice") [] [ T ],
-                                                  "as_ptr",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| last |) |)
-                                                  |)
-                                                ]
-                                              |)
-                                            ]
+                                                "cast",
+                                                [],
+                                                [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.apply (Ty.path "*const") [] [ T ],
+                                                    M.get_associated_function (|
+                                                      Ty.apply (Ty.path "slice") [] [ T ],
+                                                      "as_ptr",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| M.read (| last |) |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                                    ]
+                                                  |))
+                                                  (Ty.apply (Ty.path "*const") [] [ T ])
+                                              ]
+                                            |)
                                           |)
                                         |)
                                       |)
                                     |)
-                                  |)
-                                ]
-                            ]))
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ];
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                                  ]
+                              ])))
                     ]
                   |)))
             ]
@@ -1957,24 +2181,32 @@ Module slice.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
                             |);
                             N
                           ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
-                          Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
-                        ]
-                    ]
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
+                            Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                          ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (M.match_operator (|
@@ -2007,24 +2239,38 @@ Module slice.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                          M.call_closure (|
-                            Ty.path "usize",
-                            BinOp.Wrap.sub,
-                            [
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "slice") [] [ T ],
-                                  "len",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                              |);
-                              N
-                            ]
-                          |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.sub,
+                              [
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ T ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                  ]
+                                |);
+                                N
+                              ]
+                            |))
+                            (Ty.path "usize")
                         ]
                       |)
                     |),
@@ -2043,75 +2289,86 @@ Module slice.
                               Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                               γ0_1
                             |) in
-                          Value.StructTuple
-                            "core::option::Option::Some"
-                            []
-                            [
-                              Ty.tuple
-                                [
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [ Ty.apply (Ty.path "slice") [] [ T ] ];
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
-                                ]
-                            ]
-                            [
-                              Value.Tuple
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| init |) |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "*mut")
-                                                  []
-                                                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                                M.get_associated_function (|
-                                                  Ty.apply (Ty.path "*mut") [] [ T ],
-                                                  "cast",
-                                                  [],
-                                                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
-                                                |),
-                                                [
-                                                  M.call_closure (|
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::option::Option::Some"
+                              [
+                                Value.Tuple
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| init |) |)
+                                    |);
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (|
+                                                M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "*mut")
+                                                    []
+                                                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                                  M.get_associated_function (|
                                                     Ty.apply (Ty.path "*mut") [] [ T ],
-                                                    M.get_associated_function (|
-                                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                                      "as_mut_ptr",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.deref (| M.read (| last |) |)
-                                                      |)
-                                                    ]
-                                                  |)
-                                                ]
+                                                    "cast",
+                                                    [],
+                                                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.call_closure (|
+                                                        Ty.apply (Ty.path "*mut") [] [ T ],
+                                                        M.get_associated_function (|
+                                                          Ty.apply (Ty.path "slice") [] [ T ],
+                                                          "as_mut_ptr",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.deref (| M.read (| last |) |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [ Ty.apply (Ty.path "slice") [] [ T ]
+                                                              ])
+                                                        ]
+                                                      |))
+                                                      (Ty.apply (Ty.path "*mut") [] [ T ])
+                                                  ]
+                                                |)
                                               |)
                                             |)
                                           |)
                                         |)
                                       |)
                                     |)
-                                  |)
-                                ]
-                            ]))
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ];
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                                  ]
+                              ])))
                     ]
                   |)))
             ]
@@ -2172,18 +2429,26 @@ Module slice.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
                             |);
                             N
                           ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ]
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ])));
               fun γ =>
                 ltac:(M.monadic
                   (M.read (|
@@ -2209,29 +2474,41 @@ Module slice.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.sub,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.apply (Ty.path "slice") [] [ T ],
-                                        "len",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
-                                      ]
-                                    |);
-                                    N
-                                  ]
-                                |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.sub,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "slice") [] [ T ],
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                        ]
+                                      |);
+                                      N
+                                    ]
+                                  |))
+                                  (Ty.path "usize")
                               ]
                             |)
                           |),
@@ -2243,51 +2520,61 @@ Module slice.
                         (Ty.path "core::option::Option")
                         []
                         [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ],
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ]
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "*const")
-                                      []
-                                      [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "*const") [] [ T ],
-                                      "cast",
-                                      [],
-                                      [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
-                                    |),
-                                    [
-                                      M.call_closure (|
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "*const")
+                                        []
+                                        [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                      M.get_associated_function (|
                                         Ty.apply (Ty.path "*const") [] [ T ],
-                                        M.get_associated_function (|
-                                          Ty.apply (Ty.path "slice") [] [ T ],
-                                          "as_ptr",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| last |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
+                                        "cast",
+                                        [],
+                                        [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.apply (Ty.path "*const") [] [ T ],
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "slice") [] [ T ],
+                                              "as_ptr",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| last |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                            ]
+                                          |))
+                                          (Ty.apply (Ty.path "*const") [] [ T ])
+                                      ]
+                                    |)
                                   |)
                                 |)
                               |)
                             |)
-                          |)
-                        ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ])
                     |)
                   |)))
             ]
@@ -2357,18 +2644,27 @@ Module slice.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
                             |);
                             N
                           ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ]
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (M.read (|
@@ -2410,32 +2706,44 @@ Module slice.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (| M.read (| self |) |)
-                                    |);
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      BinOp.Wrap.sub,
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          M.get_associated_function (|
-                                            Ty.apply (Ty.path "slice") [] [ T ],
-                                            "len",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| self |) |)
-                                            |)
-                                          ]
-                                        |);
-                                        N
-                                      ]
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.sub,
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "slice") [] [ T ],
+                                              "len",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                            ]
+                                          |);
+                                          N
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
                                   ]
                                 |)
                               |),
@@ -2449,56 +2757,67 @@ Module slice.
                         (Ty.path "core::option::Option")
                         []
                         [ Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ],
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ]
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "*mut")
-                                          []
-                                          [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                        M.get_associated_function (|
-                                          Ty.apply (Ty.path "*mut") [] [ T ],
-                                          "cast",
-                                          [],
-                                          [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
-                                        |),
-                                        [
-                                          M.call_closure (|
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "*mut")
+                                            []
+                                            [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                          M.get_associated_function (|
                                             Ty.apply (Ty.path "*mut") [] [ T ],
-                                            M.get_associated_function (|
-                                              Ty.apply (Ty.path "slice") [] [ T ],
-                                              "as_mut_ptr",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (| M.read (| last |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
+                                            "cast",
+                                            [],
+                                            [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply (Ty.path "*mut") [] [ T ],
+                                                M.get_associated_function (|
+                                                  Ty.apply (Ty.path "slice") [] [ T ],
+                                                  "as_mut_ptr",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (| M.read (| last |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                                ]
+                                              |))
+                                              (Ty.apply (Ty.path "*mut") [] [ T ])
+                                          ]
+                                        |)
                                       |)
                                     |)
                                   |)
                                 |)
                               |)
                             |)
-                          |)
-                        ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                          ])
                     |)
                   |)))
             ]
@@ -2554,7 +2873,12 @@ Module slice.
               [],
               []
             |),
-            [ M.read (| index |); M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+            [
+              M.value_with_ty (M.read (| index |)) I;
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -2611,8 +2935,10 @@ Module slice.
               []
             |),
             [
-              M.read (| index |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |)
+              M.value_with_ty (M.read (| index |)) I;
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2671,8 +2997,10 @@ Module slice.
                       []
                     |),
                     [
-                      M.read (| index |);
-                      M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| self |) |) |)
+                      M.value_with_ty (M.read (| index |)) I;
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
                     ]
                   |)
                 |)
@@ -2749,11 +3077,16 @@ Module slice.
                               []
                             |),
                             [
-                              M.read (| index |);
-                              M.borrow (|
-                                Pointer.Kind.MutPointer,
-                                M.deref (| M.read (| self |) |)
-                              |)
+                              M.value_with_ty (M.read (| index |)) I;
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutPointer,
+                                  M.deref (| M.read (| self |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "*mut")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ T ] ])
                             ]
                           |)
                         |)
@@ -2877,24 +3210,34 @@ Module slice.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                ]
               |) in
             let~ end_ : Ty.apply (Ty.path "*const") [] [ T ] :=
               M.call_closure (|
                 Ty.apply (Ty.path "*const") [] [ T ],
                 M.get_associated_function (| Ty.apply (Ty.path "*const") [] [ T ], "add", [], [] |),
                 [
-                  M.read (| start |);
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "slice") [] [ T ],
-                      "len",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                  |)
+                  M.value_with_ty (M.read (| start |)) (Ty.apply (Ty.path "*const") [] [ T ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "slice") [] [ T ],
+                        "len",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                      ]
+                    |))
+                    (Ty.path "usize")
                 ]
               |) in
             M.alloc (|
@@ -2902,11 +3245,14 @@ Module slice.
                 (Ty.path "core::ops::range::Range")
                 []
                 [ Ty.apply (Ty.path "*const") [] [ T ] ],
-              Value.mkStructRecord
-                "core::ops::range::Range"
-                []
-                [ Ty.apply (Ty.path "*const") [] [ T ] ]
-                [ ("start", M.read (| start |)); ("end_", M.read (| end_ |)) ]
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "core::ops::range::Range"
+                  [ ("start", M.read (| start |)); ("end_", M.read (| end_ |)) ])
+                (Ty.apply
+                  (Ty.path "core::ops::range::Range")
+                  []
+                  [ Ty.apply (Ty.path "*const") [] [ T ] ])
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2951,24 +3297,34 @@ Module slice.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                ]
               |) in
             let~ end_ : Ty.apply (Ty.path "*mut") [] [ T ] :=
               M.call_closure (|
                 Ty.apply (Ty.path "*mut") [] [ T ],
                 M.get_associated_function (| Ty.apply (Ty.path "*mut") [] [ T ], "add", [], [] |),
                 [
-                  M.read (| start |);
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "slice") [] [ T ],
-                      "len",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                  |)
+                  M.value_with_ty (M.read (| start |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "slice") [] [ T ],
+                        "len",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                      ]
+                    |))
+                    (Ty.path "usize")
                 ]
               |) in
             M.alloc (|
@@ -2976,11 +3332,14 @@ Module slice.
                 (Ty.path "core::ops::range::Range")
                 []
                 [ Ty.apply (Ty.path "*mut") [] [ T ] ],
-              Value.mkStructRecord
-                "core::ops::range::Range"
-                []
-                [ Ty.apply (Ty.path "*mut") [] [ T ] ]
-                [ ("start", M.read (| start |)); ("end_", M.read (| end_ |)) ]
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "core::ops::range::Range"
+                  [ ("start", M.read (| start |)); ("end_", M.read (| end_ |)) ])
+                (Ty.apply
+                  (Ty.path "core::ops::range::Range")
+                  []
+                  [ Ty.apply (Ty.path "*mut") [] [ T ] ])
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3037,7 +3396,14 @@ Module slice.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
                             |);
                             N
                           ]
@@ -3057,7 +3423,11 @@ Module slice.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                          ]
                         |)) in
                     let~ me :
                         Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] :=
@@ -3067,20 +3437,24 @@ Module slice.
                         (Ty.path "core::option::Option")
                         []
                         [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ],
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ]
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| me |) |) |) ]
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| me |) |) |) ])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ])
                     |)
                   |)));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3140,7 +3514,14 @@ Module slice.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
                             |);
                             N
                           ]
@@ -3160,7 +3541,11 @@ Module slice.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                          ]
                         |)) in
                     let~ me :
                         Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] :=
@@ -3175,20 +3560,25 @@ Module slice.
                         (Ty.path "core::option::Option")
                         []
                         [ Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ],
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ]
-                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| me |) |) |) ]
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| me |) |) |) ])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                          ])
                     |)
                   |)));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ] ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3242,7 +3632,10 @@ Module slice.
               M.call_closure (|
                 Ty.tuple [],
                 M.get_function (| "core::ptr::swap", [], [ T ] |),
-                [ M.read (| pa |); M.read (| pb |) ]
+                [
+                  M.value_with_ty (M.read (| pa |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                  M.value_with_ty (M.read (| pb |)) (Ty.apply (Ty.path "*mut") [] [ T ])
+                ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |)))
@@ -3321,18 +3714,30 @@ Module slice.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "slice") [] [ T ],
-                                  "len",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                              |);
-                              M.read (| a |);
-                              M.read (| b |)
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ T ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                  ]
+                                |))
+                                (Ty.path "usize");
+                              M.value_with_ty (M.read (| a |)) (Ty.path "usize");
+                              M.value_with_ty (M.read (| b |)) (Ty.path "usize")
                             ]
                           |) in
                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3349,33 +3754,47 @@ Module slice.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
                 Ty.tuple [],
                 M.get_function (| "core::ptr::swap", [], [ T ] |),
                 [
-                  M.call_closure (|
-                    Ty.apply (Ty.path "*mut") [] [ T ],
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.apply (Ty.path "*mut") [] [ T ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [ M.read (| ptr |); M.read (| a |) ]
-                  |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "*mut") [] [ T ],
-                    M.get_associated_function (|
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "*mut") [] [ T ],
+                        "add",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty (M.read (| ptr |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                        M.value_with_ty (M.read (| a |)) (Ty.path "usize")
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "*mut") [] [ T ]);
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.apply (Ty.path "*mut") [] [ T ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [ M.read (| ptr |); M.read (| b |) ]
-                  |)
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "*mut") [] [ T ],
+                        "add",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty (M.read (| ptr |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                        M.value_with_ty (M.read (| b |)) (Ty.path "usize")
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "*mut") [] [ T ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3455,7 +3874,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |);
                   Value.Integer IntegerKind.Usize 2
                 ]
@@ -3480,7 +3903,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |)
                 |),
                 [
@@ -3520,7 +3947,12 @@ Module slice.
                                   [],
                                   [ T ]
                                 |),
-                                [ M.read (| start |); M.read (| half_len |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| start |))
+                                    (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                  M.value_with_ty (M.read (| half_len |)) (Ty.path "usize")
+                                ]
                               |);
                               M.call_closure (|
                                 Ty.apply
@@ -3533,17 +3965,24 @@ Module slice.
                                   [ T ]
                                 |),
                                 [
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "*mut") [] [ T ],
-                                    M.get_associated_function (|
+                                  M.value_with_ty
+                                    (M.call_closure (|
                                       Ty.apply (Ty.path "*mut") [] [ T ],
-                                      "sub",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| end_ |); M.read (| half_len |) ]
-                                  |);
-                                  M.read (| half_len |)
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "*mut") [] [ T ],
+                                        "sub",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.read (| end_ |))
+                                          (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                        M.value_with_ty (M.read (| half_len |)) (Ty.path "usize")
+                                      ]
+                                    |))
+                                    (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                  M.value_with_ty (M.read (| half_len |)) (Ty.path "usize")
                                 ]
                               |)
                             ]
@@ -3575,15 +4014,25 @@ Module slice.
                                     Ty.tuple [],
                                     M.get_associated_function (| Self, "revswap.reverse", [], [] |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| front_half |) |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| back_half |) |)
-                                      |);
-                                      M.read (| half_len |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.read (| front_half |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.read (| back_half |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                      M.value_with_ty (M.read (| half_len |)) (Ty.path "usize")
                                     ]
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3623,7 +4072,11 @@ Module slice.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -3657,7 +4110,11 @@ Module slice.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -3696,23 +4153,30 @@ Module slice.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ] ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
+                        "new",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.read (| size |)) (Ty.path "usize") ]
+                    |))
+                    (Ty.apply
                       (Ty.path "core::option::Option")
                       []
-                      [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ] ],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ],
-                      "new",
-                      [],
-                      []
-                    |),
-                    [ M.read (| size |) ]
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| mk_str (| "window size must be non-zero" |) |)
-                  |)
+                      [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ] ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| mk_str (| "window size must be non-zero" |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                 ]
               |) in
             M.alloc (|
@@ -3726,8 +4190,12 @@ Module slice.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.read (| size |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                  M.value_with_ty
+                    (M.read (| size |))
+                    (Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "usize" ])
                 ]
               |)
             |)
@@ -3785,32 +4253,45 @@ Module slice.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [ mk_str (| "chunk size must be non-zero" |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "chunk size must be non-zero" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -3828,8 +4309,10 @@ Module slice.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.read (| chunk_size |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                  M.value_with_ty (M.read (| chunk_size |)) (Ty.path "usize")
                 ]
               |)
             |)
@@ -3890,32 +4373,45 @@ Module slice.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [ mk_str (| "chunk size must be non-zero" |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "chunk size must be non-zero" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -3933,8 +4429,10 @@ Module slice.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.read (| chunk_size |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                  M.value_with_ty (M.read (| chunk_size |)) (Ty.path "usize")
                 ]
               |)
             |)
@@ -3992,32 +4490,45 @@ Module slice.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [ mk_str (| "chunk size must be non-zero" |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "chunk size must be non-zero" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -4035,8 +4546,10 @@ Module slice.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.read (| chunk_size |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                  M.value_with_ty (M.read (| chunk_size |)) (Ty.path "usize")
                 ]
               |)
             |)
@@ -4102,32 +4615,45 @@ Module slice.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [ mk_str (| "chunk size must be non-zero" |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "chunk size must be non-zero" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -4145,8 +4671,10 @@ Module slice.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.read (| chunk_size |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                  M.value_with_ty (M.read (| chunk_size |)) (Ty.path "usize")
                 ]
               |)
             |)
@@ -4216,17 +4744,29 @@ Module slice.
                               []
                             |),
                             [
-                              N;
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "slice") [] [ T ],
-                                  "len",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                              |)
+                              M.value_with_ty N (Ty.path "usize");
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ T ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                  ]
+                                |))
+                                (Ty.path "usize")
                             ]
                           |) in
                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4239,17 +4779,23 @@ Module slice.
                 Ty.path "usize",
                 M.get_function (| "core::intrinsics::exact_div", [], [ Ty.path "usize" ] |),
                 [
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "slice") [] [ T ],
-                      "len",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                  |);
-                  N
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "slice") [] [ T ],
+                        "len",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                      ]
+                    |))
+                    (Ty.path "usize");
+                  M.value_with_ty N (Ty.path "usize")
                 ]
               |) in
             M.alloc (|
@@ -4271,28 +4817,42 @@ Module slice.
                       [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "*const") [] [ T ],
-                          "cast",
-                          [],
-                          [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
-                        |),
-                        [
-                          M.call_closure (|
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                          M.get_associated_function (|
                             Ty.apply (Ty.path "*const") [] [ T ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "slice") [] [ T ],
-                              "as_ptr",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        ]
-                      |);
-                      M.read (| new_len |)
+                            "cast",
+                            [],
+                            [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply (Ty.path "*const") [] [ T ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "slice") [] [ T ],
+                                  "as_ptr",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                ]
+                              |))
+                              (Ty.apply (Ty.path "*const") [] [ T ])
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ]);
+                      M.value_with_ty (M.read (| new_len |)) (Ty.path "usize")
                     ]
                   |)
                 |)
@@ -4358,32 +4918,45 @@ Module slice.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [ mk_str (| "chunk size must be non-zero" |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "chunk size must be non-zero" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -4407,7 +4980,11 @@ Module slice.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                        ]
                       |);
                       N
                     ]
@@ -4452,8 +5029,10 @@ Module slice.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                      M.read (| len_rounded_down |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                      M.value_with_ty (M.read (| len_rounded_down |)) (Ty.path "usize")
                     ]
                   |)
                 |),
@@ -4500,10 +5079,12 @@ Module slice.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| M.read (| multiple_of_n |) |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| multiple_of_n |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
                             ]
                           |) in
                         M.alloc (|
@@ -4591,32 +5172,45 @@ Module slice.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [ mk_str (| "chunk size must be non-zero" |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "chunk size must be non-zero" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -4636,7 +5230,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |);
                   N
                 ]
@@ -4678,28 +5276,39 @@ Module slice.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                      M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.sub,
-                        [
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "slice") [] [ T ],
-                              "len",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |);
-                          M.call_closure (|
-                            Ty.path "usize",
-                            BinOp.Wrap.mul,
-                            [ M.read (| len |); N ]
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          BinOp.Wrap.sub,
+                          [
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "slice") [] [ T ],
+                                "len",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
+                            |);
+                            M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.mul,
+                              [ M.read (| len |); N ]
+                            |)
+                          ]
+                        |))
+                        (Ty.path "usize")
                     ]
                   |)
                 |),
@@ -4746,10 +5355,12 @@ Module slice.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| M.read (| multiple_of_n |) |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| multiple_of_n |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
                             ]
                           |) in
                         M.alloc (|
@@ -4832,32 +5443,45 @@ Module slice.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [ mk_str (| "chunk size must be non-zero" |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "chunk size must be non-zero" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -4874,7 +5498,11 @@ Module slice.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                ]
               |)
             |)
           |)))
@@ -4950,22 +5578,29 @@ Module slice.
                                   []
                                 |),
                                 [
-                                  N;
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
+                                  M.value_with_ty N (Ty.path "usize");
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.path "usize",
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "slice") [] [ T ],
+                                        "len",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                      ]
+                                    |))
+                                    (Ty.path "usize")
                                 ]
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4978,17 +5613,23 @@ Module slice.
                     Ty.path "usize",
                     M.get_function (| "core::intrinsics::exact_div", [], [ Ty.path "usize" ] |),
                     [
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "slice") [] [ T ],
-                          "len",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                      |);
-                      N
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "slice") [] [ T ],
+                            "len",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                          ]
+                        |))
+                        (Ty.path "usize");
+                      M.value_with_ty N (Ty.path "usize")
                     ]
                   |) in
                 M.alloc (|
@@ -5018,36 +5659,48 @@ Module slice.
                               [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "*mut")
+                                    []
+                                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ T ],
+                                    "cast",
+                                    [],
+                                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply (Ty.path "*mut") [] [ T ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "slice") [] [ T ],
+                                          "as_mut_ptr",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                        ]
+                                      |))
+                                      (Ty.apply (Ty.path "*mut") [] [ T ])
+                                  ]
+                                |))
+                                (Ty.apply
                                   (Ty.path "*mut")
                                   []
-                                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "*mut") [] [ T ],
-                                  "cast",
-                                  [],
-                                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
-                                |),
-                                [
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "*mut") [] [ T ],
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      "as_mut_ptr",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              M.read (| new_len |)
+                                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ]);
+                              M.value_with_ty (M.read (| new_len |)) (Ty.path "usize")
                             ]
                           |)
                         |)
@@ -5120,32 +5773,45 @@ Module slice.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [ mk_str (| "chunk size must be non-zero" |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "chunk size must be non-zero" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -5169,7 +5835,11 @@ Module slice.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                        ]
                       |);
                       N
                     ]
@@ -5214,8 +5884,10 @@ Module slice.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                      M.read (| len_rounded_down |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                      M.value_with_ty (M.read (| len_rounded_down |)) (Ty.path "usize")
                     ]
                   |)
                 |),
@@ -5265,10 +5937,15 @@ Module slice.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| multiple_of_n |) |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| multiple_of_n |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                 ]
                               |)
                             |)
@@ -5369,32 +6046,45 @@ Module slice.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [ mk_str (| "chunk size must be non-zero" |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "chunk size must be non-zero" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -5414,7 +6104,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |);
                   N
                 ]
@@ -5456,28 +6150,39 @@ Module slice.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                      M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.sub,
-                        [
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "slice") [] [ T ],
-                              "len",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |);
-                          M.call_closure (|
-                            Ty.path "usize",
-                            BinOp.Wrap.mul,
-                            [ M.read (| len |); N ]
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          BinOp.Wrap.sub,
+                          [
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "slice") [] [ T ],
+                                "len",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
+                            |);
+                            M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.mul,
+                              [ M.read (| len |); N ]
+                            |)
+                          ]
+                        |))
+                        (Ty.path "usize")
                     ]
                   |)
                 |),
@@ -5527,10 +6232,15 @@ Module slice.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| multiple_of_n |) |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| multiple_of_n |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                 ]
                               |)
                             |)
@@ -5626,32 +6336,45 @@ Module slice.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [ mk_str (| "chunk size must be non-zero" |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "chunk size must be non-zero" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -5668,7 +6391,11 @@ Module slice.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                ]
               |)
             |)
           |)))
@@ -5724,32 +6451,45 @@ Module slice.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [ mk_str (| "window size must be non-zero" |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "window size must be non-zero" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -5766,7 +6506,11 @@ Module slice.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                ]
               |)
             |)
           |)))
@@ -5823,32 +6567,45 @@ Module slice.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [ mk_str (| "chunk size must be non-zero" |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "chunk size must be non-zero" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -5866,8 +6623,10 @@ Module slice.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.read (| chunk_size |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                  M.value_with_ty (M.read (| chunk_size |)) (Ty.path "usize")
                 ]
               |)
             |)
@@ -5928,32 +6687,45 @@ Module slice.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [ mk_str (| "chunk size must be non-zero" |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "chunk size must be non-zero" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -5971,8 +6743,10 @@ Module slice.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.read (| chunk_size |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                  M.value_with_ty (M.read (| chunk_size |)) (Ty.path "usize")
                 ]
               |)
             |)
@@ -6030,32 +6804,45 @@ Module slice.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [ mk_str (| "chunk size must be non-zero" |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "chunk size must be non-zero" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -6073,8 +6860,10 @@ Module slice.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.read (| chunk_size |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                  M.value_with_ty (M.read (| chunk_size |)) (Ty.path "usize")
                 ]
               |)
             |)
@@ -6140,32 +6929,45 @@ Module slice.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [ mk_str (| "chunk size must be non-zero" |) ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array [ mk_str (| "chunk size must be non-zero" |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -6183,8 +6985,10 @@ Module slice.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.read (| chunk_size |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                  M.value_with_ty (M.read (| chunk_size |)) (Ty.path "usize")
                 ]
               |)
             |)
@@ -6222,7 +7026,12 @@ Module slice.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |); M.read (| pred |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+              M.value_with_ty (M.read (| pred |)) F
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -6260,7 +7069,11 @@ Module slice.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |); M.read (| pred |)
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+              M.value_with_ty (M.read (| pred |)) F
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -6322,7 +7135,11 @@ Module slice.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |); M.read (| mid |)
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                  M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
                 ]
               |)
             |),
@@ -6349,32 +7166,44 @@ Module slice.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                       [
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.path "core::fmt::Arguments",
-                            "new_const",
-                            [ Value.Integer IntegerKind.Usize 1 ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new_const",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        Value.Array [ mk_str (| "mid > len" |) ]
+                                      |)
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array [ mk_str (| "mid > len" |) ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ])
+                            ]
+                          |))
+                          (Ty.path "core::fmt::Arguments")
                       ]
                     |)
                   |)))
@@ -6443,8 +7272,10 @@ Module slice.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.read (| mid |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                  M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
                 ]
               |)
             |),
@@ -6471,32 +7302,44 @@ Module slice.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                       [
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.path "core::fmt::Arguments",
-                            "new_const",
-                            [ Value.Integer IntegerKind.Usize 1 ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new_const",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        Value.Array [ mk_str (| "mid > len" |) ]
+                                      |)
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array [ mk_str (| "mid > len" |) ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ])
+                            ]
+                          |))
+                          (Ty.path "core::fmt::Arguments")
                       ]
                     |)
                   |)))
@@ -6548,7 +7391,11 @@ Module slice.
               M.call_closure (|
                 Ty.path "usize",
                 M.get_associated_function (| Ty.apply (Ty.path "slice") [] [ T ], "len", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                ]
               |) in
             let~ ptr : Ty.apply (Ty.path "*const") [] [ T ] :=
               M.call_closure (|
@@ -6559,7 +7406,11 @@ Module slice.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.match_operator (|
@@ -6589,7 +7440,10 @@ Module slice.
                               [],
                               []
                             |),
-                            [ M.read (| mid |); M.read (| len |) ]
+                            [
+                              M.value_with_ty (M.read (| mid |)) (Ty.path "usize");
+                              M.value_with_ty (M.read (| len |)) (Ty.path "usize")
+                            ]
                           |) in
                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                       |)));
@@ -6610,7 +7464,10 @@ Module slice.
                       M.call_closure (|
                         Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                         M.get_function (| "core::slice::raw::from_raw_parts", [], [ T ] |),
-                        [ M.read (| ptr |); M.read (| mid |) ]
+                        [
+                          M.value_with_ty (M.read (| ptr |)) (Ty.apply (Ty.path "*const") [] [ T ]);
+                          M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
+                        ]
                       |)
                     |)
                   |);
@@ -6621,25 +7478,37 @@ Module slice.
                         Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                         M.get_function (| "core::slice::raw::from_raw_parts", [], [ T ] |),
                         [
-                          M.call_closure (|
-                            Ty.apply (Ty.path "*const") [] [ T ],
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.apply (Ty.path "*const") [] [ T ],
-                              "add",
-                              [],
-                              []
-                            |),
-                            [ M.read (| ptr |); M.read (| mid |) ]
-                          |);
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_function (|
-                              "core::intrinsics::unchecked_sub",
-                              [],
-                              [ Ty.path "usize" ]
-                            |),
-                            [ M.read (| len |); M.read (| mid |) ]
-                          |)
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "*const") [] [ T ],
+                                "add",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| ptr |))
+                                  (Ty.apply (Ty.path "*const") [] [ T ]);
+                                M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "*const") [] [ T ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              M.get_function (|
+                                "core::intrinsics::unchecked_sub",
+                                [],
+                                [ Ty.path "usize" ]
+                              |),
+                              [
+                                M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                                M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
+                              ]
+                            |))
+                            (Ty.path "usize")
                         ]
                       |)
                     |)
@@ -6700,7 +7569,11 @@ Module slice.
               M.call_closure (|
                 Ty.path "usize",
                 M.get_associated_function (| Ty.apply (Ty.path "slice") [] [ T ], "len", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                ]
               |) in
             let~ ptr : Ty.apply (Ty.path "*mut") [] [ T ] :=
               M.call_closure (|
@@ -6711,7 +7584,11 @@ Module slice.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.match_operator (|
@@ -6741,7 +7618,10 @@ Module slice.
                               [],
                               []
                             |),
-                            [ M.read (| mid |); M.read (| len |) ]
+                            [
+                              M.value_with_ty (M.read (| mid |)) (Ty.path "usize");
+                              M.value_with_ty (M.read (| len |)) (Ty.path "usize")
+                            ]
                           |) in
                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
                       |)));
@@ -6762,7 +7642,10 @@ Module slice.
                       M.call_closure (|
                         Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                         M.get_function (| "core::slice::raw::from_raw_parts_mut", [], [ T ] |),
-                        [ M.read (| ptr |); M.read (| mid |) ]
+                        [
+                          M.value_with_ty (M.read (| ptr |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
+                        ]
                       |)
                     |)
                   |);
@@ -6773,25 +7656,37 @@ Module slice.
                         Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                         M.get_function (| "core::slice::raw::from_raw_parts_mut", [], [ T ] |),
                         [
-                          M.call_closure (|
-                            Ty.apply (Ty.path "*mut") [] [ T ],
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.apply (Ty.path "*mut") [] [ T ],
-                              "add",
-                              [],
-                              []
-                            |),
-                            [ M.read (| ptr |); M.read (| mid |) ]
-                          |);
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_function (|
-                              "core::intrinsics::unchecked_sub",
-                              [],
-                              [ Ty.path "usize" ]
-                            |),
-                            [ M.read (| len |); M.read (| mid |) ]
-                          |)
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "*mut") [] [ T ],
+                                "add",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| ptr |))
+                                  (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              M.get_function (|
+                                "core::intrinsics::unchecked_sub",
+                                [],
+                                [ Ty.path "usize" ]
+                              |),
+                              [
+                                M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                                M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
+                              ]
+                            |))
+                            (Ty.path "usize")
                         ]
                       |)
                     |)
@@ -6864,54 +7759,67 @@ Module slice.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
                             |)
                           ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                        ]
-                    ]
-                    [
-                      M.call_closure (|
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.call_closure (|
+                          Ty.tuple
+                            [
+                              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
+                              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                            ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "slice") [] [ T ],
+                            "split_at_unchecked",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                            M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
                         Ty.tuple
                           [
                             Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
                             Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                          ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "slice") [] [ T ],
-                          "split_at_unchecked",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                          M.read (| mid |)
-                        ]
-                      |)
-                    ]));
+                          ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                        ]
-                    ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
+                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                          ]
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -6982,54 +7890,70 @@ Module slice.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
                             |)
                           ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
-                          Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                        ]
-                    ]
-                    [
-                      M.call_closure (|
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.call_closure (|
+                          Ty.tuple
+                            [
+                              Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
+                              Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                            ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "slice") [] [ T ],
+                            "split_at_mut_unchecked",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                            M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
                         Ty.tuple
                           [
                             Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
                             Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                          ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "slice") [] [ T ],
-                          "split_at_mut_unchecked",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                          M.read (| mid |)
-                        ]
-                      |)
-                    ]));
+                          ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
-                          Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                        ]
-                    ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
+                            Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                          ]
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -7065,7 +7989,12 @@ Module slice.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |); M.read (| pred |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+              M.value_with_ty (M.read (| pred |)) F
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -7103,7 +8032,11 @@ Module slice.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |); M.read (| pred |)
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+              M.value_with_ty (M.read (| pred |)) F
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -7144,7 +8077,12 @@ Module slice.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |); M.read (| pred |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+              M.value_with_ty (M.read (| pred |)) F
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -7187,7 +8125,11 @@ Module slice.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |); M.read (| pred |)
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+              M.value_with_ty (M.read (| pred |)) F
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -7223,7 +8165,12 @@ Module slice.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |); M.read (| pred |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+              M.value_with_ty (M.read (| pred |)) F
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -7261,7 +8208,11 @@ Module slice.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |); M.read (| pred |)
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+              M.value_with_ty (M.read (| pred |)) F
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -7299,20 +8250,24 @@ Module slice.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::slice::iter::Split") [] [ T; F ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "slice") [] [ T ],
-                  "split",
-                  [],
-                  [ F ]
-                |),
-                [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.read (| pred |)
-                ]
-              |);
-              M.read (| n |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "core::slice::iter::Split") [] [ T; F ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "slice") [] [ T ],
+                    "split",
+                    [],
+                    [ F ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                    M.value_with_ty (M.read (| pred |)) F
+                  ]
+                |))
+                (Ty.apply (Ty.path "core::slice::iter::Split") [] [ T; F ]);
+              M.value_with_ty (M.read (| n |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -7353,20 +8308,24 @@ Module slice.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::slice::iter::SplitMut") [] [ T; F ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "slice") [] [ T ],
-                  "split_mut",
-                  [],
-                  [ F ]
-                |),
-                [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.read (| pred |)
-                ]
-              |);
-              M.read (| n |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "core::slice::iter::SplitMut") [] [ T; F ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "slice") [] [ T ],
+                    "split_mut",
+                    [],
+                    [ F ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                    M.value_with_ty (M.read (| pred |)) F
+                  ]
+                |))
+                (Ty.apply (Ty.path "core::slice::iter::SplitMut") [] [ T; F ]);
+              M.value_with_ty (M.read (| n |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -7404,20 +8363,24 @@ Module slice.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::slice::iter::RSplit") [] [ T; F ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "slice") [] [ T ],
-                  "rsplit",
-                  [],
-                  [ F ]
-                |),
-                [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.read (| pred |)
-                ]
-              |);
-              M.read (| n |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "core::slice::iter::RSplit") [] [ T; F ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "slice") [] [ T ],
+                    "rsplit",
+                    [],
+                    [ F ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                    M.value_with_ty (M.read (| pred |)) F
+                  ]
+                |))
+                (Ty.apply (Ty.path "core::slice::iter::RSplit") [] [ T; F ]);
+              M.value_with_ty (M.read (| n |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -7458,20 +8421,24 @@ Module slice.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::slice::iter::RSplitMut") [] [ T; F ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "slice") [] [ T ],
-                  "rsplit_mut",
-                  [],
-                  [ F ]
-                |),
-                [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.read (| pred |)
-                ]
-              |);
-              M.read (| n |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "core::slice::iter::RSplitMut") [] [ T; F ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "slice") [] [ T ],
+                    "rsplit_mut",
+                    [],
+                    [ F ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                    M.value_with_ty (M.read (| pred |)) F
+                  ]
+                |))
+                (Ty.apply (Ty.path "core::slice::iter::RSplitMut") [] [ T; F ]);
+              M.value_with_ty (M.read (| n |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -7548,42 +8515,54 @@ Module slice.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                            M.get_trait_method (|
-                              "core::iter::traits::iterator::Iterator",
-                              Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
-                              [],
-                              [],
-                              "position",
-                              [],
-                              [ F ]
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.alloc (|
-                                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      "iter",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                              M.get_trait_method (|
+                                "core::iter::traits::iterator::Iterator",
+                                Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                                [],
+                                [],
+                                "position",
+                                [],
+                                [ F ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.alloc (|
+                                      Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "slice") [] [ T ],
+                                          "iter",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                        ]
                                       |)
-                                    ]
-                                  |)
-                                |)
-                              |);
-                              M.read (| pred |)
-                            ]
-                          |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ]);
+                                M.value_with_ty (M.read (| pred |)) F
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                         ]
                       |)
                     |),
@@ -7653,7 +8632,14 @@ Module slice.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -7681,113 +8667,142 @@ Module slice.
                           Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
                         ]
                     ],
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                        ]
-                    ]
-                    [
-                      Value.Tuple
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.get_trait_method (|
-                                      "core::ops::index::Index",
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      [],
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeTo")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ],
-                                      "index",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeTo"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        Value.Tuple
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
                                         []
-                                        [ Ty.path "usize" ]
-                                        [ ("end_", M.read (| index |)) ]
-                                    ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.get_trait_method (|
-                                      "core::ops::index::Index",
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      [],
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeFrom")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ],
-                                      "index",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeFrom"
-                                        []
-                                        [ Ty.path "usize" ]
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::index::Index",
+                                        Ty.apply (Ty.path "slice") [] [ T ],
+                                        [],
                                         [
-                                          ("start",
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              BinOp.Wrap.add,
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                        "index",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.mkStructRecord
+                                              "core::ops::range::RangeTo"
+                                              [ ("end_", M.read (| index |)) ])
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::RangeTo")
+                                              []
+                                              [ Ty.path "usize" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ])
+                                      ]
+                                    |)
+                                  |)
+                                |)
+                              |)
+                            |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::index::Index",
+                                        Ty.apply (Ty.path "slice") [] [ T ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeFrom")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                        "index",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.mkStructRecord
+                                              "core::ops::range::RangeFrom"
                                               [
-                                                M.read (| index |);
-                                                Value.Integer IntegerKind.Usize 1
-                                              ]
-                                            |))
-                                        ]
-                                    ]
+                                                ("start",
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.add,
+                                                    [
+                                                      M.read (| index |);
+                                                      Value.Integer IntegerKind.Usize 1
+                                                    ]
+                                                  |))
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::RangeFrom")
+                                              []
+                                              [ Ty.path "usize" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::ops::range::RangeFrom")
+                                            []
+                                            [ Ty.path "usize" ])
+                                      ]
+                                    |)
                                   |)
                                 |)
                               |)
                             |)
-                          |)
-                        ]
-                    ]
+                          ]
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
+                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                          ]
+                      ])
                 |)
               |)))
           |)))
@@ -7865,42 +8880,54 @@ Module slice.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                            M.get_trait_method (|
-                              "core::iter::traits::iterator::Iterator",
-                              Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
-                              [],
-                              [],
-                              "rposition",
-                              [],
-                              [ F ]
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.alloc (|
-                                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      "iter",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                              M.get_trait_method (|
+                                "core::iter::traits::iterator::Iterator",
+                                Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                                [],
+                                [],
+                                "rposition",
+                                [],
+                                [ F ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.alloc (|
+                                      Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "slice") [] [ T ],
+                                          "iter",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                        ]
                                       |)
-                                    ]
-                                  |)
-                                |)
-                              |);
-                              M.read (| pred |)
-                            ]
-                          |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ] ]);
+                                M.value_with_ty (M.read (| pred |)) F
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                         ]
                       |)
                     |),
@@ -7970,7 +8997,14 @@ Module slice.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -7998,113 +9032,142 @@ Module slice.
                           Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
                         ]
                     ],
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                        ]
-                    ]
-                    [
-                      Value.Tuple
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.get_trait_method (|
-                                      "core::ops::index::Index",
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      [],
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeTo")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ],
-                                      "index",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeTo"
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        Value.Tuple
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
                                         []
-                                        [ Ty.path "usize" ]
-                                        [ ("end_", M.read (| index |)) ]
-                                    ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.get_trait_method (|
-                                      "core::ops::index::Index",
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      [],
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeFrom")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ],
-                                      "index",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeFrom"
-                                        []
-                                        [ Ty.path "usize" ]
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::index::Index",
+                                        Ty.apply (Ty.path "slice") [] [ T ],
+                                        [],
                                         [
-                                          ("start",
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              BinOp.Wrap.add,
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                        "index",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.mkStructRecord
+                                              "core::ops::range::RangeTo"
+                                              [ ("end_", M.read (| index |)) ])
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::RangeTo")
+                                              []
+                                              [ Ty.path "usize" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ])
+                                      ]
+                                    |)
+                                  |)
+                                |)
+                              |)
+                            |);
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::index::Index",
+                                        Ty.apply (Ty.path "slice") [] [ T ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeFrom")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                        "index",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.mkStructRecord
+                                              "core::ops::range::RangeFrom"
                                               [
-                                                M.read (| index |);
-                                                Value.Integer IntegerKind.Usize 1
-                                              ]
-                                            |))
-                                        ]
-                                    ]
+                                                ("start",
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.add,
+                                                    [
+                                                      M.read (| index |);
+                                                      Value.Integer IntegerKind.Usize 1
+                                                    ]
+                                                  |))
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::RangeFrom")
+                                              []
+                                              [ Ty.path "usize" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::ops::range::RangeFrom")
+                                            []
+                                            [ Ty.path "usize" ])
+                                      ]
+                                    |)
                                   |)
                                 |)
                               |)
                             |)
-                          |)
-                        ]
-                    ]
+                          ]
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ];
+                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                          ]
+                      ])
                 |)
               |)))
           |)))
@@ -8145,8 +9208,12 @@ Module slice.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |))
+                (Ty.apply (Ty.path "&") [] [ T ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -8184,7 +9251,11 @@ Module slice.
               M.call_closure (|
                 Ty.path "usize",
                 M.get_associated_function (| Ty.apply (Ty.path "slice") [] [ T ], "len", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| needle |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| needle |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -8201,7 +9272,11 @@ Module slice.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                      ]
                     |);
                     M.read (| n |)
                   ]
@@ -8219,43 +9294,69 @@ Module slice.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, needle |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                M.get_trait_method (|
-                                  "core::ops::index::Index",
-                                  Ty.apply (Ty.path "slice") [] [ T ],
-                                  [],
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::ops::range::RangeTo")
-                                      []
-                                      [ Ty.path "usize" ]
-                                  ],
-                                  "index",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                  Value.mkStructRecord
-                                    "core::ops::range::RangeTo"
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, needle |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                  M.get_trait_method (|
+                                    "core::ops::index::Index",
+                                    Ty.apply (Ty.path "slice") [] [ T ],
+                                    [],
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ops::range::RangeTo")
+                                        []
+                                        [ Ty.path "usize" ]
+                                    ],
+                                    "index",
+                                    [],
                                     []
-                                    [ Ty.path "usize" ]
-                                    [ ("end_", M.read (| n |)) ]
-                                ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.mkStructRecord
+                                          "core::ops::range::RangeTo"
+                                          [ ("end_", M.read (| n |)) ])
+                                        (Ty.apply
+                                          (Ty.path "core::ops::range::RangeTo")
+                                          []
+                                          [ Ty.path "usize" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::ops::range::RangeTo")
+                                        []
+                                        [ Ty.path "usize" ])
+                                  ]
+                                |)
                               |)
                             |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] ])
                     ]
                   |)))
               |)
@@ -8305,7 +9406,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |);
                   M.call_closure (|
                     Ty.path "usize",
@@ -8315,7 +9420,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| needle |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| needle |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |)
                 ]
             |),
@@ -8345,56 +9454,80 @@ Module slice.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, needle |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.get_trait_method (|
-                                      "core::ops::index::Index",
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      [],
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeFrom")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ],
-                                      "index",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeFrom"
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, needle |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                              ]);
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
                                         []
-                                        [ Ty.path "usize" ]
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::index::Index",
+                                        Ty.apply (Ty.path "slice") [] [ T ],
+                                        [],
                                         [
-                                          ("start",
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              BinOp.Wrap.sub,
-                                              [ M.read (| m |); M.read (| n |) ]
-                                            |))
-                                        ]
-                                    ]
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeFrom")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                        "index",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.mkStructRecord
+                                              "core::ops::range::RangeFrom"
+                                              [
+                                                ("start",
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.sub,
+                                                    [ M.read (| m |); M.read (| n |) ]
+                                                  |))
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::RangeFrom")
+                                              []
+                                              [ Ty.path "usize" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::ops::range::RangeFrom")
+                                            []
+                                            [ Ty.path "usize" ])
+                                      ]
+                                    |)
                                   |)
                                 |)
                               |)
-                            |)
-                          |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] ])
                         ]
                       |)))
                   |)))
@@ -8453,7 +9586,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| prefix |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| prefix |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ P ])
+                    ]
                   |) in
                 let~ n : Ty.path "usize" :=
                   M.call_closure (|
@@ -8464,7 +9601,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| prefix |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| prefix |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -8491,10 +9632,15 @@ Module slice.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                       ]
                                     |)
                                   ]
@@ -8529,8 +9675,16 @@ Module slice.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                  M.read (| n |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                  M.value_with_ty (M.read (| n |)) (Ty.path "usize")
                                 ]
                               |)
                             |),
@@ -8585,8 +9739,28 @@ Module slice.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (| Pointer.Kind.Ref, head |);
-                                                    M.borrow (| Pointer.Kind.Ref, prefix |)
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.Ref, head |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                                        ]);
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.Ref, prefix |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                                        ])
                                                   ]
                                                 |)
                                               |)) in
@@ -8598,21 +9772,24 @@ Module slice.
                                           M.never_to_any (|
                                             M.read (|
                                               M.return_ (|
-                                                Value.StructTuple
-                                                  "core::option::Option::Some"
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "&")
-                                                      []
-                                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                                                  ]
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| tail |) |)
-                                                    |)
-                                                  ]
+                                                M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::option::Option::Some"
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| tail |) |)
+                                                      |)
+                                                    ])
+                                                  (Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                                    ])
                                               |)
                                             |)
                                           |)));
@@ -8629,11 +9806,12 @@ Module slice.
                     (Ty.path "core::option::Option")
                     []
                     [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] ],
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] ]
-                    []
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] ])
                 |)
               |)))
           |)))
@@ -8690,7 +9868,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| suffix |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| suffix |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ P ])
+                    ]
                   |) in
                 M.alloc (|
                   Ty.apply
@@ -8714,7 +9896,11 @@ Module slice.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                            ]
                           |);
                           M.call_closure (|
                             Ty.path "usize",
@@ -8724,7 +9910,11 @@ Module slice.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| suffix |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| suffix |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                            ]
                           |)
                         ]
                     |),
@@ -8791,15 +9981,22 @@ Module slice.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |);
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                BinOp.Wrap.sub,
-                                                [ M.read (| len |); M.read (| n |) ]
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.path "usize",
+                                                  BinOp.Wrap.sub,
+                                                  [ M.read (| len |); M.read (| n |) ]
+                                                |))
+                                                (Ty.path "usize")
                                             ]
                                           |)
                                         |),
@@ -8865,14 +10062,44 @@ Module slice.
                                                                 []
                                                               |),
                                                               [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  tail
-                                                                |);
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  suffix
-                                                                |)
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    tail
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path "slice")
+                                                                            []
+                                                                            [ T ]
+                                                                        ]
+                                                                    ]);
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    suffix
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path "slice")
+                                                                            []
+                                                                            [ T ]
+                                                                        ]
+                                                                    ])
                                                               ]
                                                             |)
                                                           |)) in
@@ -8884,26 +10111,29 @@ Module slice.
                                                       M.never_to_any (|
                                                         M.read (|
                                                           M.return_ (|
-                                                            Value.StructTuple
-                                                              "core::option::Option::Some"
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "&")
-                                                                  []
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path "slice")
-                                                                      []
-                                                                      [ T ]
-                                                                  ]
-                                                              ]
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| M.read (| head |) |)
-                                                                |)
-                                                              ]
+                                                            M.value_with_ty
+                                                              (Value.StructTuple
+                                                                "core::option::Option::Some"
+                                                                [
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (| M.read (| head |) |)
+                                                                  |)
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "core::option::Option")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "slice")
+                                                                        []
+                                                                        [ T ]
+                                                                    ]
+                                                                ])
                                                           |)
                                                         |)
                                                       |)));
@@ -8921,12 +10151,17 @@ Module slice.
                                 []
                                 [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
                                 ],
-                              Value.StructTuple
-                                "core::option::Option::None"
-                                []
-                                [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                                ]
-                                []
+                              M.value_with_ty
+                                (Value.StructTuple "core::option::Option::None" [])
+                                (Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                  ])
                             |)
                           |)))
                     ]
@@ -8968,40 +10203,54 @@ Module slice.
               [ Ty.function [ Ty.apply (Ty.path "&") [] [ T ] ] (Ty.path "core::cmp::Ordering") ]
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.path "core::cmp::Ordering",
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let p := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                                M.call_closure (|
-                                  Ty.path "core::cmp::Ordering",
-                                  M.get_trait_method (|
-                                    "core::cmp::Ord",
-                                    T,
-                                    [],
-                                    [],
-                                    "cmp",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| p |) |) |);
-                                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |)
-                                  ]
-                                |)))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+              M.value_with_ty
+                (M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.path "core::cmp::Ordering",
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let p := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
+                                  M.call_closure (|
+                                    Ty.path "core::cmp::Ordering",
+                                    M.get_trait_method (|
+                                      "core::cmp::Ord",
+                                      T,
+                                      [],
+                                      [],
+                                      "cmp",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| p |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ T ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| x |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ T ])
+                                    ]
+                                  |)))
+                            ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end)))
+                (Ty.function [ Ty.apply (Ty.path "&") [] [ T ] ] (Ty.path "core::cmp::Ordering"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -9094,7 +10343,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -9118,11 +10371,14 @@ Module slice.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [ Ty.path "usize"; Ty.path "usize" ]
-                                  [ Value.Integer IntegerKind.Usize 0 ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [ Value.Integer IntegerKind.Usize 0 ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [ Ty.path "usize"; Ty.path "usize" ])
                               |)
                             |)
                           |)));
@@ -9184,31 +10440,43 @@ Module slice.
                                           []
                                         |),
                                         [
-                                          M.borrow (| Pointer.Kind.MutRef, f |);
-                                          Value.Tuple
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.call_closure (|
-                                                    Ty.apply (Ty.path "&") [] [ T ],
-                                                    M.get_associated_function (|
-                                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                                      "get_unchecked",
-                                                      [],
-                                                      [ Ty.path "usize" ]
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| self |) |)
-                                                      |);
-                                                      M.read (| mid |)
-                                                    ]
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.MutRef, f |))
+                                            (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                          M.value_with_ty
+                                            (Value.Tuple
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.call_closure (|
+                                                      Ty.apply (Ty.path "&") [] [ T ],
+                                                      M.get_associated_function (|
+                                                        Ty.apply (Ty.path "slice") [] [ T ],
+                                                        "get_unchecked",
+                                                        [],
+                                                        [ Ty.path "usize" ]
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| M.read (| self |) |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.apply (Ty.path "slice") [] [ T ]
+                                                            ]);
+                                                        M.value_with_ty
+                                                          (M.read (| mid |))
+                                                          (Ty.path "usize")
+                                                      ]
+                                                    |)
                                                   |)
                                                 |)
-                                              |)
-                                            ]
+                                              ])
+                                            (Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ])
                                         ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
@@ -9222,34 +10490,46 @@ Module slice.
                                             [ Ty.path "usize" ]
                                           |),
                                           [
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              M.get_trait_method (|
-                                                "core::cmp::PartialEq",
-                                                Ty.path "core::cmp::Ordering",
-                                                [],
-                                                [ Ty.path "core::cmp::Ordering" ],
-                                                "eq",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (| Pointer.Kind.Ref, cmp |);
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.alloc (|
-                                                    Ty.path "core::cmp::Ordering",
-                                                    Value.StructTuple
-                                                      "core::cmp::Ordering::Greater"
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.path "bool",
+                                                M.get_trait_method (|
+                                                  "core::cmp::PartialEq",
+                                                  Ty.path "core::cmp::Ordering",
+                                                  [],
+                                                  [ Ty.path "core::cmp::Ordering" ],
+                                                  "eq",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.Ref, cmp |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
                                                       []
+                                                      [ Ty.path "core::cmp::Ordering" ]);
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.path "core::cmp::Ordering",
+                                                        M.value_with_ty
+                                                          (Value.StructTuple
+                                                            "core::cmp::Ordering::Greater"
+                                                            [])
+                                                          (Ty.path "core::cmp::Ordering")
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
                                                       []
-                                                      []
-                                                  |)
-                                                |)
-                                              ]
-                                            |);
-                                            M.read (| base |);
-                                            M.read (| mid |)
+                                                      [ Ty.path "core::cmp::Ordering" ])
+                                                ]
+                                              |))
+                                              (Ty.path "bool");
+                                            M.value_with_ty (M.read (| base |)) (Ty.path "usize");
+                                            M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
                                           ]
                                         |)
                                       |) in
@@ -9292,28 +10572,40 @@ Module slice.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, f |);
-                      Value.Tuple
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply (Ty.path "&") [] [ T ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "slice") [] [ T ],
-                                  "get_unchecked",
-                                  [],
-                                  [ Ty.path "usize" ]
-                                |),
-                                [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                  M.read (| base |)
-                                ]
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, f |))
+                        (Ty.apply (Ty.path "&mut") [] [ F ]);
+                      M.value_with_ty
+                        (Value.Tuple
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "&") [] [ T ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ T ],
+                                    "get_unchecked",
+                                    [],
+                                    [ Ty.path "usize" ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                    M.value_with_ty (M.read (| base |)) (Ty.path "usize")
+                                  ]
+                                |)
                               |)
                             |)
-                          |)
-                        ]
+                          ])
+                        (Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ])
                     ]
                   |) in
                 M.alloc (|
@@ -9343,14 +10635,20 @@ Module slice.
                                     []
                                   |),
                                   [
-                                    M.borrow (| Pointer.Kind.Ref, cmp |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.path "core::cmp::Ordering",
-                                        Value.StructTuple "core::cmp::Ordering::Equal" [] [] []
-                                      |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, cmp |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::cmp::Ordering" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.path "core::cmp::Ordering",
+                                          M.value_with_ty
+                                            (Value.StructTuple "core::cmp::Ordering::Equal" [])
+                                            (Ty.path "core::cmp::Ordering")
+                                        |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::cmp::Ordering" ])
                                   ]
                                 |)
                               |)) in
@@ -9362,28 +10660,35 @@ Module slice.
                                 Ty.tuple [],
                                 M.get_function (| "core::hint::assert_unchecked", [], [] |),
                                 [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.lt,
-                                    [
-                                      M.read (| base |);
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.apply (Ty.path "slice") [] [ T ],
-                                          "len",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.lt,
+                                      [
+                                        M.read (| base |);
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "slice") [] [ T ],
+                                            "len",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                          ]
+                                        |)
+                                      ]
+                                    |))
+                                    (Ty.path "bool")
                                 ]
                               |) in
                             M.alloc (|
@@ -9391,11 +10696,12 @@ Module slice.
                                 (Ty.path "core::result::Result")
                                 []
                                 [ Ty.path "usize"; Ty.path "usize" ],
-                              Value.StructTuple
-                                "core::result::Result::Ok"
-                                []
-                                [ Ty.path "usize"; Ty.path "usize" ]
-                                [ M.read (| base |) ]
+                              M.value_with_ty
+                                (Value.StructTuple "core::result::Result::Ok" [ M.read (| base |) ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.path "usize"; Ty.path "usize" ])
                             |)
                           |)));
                       fun γ =>
@@ -9421,14 +10727,26 @@ Module slice.
                                         []
                                       |),
                                       [
-                                        M.borrow (| Pointer.Kind.Ref, cmp |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.alloc (|
-                                            Ty.path "core::cmp::Ordering",
-                                            Value.StructTuple "core::cmp::Ordering::Less" [] [] []
-                                          |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, cmp |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "core::cmp::Ordering" ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.alloc (|
+                                              Ty.path "core::cmp::Ordering",
+                                              M.value_with_ty
+                                                (Value.StructTuple "core::cmp::Ordering::Less" [])
+                                                (Ty.path "core::cmp::Ordering")
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "core::cmp::Ordering" ])
                                       ]
                                     |))
                                 ]
@@ -9438,28 +10756,35 @@ Module slice.
                                 Ty.tuple [],
                                 M.get_function (| "core::hint::assert_unchecked", [], [] |),
                                 [
-                                  M.call_closure (|
-                                    Ty.path "bool",
-                                    BinOp.le,
-                                    [
-                                      M.read (| result |);
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
-                                          Ty.apply (Ty.path "slice") [] [ T ],
-                                          "len",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                  |)
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.path "bool",
+                                      BinOp.le,
+                                      [
+                                        M.read (| result |);
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "slice") [] [ T ],
+                                            "len",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                          ]
+                                        |)
+                                      ]
+                                    |))
+                                    (Ty.path "bool")
                                 ]
                               |) in
                             M.alloc (|
@@ -9467,11 +10792,14 @@ Module slice.
                                 (Ty.path "core::result::Result")
                                 []
                                 [ Ty.path "usize"; Ty.path "usize" ],
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.path "usize"; Ty.path "usize" ]
-                                [ M.read (| result |) ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [ M.read (| result |) ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.path "usize"; Ty.path "usize" ])
                             |)
                           |)))
                     ]
@@ -9520,67 +10848,82 @@ Module slice.
               [ Ty.function [ Ty.apply (Ty.path "&") [] [ T ] ] (Ty.path "core::cmp::Ordering") ]
             |),
             [
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.path "core::cmp::Ordering",
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let k := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                                M.call_closure (|
-                                  Ty.path "core::cmp::Ordering",
-                                  M.get_trait_method (|
-                                    "core::cmp::Ord",
-                                    B,
-                                    [],
-                                    [],
-                                    "cmp",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        B,
-                                        M.call_closure (|
-                                          B,
-                                          M.get_trait_method (|
-                                            "core::ops::function::FnMut",
-                                            F,
-                                            [],
-                                            [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
-                                            "call_mut",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (| Pointer.Kind.MutRef, f |);
-                                            Value.Tuple
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+              M.value_with_ty
+                (M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.path "core::cmp::Ordering",
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let k := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
+                                  M.call_closure (|
+                                    Ty.path "core::cmp::Ordering",
+                                    M.get_trait_method (|
+                                      "core::cmp::Ord",
+                                      B,
+                                      [],
+                                      [],
+                                      "cmp",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            B,
+                                            M.call_closure (|
+                                              B,
+                                              M.get_trait_method (|
+                                                "core::ops::function::FnMut",
+                                                F,
+                                                [],
+                                                [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ] ],
+                                                "call_mut",
+                                                [],
+                                                []
+                                              |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| k |) |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (| Pointer.Kind.MutRef, f |))
+                                                  (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                M.value_with_ty
+                                                  (Value.Tuple
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| k |) |)
+                                                      |)
+                                                    ])
+                                                  (Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ])
                                               ]
-                                          ]
-                                        |)
-                                      |)
-                                    |);
-                                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| b |) |) |)
-                                  ]
-                                |)))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ B ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| b |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ B ])
+                                    ]
+                                  |)))
+                            ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end)))
+                (Ty.function [ Ty.apply (Ty.path "&") [] [ T ] ] (Ty.path "core::cmp::Ordering"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -9625,29 +10968,40 @@ Module slice.
                   ]
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.alloc (|
-                          Ty.function
-                            [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
-                            (Ty.path "bool"),
-                          M.get_trait_method (|
-                            "core::cmp::PartialOrd",
-                            T,
-                            [],
-                            [ T ],
-                            "lt",
-                            [],
-                            []
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.alloc (|
+                            Ty.function
+                              [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
+                              (Ty.path "bool"),
+                            M.get_trait_method (|
+                              "core::cmp::PartialOrd",
+                              T,
+                              [],
+                              [ T ],
+                              "lt",
+                              [],
+                              []
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [
+                        Ty.function
+                          [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
+                          (Ty.path "bool")
+                      ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -9700,123 +11054,165 @@ Module slice.
                   ]
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.alloc (|
-                          Ty.function
-                            [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
-                            (Ty.path "bool"),
-                          M.closure
-                            (fun γ =>
-                              ltac:(M.monadic
-                                match γ with
-                                | [ α0; α1 ] =>
-                                  ltac:(M.monadic
-                                    (M.match_operator (|
-                                      Ty.path "bool",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let a :=
-                                              M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                                            M.match_operator (|
-                                              Ty.path "bool",
-                                              M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α1 |),
-                                              [
-                                                fun γ =>
-                                                  ltac:(M.monadic
-                                                    (let b :=
-                                                      M.copy (|
-                                                        Ty.apply (Ty.path "&") [] [ T ],
-                                                        γ
-                                                      |) in
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      M.get_trait_method (|
-                                                        "core::cmp::PartialEq",
-                                                        Ty.path "core::cmp::Ordering",
-                                                        [],
-                                                        [ Ty.path "core::cmp::Ordering" ],
-                                                        "eq",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.alloc (|
-                                                            Ty.path "core::cmp::Ordering",
-                                                            M.call_closure (|
-                                                              Ty.path "core::cmp::Ordering",
-                                                              M.get_trait_method (|
-                                                                "core::ops::function::FnMut",
-                                                                F,
-                                                                [],
-                                                                [
-                                                                  Ty.tuple
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.alloc (|
+                            Ty.function
+                              [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
+                              (Ty.path "bool"),
+                            M.closure
+                              (fun γ =>
+                                ltac:(M.monadic
+                                  match γ with
+                                  | [ α0; α1 ] =>
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "bool",
+                                        M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let a :=
+                                                M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
+                                              M.match_operator (|
+                                                Ty.path "bool",
+                                                M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α1 |),
+                                                [
+                                                  fun γ =>
+                                                    ltac:(M.monadic
+                                                      (let b :=
+                                                        M.copy (|
+                                                          Ty.apply (Ty.path "&") [] [ T ],
+                                                          γ
+                                                        |) in
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        M.get_trait_method (|
+                                                          "core::cmp::PartialEq",
+                                                          Ty.path "core::cmp::Ordering",
+                                                          [],
+                                                          [ Ty.path "core::cmp::Ordering" ],
+                                                          "eq",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.alloc (|
+                                                                Ty.path "core::cmp::Ordering",
+                                                                M.call_closure (|
+                                                                  Ty.path "core::cmp::Ordering",
+                                                                  M.get_trait_method (|
+                                                                    "core::ops::function::FnMut",
+                                                                    F,
+                                                                    [],
                                                                     [
-                                                                      Ty.apply
-                                                                        (Ty.path "&")
-                                                                        []
-                                                                        [ T ];
-                                                                      Ty.apply
-                                                                        (Ty.path "&")
-                                                                        []
-                                                                        [ T ]
-                                                                    ]
-                                                                ],
-                                                                "call_mut",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  compare
-                                                                |);
-                                                                Value.Tuple
+                                                                      Ty.tuple
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [ T ];
+                                                                          Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [ T ]
+                                                                        ]
+                                                                    ],
+                                                                    "call_mut",
+                                                                    [],
+                                                                    []
+                                                                  |),
                                                                   [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.deref (| M.read (| a |) |)
-                                                                    |);
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.deref (| M.read (| b |) |)
-                                                                    |)
+                                                                    M.value_with_ty
+                                                                      (M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        compare
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&mut")
+                                                                        []
+                                                                        [ F ]);
+                                                                    M.value_with_ty
+                                                                      (Value.Tuple
+                                                                        [
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (| a |)
+                                                                            |)
+                                                                          |);
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (| b |)
+                                                                            |)
+                                                                          |)
+                                                                        ])
+                                                                      (Ty.tuple
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [ T ];
+                                                                          Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [ T ]
+                                                                        ])
                                                                   ]
-                                                              ]
-                                                            |)
-                                                          |)
-                                                        |);
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.alloc (|
-                                                            Ty.path "core::cmp::Ordering",
-                                                            Value.StructTuple
-                                                              "core::cmp::Ordering::Less"
+                                                                |)
+                                                              |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
                                                               []
+                                                              [ Ty.path "core::cmp::Ordering" ]);
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.alloc (|
+                                                                Ty.path "core::cmp::Ordering",
+                                                                M.value_with_ty
+                                                                  (Value.StructTuple
+                                                                    "core::cmp::Ordering::Less"
+                                                                    [])
+                                                                  (Ty.path "core::cmp::Ordering")
+                                                              |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
                                                               []
-                                                              []
-                                                          |)
-                                                        |)
-                                                      ]
-                                                    |)))
-                                              ]
-                                            |)))
-                                      ]
-                                    |)))
-                                | _ => M.impossible "wrong number of arguments"
-                                end))
+                                                              [ Ty.path "core::cmp::Ordering" ])
+                                                        ]
+                                                      |)))
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                  | _ => M.impossible "wrong number of arguments"
+                                  end))
+                          |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [
+                        Ty.function
+                          [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
+                          (Ty.path "bool")
+                      ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -9870,96 +11266,58 @@ Module slice.
                   ]
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.alloc (|
-                          Ty.function
-                            [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
-                            (Ty.path "bool"),
-                          M.closure
-                            (fun γ =>
-                              ltac:(M.monadic
-                                match γ with
-                                | [ α0; α1 ] =>
-                                  ltac:(M.monadic
-                                    (M.match_operator (|
-                                      Ty.path "bool",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let a :=
-                                              M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                                            M.match_operator (|
-                                              Ty.path "bool",
-                                              M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α1 |),
-                                              [
-                                                fun γ =>
-                                                  ltac:(M.monadic
-                                                    (let b :=
-                                                      M.copy (|
-                                                        Ty.apply (Ty.path "&") [] [ T ],
-                                                        γ
-                                                      |) in
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      M.get_trait_method (|
-                                                        "core::cmp::PartialOrd",
-                                                        K,
-                                                        [],
-                                                        [ K ],
-                                                        "lt",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.alloc (|
-                                                            K,
-                                                            M.call_closure (|
-                                                              K,
-                                                              M.get_trait_method (|
-                                                                "core::ops::function::FnMut",
-                                                                F,
-                                                                [],
-                                                                [
-                                                                  Ty.tuple
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path "&")
-                                                                        []
-                                                                        [ T ]
-                                                                    ]
-                                                                ],
-                                                                "call_mut",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  f
-                                                                |);
-                                                                Value.Tuple
-                                                                  [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.deref (| M.read (| a |) |)
-                                                                    |)
-                                                                  ]
-                                                              ]
-                                                            |)
-                                                          |)
-                                                        |);
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.borrow (|
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.alloc (|
+                            Ty.function
+                              [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
+                              (Ty.path "bool"),
+                            M.closure
+                              (fun γ =>
+                                ltac:(M.monadic
+                                  match γ with
+                                  | [ α0; α1 ] =>
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "bool",
+                                        M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let a :=
+                                                M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
+                                              M.match_operator (|
+                                                Ty.path "bool",
+                                                M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α1 |),
+                                                [
+                                                  fun γ =>
+                                                    ltac:(M.monadic
+                                                      (let b :=
+                                                        M.copy (|
+                                                          Ty.apply (Ty.path "&") [] [ T ],
+                                                          γ
+                                                        |) in
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        M.get_trait_method (|
+                                                          "core::cmp::PartialOrd",
+                                                          K,
+                                                          [],
+                                                          [ K ],
+                                                          "lt",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
                                                               Pointer.Kind.Ref,
                                                               M.alloc (|
                                                                 K,
@@ -9983,37 +11341,118 @@ Module slice.
                                                                     []
                                                                   |),
                                                                   [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.MutRef,
-                                                                      f
-                                                                    |);
-                                                                    Value.Tuple
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.read (| b |)
+                                                                    M.value_with_ty
+                                                                      (M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        f
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&mut")
+                                                                        []
+                                                                        [ F ]);
+                                                                    M.value_with_ty
+                                                                      (Value.Tuple
+                                                                        [
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (| a |)
+                                                                            |)
                                                                           |)
-                                                                        |)
-                                                                      ]
+                                                                        ])
+                                                                      (Ty.tuple
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [ T ]
+                                                                        ])
                                                                   ]
                                                                 |)
                                                               |)
-                                                            |)
-                                                          |)
-                                                        |)
-                                                      ]
-                                                    |)))
-                                              ]
-                                            |)))
-                                      ]
-                                    |)))
-                                | _ => M.impossible "wrong number of arguments"
-                                end))
+                                                            |))
+                                                            (Ty.apply (Ty.path "&") [] [ K ]);
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (|
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.alloc (|
+                                                                    K,
+                                                                    M.call_closure (|
+                                                                      K,
+                                                                      M.get_trait_method (|
+                                                                        "core::ops::function::FnMut",
+                                                                        F,
+                                                                        [],
+                                                                        [
+                                                                          Ty.tuple
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [ T ]
+                                                                            ]
+                                                                        ],
+                                                                        "call_mut",
+                                                                        [],
+                                                                        []
+                                                                      |),
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.MutRef,
+                                                                            f
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&mut")
+                                                                            []
+                                                                            [ F ]);
+                                                                        M.value_with_ty
+                                                                          (Value.Tuple
+                                                                            [
+                                                                              M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.deref (|
+                                                                                  M.read (| b |)
+                                                                                |)
+                                                                              |)
+                                                                            ])
+                                                                          (Ty.tuple
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [ T ]
+                                                                            ])
+                                                                      ]
+                                                                    |)
+                                                                  |)
+                                                                |)
+                                                              |)
+                                                            |))
+                                                            (Ty.apply (Ty.path "&") [] [ K ])
+                                                        ]
+                                                      |)))
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                  | _ => M.impossible "wrong number of arguments"
+                                  end))
+                          |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [
+                        Ty.function
+                          [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
+                          (Ty.path "bool")
+                      ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -10069,9 +11508,15 @@ Module slice.
               ]
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-              M.read (| index |);
-              M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "lt", [], [] |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+              M.value_with_ty (M.read (| index |)) (Ty.path "usize");
+              M.value_with_ty
+                (M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "lt", [], [] |))
+                (Ty.function
+                  [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
+                  (Ty.path "bool"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -10130,97 +11575,125 @@ Module slice.
               ]
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-              M.read (| index |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0; α1 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.path "bool",
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let a := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                                M.match_operator (|
-                                  Ty.path "bool",
-                                  M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α1 |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let b := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          M.get_trait_method (|
-                                            "core::cmp::PartialEq",
-                                            Ty.path "core::cmp::Ordering",
-                                            [],
-                                            [ Ty.path "core::cmp::Ordering" ],
-                                            "eq",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                Ty.path "core::cmp::Ordering",
-                                                M.call_closure (|
-                                                  Ty.path "core::cmp::Ordering",
-                                                  M.get_trait_method (|
-                                                    "core::ops::function::FnMut",
-                                                    F,
-                                                    [],
-                                                    [
-                                                      Ty.tuple
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+              M.value_with_ty (M.read (| index |)) (Ty.path "usize");
+              M.value_with_ty
+                (M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0; α1 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.path "bool",
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let a := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
+                                  M.match_operator (|
+                                    Ty.path "bool",
+                                    M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α1 |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let b :=
+                                            M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            M.get_trait_method (|
+                                              "core::cmp::PartialEq",
+                                              Ty.path "core::cmp::Ordering",
+                                              [],
+                                              [ Ty.path "core::cmp::Ordering" ],
+                                              "eq",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.alloc (|
+                                                    Ty.path "core::cmp::Ordering",
+                                                    M.call_closure (|
+                                                      Ty.path "core::cmp::Ordering",
+                                                      M.get_trait_method (|
+                                                        "core::ops::function::FnMut",
+                                                        F,
+                                                        [],
                                                         [
-                                                          Ty.apply (Ty.path "&") [] [ T ];
-                                                          Ty.apply (Ty.path "&") [] [ T ]
-                                                        ]
-                                                    ],
-                                                    "call_mut",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (| Pointer.Kind.MutRef, compare |);
-                                                    Value.Tuple
+                                                          Ty.tuple
+                                                            [
+                                                              Ty.apply (Ty.path "&") [] [ T ];
+                                                              Ty.apply (Ty.path "&") [] [ T ]
+                                                            ]
+                                                        ],
+                                                        "call_mut",
+                                                        [],
+                                                        []
+                                                      |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| a |) |)
-                                                        |);
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| b |) |)
-                                                        |)
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            compare
+                                                          |))
+                                                          (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                        M.value_with_ty
+                                                          (Value.Tuple
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (| M.read (| a |) |)
+                                                              |);
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (| M.read (| b |) |)
+                                                              |)
+                                                            ])
+                                                          (Ty.tuple
+                                                            [
+                                                              Ty.apply (Ty.path "&") [] [ T ];
+                                                              Ty.apply (Ty.path "&") [] [ T ]
+                                                            ])
                                                       ]
-                                                  ]
-                                                |)
-                                              |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                Ty.path "core::cmp::Ordering",
-                                                Value.StructTuple
-                                                  "core::cmp::Ordering::Less"
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
                                                   []
+                                                  [ Ty.path "core::cmp::Ordering" ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.alloc (|
+                                                    Ty.path "core::cmp::Ordering",
+                                                    M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "core::cmp::Ordering::Less"
+                                                        [])
+                                                      (Ty.path "core::cmp::Ordering")
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
                                                   []
-                                                  []
-                                              |)
-                                            |)
-                                          ]
-                                        |)))
-                                  ]
-                                |)))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+                                                  [ Ty.path "core::cmp::Ordering" ])
+                                            ]
+                                          |)))
+                                    ]
+                                  |)))
+                            ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end)))
+                (Ty.function
+                  [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
+                  (Ty.path "bool"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -10280,73 +11753,46 @@ Module slice.
               ]
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-              M.read (| index |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0; α1 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.path "bool",
-                          M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let a := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                                M.match_operator (|
-                                  Ty.path "bool",
-                                  M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α1 |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let b := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          M.get_trait_method (|
-                                            "core::cmp::PartialOrd",
-                                            K,
-                                            [],
-                                            [ K ],
-                                            "lt",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                K,
-                                                M.call_closure (|
-                                                  K,
-                                                  M.get_trait_method (|
-                                                    "core::ops::function::FnMut",
-                                                    F,
-                                                    [],
-                                                    [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ]
-                                                    ],
-                                                    "call_mut",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (| Pointer.Kind.MutRef, f |);
-                                                    Value.Tuple
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| a |) |)
-                                                        |)
-                                                      ]
-                                                  ]
-                                                |)
-                                              |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+              M.value_with_ty (M.read (| index |)) (Ty.path "usize");
+              M.value_with_ty
+                (M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0; α1 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.path "bool",
+                            M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let a := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
+                                  M.match_operator (|
+                                    Ty.path "bool",
+                                    M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α1 |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let b :=
+                                            M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            M.get_trait_method (|
+                                              "core::cmp::PartialOrd",
+                                              K,
+                                              [],
+                                              [ K ],
+                                              "lt",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.Ref,
                                                   M.alloc (|
                                                     K,
@@ -10365,28 +11811,81 @@ Module slice.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (| Pointer.Kind.MutRef, f |);
-                                                        Value.Tuple
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (| M.read (| b |) |)
-                                                            |)
-                                                          ]
+                                                        M.value_with_ty
+                                                          (M.borrow (| Pointer.Kind.MutRef, f |))
+                                                          (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                        M.value_with_ty
+                                                          (Value.Tuple
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (| M.read (| a |) |)
+                                                              |)
+                                                            ])
+                                                          (Ty.tuple
+                                                            [ Ty.apply (Ty.path "&") [] [ T ] ])
                                                       ]
                                                     |)
                                                   |)
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)))
-                                  ]
-                                |)))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ K ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        K,
+                                                        M.call_closure (|
+                                                          K,
+                                                          M.get_trait_method (|
+                                                            "core::ops::function::FnMut",
+                                                            F,
+                                                            [],
+                                                            [
+                                                              Ty.tuple
+                                                                [ Ty.apply (Ty.path "&") [] [ T ] ]
+                                                            ],
+                                                            "call_mut",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                f
+                                                              |))
+                                                              (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                            M.value_with_ty
+                                                              (Value.Tuple
+                                                                [
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (| M.read (| b |) |)
+                                                                  |)
+                                                                ])
+                                                              (Ty.tuple
+                                                                [ Ty.apply (Ty.path "&") [] [ T ] ])
+                                                          ]
+                                                        |)
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ K ])
+                                            ]
+                                          |)))
+                                    ]
+                                  |)))
+                            ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end)))
+                (Ty.function
+                  [ Ty.apply (Ty.path "&") [] [ T ]; Ty.apply (Ty.path "&") [] [ T ] ]
+                  (Ty.path "bool"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -10438,50 +11937,66 @@ Module slice.
               ]
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0; α1 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.path "bool",
-                          M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α0 |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let a := M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ |) in
-                                M.match_operator (|
-                                  Ty.path "bool",
-                                  M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α1 |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let b :=
-                                          M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ |) in
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          M.get_trait_method (|
-                                            "core::cmp::PartialEq",
-                                            Ty.apply (Ty.path "&mut") [] [ T ],
-                                            [],
-                                            [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                                            "eq",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (| Pointer.Kind.Ref, a |);
-                                            M.borrow (| Pointer.Kind.Ref, b |)
-                                          ]
-                                        |)))
-                                  ]
-                                |)))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+              M.value_with_ty
+                (M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0; α1 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.path "bool",
+                            M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α0 |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let a := M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ |) in
+                                  M.match_operator (|
+                                    Ty.path "bool",
+                                    M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α1 |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let b :=
+                                            M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ |) in
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            M.get_trait_method (|
+                                              "core::cmp::PartialEq",
+                                              Ty.apply (Ty.path "&mut") [] [ T ],
+                                              [],
+                                              [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                                              "eq",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (| Pointer.Kind.Ref, a |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&mut") [] [ T ] ]);
+                                              M.value_with_ty
+                                                (M.borrow (| Pointer.Kind.Ref, b |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&mut") [] [ T ] ])
+                                            ]
+                                          |)))
+                                    ]
+                                  |)))
+                            ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end)))
+                (Ty.function
+                  [ Ty.apply (Ty.path "&mut") [] [ T ]; Ty.apply (Ty.path "&mut") [] [ T ] ]
+                  (Ty.path "bool"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -10631,7 +12146,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -10715,7 +12234,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |) in
                 let~ next_read : Ty.path "usize" := Value.Integer IntegerKind.Usize 1 in
                 let~ next_write : Ty.path "usize" := Value.Integer IntegerKind.Usize 1 in
@@ -10757,7 +12280,12 @@ Module slice.
                                           [],
                                           []
                                         |),
-                                        [ M.read (| ptr |); M.read (| next_read |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| ptr |))
+                                            (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                          M.value_with_ty (M.read (| next_read |)) (Ty.path "usize")
+                                        ]
                                       |) in
                                     let~ prev_ptr_write : Ty.apply (Ty.path "*mut") [] [ T ] :=
                                       M.call_closure (|
@@ -10769,15 +12297,19 @@ Module slice.
                                           []
                                         |),
                                         [
-                                          M.read (| ptr |);
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            BinOp.Wrap.sub,
-                                            [
-                                              M.read (| next_write |);
-                                              Value.Integer IntegerKind.Usize 1
-                                            ]
-                                          |)
+                                          M.value_with_ty
+                                            (M.read (| ptr |))
+                                            (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "usize",
+                                              BinOp.Wrap.sub,
+                                              [
+                                                M.read (| next_write |);
+                                                Value.Integer IntegerKind.Usize 1
+                                              ]
+                                            |))
+                                            (Ty.path "usize")
                                         ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
@@ -10816,35 +12348,48 @@ Module slice.
                                                             []
                                                           |),
                                                           [
-                                                            M.borrow (|
-                                                              Pointer.Kind.MutRef,
-                                                              same_bucket
-                                                            |);
-                                                            Value.Tuple
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  M.deref (|
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.MutRef,
-                                                                      M.deref (|
-                                                                        M.read (| ptr_read |)
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                same_bucket
+                                                              |))
+                                                              (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                            M.value_with_ty
+                                                              (Value.Tuple
+                                                                [
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    M.deref (|
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        M.deref (|
+                                                                          M.read (| ptr_read |)
+                                                                        |)
+                                                                      |)
+                                                                    |)
+                                                                  |);
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    M.deref (|
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        M.deref (|
+                                                                          M.read (|
+                                                                            prev_ptr_write
+                                                                          |)
+                                                                        |)
                                                                       |)
                                                                     |)
                                                                   |)
-                                                                |);
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  M.deref (|
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.MutRef,
-                                                                      M.deref (|
-                                                                        M.read (| prev_ptr_write |)
-                                                                      |)
-                                                                    |)
-                                                                  |)
-                                                                |)
-                                                              ]
+                                                                ])
+                                                              (Ty.tuple
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [ T ];
+                                                                  Ty.apply (Ty.path "&mut") [] [ T ]
+                                                                ])
                                                           ]
                                                         |)
                                                       ]
@@ -10899,8 +12444,17 @@ Module slice.
                                                                   []
                                                                 |),
                                                                 [
-                                                                  M.read (| prev_ptr_write |);
-                                                                  Value.Integer IntegerKind.Usize 1
+                                                                  M.value_with_ty
+                                                                    (M.read (| prev_ptr_write |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "*mut")
+                                                                      []
+                                                                      [ T ]);
+                                                                  M.value_with_ty
+                                                                    (Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      1)
+                                                                    (Ty.path "usize")
                                                                 ]
                                                               |) in
                                                             let~ _ : Ty.tuple [] :=
@@ -10912,28 +12466,38 @@ Module slice.
                                                                   [ T ]
                                                                 |),
                                                                 [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.MutRef,
-                                                                    M.deref (|
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.MutRef,
-                                                                        M.deref (|
-                                                                          M.read (| ptr_read |)
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      M.deref (|
+                                                                        M.borrow (|
+                                                                          Pointer.Kind.MutRef,
+                                                                          M.deref (|
+                                                                            M.read (| ptr_read |)
+                                                                          |)
                                                                         |)
                                                                       |)
-                                                                    |)
-                                                                  |);
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.MutRef,
-                                                                    M.deref (|
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.MutRef,
-                                                                        M.deref (|
-                                                                          M.read (| ptr_write |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [ T ]);
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      M.deref (|
+                                                                        M.borrow (|
+                                                                          Pointer.Kind.MutRef,
+                                                                          M.deref (|
+                                                                            M.read (| ptr_write |)
+                                                                          |)
                                                                         |)
                                                                       |)
-                                                                    |)
-                                                                  |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [ T ])
                                                                 ]
                                                               |) in
                                                             M.alloc (|
@@ -11007,8 +12571,10 @@ Module slice.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                      M.read (| next_write |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                      M.value_with_ty (M.read (| next_write |)) (Ty.path "usize")
                     ]
                   |)
                 |)
@@ -11065,110 +12631,130 @@ Module slice.
               ]
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0; α1 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.path "bool",
-                          M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α0 |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let a := M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ |) in
-                                M.match_operator (|
-                                  Ty.path "bool",
-                                  M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α1 |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let b :=
-                                          M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ |) in
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          M.get_trait_method (|
-                                            "core::cmp::PartialEq",
-                                            K,
-                                            [],
-                                            [ K ],
-                                            "eq",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                K,
-                                                M.call_closure (|
-                                                  K,
-                                                  M.get_trait_method (|
-                                                    "core::ops::function::FnMut",
-                                                    F,
-                                                    [],
-                                                    [
-                                                      Ty.tuple
-                                                        [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                                                    ],
-                                                    "call_mut",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (| Pointer.Kind.MutRef, key |);
-                                                    Value.Tuple
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+              M.value_with_ty
+                (M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0; α1 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.path "bool",
+                            M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α0 |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let a := M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ |) in
+                                  M.match_operator (|
+                                    Ty.path "bool",
+                                    M.alloc (| Ty.apply (Ty.path "&mut") [] [ T ], α1 |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let b :=
+                                            M.copy (| Ty.apply (Ty.path "&mut") [] [ T ], γ |) in
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            M.get_trait_method (|
+                                              "core::cmp::PartialEq",
+                                              K,
+                                              [],
+                                              [ K ],
+                                              "eq",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.alloc (|
+                                                    K,
+                                                    M.call_closure (|
+                                                      K,
+                                                      M.get_trait_method (|
+                                                        "core::ops::function::FnMut",
+                                                        F,
+                                                        [],
+                                                        [
+                                                          Ty.tuple
+                                                            [ Ty.apply (Ty.path "&mut") [] [ T ] ]
+                                                        ],
+                                                        "call_mut",
+                                                        [],
+                                                        []
+                                                      |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.deref (| M.read (| a |) |)
-                                                        |)
+                                                        M.value_with_ty
+                                                          (M.borrow (| Pointer.Kind.MutRef, key |))
+                                                          (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                        M.value_with_ty
+                                                          (Value.Tuple
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                M.deref (| M.read (| a |) |)
+                                                              |)
+                                                            ])
+                                                          (Ty.tuple
+                                                            [ Ty.apply (Ty.path "&mut") [] [ T ] ])
                                                       ]
-                                                  ]
-                                                |)
-                                              |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                K,
-                                                M.call_closure (|
-                                                  K,
-                                                  M.get_trait_method (|
-                                                    "core::ops::function::FnMut",
-                                                    F,
-                                                    [],
-                                                    [
-                                                      Ty.tuple
-                                                        [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                                                    ],
-                                                    "call_mut",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (| Pointer.Kind.MutRef, key |);
-                                                    Value.Tuple
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ K ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.alloc (|
+                                                    K,
+                                                    M.call_closure (|
+                                                      K,
+                                                      M.get_trait_method (|
+                                                        "core::ops::function::FnMut",
+                                                        F,
+                                                        [],
+                                                        [
+                                                          Ty.tuple
+                                                            [ Ty.apply (Ty.path "&mut") [] [ T ] ]
+                                                        ],
+                                                        "call_mut",
+                                                        [],
+                                                        []
+                                                      |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.deref (| M.read (| b |) |)
-                                                        |)
+                                                        M.value_with_ty
+                                                          (M.borrow (| Pointer.Kind.MutRef, key |))
+                                                          (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                        M.value_with_ty
+                                                          (Value.Tuple
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                M.deref (| M.read (| b |) |)
+                                                              |)
+                                                            ])
+                                                          (Ty.tuple
+                                                            [ Ty.apply (Ty.path "&mut") [] [ T ] ])
                                                       ]
-                                                  ]
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)))
-                                  ]
-                                |)))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ K ])
+                                            ]
+                                          |)))
+                                    ]
+                                  |)))
+                            ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end)))
+                (Ty.function
+                  [ Ty.apply (Ty.path "&mut") [] [ T ]; Ty.apply (Ty.path "&mut") [] [ T ] ]
+                  (Ty.path "bool"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -11234,10 +12820,15 @@ Module slice.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                       ]
                                     |)
                                   ]
@@ -11250,7 +12841,11 @@ Module slice.
                         M.call_closure (|
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic", [], [] |),
-                          [ mk_str (| "assertion failed: mid <= self.len()" |) ]
+                          [
+                            M.value_with_ty
+                              (mk_str (| "assertion failed: mid <= self.len()" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
                         |)
                       |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -11269,7 +12864,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |);
                   M.read (| mid |)
                 ]
@@ -11283,25 +12882,34 @@ Module slice.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
                 Ty.tuple [],
                 M.get_function (| "core::slice::rotate::ptr_rotate", [], [ T ] |),
                 [
-                  M.read (| mid |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "*mut") [] [ T ],
-                    M.get_associated_function (|
+                  M.value_with_ty (M.read (| mid |)) (Ty.path "usize");
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.apply (Ty.path "*mut") [] [ T ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [ M.read (| p |); M.read (| mid |) ]
-                  |);
-                  M.read (| k |)
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "*mut") [] [ T ],
+                        "add",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty (M.read (| p |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                        M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "*mut") [] [ T ]);
+                  M.value_with_ty (M.read (| k |)) (Ty.path "usize")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -11369,10 +12977,15 @@ Module slice.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                       ]
                                     |)
                                   ]
@@ -11385,7 +12998,11 @@ Module slice.
                         M.call_closure (|
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic", [], [] |),
-                          [ mk_str (| "assertion failed: k <= self.len()" |) ]
+                          [
+                            M.value_with_ty
+                              (mk_str (| "assertion failed: k <= self.len()" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
                         |)
                       |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -11404,7 +13021,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |);
                   M.read (| k |)
                 ]
@@ -11418,25 +13039,34 @@ Module slice.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
                 Ty.tuple [],
                 M.get_function (| "core::slice::rotate::ptr_rotate", [], [ T ] |),
                 [
-                  M.read (| mid |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "*mut") [] [ T ],
-                    M.get_associated_function (|
+                  M.value_with_ty (M.read (| mid |)) (Ty.path "usize");
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.apply (Ty.path "*mut") [] [ T ],
-                      "add",
-                      [],
-                      []
-                    |),
-                    [ M.read (| p |); M.read (| mid |) ]
-                  |);
-                  M.read (| k |)
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "*mut") [] [ T ],
+                        "add",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty (M.read (| p |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                        M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "*mut") [] [ T ]);
+                  M.value_with_ty (M.read (| k |)) (Ty.path "usize")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -11483,8 +13113,10 @@ Module slice.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.read (| value |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                  M.value_with_ty (M.read (| value |)) T
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -11538,7 +13170,11 @@ Module slice.
                         [],
                         []
                       |),
-                      [ M.read (| self |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| self |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                      ]
                     |)
                   |),
                   [
@@ -11573,10 +13209,20 @@ Module slice.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::slice::iter::IterMut")
+                                                []
+                                                [ T ]
+                                            ])
                                       ]
                                     |)
                                   |),
@@ -11612,8 +13258,10 @@ Module slice.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (| Pointer.Kind.MutRef, f |);
-                                                  Value.Tuple []
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.MutRef, f |))
+                                                    (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                  M.value_with_ty (Value.Tuple []) (Ty.tuple [])
                                                 ]
                                               |)
                                             |) in
@@ -11676,8 +13324,12 @@ Module slice.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -11763,7 +13415,16 @@ Module slice.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                   ]
                                 |);
                                 M.call_closure (|
@@ -11774,7 +13435,16 @@ Module slice.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |)
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| src |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                   ]
                                 |)
                               ]
@@ -11791,26 +13461,50 @@ Module slice.
                             []
                           |),
                           [
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "slice") [] [ T ],
-                                "len",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                            |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "slice") [] [ T ],
-                                "len",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |) ]
-                            |)
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "slice") [] [ T ],
+                                  "len",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                ]
+                              |))
+                              (Ty.path "usize");
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "slice") [] [ T ],
+                                  "len",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| src |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                ]
+                              |))
+                              (Ty.path "usize")
                           ]
                         |)
                       |)));
@@ -11822,36 +13516,54 @@ Module slice.
                 Ty.tuple [],
                 M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
                 [
-                  M.call_closure (|
-                    Ty.apply (Ty.path "*const") [] [ T ],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "slice") [] [ T ],
-                      "as_ptr",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |) ]
-                  |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "*mut") [] [ T ],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "slice") [] [ T ],
-                      "as_mut_ptr",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
-                  |);
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "slice") [] [ T ],
-                      "len",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                  |)
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "*const") [] [ T ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "slice") [] [ T ],
+                        "as_ptr",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "*const") [] [ T ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "*mut") [] [ T ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "slice") [] [ T ],
+                        "as_mut_ptr",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "*mut") [] [ T ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "slice") [] [ T ],
+                        "len",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                      ]
+                    |))
+                    (Ty.path "usize")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -11904,24 +13616,33 @@ Module slice.
                 Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
                 M.get_function (| "core::slice::index::range", [], [ R ] |),
                 [
-                  M.read (| src |);
-                  Value.mkStructRecord
-                    "core::ops::range::RangeTo"
-                    []
-                    [ Ty.path "usize" ]
-                    [
-                      ("end_",
-                        M.call_closure (|
-                          Ty.path "usize",
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "slice") [] [ T ],
-                            "len",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |))
-                    ]
+                  M.value_with_ty (M.read (| src |)) R;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.mkStructRecord
+                        "core::ops::range::RangeTo"
+                        [
+                          ("end_",
+                            M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "slice") [] [ T ],
+                                "len",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
+                            |))
+                        ])
+                      (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ]))
+                    (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ])
                 ]
               |)
             |),
@@ -11982,10 +13703,15 @@ Module slice.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| self |) |)
-                                                    |)
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| self |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                                   ]
                                                 |);
                                                 M.read (| count |)
@@ -12003,32 +13729,46 @@ Module slice.
                                   Ty.path "never",
                                   M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                   [
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::Arguments",
-                                      M.get_associated_function (|
+                                    M.value_with_ty
+                                      (M.call_closure (|
                                         Ty.path "core::fmt::Arguments",
-                                        "new_const",
-                                        [ Value.Integer IntegerKind.Usize 1 ],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::Arguments",
+                                          "new_const",
+                                          [ Value.Integer IntegerKind.Usize 1 ],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
                                               Pointer.Kind.Ref,
-                                              M.alloc (|
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.alloc (|
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                                                      ],
+                                                    Value.Array
+                                                      [ mk_str (| "dest is out of bounds" |) ]
+                                                  |)
+                                                |)
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
                                                 Ty.apply
                                                   (Ty.path "array")
                                                   [ Value.Integer IntegerKind.Usize 1 ]
-                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                                Value.Array [ mk_str (| "dest is out of bounds" |) ]
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      ]
-                                    |)
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                              ])
+                                        ]
+                                      |))
+                                      (Ty.path "core::fmt::Arguments")
                                   ]
                                 |)
                               |)));
@@ -12044,7 +13784,11 @@ Module slice.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                        ]
                       |) in
                     let~ src_ptr : Ty.apply (Ty.path "*mut") [] [ T ] :=
                       M.call_closure (|
@@ -12055,7 +13799,10 @@ Module slice.
                           [],
                           []
                         |),
-                        [ M.read (| ptr |); M.read (| src_start |) ]
+                        [
+                          M.value_with_ty (M.read (| ptr |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| src_start |)) (Ty.path "usize")
+                        ]
                       |) in
                     let~ dest_ptr : Ty.apply (Ty.path "*mut") [] [ T ] :=
                       M.call_closure (|
@@ -12066,23 +13813,30 @@ Module slice.
                           [],
                           []
                         |),
-                        [ M.read (| ptr |); M.read (| dest |) ]
+                        [
+                          M.value_with_ty (M.read (| ptr |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| dest |)) (Ty.path "usize")
+                        ]
                       |) in
                     let~ _ : Ty.tuple [] :=
                       M.call_closure (|
                         Ty.tuple [],
                         M.get_function (| "core::intrinsics::copy", [], [ T ] |),
                         [
-                          M.call_closure (|
-                            Ty.apply (Ty.path "*const") [] [ T ],
-                            M.pointer_coercion
-                              M.PointerCoercion.MutToConstPointer
-                              (Ty.apply (Ty.path "*mut") [] [ T ])
-                              (Ty.apply (Ty.path "*const") [] [ T ]),
-                            [ M.read (| src_ptr |) ]
-                          |);
-                          M.read (| dest_ptr |);
-                          M.read (| count |)
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "*const") [] [ T ],
+                              M.pointer_coercion
+                                M.PointerCoercion.MutToConstPointer
+                                (Ty.apply (Ty.path "*mut") [] [ T ])
+                                (Ty.apply (Ty.path "*const") [] [ T ]),
+                              [ M.read (| src_ptr |) ]
+                            |))
+                            (Ty.apply (Ty.path "*const") [] [ T ]);
+                          M.value_with_ty
+                            (M.read (| dest_ptr |))
+                            (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (M.read (| count |)) (Ty.path "usize")
                         ]
                       |) in
                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -12158,10 +13912,15 @@ Module slice.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                       ]
                                     |);
                                     M.call_closure (|
@@ -12173,10 +13932,15 @@ Module slice.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| other |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| other |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                       ]
                                     |)
                                   ]
@@ -12190,37 +13954,49 @@ Module slice.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [
+                                                mk_str (|
+                                                  "destination and source slices have different lengths"
+                                                |)
+                                              ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [
-                                            mk_str (|
-                                              "destination and source slices have different lengths"
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -12232,36 +14008,54 @@ Module slice.
                 Ty.tuple [],
                 M.get_function (| "core::ptr::swap_nonoverlapping", [], [ T ] |),
                 [
-                  M.call_closure (|
-                    Ty.apply (Ty.path "*mut") [] [ T ],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "slice") [] [ T ],
-                      "as_mut_ptr",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
-                  |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "*mut") [] [ T ],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "slice") [] [ T ],
-                      "as_mut_ptr",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| other |) |) |) ]
-                  |);
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "slice") [] [ T ],
-                      "len",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                  |)
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "*mut") [] [ T ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "slice") [] [ T ],
+                        "as_mut_ptr",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "*mut") [] [ T ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "*mut") [] [ T ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "slice") [] [ T ],
+                        "as_mut_ptr",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "*mut") [] [ T ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "slice") [] [ T ],
+                        "len",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                      ]
+                    |))
+                    (Ty.path "usize")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -12372,7 +14166,11 @@ Module slice.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                        ]
                       |);
                       M.read (| ts |)
                     ]
@@ -12393,7 +14191,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |);
                   M.read (| ts |)
                 ]
@@ -12591,19 +14393,25 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |) in
                 let~ offset : Ty.path "usize" :=
                   M.call_closure (|
                     Ty.path "usize",
                     M.get_function (| "core::ptr::align_offset", [], [ T ] |),
                     [
-                      M.read (| ptr |);
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_function (| "core::mem::align_of", [], [ U ] |),
-                        []
-                      |)
+                      M.value_with_ty (M.read (| ptr |)) (Ty.apply (Ty.path "*const") [] [ T ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          M.get_function (| "core::mem::align_of", [], [ U ] |),
+                          []
+                        |))
+                        (Ty.path "usize")
                     ]
                   |) in
                 M.alloc (|
@@ -12642,10 +14450,15 @@ Module slice.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                       ]
                                     |)
                                   ]
@@ -12761,8 +14574,16 @@ Module slice.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                  M.read (| offset |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                  M.value_with_ty (M.read (| offset |)) (Ty.path "usize")
                                 ]
                               |)
                             |),
@@ -12814,10 +14635,15 @@ Module slice.
                                           [ U ]
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| rest |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| rest |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                         ]
                                       |)
                                     |),
@@ -12848,24 +14674,38 @@ Module slice.
                                                       [ U ]
                                                     |),
                                                     [
-                                                      M.cast
-                                                        (Ty.apply (Ty.path "*const") [] [ U ])
-                                                        (M.call_closure (|
-                                                          Ty.apply (Ty.path "*const") [] [ T ],
-                                                          M.get_associated_function (|
-                                                            Ty.apply (Ty.path "slice") [] [ T ],
-                                                            "as_ptr",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (| M.read (| rest |) |)
-                                                            |)
-                                                          ]
-                                                        |));
-                                                      M.read (| us_len |)
+                                                      M.value_with_ty
+                                                        (M.cast
+                                                          (Ty.apply (Ty.path "*const") [] [ U ])
+                                                          (M.call_closure (|
+                                                            Ty.apply (Ty.path "*const") [] [ T ],
+                                                            M.get_associated_function (|
+                                                              Ty.apply (Ty.path "slice") [] [ T ],
+                                                              "as_ptr",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (| M.read (| rest |) |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "slice")
+                                                                      []
+                                                                      [ T ]
+                                                                  ])
+                                                            ]
+                                                          |)))
+                                                        (Ty.apply (Ty.path "*const") [] [ U ]);
+                                                      M.value_with_ty
+                                                        (M.read (| us_len |))
+                                                        (Ty.path "usize")
                                                     ]
                                                   |)
                                                 |)
@@ -12884,58 +14724,99 @@ Module slice.
                                                       [ T ]
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.apply (Ty.path "*const") [] [ T ],
-                                                        M.get_associated_function (|
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply (Ty.path "*const") [] [ T ],
-                                                          "add",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.call_closure (|
+                                                          M.get_associated_function (|
                                                             Ty.apply (Ty.path "*const") [] [ T ],
-                                                            M.get_associated_function (|
-                                                              Ty.apply (Ty.path "slice") [] [ T ],
-                                                              "as_ptr",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (| M.read (| rest |) |)
-                                                              |)
-                                                            ]
-                                                          |);
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            BinOp.Wrap.sub,
-                                                            [
-                                                              M.call_closure (|
-                                                                Ty.path "usize",
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path "*const")
+                                                                  []
+                                                                  [ T ],
                                                                 M.get_associated_function (|
                                                                   Ty.apply
                                                                     (Ty.path "slice")
                                                                     []
                                                                     [ T ],
-                                                                  "len",
+                                                                  "as_ptr",
                                                                   [],
                                                                   []
                                                                 |),
                                                                 [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.deref (| M.read (| rest |) |)
-                                                                  |)
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        M.read (| rest |)
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "slice")
+                                                                          []
+                                                                          [ T ]
+                                                                      ])
                                                                 ]
-                                                              |);
-                                                              M.read (| ts_len |)
-                                                            ]
-                                                          |)
-                                                        ]
-                                                      |);
-                                                      M.read (| ts_len |)
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "*const")
+                                                                []
+                                                                [ T ]);
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.path "usize",
+                                                                BinOp.Wrap.sub,
+                                                                [
+                                                                  M.call_closure (|
+                                                                    Ty.path "usize",
+                                                                    M.get_associated_function (|
+                                                                      Ty.apply
+                                                                        (Ty.path "slice")
+                                                                        []
+                                                                        [ T ],
+                                                                      "len",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.deref (|
+                                                                            M.read (| rest |)
+                                                                          |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "slice")
+                                                                              []
+                                                                              [ T ]
+                                                                          ])
+                                                                    ]
+                                                                  |);
+                                                                  M.read (| ts_len |)
+                                                                ]
+                                                              |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply (Ty.path "*const") [] [ T ]);
+                                                      M.value_with_ty
+                                                        (M.read (| ts_len |))
+                                                        (Ty.path "usize")
                                                     ]
                                                   |)
                                                 |)
@@ -13152,19 +15033,25 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |) in
                 let~ offset : Ty.path "usize" :=
                   M.call_closure (|
                     Ty.path "usize",
                     M.get_function (| "core::ptr::align_offset", [], [ T ] |),
                     [
-                      M.read (| ptr |);
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_function (| "core::mem::align_of", [], [ U ] |),
-                        []
-                      |)
+                      M.value_with_ty (M.read (| ptr |)) (Ty.apply (Ty.path "*const") [] [ T ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          M.get_function (| "core::mem::align_of", [], [ U ] |),
+                          []
+                        |))
+                        (Ty.path "usize")
                     ]
                   |) in
                 M.alloc (|
@@ -13203,10 +15090,15 @@ Module slice.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                       ]
                                     |)
                                   ]
@@ -13340,11 +15232,16 @@ Module slice.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| self |) |)
-                                  |);
-                                  M.read (| offset |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                  M.value_with_ty (M.read (| offset |)) (Ty.path "usize")
                                 ]
                               |)
                             |),
@@ -13396,10 +15293,15 @@ Module slice.
                                           [ U ]
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| rest |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| rest |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                         ]
                                       |)
                                     |),
@@ -13421,10 +15323,15 @@ Module slice.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| rest |) |)
-                                                  |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| rest |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                                 ]
                                               |) in
                                             let~ mut_ptr : Ty.apply (Ty.path "*mut") [] [ T ] :=
@@ -13437,10 +15344,15 @@ Module slice.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.deref (| M.read (| rest |) |)
-                                                  |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (| M.read (| rest |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                                 ]
                                               |) in
                                             M.alloc (|
@@ -13479,10 +15391,14 @@ Module slice.
                                                           [ U ]
                                                         |),
                                                         [
-                                                          M.cast
-                                                            (Ty.apply (Ty.path "*mut") [] [ U ])
-                                                            (M.read (| mut_ptr |));
-                                                          M.read (| us_len |)
+                                                          M.value_with_ty
+                                                            (M.cast
+                                                              (Ty.apply (Ty.path "*mut") [] [ U ])
+                                                              (M.read (| mut_ptr |)))
+                                                            (Ty.apply (Ty.path "*mut") [] [ U ]);
+                                                          M.value_with_ty
+                                                            (M.read (| us_len |))
+                                                            (Ty.path "usize")
                                                         ]
                                                       |)
                                                     |)
@@ -13501,27 +15417,38 @@ Module slice.
                                                           [ T ]
                                                         |),
                                                         [
-                                                          M.call_closure (|
-                                                            Ty.apply (Ty.path "*mut") [] [ T ],
-                                                            M.get_associated_function (|
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
                                                               Ty.apply (Ty.path "*mut") [] [ T ],
-                                                              "add",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.read (| mut_ptr |);
-                                                              M.call_closure (|
-                                                                Ty.path "usize",
-                                                                BinOp.Wrap.sub,
-                                                                [
-                                                                  M.read (| rest_len |);
-                                                                  M.read (| ts_len |)
-                                                                ]
-                                                              |)
-                                                            ]
-                                                          |);
-                                                          M.read (| ts_len |)
+                                                              M.get_associated_function (|
+                                                                Ty.apply (Ty.path "*mut") [] [ T ],
+                                                                "add",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.read (| mut_ptr |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "*mut")
+                                                                    []
+                                                                    [ T ]);
+                                                                M.value_with_ty
+                                                                  (M.call_closure (|
+                                                                    Ty.path "usize",
+                                                                    BinOp.Wrap.sub,
+                                                                    [
+                                                                      M.read (| rest_len |);
+                                                                      M.read (| ts_len |)
+                                                                    ]
+                                                                  |))
+                                                                  (Ty.path "usize")
+                                                              ]
+                                                            |))
+                                                            (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                                          M.value_with_ty
+                                                            (M.read (| ts_len |))
+                                                            (Ty.path "usize")
                                                         ]
                                                       |)
                                                     |)
@@ -13654,7 +15581,9 @@ Module slice.
                               M.never_to_any (|
                                 M.read (|
                                   let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                    Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                    M.value_with_ty
+                                      (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                      (Ty.path "core::panicking::AssertKind") in
                                   M.alloc (|
                                     Ty.path "never",
                                     M.call_closure (|
@@ -13665,30 +15594,42 @@ Module slice.
                                         [ Ty.path "usize"; Ty.path "usize" ]
                                       |),
                                       [
-                                        M.read (| kind |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| left_val |) |)
+                                        M.value_with_ty
+                                          (M.read (| kind |))
+                                          (Ty.path "core::panicking::AssertKind");
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| left_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| right_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        Value.StructTuple
-                                          "core::option::Option::None"
-                                          []
-                                          [ Ty.path "core::fmt::Arguments" ]
-                                          []
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple "core::option::Option::None" [])
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "core::fmt::Arguments" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ])
                                       ]
                                     |)
                                   |)
@@ -13735,7 +15676,11 @@ Module slice.
                   [],
                   [ Ty.apply (Ty.path "core::core_simd::vector::Simd") [ LANES ] [ T ] ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                ]
               |)
             |)
           |)))
@@ -13858,7 +15803,9 @@ Module slice.
                               M.never_to_any (|
                                 M.read (|
                                   let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                    Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                    M.value_with_ty
+                                      (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                      (Ty.path "core::panicking::AssertKind") in
                                   M.alloc (|
                                     Ty.path "never",
                                     M.call_closure (|
@@ -13869,30 +15816,42 @@ Module slice.
                                         [ Ty.path "usize"; Ty.path "usize" ]
                                       |),
                                       [
-                                        M.read (| kind |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| left_val |) |)
+                                        M.value_with_ty
+                                          (M.read (| kind |))
+                                          (Ty.path "core::panicking::AssertKind");
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| left_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| right_val |) |)
+                                              |)
                                             |)
-                                          |)
-                                        |);
-                                        Value.StructTuple
-                                          "core::option::Option::None"
-                                          []
-                                          [ Ty.path "core::fmt::Arguments" ]
-                                          []
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.StructTuple "core::option::Option::None" [])
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "core::fmt::Arguments" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ])
                                       ]
                                     |)
                                   |)
@@ -13939,7 +15898,11 @@ Module slice.
                   [],
                   [ Ty.apply (Ty.path "core::core_simd::vector::Simd") [ LANES ] [ T ] ]
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                ]
               |)
             |)
           |)))
@@ -14010,10 +15973,15 @@ Module slice.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                       ]
                                     |);
                                     M.read (|
@@ -14051,86 +16019,116 @@ Module slice.
                                     ]
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.alloc (|
-                                        Ty.apply (Ty.path "core::slice::iter::Windows") [] [ T ],
-                                        M.call_closure (|
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.alloc (|
                                           Ty.apply (Ty.path "core::slice::iter::Windows") [] [ T ],
-                                          M.get_associated_function (|
-                                            Ty.apply (Ty.path "slice") [] [ T ],
-                                            "windows",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| self |) |)
-                                            |);
-                                            Value.Integer IntegerKind.Usize 2
-                                          ]
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::slice::iter::Windows")
+                                              []
+                                              [ T ],
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "slice") [] [ T ],
+                                              "windows",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.Usize 2)
+                                                (Ty.path "usize")
+                                            ]
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.closure
-                                      (fun γ =>
-                                        ltac:(M.monadic
-                                          match γ with
-                                          | [ α0 ] =>
-                                            ltac:(M.monadic
-                                              (M.match_operator (|
-                                                Ty.path "bool",
-                                                M.alloc (|
-                                                  Ty.apply
-                                                    (Ty.path "&")
-                                                    []
-                                                    [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                                  α0
-                                                |),
-                                                [
-                                                  fun γ =>
-                                                    ltac:(M.monadic
-                                                      (let w :=
-                                                        M.copy (|
-                                                          Ty.apply
-                                                            (Ty.path "&")
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "core::slice::iter::Windows") [] [ T ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.closure
+                                        (fun γ =>
+                                          ltac:(M.monadic
+                                            match γ with
+                                            | [ α0 ] =>
+                                              ltac:(M.monadic
+                                                (M.match_operator (|
+                                                  Ty.path "bool",
+                                                  M.alloc (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                                    α0
+                                                  |),
+                                                  [
+                                                    fun γ =>
+                                                      ltac:(M.monadic
+                                                        (let w :=
+                                                          M.copy (|
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.apply (Ty.path "slice") [] [ T ]
+                                                              ],
+                                                            γ
+                                                          |) in
+                                                        M.call_closure (|
+                                                          Ty.path "bool",
+                                                          M.get_trait_method (|
+                                                            "core::cmp::PartialOrd",
+                                                            T,
+                                                            [],
+                                                            [ T ],
+                                                            "le",
+                                                            [],
                                                             []
-                                                            [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                                          γ
-                                                        |) in
-                                                      M.call_closure (|
-                                                        Ty.path "bool",
-                                                        M.get_trait_method (|
-                                                          "core::cmp::PartialOrd",
-                                                          T,
-                                                          [],
-                                                          [ T ],
-                                                          "le",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.SubPointer.get_array_field (|
-                                                              M.deref (| M.read (| w |) |),
-                                                              Value.Integer IntegerKind.Usize 0
-                                                            |)
-                                                          |);
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.SubPointer.get_array_field (|
-                                                              M.deref (| M.read (| w |) |),
-                                                              Value.Integer IntegerKind.Usize 1
-                                                            |)
-                                                          |)
-                                                        ]
-                                                      |)))
-                                                ]
-                                              |)))
-                                          | _ => M.impossible "wrong number of arguments"
-                                          end))
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.SubPointer.get_array_field (|
+                                                                  M.deref (| M.read (| w |) |),
+                                                                  Value.Integer IntegerKind.Usize 0
+                                                                |)
+                                                              |))
+                                                              (Ty.apply (Ty.path "&") [] [ T ]);
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.SubPointer.get_array_field (|
+                                                                  M.deref (| M.read (| w |) |),
+                                                                  Value.Integer IntegerKind.Usize 1
+                                                                |)
+                                                              |))
+                                                              (Ty.apply (Ty.path "&") [] [ T ])
+                                                          ]
+                                                        |)))
+                                                  ]
+                                                |)))
+                                            | _ => M.impossible "wrong number of arguments"
+                                            end)))
+                                      (Ty.function
+                                        [
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                        ]
+                                        (Ty.path "bool"))
                                   ]
                                 |)
                               |)
@@ -14175,10 +16173,15 @@ Module slice.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| self |) |)
-                                                    |)
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| self |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                                   ]
                                                 |);
                                                 M.read (|
@@ -14226,31 +16229,44 @@ Module slice.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |);
-                                              Value.mkStructRecord
-                                                "core::ops::range::Range"
-                                                []
-                                                [ Ty.path "usize" ]
-                                                [
-                                                  ("start", M.read (| i |));
-                                                  ("end_",
-                                                    M.call_closure (|
-                                                      Ty.path "usize",
-                                                      BinOp.Wrap.add,
-                                                      [
-                                                        M.read (| i |);
-                                                        M.read (|
-                                                          get_constant (|
-                                                            "core::slice::is_sorted::CHUNK_SIZE",
-                                                            Ty.path "usize"
-                                                          |)
-                                                        |)
-                                                      ]
-                                                    |))
-                                                ]
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.mkStructRecord
+                                                    "core::ops::range::Range"
+                                                    [
+                                                      ("start", M.read (| i |));
+                                                      ("end_",
+                                                        M.call_closure (|
+                                                          Ty.path "usize",
+                                                          BinOp.Wrap.add,
+                                                          [
+                                                            M.read (| i |);
+                                                            M.read (|
+                                                              get_constant (|
+                                                                "core::slice::is_sorted::CHUNK_SIZE",
+                                                                Ty.path "usize"
+                                                              |)
+                                                            |)
+                                                          ]
+                                                        |))
+                                                    ])
+                                                  (Ty.apply
+                                                    (Ty.path "core::ops::range::Range")
+                                                    []
+                                                    [ Ty.path "usize" ]))
+                                                (Ty.apply
+                                                  (Ty.path "core::ops::range::Range")
+                                                  []
+                                                  [ Ty.path "usize" ])
                                             ]
                                           |)
                                         |)
@@ -14301,140 +16317,200 @@ Module slice.
                                                             ]
                                                           |),
                                                           [
-                                                            M.call_closure (|
-                                                              Ty.apply
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::slice::iter::Windows")
+                                                                  []
+                                                                  [ T ],
+                                                                M.get_associated_function (|
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [ T ],
+                                                                  "windows",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        M.read (| chunk |)
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "slice")
+                                                                          []
+                                                                          [ T ]
+                                                                      ]);
+                                                                  M.value_with_ty
+                                                                    (Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      2)
+                                                                    (Ty.path "usize")
+                                                                ]
+                                                              |))
+                                                              (Ty.apply
                                                                 (Ty.path
                                                                   "core::slice::iter::Windows")
                                                                 []
-                                                                [ T ],
-                                                              M.get_associated_function (|
-                                                                Ty.apply (Ty.path "slice") [] [ T ],
-                                                                "windows",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| M.read (| chunk |) |)
-                                                                |);
-                                                                Value.Integer IntegerKind.Usize 2
-                                                              ]
-                                                            |);
-                                                            Value.Bool true;
-                                                            M.closure
-                                                              (fun γ =>
-                                                                ltac:(M.monadic
-                                                                  match γ with
-                                                                  | [ α0; α1 ] =>
-                                                                    ltac:(M.monadic
-                                                                      (M.match_operator (|
-                                                                        Ty.path "bool",
-                                                                        M.alloc (|
+                                                                [ T ]);
+                                                            M.value_with_ty
+                                                              (Value.Bool true)
+                                                              (Ty.path "bool");
+                                                            M.value_with_ty
+                                                              (M.closure
+                                                                (fun γ =>
+                                                                  ltac:(M.monadic
+                                                                    match γ with
+                                                                    | [ α0; α1 ] =>
+                                                                      ltac:(M.monadic
+                                                                        (M.match_operator (|
                                                                           Ty.path "bool",
-                                                                          α0
-                                                                        |),
-                                                                        [
-                                                                          fun γ =>
-                                                                            ltac:(M.monadic
-                                                                              (let acc :=
-                                                                                M.copy (|
+                                                                          M.alloc (|
+                                                                            Ty.path "bool",
+                                                                            α0
+                                                                          |),
+                                                                          [
+                                                                            fun γ =>
+                                                                              ltac:(M.monadic
+                                                                                (let acc :=
+                                                                                  M.copy (|
+                                                                                    Ty.path "bool",
+                                                                                    γ
+                                                                                  |) in
+                                                                                M.match_operator (|
                                                                                   Ty.path "bool",
-                                                                                  γ
-                                                                                |) in
-                                                                              M.match_operator (|
-                                                                                Ty.path "bool",
-                                                                                M.alloc (|
-                                                                                  Ty.apply
-                                                                                    (Ty.path "&")
-                                                                                    []
-                                                                                    [
-                                                                                      Ty.apply
-                                                                                        (Ty.path
-                                                                                          "slice")
-                                                                                        []
-                                                                                        [ T ]
-                                                                                    ],
-                                                                                  α1
-                                                                                |),
-                                                                                [
-                                                                                  fun γ =>
-                                                                                    ltac:(M.monadic
-                                                                                      (let w :=
-                                                                                        M.copy (|
-                                                                                          Ty.apply
-                                                                                            (Ty.path
-                                                                                              "&")
-                                                                                            []
-                                                                                            [
-                                                                                              Ty.apply
-                                                                                                (Ty.path
-                                                                                                  "slice")
-                                                                                                []
-                                                                                                [ T
-                                                                                                ]
-                                                                                            ],
-                                                                                          γ
-                                                                                        |) in
-                                                                                      M.call_closure (|
-                                                                                        Ty.path
-                                                                                          "bool",
-                                                                                        BinOp.Wrap.bit_and,
-                                                                                        [
-                                                                                          M.read (|
-                                                                                            acc
-                                                                                          |);
-                                                                                          M.call_closure (|
-                                                                                            Ty.path
-                                                                                              "bool",
-                                                                                            M.get_trait_method (|
-                                                                                              "core::cmp::PartialOrd",
-                                                                                              T,
-                                                                                              [],
-                                                                                              [ T ],
-                                                                                              "le",
-                                                                                              [],
+                                                                                  M.alloc (|
+                                                                                    Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "slice")
+                                                                                          []
+                                                                                          [ T ]
+                                                                                      ],
+                                                                                    α1
+                                                                                  |),
+                                                                                  [
+                                                                                    fun γ =>
+                                                                                      ltac:(M.monadic
+                                                                                        (let w :=
+                                                                                          M.copy (|
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "&")
                                                                                               []
-                                                                                            |),
-                                                                                            [
-                                                                                              M.borrow (|
-                                                                                                Pointer.Kind.Ref,
-                                                                                                M.SubPointer.get_array_field (|
-                                                                                                  M.deref (|
-                                                                                                    M.read (|
-                                                                                                      w
+                                                                                              [
+                                                                                                Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "slice")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    T
+                                                                                                  ]
+                                                                                              ],
+                                                                                            γ
+                                                                                          |) in
+                                                                                        M.call_closure (|
+                                                                                          Ty.path
+                                                                                            "bool",
+                                                                                          BinOp.Wrap.bit_and,
+                                                                                          [
+                                                                                            M.read (|
+                                                                                              acc
+                                                                                            |);
+                                                                                            M.call_closure (|
+                                                                                              Ty.path
+                                                                                                "bool",
+                                                                                              M.get_trait_method (|
+                                                                                                "core::cmp::PartialOrd",
+                                                                                                T,
+                                                                                                [],
+                                                                                                [ T
+                                                                                                ],
+                                                                                                "le",
+                                                                                                [],
+                                                                                                []
+                                                                                              |),
+                                                                                              [
+                                                                                                M.value_with_ty
+                                                                                                  (M.borrow (|
+                                                                                                    Pointer.Kind.Ref,
+                                                                                                    M.SubPointer.get_array_field (|
+                                                                                                      M.deref (|
+                                                                                                        M.read (|
+                                                                                                          w
+                                                                                                        |)
+                                                                                                      |),
+                                                                                                      Value.Integer
+                                                                                                        IntegerKind.Usize
+                                                                                                        0
                                                                                                     |)
-                                                                                                  |),
-                                                                                                  Value.Integer
-                                                                                                    IntegerKind.Usize
-                                                                                                    0
-                                                                                                |)
-                                                                                              |);
-                                                                                              M.borrow (|
-                                                                                                Pointer.Kind.Ref,
-                                                                                                M.SubPointer.get_array_field (|
-                                                                                                  M.deref (|
-                                                                                                    M.read (|
-                                                                                                      w
+                                                                                                  |))
+                                                                                                  (Ty.apply
+                                                                                                    (Ty.path
+                                                                                                      "&")
+                                                                                                    []
+                                                                                                    [
+                                                                                                      T
+                                                                                                    ]);
+                                                                                                M.value_with_ty
+                                                                                                  (M.borrow (|
+                                                                                                    Pointer.Kind.Ref,
+                                                                                                    M.SubPointer.get_array_field (|
+                                                                                                      M.deref (|
+                                                                                                        M.read (|
+                                                                                                          w
+                                                                                                        |)
+                                                                                                      |),
+                                                                                                      Value.Integer
+                                                                                                        IntegerKind.Usize
+                                                                                                        1
                                                                                                     |)
-                                                                                                  |),
-                                                                                                  Value.Integer
-                                                                                                    IntegerKind.Usize
-                                                                                                    1
-                                                                                                |)
-                                                                                              |)
-                                                                                            ]
-                                                                                          |)
-                                                                                        ]
-                                                                                      |)))
-                                                                                ]
-                                                                              |)))
-                                                                        ]
-                                                                      |)))
-                                                                  | _ =>
-                                                                    M.impossible
-                                                                      "wrong number of arguments"
-                                                                  end))
+                                                                                                  |))
+                                                                                                  (Ty.apply
+                                                                                                    (Ty.path
+                                                                                                      "&")
+                                                                                                    []
+                                                                                                    [
+                                                                                                      T
+                                                                                                    ])
+                                                                                              ]
+                                                                                            |)
+                                                                                          ]
+                                                                                        |)))
+                                                                                  ]
+                                                                                |)))
+                                                                          ]
+                                                                        |)))
+                                                                    | _ =>
+                                                                      M.impossible
+                                                                        "wrong number of arguments"
+                                                                    end)))
+                                                              (Ty.function
+                                                                [
+                                                                  Ty.path "bool";
+                                                                  Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "slice")
+                                                                        []
+                                                                        [ T ]
+                                                                    ]
+                                                                ]
+                                                                (Ty.path "bool"))
                                                           ]
                                                         |)
                                                       ]
@@ -14510,118 +16586,151 @@ Module slice.
                       ]
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.alloc (|
-                          Ty.apply (Ty.path "core::slice::iter::Windows") [] [ T ],
-                          M.call_closure (|
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.alloc (|
                             Ty.apply (Ty.path "core::slice::iter::Windows") [] [ T ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "slice") [] [ T ],
-                              "windows",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.get_trait_method (|
-                                      "core::ops::index::Index",
-                                      Ty.apply (Ty.path "slice") [] [ T ],
-                                      [],
-                                      [
+                            M.call_closure (|
+                              Ty.apply (Ty.path "core::slice::iter::Windows") [] [ T ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "slice") [] [ T ],
+                                "windows",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "core::ops::range::RangeFrom")
+                                          (Ty.path "&")
                                           []
-                                          [ Ty.path "usize" ]
-                                      ],
-                                      "index",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeFrom"
-                                        []
-                                        [ Ty.path "usize" ]
-                                        [ ("start", M.read (| i |)) ]
-                                    ]
-                                  |)
-                                |)
-                              |);
-                              Value.Integer IntegerKind.Usize 2
-                            ]
-                          |)
-                        |)
-                      |);
-                      M.closure
-                        (fun γ =>
-                          ltac:(M.monadic
-                            match γ with
-                            | [ α0 ] =>
-                              ltac:(M.monadic
-                                (M.match_operator (|
-                                  Ty.path "bool",
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    α0
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let w :=
-                                          M.copy (|
+                                          [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                        M.get_trait_method (|
+                                          "core::ops::index::Index",
+                                          Ty.apply (Ty.path "slice") [] [ T ],
+                                          [],
+                                          [
                                             Ty.apply
+                                              (Ty.path "core::ops::range::RangeFrom")
+                                              []
+                                              [ Ty.path "usize" ]
+                                          ],
+                                          "index",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
                                               (Ty.path "&")
                                               []
-                                              [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                            γ
-                                          |) in
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          M.get_trait_method (|
-                                            "core::cmp::PartialOrd",
-                                            T,
-                                            [],
-                                            [ T ],
-                                            "le",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.SubPointer.get_array_field (|
-                                                M.deref (| M.read (| w |) |),
-                                                Value.Integer IntegerKind.Usize 0
-                                              |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.SubPointer.get_array_field (|
-                                                M.deref (| M.read (| w |) |),
-                                                Value.Integer IntegerKind.Usize 1
-                                              |)
-                                            |)
-                                          ]
-                                        |)))
-                                  ]
-                                |)))
-                            | _ => M.impossible "wrong number of arguments"
-                            end))
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                          M.value_with_ty
+                                            (M.value_with_ty
+                                              (Value.mkStructRecord
+                                                "core::ops::range::RangeFrom"
+                                                [ ("start", M.read (| i |)) ])
+                                              (Ty.apply
+                                                (Ty.path "core::ops::range::RangeFrom")
+                                                []
+                                                [ Ty.path "usize" ]))
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::RangeFrom")
+                                              []
+                                              [ Ty.path "usize" ])
+                                        ]
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                M.value_with_ty
+                                  (Value.Integer IntegerKind.Usize 2)
+                                  (Ty.path "usize")
+                              ]
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "core::slice::iter::Windows") [] [ T ] ]);
+                      M.value_with_ty
+                        (M.closure
+                          (fun γ =>
+                            ltac:(M.monadic
+                              match γ with
+                              | [ α0 ] =>
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.path "bool",
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                      α0
+                                    |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let w :=
+                                            M.copy (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                              γ
+                                            |) in
+                                          M.call_closure (|
+                                            Ty.path "bool",
+                                            M.get_trait_method (|
+                                              "core::cmp::PartialOrd",
+                                              T,
+                                              [],
+                                              [ T ],
+                                              "le",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_array_field (|
+                                                    M.deref (| M.read (| w |) |),
+                                                    Value.Integer IntegerKind.Usize 0
+                                                  |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ T ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_array_field (|
+                                                    M.deref (| M.read (| w |) |),
+                                                    Value.Integer IntegerKind.Usize 1
+                                                  |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ T ])
+                                            ]
+                                          |)))
+                                    ]
+                                  |)))
+                              | _ => M.impossible "wrong number of arguments"
+                              end)))
+                        (Ty.function
+                          [ Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] ]
+                          (Ty.path "bool"))
                     ]
                   |)
                 |)
@@ -14676,92 +16785,123 @@ Module slice.
               ]
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.alloc (|
-                  Ty.apply
-                    (Ty.path "core::slice::iter::ArrayWindows")
-                    [ Value.Integer IntegerKind.Usize 2 ]
-                    [ T ],
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.alloc (|
                     Ty.apply
                       (Ty.path "core::slice::iter::ArrayWindows")
                       [ Value.Integer IntegerKind.Usize 2 ]
                       [ T ],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "slice") [] [ T ],
-                      "array_windows",
-                      [ Value.Integer IntegerKind.Usize 2 ],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::slice::iter::ArrayWindows")
+                        [ Value.Integer IntegerKind.Usize 2 ]
+                        [ T ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "slice") [] [ T ],
+                        "array_windows",
+                        [ Value.Integer IntegerKind.Usize 2 ],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.path "bool",
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 2 ]
-                                  [ T ]
-                              ],
-                            α0
-                          |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let γ := M.deref (| M.read (| γ |) |) in
-                                let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
-                                let γ1_1 := M.SubPointer.get_slice_index (| γ, 1 |) in
-                                let a := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
-                                let b := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_1 |) in
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  M.get_trait_method (|
-                                    "core::ops::function::FnMut",
-                                    F,
-                                    [],
-                                    [
-                                      Ty.tuple
-                                        [
-                                          Ty.apply (Ty.path "&") [] [ T ];
-                                          Ty.apply (Ty.path "&") [] [ T ]
-                                        ]
-                                    ],
-                                    "call_mut",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (| Pointer.Kind.MutRef, compare |);
-                                    Value.Tuple
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::slice::iter::ArrayWindows")
+                      [ Value.Integer IntegerKind.Usize 2 ]
+                      [ T ]
+                  ]);
+              M.value_with_ty
+                (M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.path "bool",
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 2 ]
+                                    [ T ]
+                                ],
+                              α0
+                            |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let γ := M.deref (| M.read (| γ |) |) in
+                                  let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
+                                  let γ1_1 := M.SubPointer.get_slice_index (| γ, 1 |) in
+                                  let a := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_0 |) in
+                                  let b := M.alloc (| Ty.apply (Ty.path "&") [] [ T ], γ1_1 |) in
+                                  M.call_closure (|
+                                    Ty.path "bool",
+                                    M.get_trait_method (|
+                                      "core::ops::function::FnMut",
+                                      F,
+                                      [],
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| a |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| b |) |)
-                                        |)
-                                      ]
-                                  ]
-                                |)))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+                                        Ty.tuple
+                                          [
+                                            Ty.apply (Ty.path "&") [] [ T ];
+                                            Ty.apply (Ty.path "&") [] [ T ]
+                                          ]
+                                      ],
+                                      "call_mut",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.MutRef, compare |))
+                                        (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                      M.value_with_ty
+                                        (Value.Tuple
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| a |) |)
+                                            |);
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| b |) |)
+                                            |)
+                                          ])
+                                        (Ty.tuple
+                                          [
+                                            Ty.apply (Ty.path "&") [] [ T ];
+                                            Ty.apply (Ty.path "&") [] [ T ]
+                                          ])
+                                    ]
+                                  |)))
+                            ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end)))
+                (Ty.function
+                  [
+                    Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 2 ] [ T ] ]
+                  ]
+                  (Ty.path "bool"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -14807,12 +16947,23 @@ Module slice.
               [ F; K ]
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
-                M.get_associated_function (| Ty.apply (Ty.path "slice") [] [ T ], "iter", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-              |);
-              M.read (| f |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "slice") [] [ T ],
+                    "iter",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "core::slice::iter::Iter") [] [ T ]);
+              M.value_with_ty (M.read (| f |)) F
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -14854,107 +17005,128 @@ Module slice.
               [ Ty.function [ Ty.path "usize" ] (Ty.path "usize") ]
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "usize"; Ty.path "usize" ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "slice") [] [ T ],
-                  "binary_search_by",
-                  [],
-                  [ Ty.function [ Ty.apply (Ty.path "&") [] [ T ] ] (Ty.path "core::cmp::Ordering")
-                  ]
-                |),
-                [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0 ] =>
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "usize"; Ty.path "usize" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "slice") [] [ T ],
+                    "binary_search_by",
+                    [],
+                    [
+                      Ty.function
+                        [ Ty.apply (Ty.path "&") [] [ T ] ]
+                        (Ty.path "core::cmp::Ordering")
+                    ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                    M.value_with_ty
+                      (M.closure
+                        (fun γ =>
                           ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "core::cmp::Ordering",
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let x := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
-                                    M.match_operator (|
-                                      Ty.path "core::cmp::Ordering",
-                                      M.alloc (| Ty.tuple [], Value.Tuple [] |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let γ :=
-                                              M.use
-                                                (M.alloc (|
-                                                  Ty.path "bool",
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    M.get_trait_method (|
-                                                      "core::ops::function::FnMut",
-                                                      P,
-                                                      [],
-                                                      [ Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ]
-                                                      ],
-                                                      "call_mut",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (| Pointer.Kind.MutRef, pred |);
-                                                      Value.Tuple
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| x |) |)
-                                                          |)
-                                                        ]
-                                                    ]
-                                                  |)
-                                                |)) in
-                                            let _ :=
-                                              is_constant_or_break_match (|
-                                                M.read (| γ |),
-                                                Value.Bool true
-                                              |) in
-                                            Value.StructTuple
-                                              "core::cmp::Ordering::Less"
-                                              []
-                                              []
-                                              []));
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (Value.StructTuple
-                                              "core::cmp::Ordering::Greater"
-                                              []
-                                              []
-                                              []))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
-                ]
-              |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.path "usize",
-                          M.alloc (| Ty.path "usize", α0 |),
-                          [
-                            fun γ =>
+                            match γ with
+                            | [ α0 ] =>
                               ltac:(M.monadic
-                                (let i := M.copy (| Ty.path "usize", γ |) in
-                                M.read (| i |)))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+                                (M.match_operator (|
+                                  Ty.path "core::cmp::Ordering",
+                                  M.alloc (| Ty.apply (Ty.path "&") [] [ T ], α0 |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let x := M.copy (| Ty.apply (Ty.path "&") [] [ T ], γ |) in
+                                        M.match_operator (|
+                                          Ty.path "core::cmp::Ordering",
+                                          M.alloc (| Ty.tuple [], Value.Tuple [] |),
+                                          [
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let γ :=
+                                                  M.use
+                                                    (M.alloc (|
+                                                      Ty.path "bool",
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        M.get_trait_method (|
+                                                          "core::ops::function::FnMut",
+                                                          P,
+                                                          [],
+                                                          [
+                                                            Ty.tuple
+                                                              [ Ty.apply (Ty.path "&") [] [ T ] ]
+                                                          ],
+                                                          "call_mut",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              pred
+                                                            |))
+                                                            (Ty.apply (Ty.path "&mut") [] [ P ]);
+                                                          M.value_with_ty
+                                                            (Value.Tuple
+                                                              [
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (| M.read (| x |) |)
+                                                                |)
+                                                              ])
+                                                            (Ty.tuple
+                                                              [ Ty.apply (Ty.path "&") [] [ T ] ])
+                                                        ]
+                                                      |)
+                                                    |)) in
+                                                let _ :=
+                                                  is_constant_or_break_match (|
+                                                    M.read (| γ |),
+                                                    Value.Bool true
+                                                  |) in
+                                                M.value_with_ty
+                                                  (Value.StructTuple "core::cmp::Ordering::Less" [])
+                                                  (Ty.path "core::cmp::Ordering")));
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::cmp::Ordering::Greater"
+                                                    [])
+                                                  (Ty.path "core::cmp::Ordering")))
+                                          ]
+                                        |)))
+                                  ]
+                                |)))
+                            | _ => M.impossible "wrong number of arguments"
+                            end)))
+                      (Ty.function
+                        [ Ty.apply (Ty.path "&") [] [ T ] ]
+                        (Ty.path "core::cmp::Ordering"))
+                  ]
+                |))
+                (Ty.apply (Ty.path "core::result::Result") [] [ Ty.path "usize"; Ty.path "usize" ]);
+              M.value_with_ty
+                (M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.path "usize",
+                            M.alloc (| Ty.path "usize", α0 |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let i := M.copy (| Ty.path "usize", γ |) in
+                                  M.read (| i |)))
+                            ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end)))
+                (Ty.function [ Ty.path "usize" ] (Ty.path "usize"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -15049,14 +17221,19 @@ Module slice.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.tuple [ Ty.path "core::slice::Direction"; Ty.path "usize" ] ],
+                              M.get_function (| "core::slice::split_point_of", [], [ R ] |),
+                              [ M.value_with_ty (M.read (| range |)) R ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::option::Option")
                               []
-                              [ Ty.tuple [ Ty.path "core::slice::Direction"; Ty.path "usize" ] ],
-                            M.get_function (| "core::slice::split_point_of", [], [ R ] |),
-                            [ M.read (| range |) ]
-                          |)
+                              [ Ty.tuple [ Ty.path "core::slice::Direction"; Ty.path "usize" ] ])
                         ]
                       |)
                     |),
@@ -15112,7 +17289,14 @@ Module slice.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -15167,12 +17351,17 @@ Module slice.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.read (| M.deref (| M.read (| self |) |) |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.read (| M.deref (| M.read (| self |) |) |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                               ]
                                             |)
                                           ]
@@ -15186,16 +17375,17 @@ Module slice.
                                   M.never_to_any (|
                                     M.read (|
                                       M.return_ (|
-                                        Value.StructTuple
-                                          "core::option::Option::None"
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                                          ]
-                                          []
+                                        M.value_with_ty
+                                          (Value.StructTuple "core::option::Option::None" [])
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                            ])
                                       |)
                                     |)
                                   |)));
@@ -15237,11 +17427,16 @@ Module slice.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                                  |);
-                                  M.read (| split_index |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                  M.value_with_ty (M.read (| split_index |)) (Ty.path "usize")
                                 ]
                               |)
                             |),
@@ -15304,21 +17499,24 @@ Module slice.
                                                     []
                                                     [ Ty.apply (Ty.path "slice") [] [ T ] ]
                                                 ],
-                                              Value.StructTuple
-                                                "core::option::Option::Some"
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "&")
-                                                    []
-                                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                                                ]
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| front |) |)
-                                                  |)
-                                                ]
+                                              M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::option::Option::Some"
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| front |) |)
+                                                    |)
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                                  ])
                                             |)
                                           |)));
                                       fun γ =>
@@ -15347,21 +17545,24 @@ Module slice.
                                                     []
                                                     [ Ty.apply (Ty.path "slice") [] [ T ] ]
                                                 ],
-                                              Value.StructTuple
-                                                "core::option::Option::Some"
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "&")
-                                                    []
-                                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                                                ]
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| back |) |)
-                                                  |)
-                                                ]
+                                              M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::option::Option::Some"
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| back |) |)
+                                                    |)
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                                  ])
                                             |)
                                           |)))
                                     ]
@@ -15468,14 +17669,19 @@ Module slice.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.tuple [ Ty.path "core::slice::Direction"; Ty.path "usize" ] ],
+                              M.get_function (| "core::slice::split_point_of", [], [ R ] |),
+                              [ M.value_with_ty (M.read (| range |)) R ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::option::Option")
                               []
-                              [ Ty.tuple [ Ty.path "core::slice::Direction"; Ty.path "usize" ] ],
-                            M.get_function (| "core::slice::split_point_of", [], [ R ] |),
-                            [ M.read (| range |) ]
-                          |)
+                              [ Ty.tuple [ Ty.path "core::slice::Direction"; Ty.path "usize" ] ])
                         ]
                       |)
                     |),
@@ -15531,7 +17737,14 @@ Module slice.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -15586,12 +17799,17 @@ Module slice.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.read (| M.deref (| M.read (| self |) |) |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.read (| M.deref (| M.read (| self |) |) |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                               ]
                                             |)
                                           ]
@@ -15605,16 +17823,17 @@ Module slice.
                                   M.never_to_any (|
                                     M.read (|
                                       M.return_ (|
-                                        Value.StructTuple
-                                          "core::option::Option::None"
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                                          ]
-                                          []
+                                        M.value_with_ty
+                                          (Value.StructTuple "core::option::Option::None" [])
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                            ])
                                       |)
                                     |)
                                   |)));
@@ -15664,34 +17883,49 @@ Module slice.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&mut")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                        M.get_function (|
-                                          "core::mem::take",
-                                          [],
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                          M.get_function (|
+                                            "core::mem::take",
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                            ]
+                                          |),
                                           [
-                                            Ty.apply
-                                              (Ty.path "&mut")
-                                              []
-                                              [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                                ])
                                           ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
-                                        ]
+                                        |)
                                       |)
-                                    |)
-                                  |);
-                                  M.read (| split_index |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                  M.value_with_ty (M.read (| split_index |)) (Ty.path "usize")
                                 ]
                               |)
                             |),
@@ -15754,21 +17988,24 @@ Module slice.
                                                     []
                                                     [ Ty.apply (Ty.path "slice") [] [ T ] ]
                                                 ],
-                                              Value.StructTuple
-                                                "core::option::Option::Some"
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "&mut")
-                                                    []
-                                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                                                ]
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.deref (| M.read (| front |) |)
-                                                  |)
-                                                ]
+                                              M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::option::Option::Some"
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (| M.read (| front |) |)
+                                                    |)
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                                  ])
                                             |)
                                           |)));
                                       fun γ =>
@@ -15797,21 +18034,24 @@ Module slice.
                                                     []
                                                     [ Ty.apply (Ty.path "slice") [] [ T ] ]
                                                 ],
-                                              Value.StructTuple
-                                                "core::option::Option::Some"
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "&mut")
-                                                    []
-                                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                                                ]
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.deref (| M.read (| back |) |)
-                                                  |)
-                                                ]
+                                              M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::option::Option::Some"
+                                                  [
+                                                    M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (| M.read (| back |) |)
+                                                    |)
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                                  ])
                                             |)
                                           |)))
                                     ]
@@ -15918,8 +18158,40 @@ Module slice.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.tuple
+                                    [
+                                      Ty.apply (Ty.path "&") [] [ T ];
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                    ]
+                                ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "slice") [] [ T ],
+                                "split_first",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::option::Option")
                               []
                               [
@@ -15931,20 +18203,7 @@ Module slice.
                                       []
                                       [ Ty.apply (Ty.path "slice") [] [ T ] ]
                                   ]
-                              ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "slice") [] [ T ],
-                              "split_first",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                              |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -15990,7 +18249,14 @@ Module slice.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -16038,11 +18304,14 @@ Module slice.
                             (Ty.path "core::option::Option")
                             []
                             [ Ty.apply (Ty.path "&") [] [ T ] ],
-                          Value.StructTuple
-                            "core::option::Option::Some"
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ T ] ]
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| first |) |) |) ]
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::option::Option::Some"
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| first |) |) |) ])
+                            (Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ T ] ])
                         |)
                       |)))
                 ]
@@ -16151,8 +18420,73 @@ Module slice.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.tuple
+                                    [
+                                      Ty.apply (Ty.path "&mut") [] [ T ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                    ]
+                                ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "slice") [] [ T ],
+                                "split_first_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                        M.get_function (|
+                                          "core::mem::take",
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                          ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                              ])
+                                        ]
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::option::Option")
                               []
                               [
@@ -16164,43 +18498,7 @@ Module slice.
                                       []
                                       [ Ty.apply (Ty.path "slice") [] [ T ] ]
                                   ]
-                              ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "slice") [] [ T ],
-                              "split_first_mut",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&mut")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.get_function (|
-                                      "core::mem::take",
-                                      [],
-                                      [
-                                        Ty.apply
-                                          (Ty.path "&mut")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                                      ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -16246,7 +18544,14 @@ Module slice.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -16297,11 +18602,15 @@ Module slice.
                             (Ty.path "core::option::Option")
                             []
                             [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                          Value.StructTuple
-                            "core::option::Option::Some"
-                            []
-                            [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| first |) |) |) ]
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::option::Option::Some"
+                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| first |) |) |)
+                              ])
+                            (Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.apply (Ty.path "&mut") [] [ T ] ])
                         |)
                       |)))
                 ]
@@ -16402,8 +18711,40 @@ Module slice.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.tuple
+                                    [
+                                      Ty.apply (Ty.path "&") [] [ T ];
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                    ]
+                                ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "slice") [] [ T ],
+                                "split_last",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::option::Option")
                               []
                               [
@@ -16415,20 +18756,7 @@ Module slice.
                                       []
                                       [ Ty.apply (Ty.path "slice") [] [ T ] ]
                                   ]
-                              ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "slice") [] [ T ],
-                              "split_last",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                              |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -16474,7 +18802,14 @@ Module slice.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -16522,11 +18857,14 @@ Module slice.
                             (Ty.path "core::option::Option")
                             []
                             [ Ty.apply (Ty.path "&") [] [ T ] ],
-                          Value.StructTuple
-                            "core::option::Option::Some"
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ T ] ]
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| last |) |) |) ]
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::option::Option::Some"
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| last |) |) |) ])
+                            (Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ T ] ])
                         |)
                       |)))
                 ]
@@ -16630,8 +18968,73 @@ Module slice.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.tuple
+                                    [
+                                      Ty.apply (Ty.path "&mut") [] [ T ];
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                    ]
+                                ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "slice") [] [ T ],
+                                "split_last_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                                        M.get_function (|
+                                          "core::mem::take",
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                          ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                              ])
+                                        ]
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::option::Option")
                               []
                               [
@@ -16643,43 +19046,7 @@ Module slice.
                                       []
                                       [ Ty.apply (Ty.path "slice") [] [ T ] ]
                                   ]
-                              ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "slice") [] [ T ],
-                              "split_last_mut",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&mut")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                                    M.get_function (|
-                                      "core::mem::take",
-                                      [],
-                                      [
-                                        Ty.apply
-                                          (Ty.path "&mut")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                                      ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                              ])
                         ]
                       |)
                     |),
@@ -16725,7 +19092,14 @@ Module slice.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -16776,11 +19150,15 @@ Module slice.
                             (Ty.path "core::option::Option")
                             []
                             [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                          Value.StructTuple
-                            "core::option::Option::Some"
-                            []
-                            [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| last |) |) |) ]
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::option::Option::Some"
+                              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| last |) |) |)
+                              ])
+                            (Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.apply (Ty.path "&mut") [] [ T ] ])
                         |)
                       |)))
                 ]
@@ -16983,7 +19361,36 @@ Module slice.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, arr |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, arr |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ N ]
+                              [
+                                Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::slice::index::SliceIndex"
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                      I
+                                      "Output"
+                                  ]
+                              ]
+                          ]
+                      ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.read (|
@@ -17006,11 +19413,16 @@ Module slice.
                             []
                           |),
                           [
-                            Value.mkStructRecord
-                              "core::ops::range::Range"
-                              []
-                              [ Ty.path "usize" ]
-                              [ ("start", Value.Integer IntegerKind.Usize 0); ("end_", N) ]
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.mkStructRecord
+                                  "core::ops::range::Range"
+                                  [ ("start", Value.Integer IntegerKind.Usize 0); ("end_", N) ])
+                                (Ty.apply
+                                  (Ty.path "core::ops::range::Range")
+                                  []
+                                  [ Ty.path "usize" ]))
+                              (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ])
                           ]
                         |)
                       |),
@@ -17053,10 +19465,22 @@ Module slice.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (|
+                                                  M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::ops::range::Range")
+                                                    []
+                                                    [ Ty.path "usize" ]
+                                                ])
                                           ]
                                         |)
                                       |),
@@ -17092,39 +19516,57 @@ Module slice.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.call_closure (|
-                                                          Ty.apply (Ty.path "&") [] [ I ],
-                                                          M.get_associated_function (|
-                                                            Ty.apply (Ty.path "slice") [] [ I ],
-                                                            "get_unchecked",
-                                                            [],
-                                                            [ Ty.path "usize" ]
-                                                          |),
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.apply
-                                                                (Ty.path "&")
-                                                                []
-                                                                [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.call_closure (|
+                                                            Ty.apply (Ty.path "&") [] [ I ],
+                                                            M.get_associated_function (|
+                                                              Ty.apply (Ty.path "slice") [] [ I ],
+                                                              "get_unchecked",
+                                                              [],
+                                                              [ Ty.path "usize" ]
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.call_closure (|
                                                                   Ty.apply
-                                                                    (Ty.path "slice")
+                                                                    (Ty.path "&")
                                                                     []
-                                                                    [ I ]
-                                                                ],
-                                                              M.pointer_coercion
-                                                                M.PointerCoercion.Unsize
-                                                                (Ty.apply
-                                                                  (Ty.path "&")
-                                                                  []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "slice")
+                                                                        []
+                                                                        [ I ]
+                                                                    ],
+                                                                  M.pointer_coercion
+                                                                    M.PointerCoercion.Unsize
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "array")
+                                                                          [ N ]
+                                                                          [ I ]
+                                                                      ])
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "slice")
+                                                                          []
+                                                                          [ I ]
+                                                                      ]),
                                                                   [
-                                                                    Ty.apply
-                                                                      (Ty.path "array")
-                                                                      [ N ]
-                                                                      [ I ]
-                                                                  ])
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      indices
+                                                                    |)
+                                                                  ]
+                                                                |))
                                                                 (Ty.apply
                                                                   (Ty.path "&")
                                                                   []
@@ -17133,19 +19575,15 @@ Module slice.
                                                                       (Ty.path "slice")
                                                                       []
                                                                       [ I ]
-                                                                  ]),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  indices
-                                                                |)
-                                                              ]
-                                                            |);
-                                                            M.read (| i |)
-                                                          ]
+                                                                  ]);
+                                                              M.value_with_ty
+                                                                (M.read (| i |))
+                                                                (Ty.path "usize")
+                                                            ]
+                                                          |)
                                                         |)
-                                                      |)
-                                                    |)
+                                                      |))
+                                                      (Ty.apply (Ty.path "&") [] [ I ])
                                                   ]
                                                 |) in
                                               let~ _ : Ty.tuple [] :=
@@ -17174,29 +19612,8 @@ Module slice.
                                                     []
                                                   |),
                                                   [
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "*mut")
-                                                        []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "&mut")
-                                                            []
-                                                            [
-                                                              Ty.associated_in_trait
-                                                                "core::slice::index::SliceIndex"
-                                                                []
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path "slice")
-                                                                    []
-                                                                    [ T ]
-                                                                ]
-                                                                I
-                                                                "Output"
-                                                            ]
-                                                        ],
-                                                      M.get_associated_function (|
+                                                    M.value_with_ty
+                                                      (M.call_closure (|
                                                         Ty.apply
                                                           (Ty.path "*mut")
                                                           []
@@ -17218,12 +19635,7 @@ Module slice.
                                                                   "Output"
                                                               ]
                                                           ],
-                                                        "add",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      [
-                                                        M.call_closure (|
+                                                        M.get_associated_function (|
                                                           Ty.apply
                                                             (Ty.path "*mut")
                                                             []
@@ -17245,81 +19657,33 @@ Module slice.
                                                                     "Output"
                                                                 ]
                                                             ],
-                                                          M.get_associated_function (|
-                                                            Ty.apply
-                                                              (Ty.path "*mut")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "array")
-                                                                  [ N ]
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path "&mut")
-                                                                      []
-                                                                      [
-                                                                        Ty.associated_in_trait
-                                                                          "core::slice::index::SliceIndex"
-                                                                          []
-                                                                          [
-                                                                            Ty.apply
-                                                                              (Ty.path "slice")
-                                                                              []
-                                                                              [ T ]
-                                                                          ]
-                                                                          I
-                                                                          "Output"
-                                                                      ]
-                                                                  ]
-                                                              ],
-                                                            "cast",
-                                                            [],
-                                                            [
-                                                              Ty.apply
-                                                                (Ty.path "&mut")
-                                                                []
-                                                                [
-                                                                  Ty.associated_in_trait
-                                                                    "core::slice::index::SliceIndex"
-                                                                    []
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path "slice")
-                                                                        []
-                                                                        [ T ]
-                                                                    ]
-                                                                    I
-                                                                    "Output"
-                                                                ]
-                                                            ]
-                                                          |),
-                                                          [ M.read (| arr_ptr |) ]
-                                                        |);
-                                                        M.read (| i |)
-                                                      ]
-                                                    |);
-                                                    M.borrow (|
-                                                      Pointer.Kind.MutRef,
-                                                      M.deref (|
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.deref (|
-                                                            M.call_closure (|
+                                                          "add",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
                                                               Ty.apply
                                                                 (Ty.path "*mut")
                                                                 []
                                                                 [
-                                                                  Ty.associated_in_trait
-                                                                    "core::slice::index::SliceIndex"
+                                                                  Ty.apply
+                                                                    (Ty.path "&mut")
                                                                     []
                                                                     [
-                                                                      Ty.apply
-                                                                        (Ty.path "slice")
+                                                                      Ty.associated_in_trait
+                                                                        "core::slice::index::SliceIndex"
                                                                         []
-                                                                        [ T ]
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path "slice")
+                                                                            []
+                                                                            [ T ]
+                                                                        ]
+                                                                        I
+                                                                        "Output"
                                                                     ]
-                                                                    I
-                                                                    "Output"
                                                                 ],
                                                               M.get_associated_function (|
                                                                 Ty.apply
@@ -17327,21 +19691,197 @@ Module slice.
                                                                   []
                                                                   [
                                                                     Ty.apply
-                                                                      (Ty.path "slice")
-                                                                      []
-                                                                      [ T ]
+                                                                      (Ty.path "array")
+                                                                      [ N ]
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "&mut")
+                                                                          []
+                                                                          [
+                                                                            Ty.associated_in_trait
+                                                                              "core::slice::index::SliceIndex"
+                                                                              []
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path "slice")
+                                                                                  []
+                                                                                  [ T ]
+                                                                              ]
+                                                                              I
+                                                                              "Output"
+                                                                          ]
+                                                                      ]
                                                                   ],
-                                                                "get_unchecked_mut",
+                                                                "cast",
                                                                 [],
-                                                                [ I ]
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [
+                                                                      Ty.associated_in_trait
+                                                                        "core::slice::index::SliceIndex"
+                                                                        []
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path "slice")
+                                                                            []
+                                                                            [ T ]
+                                                                        ]
+                                                                        I
+                                                                        "Output"
+                                                                    ]
+                                                                ]
                                                               |),
-                                                              [ M.read (| slice |); M.read (| idx |)
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.read (| arr_ptr |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "*mut")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "array")
+                                                                        [ N ]
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path "&mut")
+                                                                            []
+                                                                            [
+                                                                              Ty.associated_in_trait
+                                                                                "core::slice::index::SliceIndex"
+                                                                                []
+                                                                                [
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "slice")
+                                                                                    []
+                                                                                    [ T ]
+                                                                                ]
+                                                                                I
+                                                                                "Output"
+                                                                            ]
+                                                                        ]
+                                                                    ])
                                                               ]
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "*mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "&mut")
+                                                                  []
+                                                                  [
+                                                                    Ty.associated_in_trait
+                                                                      "core::slice::index::SliceIndex"
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "slice")
+                                                                          []
+                                                                          [ T ]
+                                                                      ]
+                                                                      I
+                                                                      "Output"
+                                                                  ]
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.read (| i |))
+                                                            (Ty.path "usize")
+                                                        ]
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "*mut")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.associated_in_trait
+                                                                "core::slice::index::SliceIndex"
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [ T ]
+                                                                ]
+                                                                I
+                                                                "Output"
+                                                            ]
+                                                        ]);
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.MutRef,
+                                                        M.deref (|
+                                                          M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.deref (|
+                                                              M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path "*mut")
+                                                                  []
+                                                                  [
+                                                                    Ty.associated_in_trait
+                                                                      "core::slice::index::SliceIndex"
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "slice")
+                                                                          []
+                                                                          [ T ]
+                                                                      ]
+                                                                      I
+                                                                      "Output"
+                                                                  ],
+                                                                M.get_associated_function (|
+                                                                  Ty.apply
+                                                                    (Ty.path "*mut")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "slice")
+                                                                        []
+                                                                        [ T ]
+                                                                    ],
+                                                                  "get_unchecked_mut",
+                                                                  [],
+                                                                  [ I ]
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.read (| slice |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "*mut")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "slice")
+                                                                          []
+                                                                          [ T ]
+                                                                      ]);
+                                                                  M.value_with_ty
+                                                                    (M.read (| idx |))
+                                                                    I
+                                                                ]
+                                                              |)
                                                             |)
                                                           |)
                                                         |)
-                                                      |)
-                                                    |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [
+                                                          Ty.associated_in_trait
+                                                            "core::slice::index::SliceIndex"
+                                                            []
+                                                            [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                                            I
+                                                            "Output"
+                                                        ])
                                                   ]
                                                 |) in
                                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -17415,7 +19955,31 @@ Module slice.
                   [],
                   []
                 |),
-                [ M.read (| arr |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| arr |))
+                    (Ty.apply
+                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ N ]
+                          [
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.associated_in_trait
+                                  "core::slice::index::SliceIndex"
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                  I
+                                  "Output"
+                              ]
+                          ]
+                      ])
+                ]
               |)
             |)
           |)))
@@ -17503,25 +20067,37 @@ Module slice.
                                         [ I ]
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.borrow (| Pointer.Kind.Ref, indices |) |)
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          M.get_associated_function (|
-                                            Ty.apply (Ty.path "slice") [] [ T ],
-                                            "len",
-                                            [],
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.borrow (| Pointer.Kind.Ref, indices |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
                                             []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| self |) |)
-                                            |)
-                                          ]
-                                        |)
+                                            [ Ty.apply (Ty.path "array") [ N ] [ I ] ]);
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "slice") [] [ T ],
+                                              "len",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                            ]
+                                          |))
+                                          (Ty.path "usize")
                                       ]
                                     |)
                                   ]
@@ -17532,35 +20108,38 @@ Module slice.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ N ]
-                                      [
-                                        Ty.apply
-                                          (Ty.path "&mut")
-                                          []
-                                          [
-                                            Ty.associated_in_trait
-                                              "core::slice::index::SliceIndex"
-                                              []
-                                              [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                                              I
-                                              "Output"
-                                          ]
-                                      ];
-                                    Ty.apply (Ty.path "core::slice::GetManyMutError") [ N ] []
-                                  ]
-                                  [
-                                    Value.mkStructRecord
-                                      "core::slice::GetManyMutError"
-                                      [ N ]
-                                      []
-                                      [ ("_private", Value.Tuple []) ]
-                                  ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.mkStructRecord
+                                          "core::slice::GetManyMutError"
+                                          [ ("_private", Value.Tuple []) ])
+                                        (Ty.apply (Ty.path "core::slice::GetManyMutError") [ N ] [])
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ N ]
+                                        [
+                                          Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [
+                                              Ty.associated_in_trait
+                                                "core::slice::index::SliceIndex"
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                                I
+                                                "Output"
+                                            ]
+                                        ];
+                                      Ty.apply (Ty.path "core::slice::GetManyMutError") [ N ] []
+                                    ])
                               |)
                             |)
                           |)));
@@ -17590,30 +20169,50 @@ Module slice.
                         ];
                       Ty.apply (Ty.path "core::slice::GetManyMutError") [ N ] []
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ N ]
-                        [
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.call_closure (|
                           Ty.apply
-                            (Ty.path "&mut")
-                            []
+                            (Ty.path "array")
+                            [ N ]
                             [
-                              Ty.associated_in_trait
-                                "core::slice::index::SliceIndex"
+                              Ty.apply
+                                (Ty.path "&mut")
                                 []
-                                [ Ty.apply (Ty.path "slice") [] [ T ] ]
-                                I
-                                "Output"
-                            ]
-                        ];
-                      Ty.apply (Ty.path "core::slice::GetManyMutError") [ N ] []
-                    ]
-                    [
-                      M.call_closure (|
+                                [
+                                  Ty.associated_in_trait
+                                    "core::slice::index::SliceIndex"
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                    I
+                                    "Output"
+                                ]
+                            ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "slice") [] [ T ],
+                            "get_many_unchecked_mut",
+                            [ N ],
+                            [ I ]
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                            M.value_with_ty
+                              (M.read (| indices |))
+                              (Ty.apply (Ty.path "array") [ N ] [ I ])
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
                         Ty.apply
                           (Ty.path "array")
                           [ N ]
@@ -17629,19 +20228,9 @@ Module slice.
                                   I
                                   "Output"
                               ]
-                          ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "slice") [] [ T ],
-                          "get_many_unchecked_mut",
-                          [ N ],
-                          [ I ]
-                        |),
-                        [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                          M.read (| indices |)
-                        ]
-                      |)
-                    ]
+                          ];
+                        Ty.apply (Ty.path "core::slice::GetManyMutError") [ N ] []
+                      ])
                 |)
               |)))
           |)))
@@ -17705,32 +20294,45 @@ Module slice.
                               Ty.path "never",
                               M.get_function (| "core::panicking::panic_fmt", [], [] |),
                               [
-                                M.call_closure (|
-                                  Ty.path "core::fmt::Arguments",
-                                  M.get_associated_function (|
+                                M.value_with_ty
+                                  (M.call_closure (|
                                     Ty.path "core::fmt::Arguments",
-                                    "new_const",
-                                    [ Value.Integer IntegerKind.Usize 1 ],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new_const",
+                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
                                           Pointer.Kind.Ref,
-                                          M.alloc (|
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                                Value.Array
+                                                  [ mk_str (| "elements are zero-sized" |) ]
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
                                             Ty.apply
                                               (Ty.path "array")
                                               [ Value.Integer IntegerKind.Usize 1 ]
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                            Value.Array [ mk_str (| "elements are zero-sized" |) ]
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |)
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.path "core::fmt::Arguments")
                               ]
                             |)
                           |)));
@@ -17747,16 +20349,22 @@ Module slice.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*const") [] [ T ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "slice") [] [ T ],
-                          "as_ptr",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                      |)
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*const") [] [ T ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "slice") [] [ T ],
+                            "as_ptr",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "*const") [] [ T ])
                     ]
                   |) in
                 let~ elem_start : Ty.path "usize" :=
@@ -17769,18 +20377,27 @@ Module slice.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*const") [] [ T ],
-                        M.get_function (| "core::ptr::from_ref", [], [ T ] |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| element |) |) |) ]
-                      |)
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*const") [] [ T ],
+                          M.get_function (| "core::ptr::from_ref", [], [ T ] |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| element |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ T ])
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "*const") [] [ T ])
                     ]
                   |) in
                 let~ byte_offset : Ty.path "usize" :=
                   M.call_closure (|
                     Ty.path "usize",
                     M.get_associated_function (| Ty.path "usize", "wrapping_sub", [], [] |),
-                    [ M.read (| elem_start |); M.read (| self_start |) ]
+                    [
+                      M.value_with_ty (M.read (| elem_start |)) (Ty.path "usize");
+                      M.value_with_ty (M.read (| self_start |)) (Ty.path "usize")
+                    ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -17818,11 +20435,9 @@ Module slice.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::option::Option::None"
-                                  []
-                                  [ Ty.path "usize" ]
-                                  []
+                                M.value_with_ty
+                                  (Value.StructTuple "core::option::Option::None" [])
+                                  (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                               |)
                             |)
                           |)));
@@ -17868,10 +20483,15 @@ Module slice.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                       ]
                                     |)
                                   ]
@@ -17879,18 +20499,14 @@ Module slice.
                               |)) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          Value.StructTuple
-                            "core::option::Option::Some"
-                            []
-                            [ Ty.path "usize" ]
-                            [ M.read (| offset |) ]));
+                          M.value_with_ty
+                            (Value.StructTuple "core::option::Option::Some" [ M.read (| offset |) ])
+                            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])));
                       fun γ =>
                         ltac:(M.monadic
-                          (Value.StructTuple
-                            "core::option::Option::None"
-                            []
-                            [ Ty.path "usize" ]
-                            []))
+                          (M.value_with_ty
+                            (Value.StructTuple "core::option::Option::None" [])
+                            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])))
                     ]
                   |)
                 |)
@@ -17970,32 +20586,45 @@ Module slice.
                               Ty.path "never",
                               M.get_function (| "core::panicking::panic_fmt", [], [] |),
                               [
-                                M.call_closure (|
-                                  Ty.path "core::fmt::Arguments",
-                                  M.get_associated_function (|
+                                M.value_with_ty
+                                  (M.call_closure (|
                                     Ty.path "core::fmt::Arguments",
-                                    "new_const",
-                                    [ Value.Integer IntegerKind.Usize 1 ],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new_const",
+                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
                                           Pointer.Kind.Ref,
-                                          M.alloc (|
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                                Value.Array
+                                                  [ mk_str (| "elements are zero-sized" |) ]
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
                                             Ty.apply
                                               (Ty.path "array")
                                               [ Value.Integer IntegerKind.Usize 1 ]
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                            Value.Array [ mk_str (| "elements are zero-sized" |) ]
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |)
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.path "core::fmt::Arguments")
                               ]
                             |)
                           |)));
@@ -18012,16 +20641,22 @@ Module slice.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*const") [] [ T ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "slice") [] [ T ],
-                          "as_ptr",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                      |)
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*const") [] [ T ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "slice") [] [ T ],
+                            "as_ptr",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "*const") [] [ T ])
                     ]
                   |) in
                 let~ subslice_start : Ty.path "usize" :=
@@ -18034,23 +20669,32 @@ Module slice.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*const") [] [ T ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "slice") [] [ T ],
-                          "as_ptr",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| subslice |) |) |) ]
-                      |)
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*const") [] [ T ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "slice") [] [ T ],
+                            "as_ptr",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| subslice |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "*const") [] [ T ])
                     ]
                   |) in
                 let~ byte_start : Ty.path "usize" :=
                   M.call_closure (|
                     Ty.path "usize",
                     M.get_associated_function (| Ty.path "usize", "wrapping_sub", [], [] |),
-                    [ M.read (| subslice_start |); M.read (| self_start |) ]
+                    [
+                      M.value_with_ty (M.read (| subslice_start |)) (Ty.path "usize");
+                      M.value_with_ty (M.read (| self_start |)) (Ty.path "usize")
+                    ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -18088,16 +20732,17 @@ Module slice.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::option::Option::None"
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::ops::range::Range")
-                                      []
-                                      [ Ty.path "usize" ]
-                                  ]
-                                  []
+                                M.value_with_ty
+                                  (Value.StructTuple "core::option::Option::None" [])
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ops::range::Range")
+                                        []
+                                        [ Ty.path "usize" ]
+                                    ])
                               |)
                             |)
                           |)));
@@ -18122,17 +20767,23 @@ Module slice.
                     Ty.path "usize",
                     M.get_associated_function (| Ty.path "usize", "wrapping_add", [], [] |),
                     [
-                      M.read (| start |);
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "slice") [] [ T ],
-                          "len",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| subslice |) |) |) ]
-                      |)
+                      M.value_with_ty (M.read (| start |)) (Ty.path "usize");
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "slice") [] [ T ],
+                            "len",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| subslice |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                          ]
+                        |))
+                        (Ty.path "usize")
                     ]
                   |) in
                 M.alloc (|
@@ -18168,10 +20819,15 @@ Module slice.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                         ]
                                       |)
                                     ]
@@ -18191,10 +20847,15 @@ Module slice.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| self |) |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                           ]
                                         |)
                                       ]
@@ -18203,24 +20864,33 @@ Module slice.
                               |)) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          Value.StructTuple
-                            "core::option::Option::Some"
-                            []
-                            [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ]
-                            [
-                              Value.mkStructRecord
-                                "core::ops::range::Range"
-                                []
-                                [ Ty.path "usize" ]
-                                [ ("start", M.read (| start |)); ("end_", M.read (| end_ |)) ]
-                            ]));
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::option::Option::Some"
+                              [
+                                M.value_with_ty
+                                  (Value.mkStructRecord
+                                    "core::ops::range::Range"
+                                    [ ("start", M.read (| start |)); ("end_", M.read (| end_ |)) ])
+                                  (Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "usize" ])
+                              ])
+                            (Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]
+                              ])));
                       fun γ =>
                         ltac:(M.monadic
-                          (Value.StructTuple
-                            "core::option::Option::None"
-                            []
-                            [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ]
-                            []))
+                          (M.value_with_ty
+                            (Value.StructTuple "core::option::Option::None" [])
+                            (Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]
+                              ])))
                     ]
                   |)
                 |)
@@ -18296,30 +20966,56 @@ Module slice.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                            M.get_associated_function (| Ty.path "usize", "checked_mul", [], [] |),
-                            [
-                              M.call_closure (|
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                              M.get_associated_function (|
                                 Ty.path "usize",
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "slice")
-                                    []
-                                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                  "len",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                              |);
-                              N
-                            ]
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| mk_str (| "slice len overflow" |) |)
-                          |)
+                                "checked_mul",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                      "len",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "slice")
+                                              []
+                                              [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.path "usize");
+                                M.value_with_ty N (Ty.path "usize")
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]);
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| mk_str (| "slice len overflow" |) |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                         ]
                       |)));
                   fun γ =>
@@ -18328,20 +21024,34 @@ Module slice.
                         Ty.path "usize",
                         M.get_associated_function (| Ty.path "usize", "unchecked_mul", [], [] |),
                         [
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "slice")
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                "len",
+                                [],
                                 []
-                                [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                              "len",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |);
-                          N
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "usize");
+                          M.value_with_ty N (Ty.path "usize")
                         ]
                       |)))
                 ]
@@ -18355,34 +21065,59 @@ Module slice.
                     Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                     M.get_function (| "core::slice::raw::from_raw_parts", [], [ T ] |),
                     [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*const") [] [ T ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "*const") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                          "cast",
-                          [],
-                          [ T ]
-                        |),
-                        [
-                          M.call_closure (|
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*const") [] [ T ],
+                          M.get_associated_function (|
                             Ty.apply
                               (Ty.path "*const")
                               []
                               [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "slice")
+                            "cast",
+                            [],
+                            [ T ]
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "*const")
+                                  []
+                                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                  "as_ptr",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "slice")
+                                          []
+                                          [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.apply
+                                (Ty.path "*const")
                                 []
-                                [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                              "as_ptr",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        ]
-                      |);
-                      M.read (| len |)
+                                [ Ty.apply (Ty.path "array") [ N ] [ T ] ])
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "*const") [] [ T ]);
+                      M.value_with_ty (M.read (| len |)) (Ty.path "usize")
                     ]
                   |)
                 |)
@@ -18458,40 +21193,56 @@ Module slice.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                                M.get_associated_function (|
-                                  Ty.path "usize",
-                                  "checked_mul",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.call_closure (|
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                                  M.get_associated_function (|
                                     Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "slice")
-                                        []
-                                        [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  N
-                                ]
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| mk_str (| "slice len overflow" |) |)
-                              |)
+                                    "checked_mul",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "slice")
+                                            []
+                                            [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "slice")
+                                                  []
+                                                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                                              ])
+                                        ]
+                                      |))
+                                      (Ty.path "usize");
+                                    M.value_with_ty N (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| mk_str (| "slice len overflow" |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                             ]
                           |)));
                       fun γ =>
@@ -18505,20 +21256,37 @@ Module slice.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.path "usize",
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "slice")
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                    "len",
+                                    [],
                                     []
-                                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                  "len",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                              |);
-                              N
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "slice")
+                                            []
+                                            [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                                        ])
+                                  ]
+                                |))
+                                (Ty.path "usize");
+                              M.value_with_ty N (Ty.path "usize")
                             ]
                           |)))
                     ]
@@ -18535,42 +21303,59 @@ Module slice.
                             Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
                             M.get_function (| "core::slice::raw::from_raw_parts_mut", [], [ T ] |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ T ],
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "*mut")
-                                    []
-                                    [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                  "cast",
-                                  [],
-                                  [ T ]
-                                |),
-                                [
-                                  M.call_closure (|
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply (Ty.path "*mut") [] [ T ],
+                                  M.get_associated_function (|
                                     Ty.apply
                                       (Ty.path "*mut")
                                       []
                                       [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "slice")
+                                    "cast",
+                                    [],
+                                    [ T ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "*mut")
+                                          []
+                                          [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "slice")
+                                            []
+                                            [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
+                                          "as_mut_ptr",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "slice")
+                                                  []
+                                                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ]
+                                              ])
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "*mut")
                                         []
-                                        [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
-                                      "as_mut_ptr",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              M.read (| len |)
+                                        [ Ty.apply (Ty.path "array") [ N ] [ T ] ])
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ T ]);
+                              M.value_with_ty (M.read (| len |)) (Ty.path "usize")
                             ]
                           |)
                         |)
@@ -18626,8 +21411,20 @@ Module slice.
                   ]
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.get_associated_function (| Ty.path "f32", "total_cmp", [], [] |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "f32" ] ]);
+                  M.value_with_ty
+                    (M.get_associated_function (| Ty.path "f32", "total_cmp", [], [] |))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "f32" ];
+                        Ty.apply (Ty.path "&") [] [ Ty.path "f32" ]
+                      ]
+                      (Ty.path "core::cmp::Ordering"))
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -18676,8 +21473,20 @@ Module slice.
                   ]
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.get_associated_function (| Ty.path "f64", "total_cmp", [], [] |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "f64" ] ]);
+                  M.value_with_ty
+                    (M.get_associated_function (| Ty.path "f64", "total_cmp", [], [] |))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "f64" ];
+                        Ty.apply (Ty.path "&") [] [ Ty.path "f64" ]
+                      ]
+                      (Ty.path "core::cmp::Ordering"))
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -18756,10 +21565,15 @@ Module slice.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                       ]
                                     |);
                                     M.call_closure (|
@@ -18771,10 +21585,15 @@ Module slice.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| src |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| src |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ T ] ])
                                       ]
                                     |)
                                   ]
@@ -18788,37 +21607,49 @@ Module slice.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_const",
-                                [ Value.Integer IntegerKind.Usize 1 ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_const",
+                                  [ Value.Integer IntegerKind.Usize 1 ],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [
+                                                mk_str (|
+                                                  "destination and source slices have different lengths"
+                                                |)
+                                              ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [
-                                            mk_str (|
-                                              "destination and source slices have different lengths"
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)));
@@ -18829,7 +21660,11 @@ Module slice.
               M.call_closure (|
                 Ty.path "usize",
                 M.get_associated_function (| Ty.apply (Ty.path "slice") [] [ T ], "len", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                ]
               |) in
             let~ src : Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ] :=
               M.borrow (|
@@ -18847,12 +21682,16 @@ Module slice.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |);
-                      Value.mkStructRecord
-                        "core::ops::range::RangeTo"
-                        []
-                        [ Ty.path "usize" ]
-                        [ ("end_", M.read (| len |)) ]
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.mkStructRecord
+                            "core::ops::range::RangeTo"
+                            [ ("end_", M.read (| len |)) ])
+                          (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ]))
+                        (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ])
                     ]
                   |)
                 |)
@@ -18876,12 +21715,16 @@ Module slice.
                         []
                       |),
                       [
-                        Value.mkStructRecord
-                          "core::ops::range::Range"
-                          []
-                          [ Ty.path "usize" ]
-                          [ ("start", Value.Integer IntegerKind.Usize 0); ("end_", M.read (| len |))
-                          ]
+                        M.value_with_ty
+                          (M.value_with_ty
+                            (Value.mkStructRecord
+                              "core::ops::range::Range"
+                              [
+                                ("start", Value.Integer IntegerKind.Usize 0);
+                                ("end_", M.read (| len |))
+                              ])
+                            (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]))
+                          (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ])
                       ]
                     |)
                   |),
@@ -18921,10 +21764,20 @@ Module slice.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ops::range::Range")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ])
                                       ]
                                     |)
                                   |),
@@ -18957,25 +21810,29 @@ Module slice.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_array_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    M.read (| i |)
-                                                  |)
-                                                |);
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.SubPointer.get_array_field (|
-                                                        M.deref (| M.read (| src |) |),
-                                                        M.read (| i |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.SubPointer.get_array_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      M.read (| i |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&mut") [] [ T ]);
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.SubPointer.get_array_field (|
+                                                          M.deref (| M.read (| src |) |),
+                                                          M.read (| i |)
+                                                        |)
                                                       |)
                                                     |)
-                                                  |)
-                                                |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ T ])
                                               ]
                                             |) in
                                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -19038,8 +21895,12 @@ Module slice.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -19306,56 +22167,68 @@ Module slice.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::iter::adapters::enumerate::Enumerate")
+                                []
+                                [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ I ] ],
+                              M.get_trait_method (|
+                                "core::iter::traits::iterator::Iterator",
+                                Ty.apply (Ty.path "core::slice::iter::Iter") [] [ I ],
+                                [],
+                                [],
+                                "enumerate",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply (Ty.path "core::slice::iter::Iter") [] [ I ],
+                                    M.get_associated_function (|
+                                      Ty.apply (Ty.path "slice") [] [ I ],
+                                      "iter",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ I ] ],
+                                          M.pointer_coercion
+                                            M.PointerCoercion.Unsize
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "array") [ N ] [ I ] ])
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ I ] ]),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| indices |) |)
+                                            |)
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ I ] ])
+                                    ]
+                                  |))
+                                  (Ty.apply (Ty.path "core::slice::iter::Iter") [] [ I ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::iter::adapters::enumerate::Enumerate")
                               []
-                              [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ I ] ],
-                            M.get_trait_method (|
-                              "core::iter::traits::iterator::Iterator",
-                              Ty.apply (Ty.path "core::slice::iter::Iter") [] [ I ],
-                              [],
-                              [],
-                              "enumerate",
-                              [],
-                              []
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "core::slice::iter::Iter") [] [ I ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "slice") [] [ I ],
-                                  "iter",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ I ] ],
-                                    M.pointer_coercion
-                                      M.PointerCoercion.Unsize
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.apply (Ty.path "array") [ N ] [ I ] ])
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.apply (Ty.path "slice") [] [ I ] ]),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| indices |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |)
-                            ]
-                          |)
+                              [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ I ] ])
                         ]
                       |)
                     |),
@@ -19405,10 +22278,26 @@ Module slice.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "core::iter::adapters::enumerate::Enumerate")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::slice::iter::Iter")
+                                                      []
+                                                      [ I ]
+                                                  ]
+                                              ])
                                         ]
                                       |)
                                     |),
@@ -19456,11 +22345,15 @@ Module slice.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| idx |) |)
-                                                        |);
-                                                        M.read (| len |)
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| M.read (| idx |) |)
+                                                          |))
+                                                          (Ty.apply (Ty.path "&") [] [ I ]);
+                                                        M.value_with_ty
+                                                          (M.read (| len |))
+                                                          (Ty.path "usize")
                                                       ]
                                                     |)
                                                   ]
@@ -19494,51 +22387,79 @@ Module slice.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (|
-                                                            M.call_closure (|
-                                                              Ty.apply
-                                                                (Ty.path "&")
-                                                                []
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path "slice")
-                                                                    []
-                                                                    [ I ]
-                                                                ],
-                                                              M.get_trait_method (|
-                                                                "core::ops::index::Index",
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (|
+                                                              M.call_closure (|
                                                                 Ty.apply
-                                                                  (Ty.path "array")
-                                                                  [ N ]
-                                                                  [ I ],
-                                                                [],
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path
-                                                                      "core::ops::range::RangeTo")
-                                                                    []
-                                                                    [ Ty.path "usize" ]
-                                                                ],
-                                                                "index",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (| M.read (| indices |) |)
-                                                                |);
-                                                                Value.mkStructRecord
-                                                                  "core::ops::range::RangeTo"
+                                                                  (Ty.path "&")
                                                                   []
-                                                                  [ Ty.path "usize" ]
-                                                                  [ ("end_", M.read (| i |)) ]
-                                                              ]
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "slice")
+                                                                      []
+                                                                      [ I ]
+                                                                  ],
+                                                                M.get_trait_method (|
+                                                                  "core::ops::index::Index",
+                                                                  Ty.apply
+                                                                    (Ty.path "array")
+                                                                    [ N ]
+                                                                    [ I ],
+                                                                  [],
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "core::ops::range::RangeTo")
+                                                                      []
+                                                                      [ Ty.path "usize" ]
+                                                                  ],
+                                                                  "index",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        M.read (| indices |)
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "array")
+                                                                          [ N ]
+                                                                          [ I ]
+                                                                      ]);
+                                                                  M.value_with_ty
+                                                                    (M.value_with_ty
+                                                                      (Value.mkStructRecord
+                                                                        "core::ops::range::RangeTo"
+                                                                        [ ("end_", M.read (| i |))
+                                                                        ])
+                                                                      (Ty.apply
+                                                                        (Ty.path
+                                                                          "core::ops::range::RangeTo")
+                                                                        []
+                                                                        [ Ty.path "usize" ]))
+                                                                    (Ty.apply
+                                                                      (Ty.path
+                                                                        "core::ops::range::RangeTo")
+                                                                      []
+                                                                      [ Ty.path "usize" ])
+                                                                ]
+                                                              |)
                                                             |)
-                                                          |)
-                                                        |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.apply (Ty.path "slice") [] [ I ] ])
                                                       ]
                                                     |)
                                                   |),
@@ -19594,15 +22515,26 @@ Module slice.
                                                                         []
                                                                       |),
                                                                       [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.MutRef,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.MutRef,
-                                                                              iter
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.MutRef,
+                                                                            M.deref (|
+                                                                              M.borrow (|
+                                                                                Pointer.Kind.MutRef,
+                                                                                iter
+                                                                              |)
                                                                             |)
-                                                                          |)
-                                                                        |)
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&mut")
+                                                                            []
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::slice::iter::Iter")
+                                                                                []
+                                                                                [ I ]
+                                                                            ])
                                                                       ]
                                                                     |)
                                                                   |),
@@ -19660,22 +22592,35 @@ Module slice.
                                                                                           []
                                                                                         |),
                                                                                         [
-                                                                                          M.borrow (|
-                                                                                            Pointer.Kind.Ref,
-                                                                                            M.deref (|
-                                                                                              M.read (|
-                                                                                                idx
+                                                                                          M.value_with_ty
+                                                                                            (M.borrow (|
+                                                                                              Pointer.Kind.Ref,
+                                                                                              M.deref (|
+                                                                                                M.read (|
+                                                                                                  idx
+                                                                                                |)
                                                                                               |)
-                                                                                            |)
-                                                                                          |);
-                                                                                          M.borrow (|
-                                                                                            Pointer.Kind.Ref,
-                                                                                            M.deref (|
-                                                                                              M.read (|
-                                                                                                idx2
+                                                                                            |))
+                                                                                            (Ty.apply
+                                                                                              (Ty.path
+                                                                                                "&")
+                                                                                              []
+                                                                                              [ I
+                                                                                              ]);
+                                                                                          M.value_with_ty
+                                                                                            (M.borrow (|
+                                                                                              Pointer.Kind.Ref,
+                                                                                              M.deref (|
+                                                                                                M.read (|
+                                                                                                  idx2
+                                                                                                |)
                                                                                               |)
-                                                                                            |)
-                                                                                          |)
+                                                                                            |))
+                                                                                            (Ty.apply
+                                                                                              (Ty.path
+                                                                                                "&")
+                                                                                              []
+                                                                                              [ I ])
                                                                                         ]
                                                                                       |)
                                                                                     ]
@@ -19745,40 +22690,42 @@ Module slice.
                 [ Ty.apply (Ty.path "core::slice::GetManyMutError") [ N ] [] ],
               self
             |) in
-          Value.mkStructRecord
-            "core::slice::GetManyMutError"
-            [ N ]
-            []
-            [
-              ("_private",
-                M.call_closure (|
-                  Ty.tuple [],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::slice::GetManyMutError"
+              [
+                ("_private",
+                  M.call_closure (|
                     Ty.tuple [],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.tuple [],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::slice::GetManyMutError",
-                            "_private"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::slice::GetManyMutError",
+                                "_private"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.tuple [] ])
+                    ]
+                  |))
+              ])
+            (Ty.apply (Ty.path "core::slice::GetManyMutError") [ N ] [])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -19844,22 +22791,26 @@ Module slice.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::slice::GetManyMutError",
-                  "_private"
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| other |) |),
-                  "core::slice::GetManyMutError",
-                  "_private"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::slice::GetManyMutError",
+                    "_private"
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.tuple [] ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| other |) |),
+                    "core::slice::GetManyMutError",
+                    "_private"
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.tuple [] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -19953,25 +22904,34 @@ Module slice.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.alloc (|
-                  Ty.path "core::fmt::builders::DebugStruct",
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.alloc (|
                     Ty.path "core::fmt::builders::DebugStruct",
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "debug_struct",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "GetManyMutError" |) |) |)
-                    ]
+                    M.call_closure (|
+                      Ty.path "core::fmt::builders::DebugStruct",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Formatter",
+                        "debug_struct",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| mk_str (| "GetManyMutError" |) |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -20018,13 +22978,17 @@ Module slice.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_trait_method (| "core::fmt::Display", Ty.path "str", [], [], "fmt", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  mk_str (| "an index is out of bounds or appeared multiple times in the array" |)
-                |)
-              |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    mk_str (| "an index is out of bounds or appeared multiple times in the array" |)
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -20503,26 +23467,35 @@ Module slice.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::convert::From",
+                    M.call_closure (|
                       Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ] ],
-                      "from",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                      M.get_trait_method (|
+                        "core::convert::From",
+                        Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ] ],
+                        "from",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.read (| M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.read (| len |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ]);
+              M.value_with_ty (M.read (| len |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -20565,49 +23538,67 @@ Module slice.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::convert::From",
+                    M.call_closure (|
                       Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ] ],
-                      "from",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                  |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.alloc (|
-                      Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                      M.call_closure (|
+                      M.get_trait_method (|
+                        "core::convert::From",
                         Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                        M.get_trait_method (|
-                          "core::convert::From",
+                        [],
+                        [ Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ] ],
+                        "from",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.read (| M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ])
+                      ]
+                    |)
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.alloc (|
+                        Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                        M.call_closure (|
                           Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                          [],
-                          [ Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ] ],
-                          "from",
-                          [],
-                          []
-                        |),
-                        [ M.read (| M.deref (| M.read (| other |) |) |) ]
+                          M.get_trait_method (|
+                            "core::convert::From",
+                            Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                            [],
+                            [ Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ] ],
+                            "from",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (| M.deref (| M.read (| other |) |) |))
+                              (Ty.apply (Ty.path "core::range::Range") [] [ Ty.path "usize" ])
+                          ]
+                        |)
                       |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -20660,26 +23651,38 @@ Module slice.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::convert::From",
+                    M.call_closure (|
                       Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Ty.path "usize" ] ],
-                      "from",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                      M.get_trait_method (|
+                        "core::convert::From",
+                        Ty.apply
+                          (Ty.path "core::ops::range::RangeInclusive")
+                          []
+                          [ Ty.path "usize" ],
+                        [],
+                        [ Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Ty.path "usize" ] ],
+                        "from",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.read (| M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Ty.path "usize" ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.read (| len |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ] ]);
+              M.value_with_ty (M.read (| len |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -20722,56 +23725,87 @@ Module slice.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
                     Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
-                    M.get_trait_method (|
-                      "core::convert::From",
+                    M.call_closure (|
                       Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
-                      [],
-                      [ Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Ty.path "usize" ] ],
-                      "from",
-                      [],
-                      []
-                    |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                  |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.alloc (|
-                      Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ],
-                      M.call_closure (|
+                      M.get_trait_method (|
+                        "core::convert::From",
                         Ty.apply
                           (Ty.path "core::ops::range::RangeInclusive")
                           []
                           [ Ty.path "usize" ],
-                        M.get_trait_method (|
-                          "core::convert::From",
+                        [],
+                        [ Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Ty.path "usize" ] ],
+                        "from",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.read (| M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Ty.path "usize" ])
+                      ]
+                    |)
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ] ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.alloc (|
+                        Ty.apply
+                          (Ty.path "core::ops::range::RangeInclusive")
+                          []
+                          [ Ty.path "usize" ],
+                        M.call_closure (|
                           Ty.apply
                             (Ty.path "core::ops::range::RangeInclusive")
                             []
                             [ Ty.path "usize" ],
-                          [],
-                          [ Ty.apply (Ty.path "core::range::RangeInclusive") [] [ Ty.path "usize" ]
-                          ],
-                          "from",
-                          [],
-                          []
-                        |),
-                        [ M.read (| M.deref (| M.read (| other |) |) |) ]
+                          M.get_trait_method (|
+                            "core::convert::From",
+                            Ty.apply
+                              (Ty.path "core::ops::range::RangeInclusive")
+                              []
+                              [ Ty.path "usize" ],
+                            [],
+                            [
+                              Ty.apply
+                                (Ty.path "core::range::RangeInclusive")
+                                []
+                                [ Ty.path "usize" ]
+                            ],
+                            "from",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (| M.deref (| M.read (| other |) |) |))
+                              (Ty.apply
+                                (Ty.path "core::range::RangeInclusive")
+                                []
+                                [ Ty.path "usize" ])
+                          ]
+                        |)
                       |)
                     |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "core::ops::range::RangeInclusive") [] [ Ty.path "usize" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

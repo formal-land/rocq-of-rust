@@ -51,11 +51,9 @@ Definition match_mut (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : 
             Ty.path "i32",
             M.alloc (|
               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ],
-              Value.StructTuple
-                "core::option::Option::Some"
-                []
-                [ Ty.path "i32" ]
-                [ Value.Integer IntegerKind.I32 5 ]
+              M.value_with_ty
+                (Value.StructTuple "core::option::Option::Some" [ Value.Integer IntegerKind.I32 5 ])
+                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ])
             |),
             [
               fun γ =>

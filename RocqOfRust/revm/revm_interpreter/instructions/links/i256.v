@@ -2,6 +2,7 @@
 Require Import RocqOfRust.RocqOfRust.
 Require Import RocqOfRust.links.M.
 Require Import alloy_primitives.links.aliases.
+Require Import core.links.array.
 Require Import core.intrinsics.links.mod.
 Require Import core.links.cmp.
 Require Import revm.revm_interpreter.instructions.i256.
@@ -31,11 +32,11 @@ Module Sign.
     φ x :=
       match x with
       | Minus =>
-          Value.StructTuple "revm_interpreter::instructions::i256::Sign::Minus" [] [] []
+          Value.StructTuple "revm_interpreter::instructions::i256::Sign::Minus" []
       | Zero =>
-          Value.StructTuple "revm_interpreter::instructions::i256::Sign::Zero" [] [] []
+          Value.StructTuple "revm_interpreter::instructions::i256::Sign::Zero" []
       | Plus =>
-          Value.StructTuple "revm_interpreter::instructions::i256::Sign::Plus" [] [] []
+          Value.StructTuple "revm_interpreter::instructions::i256::Sign::Plus" []
       end
   }.
 
@@ -46,42 +47,42 @@ Module Sign.
   }.
 
   Instance IsOfValueWith_Minus :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Minus" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Minus" []) :=
   {
     value := Minus;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Minus :
-    OfValue.C (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Minus" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Minus" []) :=
   {
     value := Minus;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Zero :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Zero" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Zero" []) :=
   {
     value := Zero;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Zero :
-    OfValue.C (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Zero" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Zero" []) :=
   {
     value := Zero;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Plus :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Plus" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Plus" []) :=
   {
     value := Plus;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Plus :
-    OfValue.C (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Plus" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::instructions::i256::Sign::Plus" []) :=
   {
     value := Plus;
     eq := eq_refl;

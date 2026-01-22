@@ -53,8 +53,183 @@ Module transaction.
                     [ Ty.path "usize" ]
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::map::Map")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "revm_context_interface::transaction::access_list::AccessListTrait"
+                              []
+                              []
+                              Self
+                              "{{synthetic}}";
+                            Ty.function
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.path "alloy_primitives::bits::address::Address";
+                                    Ty.associated_in_trait
+                                      "revm_context_interface::transaction::access_list::AccessListTrait"
+                                      []
+                                      []
+                                      Self
+                                      "{{synthetic}}'1"
+                                  ]
+                              ]
+                              (Ty.path "usize")
+                          ],
+                        M.get_trait_method (|
+                          "core::iter::traits::iterator::Iterator",
+                          Ty.associated_in_trait
+                            "revm_context_interface::transaction::access_list::AccessListTrait"
+                            []
+                            []
+                            Self
+                            "{{synthetic}}",
+                          [],
+                          [],
+                          "map",
+                          [],
+                          [
+                            Ty.path "usize";
+                            Ty.function
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.path "alloy_primitives::bits::address::Address";
+                                    Ty.associated_in_trait
+                                      "revm_context_interface::transaction::access_list::AccessListTrait"
+                                      []
+                                      []
+                                      Self
+                                      "{{synthetic}}'1"
+                                  ]
+                              ]
+                              (Ty.path "usize")
+                          ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.associated_in_trait
+                                "revm_context_interface::transaction::access_list::AccessListTrait"
+                                []
+                                []
+                                Self
+                                "{{synthetic}}",
+                              M.get_trait_method (|
+                                "revm_context_interface::transaction::access_list::AccessListTrait",
+                                Self,
+                                [],
+                                [],
+                                "iter",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Self ])
+                              ]
+                            |))
+                            (Ty.associated_in_trait
+                              "revm_context_interface::transaction::access_list::AccessListTrait"
+                              []
+                              []
+                              Self
+                              "{{synthetic}}");
+                          M.value_with_ty
+                            (M.closure
+                              (fun γ =>
+                                ltac:(M.monadic
+                                  match γ with
+                                  | [ α0 ] =>
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "usize",
+                                        M.alloc (|
+                                          Ty.tuple
+                                            [
+                                              Ty.path "alloy_primitives::bits::address::Address";
+                                              Ty.associated_in_trait
+                                                "revm_context_interface::transaction::access_list::AccessListTrait"
+                                                []
+                                                []
+                                                Self
+                                                "{{synthetic}}'1"
+                                            ],
+                                          α0
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let i :=
+                                                M.copy (|
+                                                  Ty.tuple
+                                                    [
+                                                      Ty.path
+                                                        "alloy_primitives::bits::address::Address";
+                                                      Ty.associated_in_trait
+                                                        "revm_context_interface::transaction::access_list::AccessListTrait"
+                                                        []
+                                                        []
+                                                        Self
+                                                        "{{synthetic}}'1"
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                M.get_trait_method (|
+                                                  "core::iter::traits::iterator::Iterator",
+                                                  Ty.associated_in_trait
+                                                    "revm_context_interface::transaction::access_list::AccessListTrait"
+                                                    []
+                                                    []
+                                                    Self
+                                                    "{{synthetic}}'1",
+                                                  [],
+                                                  [],
+                                                  "count",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (|
+                                                      M.SubPointer.get_tuple_field (| i, 1 |)
+                                                    |))
+                                                    (Ty.associated_in_trait
+                                                      "revm_context_interface::transaction::access_list::AccessListTrait"
+                                                      []
+                                                      []
+                                                      Self
+                                                      "{{synthetic}}'1")
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                  | _ => M.impossible "wrong number of arguments"
+                                  end)))
+                            (Ty.function
+                              [
+                                Ty.tuple
+                                  [
+                                    Ty.path "alloy_primitives::bits::address::Address";
+                                    Ty.associated_in_trait
+                                      "revm_context_interface::transaction::access_list::AccessListTrait"
+                                      []
+                                      []
+                                      Self
+                                      "{{synthetic}}'1"
+                                  ]
+                              ]
+                              (Ty.path "usize"))
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "core::iter::adapters::map::Map")
                         []
                         [
@@ -78,119 +253,7 @@ Module transaction.
                                 ]
                             ]
                             (Ty.path "usize")
-                        ],
-                      M.get_trait_method (|
-                        "core::iter::traits::iterator::Iterator",
-                        Ty.associated_in_trait
-                          "revm_context_interface::transaction::access_list::AccessListTrait"
-                          []
-                          []
-                          Self
-                          "{{synthetic}}",
-                        [],
-                        [],
-                        "map",
-                        [],
-                        [
-                          Ty.path "usize";
-                          Ty.function
-                            [
-                              Ty.tuple
-                                [
-                                  Ty.path "alloy_primitives::bits::address::Address";
-                                  Ty.associated_in_trait
-                                    "revm_context_interface::transaction::access_list::AccessListTrait"
-                                    []
-                                    []
-                                    Self
-                                    "{{synthetic}}'1"
-                                ]
-                            ]
-                            (Ty.path "usize")
-                        ]
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.associated_in_trait
-                            "revm_context_interface::transaction::access_list::AccessListTrait"
-                            []
-                            []
-                            Self
-                            "{{synthetic}}",
-                          M.get_trait_method (|
-                            "revm_context_interface::transaction::access_list::AccessListTrait",
-                            Self,
-                            [],
-                            [],
-                            "iter",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |);
-                        M.closure
-                          (fun γ =>
-                            ltac:(M.monadic
-                              match γ with
-                              | [ α0 ] =>
-                                ltac:(M.monadic
-                                  (M.match_operator (|
-                                    Ty.path "usize",
-                                    M.alloc (|
-                                      Ty.tuple
-                                        [
-                                          Ty.path "alloy_primitives::bits::address::Address";
-                                          Ty.associated_in_trait
-                                            "revm_context_interface::transaction::access_list::AccessListTrait"
-                                            []
-                                            []
-                                            Self
-                                            "{{synthetic}}'1"
-                                        ],
-                                      α0
-                                    |),
-                                    [
-                                      fun γ =>
-                                        ltac:(M.monadic
-                                          (let i :=
-                                            M.copy (|
-                                              Ty.tuple
-                                                [
-                                                  Ty.path
-                                                    "alloy_primitives::bits::address::Address";
-                                                  Ty.associated_in_trait
-                                                    "revm_context_interface::transaction::access_list::AccessListTrait"
-                                                    []
-                                                    []
-                                                    Self
-                                                    "{{synthetic}}'1"
-                                                ],
-                                              γ
-                                            |) in
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_trait_method (|
-                                              "core::iter::traits::iterator::Iterator",
-                                              Ty.associated_in_trait
-                                                "revm_context_interface::transaction::access_list::AccessListTrait"
-                                                []
-                                                []
-                                                Self
-                                                "{{synthetic}}'1",
-                                              [],
-                                              [],
-                                              "count",
-                                              [],
-                                              []
-                                            |),
-                                            [ M.read (| M.SubPointer.get_tuple_field (| i, 1 |) |) ]
-                                          |)))
-                                    ]
-                                  |)))
-                              | _ => M.impossible "wrong number of arguments"
-                              end))
-                      ]
-                    |)
+                        ])
                   ]
                 |) in
               let~ account_num : Ty.path "usize" :=
@@ -211,24 +274,35 @@ Module transaction.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.associated_in_trait
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.associated_in_trait
+                          "revm_context_interface::transaction::access_list::AccessListTrait"
+                          []
+                          []
+                          Self
+                          "{{synthetic}}",
+                        M.get_trait_method (|
+                          "revm_context_interface::transaction::access_list::AccessListTrait",
+                          Self,
+                          [],
+                          [],
+                          "iter",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Self ])
+                        ]
+                      |))
+                      (Ty.associated_in_trait
                         "revm_context_interface::transaction::access_list::AccessListTrait"
                         []
                         []
                         Self
-                        "{{synthetic}}",
-                      M.get_trait_method (|
-                        "revm_context_interface::transaction::access_list::AccessListTrait",
-                        Self,
-                        [],
-                        [],
-                        "iter",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |)
+                        "{{synthetic}}")
                   ]
                 |) in
               M.alloc (|
@@ -275,10 +349,12 @@ Module transaction.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -309,10 +385,12 @@ Module transaction.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -371,10 +449,12 @@ Module transaction.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -416,10 +496,12 @@ Module transaction.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -474,27 +556,41 @@ Module transaction.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ T ],
-                        M.get_trait_method (|
-                          "core::ops::deref::Deref",
-                          Ty.apply
-                            (Ty.path "alloc::sync::Arc")
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply
+                              (Ty.path "alloc::sync::Arc")
+                              []
+                              [ T; Ty.path "alloc::alloc::Global" ],
+                            [],
+                            [],
+                            "deref",
+                            [],
                             []
-                            [ T; Ty.path "alloc::alloc::Global" ],
-                          [],
-                          [],
-                          "deref",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::sync::Arc")
+                                    []
+                                    [ T; Ty.path "alloc::alloc::Global" ]
+                                ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -532,27 +628,41 @@ Module transaction.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ T ],
-                        M.get_trait_method (|
-                          "core::ops::deref::Deref",
-                          Ty.apply
-                            (Ty.path "alloc::sync::Arc")
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply
+                              (Ty.path "alloc::sync::Arc")
+                              []
+                              [ T; Ty.path "alloc::alloc::Global" ],
+                            [],
+                            [],
+                            "deref",
+                            [],
                             []
-                            [ T; Ty.path "alloc::alloc::Global" ],
-                          [],
-                          [],
-                          "deref",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::sync::Arc")
+                                    []
+                                    [ T; Ty.path "alloc::alloc::Global" ]
+                                ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -606,27 +716,41 @@ Module transaction.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ T ],
-                        M.get_trait_method (|
-                          "core::ops::deref::Deref",
-                          Ty.apply
-                            (Ty.path "alloc::rc::Rc")
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply
+                              (Ty.path "alloc::rc::Rc")
+                              []
+                              [ T; Ty.path "alloc::alloc::Global" ],
+                            [],
+                            [],
+                            "deref",
+                            [],
                             []
-                            [ T; Ty.path "alloc::alloc::Global" ],
-                          [],
-                          [],
-                          "deref",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::rc::Rc")
+                                    []
+                                    [ T; Ty.path "alloc::alloc::Global" ]
+                                ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -663,27 +787,41 @@ Module transaction.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ T ],
-                        M.get_trait_method (|
-                          "core::ops::deref::Deref",
-                          Ty.apply
-                            (Ty.path "alloc::rc::Rc")
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ T ],
+                          M.get_trait_method (|
+                            "core::ops::deref::Deref",
+                            Ty.apply
+                              (Ty.path "alloc::rc::Rc")
+                              []
+                              [ T; Ty.path "alloc::alloc::Global" ],
+                            [],
+                            [],
+                            "deref",
+                            [],
                             []
-                            [ T; Ty.path "alloc::alloc::Global" ],
-                          [],
-                          [],
-                          "deref",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::rc::Rc")
+                                    []
+                                    [ T; Ty.path "alloc::alloc::Global" ]
+                                ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -809,244 +947,135 @@ Module transaction.
                 ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "core::slice::iter::Iter")
-                    []
-                    [ Ty.path "alloy_eip2930::AccessListItem" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "slice") [] [ Ty.path "alloy_eip2930::AccessListItem" ],
-                    "iter",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::slice::iter::Iter")
+                      []
+                      [ Ty.path "alloy_eip2930::AccessListItem" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "slice") [] [ Ty.path "alloy_eip2930::AccessListItem" ],
+                      "iter",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
                               Ty.apply
-                                (Ty.path "slice")
+                                (Ty.path "&")
                                 []
-                                [ Ty.path "alloy_eip2930::AccessListItem" ]
-                            ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::vec::Vec")
-                              []
-                              [
-                                Ty.path "alloy_eip2930::AccessListItem";
-                                Ty.path "alloc::alloc::Global"
-                              ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_tuple_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloy_eip2930::AccessList",
-                                0
-                              |)
-                            |)
-                          ]
-                        |)
-                      |)
-                    |)
-                  ]
-                |);
-                M.closure
-                  (fun γ =>
-                    ltac:(M.monadic
-                      match γ with
-                      | [ α0 ] =>
-                        ltac:(M.monadic
-                          (M.match_operator (|
-                            Ty.tuple
-                              [
-                                Ty.path "alloy_primitives::bits::address::Address";
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.path "alloy_eip2930::AccessListItem" ]
+                                ],
+                              M.get_trait_method (|
+                                "core::ops::deref::Deref",
                                 Ty.apply
-                                  (Ty.path "core::iter::adapters::copied::Copied")
+                                  (Ty.path "alloc::vec::Vec")
                                   []
                                   [
-                                    Ty.apply
-                                      (Ty.path "core::slice::iter::Iter")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                                          [ Value.Integer IntegerKind.Usize 32 ]
-                                          []
-                                      ]
-                                  ]
-                              ],
-                            M.alloc (|
-                              Ty.apply (Ty.path "&") [] [ Ty.path "alloy_eip2930::AccessListItem" ],
-                              α0
-                            |),
-                            [
-                              fun γ =>
-                                ltac:(M.monadic
-                                  (let item :=
-                                    M.copy (|
+                                    Ty.path "alloy_eip2930::AccessListItem";
+                                    Ty.path "alloc::alloc::Global"
+                                  ],
+                                [],
+                                [],
+                                "deref",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_tuple_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "alloy_eip2930::AccessList",
+                                      0
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
-                                        (Ty.path "&")
+                                        (Ty.path "alloc::vec::Vec")
                                         []
-                                        [ Ty.path "alloy_eip2930::AccessListItem" ],
-                                      γ
-                                    |) in
-                                  M.read (|
-                                    let~ slots :
-                                        Ty.apply
-                                          (Ty.path "core::iter::adapters::copied::Copied")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::slice::iter::Iter")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path
-                                                    "alloy_primitives::bits::fixed::FixedBytes")
-                                                  [ Value.Integer IntegerKind.Usize 32 ]
-                                                  []
-                                              ]
-                                          ] :=
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::iter::adapters::copied::Copied")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::slice::iter::Iter")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path
-                                                    "alloy_primitives::bits::fixed::FixedBytes")
-                                                  [ Value.Integer IntegerKind.Usize 32 ]
-                                                  []
-                                              ]
-                                          ],
-                                        M.get_trait_method (|
-                                          "core::iter::traits::iterator::Iterator",
-                                          Ty.apply
-                                            (Ty.path "core::slice::iter::Iter")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path
-                                                  "alloy_primitives::bits::fixed::FixedBytes")
-                                                [ Value.Integer IntegerKind.Usize 32 ]
-                                                []
-                                            ],
-                                          [],
-                                          [],
-                                          "copied",
-                                          [],
-                                          [
-                                            Ty.apply
-                                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                                              [ Value.Integer IntegerKind.Usize 32 ]
-                                              []
-                                          ]
-                                        |),
                                         [
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "core::slice::iter::Iter")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path
-                                                    "alloy_primitives::bits::fixed::FixedBytes")
-                                                  [ Value.Integer IntegerKind.Usize 32 ]
-                                                  []
-                                              ],
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "slice")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path
-                                                      "alloy_primitives::bits::fixed::FixedBytes")
-                                                    [ Value.Integer IntegerKind.Usize 32 ]
-                                                    []
-                                                ],
-                                              "iter",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.call_closure (|
-                                                    Ty.apply
-                                                      (Ty.path "&")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "slice")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path
-                                                                "alloy_primitives::bits::fixed::FixedBytes")
-                                                              [ Value.Integer IntegerKind.Usize 32 ]
-                                                              []
-                                                          ]
-                                                      ],
-                                                    M.get_trait_method (|
-                                                      "core::ops::deref::Deref",
-                                                      Ty.apply
-                                                        (Ty.path "alloc::vec::Vec")
-                                                        []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path
-                                                              "alloy_primitives::bits::fixed::FixedBytes")
-                                                            [ Value.Integer IntegerKind.Usize 32 ]
-                                                            [];
-                                                          Ty.path "alloc::alloc::Global"
-                                                        ],
-                                                      [],
-                                                      [],
-                                                      "deref",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.SubPointer.get_struct_record_field (|
-                                                          M.deref (| M.read (| item |) |),
-                                                          "alloy_eip2930::AccessListItem",
-                                                          "storage_keys"
-                                                        |)
-                                                      |)
-                                                    ]
-                                                  |)
-                                                |)
-                                              |)
-                                            ]
-                                          |)
+                                          Ty.path "alloy_eip2930::AccessListItem";
+                                          Ty.path "alloc::alloc::Global"
                                         ]
-                                      |) in
-                                    M.alloc (|
-                                      Ty.tuple
+                                    ])
+                              ]
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [ Ty.path "alloy_eip2930::AccessListItem" ]
+                          ])
+                    ]
+                  |))
+                  (Ty.apply
+                    (Ty.path "core::slice::iter::Iter")
+                    []
+                    [ Ty.path "alloy_eip2930::AccessListItem" ]);
+                M.value_with_ty
+                  (M.closure
+                    (fun γ =>
+                      ltac:(M.monadic
+                        match γ with
+                        | [ α0 ] =>
+                          ltac:(M.monadic
+                            (M.match_operator (|
+                              Ty.tuple
+                                [
+                                  Ty.path "alloy_primitives::bits::address::Address";
+                                  Ty.apply
+                                    (Ty.path "core::iter::adapters::copied::Copied")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::slice::iter::Iter")
+                                        []
                                         [
-                                          Ty.path "alloy_primitives::bits::address::Address";
+                                          Ty.apply
+                                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                            [ Value.Integer IntegerKind.Usize 32 ]
+                                            []
+                                        ]
+                                    ]
+                                ],
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "alloy_eip2930::AccessListItem" ],
+                                α0
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let item :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "alloy_eip2930::AccessListItem" ],
+                                        γ
+                                      |) in
+                                    M.read (|
+                                      let~ slots :
                                           Ty.apply
                                             (Ty.path "core::iter::adapters::copied::Copied")
                                             []
@@ -1061,25 +1090,243 @@ Module transaction.
                                                     [ Value.Integer IntegerKind.Usize 32 ]
                                                     []
                                                 ]
+                                            ] :=
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::iter::adapters::copied::Copied")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::slice::iter::Iter")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloy_primitives::bits::fixed::FixedBytes")
+                                                    [ Value.Integer IntegerKind.Usize 32 ]
+                                                    []
+                                                ]
+                                            ],
+                                          M.get_trait_method (|
+                                            "core::iter::traits::iterator::Iterator",
+                                            Ty.apply
+                                              (Ty.path "core::slice::iter::Iter")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "alloy_primitives::bits::fixed::FixedBytes")
+                                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                                  []
+                                              ],
+                                            [],
+                                            [],
+                                            "copied",
+                                            [],
+                                            [
+                                              Ty.apply
+                                                (Ty.path
+                                                  "alloy_primitives::bits::fixed::FixedBytes")
+                                                [ Value.Integer IntegerKind.Usize 32 ]
+                                                []
                                             ]
-                                        ],
-                                      Value.Tuple
-                                        [
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| item |) |),
-                                              "alloy_eip2930::AccessListItem",
-                                              "address"
-                                            |)
-                                          |);
-                                          M.read (| slots |)
-                                        ]
-                                    |)
-                                  |)))
-                            ]
-                          |)))
-                      | _ => M.impossible "wrong number of arguments"
-                      end))
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::slice::iter::Iter")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "alloy_primitives::bits::fixed::FixedBytes")
+                                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                                      []
+                                                  ],
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "slice")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "alloy_primitives::bits::fixed::FixedBytes")
+                                                        [ Value.Integer IntegerKind.Usize 32 ]
+                                                        []
+                                                    ],
+                                                  "iter",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "alloy_primitives::bits::fixed::FixedBytes")
+                                                                    [
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        32
+                                                                    ]
+                                                                    []
+                                                                ]
+                                                            ],
+                                                          M.get_trait_method (|
+                                                            "core::ops::deref::Deref",
+                                                            Ty.apply
+                                                              (Ty.path "alloc::vec::Vec")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "alloy_primitives::bits::fixed::FixedBytes")
+                                                                  [
+                                                                    Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      32
+                                                                  ]
+                                                                  [];
+                                                                Ty.path "alloc::alloc::Global"
+                                                              ],
+                                                            [],
+                                                            [],
+                                                            "deref",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  M.deref (| M.read (| item |) |),
+                                                                  "alloy_eip2930::AccessListItem",
+                                                                  "storage_keys"
+                                                                |)
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "alloc::vec::Vec")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "alloy_primitives::bits::fixed::FixedBytes")
+                                                                        [
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            32
+                                                                        ]
+                                                                        [];
+                                                                      Ty.path "alloc::alloc::Global"
+                                                                    ]
+                                                                ])
+                                                          ]
+                                                        |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "alloy_primitives::bits::fixed::FixedBytes")
+                                                              [ Value.Integer IntegerKind.Usize 32 ]
+                                                              []
+                                                          ]
+                                                      ])
+                                                ]
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "core::slice::iter::Iter")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloy_primitives::bits::fixed::FixedBytes")
+                                                    [ Value.Integer IntegerKind.Usize 32 ]
+                                                    []
+                                                ])
+                                          ]
+                                        |) in
+                                      M.alloc (|
+                                        Ty.tuple
+                                          [
+                                            Ty.path "alloy_primitives::bits::address::Address";
+                                            Ty.apply
+                                              (Ty.path "core::iter::adapters::copied::Copied")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::slice::iter::Iter")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "alloy_primitives::bits::fixed::FixedBytes")
+                                                      [ Value.Integer IntegerKind.Usize 32 ]
+                                                      []
+                                                  ]
+                                              ]
+                                          ],
+                                        Value.Tuple
+                                          [
+                                            M.read (|
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| item |) |),
+                                                "alloy_eip2930::AccessListItem",
+                                                "address"
+                                              |)
+                                            |);
+                                            M.read (| slots |)
+                                          ]
+                                      |)
+                                    |)))
+                              ]
+                            |)))
+                        | _ => M.impossible "wrong number of arguments"
+                        end)))
+                  (Ty.function
+                    [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_eip2930::AccessListItem" ] ]
+                    (Ty.tuple
+                      [
+                        Ty.path "alloy_primitives::bits::address::Address";
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::copied::Copied")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::slice::iter::Iter")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                  []
+                              ]
+                          ]
+                      ]))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

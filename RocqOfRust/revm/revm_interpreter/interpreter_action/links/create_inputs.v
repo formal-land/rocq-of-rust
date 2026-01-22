@@ -28,7 +28,7 @@ Module CreateInputs.
   Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::interpreter_action::create_inputs::CreateInputs";
     φ x :=
-      Value.StructRecord "revm_interpreter::interpreter_action::create_inputs::CreateInputs" [] [] [
+      Value.StructRecord "revm_interpreter::interpreter_action::create_inputs::CreateInputs" [
         ("caller", φ x.(caller));
         ("gas_limit", φ x.(gas_limit));
         ("init_code", φ x.(init_code));
@@ -50,7 +50,7 @@ Module CreateInputs.
       (scheme' : Value.t) {H_scheme : OfValueWith.C (CreateScheme.t) scheme'}
       (value' : Value.t) {H_value : OfValueWith.C (aliases.U256.t) value'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_interpreter::interpreter_action::create_inputs::CreateInputs" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_interpreter::interpreter_action::create_inputs::CreateInputs" [
       ("caller", caller');
       ("gas_limit", gas_limit');
       ("init_code", init_code');
@@ -75,7 +75,7 @@ Module CreateInputs.
       (scheme' : Value.t) {H_scheme : OfValueWith.C (CreateScheme.t) scheme'}
       (value' : Value.t) {H_value : OfValueWith.C (aliases.U256.t) value'}
       :
-    OfValue.C (Value.StructRecord "revm_interpreter::interpreter_action::create_inputs::CreateInputs" [] [] [
+    OfValue.C (Value.StructRecord "revm_interpreter::interpreter_action::create_inputs::CreateInputs" [
       ("caller", caller');
       ("gas_limit", gas_limit');
       ("init_code", init_code');

@@ -55,22 +55,26 @@ Module num.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialEq", T, [], [ T ], "eq", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::num::wrapping::Wrapping",
-                    0
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| other |) |),
-                    "core::num::wrapping::Wrapping",
-                    0
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| other |) |),
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -159,32 +163,36 @@ Module num.
               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
               M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "partial_cmp", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::num::wrapping::Wrapping",
-                        0
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| other |) |),
-                        "core::num::wrapping::Wrapping",
-                        0
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| other |) |),
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -231,32 +239,36 @@ Module num.
               Ty.path "core::cmp::Ordering",
               M.get_trait_method (| "core::cmp::Ord", T, [], [], "cmp", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::num::wrapping::Wrapping",
-                        0
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| other |) |),
-                        "core::num::wrapping::Wrapping",
-                        0
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| other |) |),
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -290,31 +302,33 @@ Module num.
                   [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ T ] ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ T ]
-              [
-                M.call_closure (|
-                  T,
-                  M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    T,
+                    M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::num::wrapping::Wrapping",
-                            0
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::num::wrapping::Wrapping",
+                                0
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ T ])
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -352,17 +366,17 @@ Module num.
         match ε, τ, α with
         | [], [], [] =>
           ltac:(M.monadic
-            (Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ T ]
-              [
-                M.call_closure (|
-                  T,
-                  M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                  []
-                |)
-              ]))
+            (M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    T,
+                    M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                    []
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -399,20 +413,24 @@ Module num.
               Ty.tuple [],
               M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ __H ] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::num::wrapping::Wrapping",
-                        0
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ __H ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -459,15 +477,19 @@ Module num.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Debug", T, [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::num::wrapping::Wrapping",
-                    0
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -514,15 +536,19 @@ Module num.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Display", T, [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::num::wrapping::Wrapping",
-                    0
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -569,15 +595,19 @@ Module num.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Binary", T, [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::num::wrapping::Wrapping",
-                    0
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -624,15 +654,19 @@ Module num.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Octal", T, [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::num::wrapping::Wrapping",
-                    0
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -679,15 +713,19 @@ Module num.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::LowerHex", T, [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::num::wrapping::Wrapping",
-                    0
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -734,15 +772,19 @@ Module num.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::UpperHex", T, [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::num::wrapping::Wrapping",
-                    0
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -781,39 +823,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (| Ty.path "u8", "wrapping_shl", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (| "core::num::wrapping::shift_max::u8", Ty.path "u32" |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (| Ty.path "u8", "wrapping_shl", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::u8",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -864,7 +913,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -904,39 +958,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (| Ty.path "u8", "wrapping_shr", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (| "core::num::wrapping::shift_max::u8", Ty.path "u32" |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (| Ty.path "u8", "wrapping_shr", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::u8",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -987,7 +1048,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1027,42 +1093,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_associated_function (| Ty.path "u16", "wrapping_shl", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::u16",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    M.get_associated_function (| Ty.path "u16", "wrapping_shl", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::u16",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1113,7 +1183,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1153,42 +1228,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_associated_function (| Ty.path "u16", "wrapping_shr", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::u16",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    M.get_associated_function (| Ty.path "u16", "wrapping_shr", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::u16",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1239,7 +1318,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1279,42 +1363,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_associated_function (| Ty.path "u32", "wrapping_shl", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::u32",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    M.get_associated_function (| Ty.path "u32", "wrapping_shl", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::u32",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1365,7 +1453,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1405,42 +1498,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_associated_function (| Ty.path "u32", "wrapping_shr", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::u32",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    M.get_associated_function (| Ty.path "u32", "wrapping_shr", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::u32",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1491,7 +1588,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1531,42 +1633,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (| Ty.path "u64", "wrapping_shl", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::u64",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    M.get_associated_function (| Ty.path "u64", "wrapping_shl", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::u64",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1617,7 +1723,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1657,42 +1768,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (| Ty.path "u64", "wrapping_shr", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::u64",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    M.get_associated_function (| Ty.path "u64", "wrapping_shr", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::u64",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1743,7 +1858,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1783,42 +1903,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  M.get_associated_function (| Ty.path "u128", "wrapping_shl", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::u128",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    M.get_associated_function (| Ty.path "u128", "wrapping_shl", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::u128",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1869,7 +1993,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1909,42 +2038,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  M.get_associated_function (| Ty.path "u128", "wrapping_shr", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::u128",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    M.get_associated_function (| Ty.path "u128", "wrapping_shr", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::u128",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1995,7 +2128,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2035,42 +2173,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "wrapping_shl", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::platform::usize",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "wrapping_shl", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::platform::usize",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2121,7 +2263,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2161,42 +2308,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "wrapping_shr", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::platform::usize",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "wrapping_shr", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::platform::usize",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2247,7 +2398,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2287,39 +2443,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_associated_function (| Ty.path "i8", "wrapping_shl", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (| "core::num::wrapping::shift_max::i8", Ty.path "u32" |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    M.get_associated_function (| Ty.path "i8", "wrapping_shl", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::i8",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2370,7 +2533,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2410,39 +2578,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_associated_function (| Ty.path "i8", "wrapping_shr", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (| "core::num::wrapping::shift_max::i8", Ty.path "u32" |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    M.get_associated_function (| Ty.path "i8", "wrapping_shr", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::i8",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2493,7 +2668,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2533,42 +2713,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_associated_function (| Ty.path "i16", "wrapping_shl", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::i16",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_associated_function (| Ty.path "i16", "wrapping_shl", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::i16",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2619,7 +2803,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2659,42 +2848,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_associated_function (| Ty.path "i16", "wrapping_shr", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::i16",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_associated_function (| Ty.path "i16", "wrapping_shr", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::i16",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2745,7 +2938,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2785,42 +2983,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_associated_function (| Ty.path "i32", "wrapping_shl", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::i32",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    M.get_associated_function (| Ty.path "i32", "wrapping_shl", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::i32",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2871,7 +3073,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2911,42 +3118,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_associated_function (| Ty.path "i32", "wrapping_shr", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::i32",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    M.get_associated_function (| Ty.path "i32", "wrapping_shr", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::i32",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -2997,7 +3208,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3037,42 +3253,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_associated_function (| Ty.path "i64", "wrapping_shl", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::i64",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    M.get_associated_function (| Ty.path "i64", "wrapping_shl", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::i64",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -3123,7 +3343,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3163,42 +3388,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_associated_function (| Ty.path "i64", "wrapping_shr", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::i64",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    M.get_associated_function (| Ty.path "i64", "wrapping_shr", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::i64",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -3249,7 +3478,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3289,42 +3523,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  M.get_associated_function (| Ty.path "i128", "wrapping_shl", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::i128",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    M.get_associated_function (| Ty.path "i128", "wrapping_shl", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::i128",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -3375,7 +3613,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3415,42 +3658,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  M.get_associated_function (| Ty.path "i128", "wrapping_shr", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::i128",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    M.get_associated_function (| Ty.path "i128", "wrapping_shr", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::i128",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -3501,7 +3748,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3541,42 +3793,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_associated_function (| Ty.path "isize", "wrapping_shl", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::platform::isize",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    M.get_associated_function (| Ty.path "isize", "wrapping_shl", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::platform::isize",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -3627,7 +3883,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3667,42 +3928,46 @@ Module num.
                 self
               |) in
             let other := M.alloc (| Ty.path "usize", other |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_associated_function (| Ty.path "isize", "wrapping_shr", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.cast
-                      (Ty.path "u32")
-                      (M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.bit_and,
-                        [
-                          M.read (| other |);
-                          M.cast
-                            (Ty.path "usize")
-                            (M.read (|
-                              get_constant (|
-                                "core::num::wrapping::shift_max::platform::isize",
-                                Ty.path "u32"
-                              |)
-                            |))
-                        ]
-                      |))
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    M.get_associated_function (| Ty.path "isize", "wrapping_shr", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize");
+                      M.value_with_ty
+                        (M.cast
+                          (Ty.path "u32")
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.bit_and,
+                            [
+                              M.read (| other |);
+                              M.cast
+                                (Ty.path "usize")
+                                (M.read (|
+                                  get_constant (|
+                                    "core::num::wrapping::shift_max::platform::isize",
+                                    Ty.path "u32"
+                                  |)
+                                |))
+                            ]
+                          |)))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -3753,7 +4018,12 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                      M.value_with_ty (M.read (| other |)) (Ty.path "usize")
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3797,32 +4067,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "wrapping_add", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "wrapping_add", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -3878,7 +4152,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3934,12 +4215,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "usize" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "usize" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
                     ]
                   |)
                 |) in
@@ -3984,32 +4270,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "wrapping_sub", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "wrapping_sub", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -4065,7 +4355,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4121,12 +4418,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "usize" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "usize" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
                     ]
                   |)
                 |) in
@@ -4171,32 +4473,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "wrapping_mul", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "wrapping_mul", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -4252,7 +4558,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4308,12 +4621,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "usize" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "usize" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
                     ]
                   |)
                 |) in
@@ -4358,32 +4676,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "wrapping_div", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "wrapping_div", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -4439,7 +4761,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4495,12 +4824,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "usize" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "usize" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
                     ]
                   |)
                 |) in
@@ -4545,32 +4879,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "wrapping_rem", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "wrapping_rem", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -4626,7 +4964,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4682,12 +5027,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "usize" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "usize" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
                     ]
                   |)
                 |) in
@@ -4727,25 +5077,25 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  UnOp.not,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    UnOp.not,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -4786,32 +5136,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  BinOp.Wrap.bit_xor,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    BinOp.Wrap.bit_xor,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -4867,7 +5217,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4923,12 +5280,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "usize" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "usize" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
                     ]
                   |)
                 |) in
@@ -4973,32 +5335,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  BinOp.Wrap.bit_or,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    BinOp.Wrap.bit_or,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5054,7 +5416,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -5110,12 +5479,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "usize" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "usize" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
                     ]
                   |)
                 |) in
@@ -5160,32 +5534,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5241,7 +5615,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -5297,12 +5678,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "usize" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "usize" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
                     ]
                   |)
                 |) in
@@ -5354,12 +5740,16 @@ Module num.
                 []
               |),
               [
-                Value.StructTuple
-                  "core::num::wrapping::Wrapping"
-                  []
-                  [ Ty.path "usize" ]
-                  [ Value.Integer IntegerKind.Usize 0 ];
-                M.read (| self |)
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::num::wrapping::Wrapping"
+                      [ Value.Integer IntegerKind.Usize 0 ])
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5402,32 +5792,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (| Ty.path "u8", "wrapping_add", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (| Ty.path "u8", "wrapping_add", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5483,7 +5877,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -5539,12 +5940,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u8" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
                     ]
                   |)
                 |) in
@@ -5589,32 +5992,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (| Ty.path "u8", "wrapping_sub", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (| Ty.path "u8", "wrapping_sub", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5670,7 +6077,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -5726,12 +6140,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u8" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
                     ]
                   |)
                 |) in
@@ -5776,32 +6192,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (| Ty.path "u8", "wrapping_mul", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (| Ty.path "u8", "wrapping_mul", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -5857,7 +6277,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -5913,12 +6340,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u8" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
                     ]
                   |)
                 |) in
@@ -5963,32 +6392,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (| Ty.path "u8", "wrapping_div", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (| Ty.path "u8", "wrapping_div", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -6044,7 +6477,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -6100,12 +6540,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u8" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
                     ]
                   |)
                 |) in
@@ -6150,32 +6592,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (| Ty.path "u8", "wrapping_rem", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (| Ty.path "u8", "wrapping_rem", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -6231,7 +6677,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -6287,12 +6740,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u8" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
                     ]
                   |)
                 |) in
@@ -6332,25 +6787,25 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  UnOp.not,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    UnOp.not,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -6391,32 +6846,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  BinOp.Wrap.bit_xor,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    BinOp.Wrap.bit_xor,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -6472,7 +6927,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -6528,12 +6990,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u8" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
                     ]
                   |)
                 |) in
@@ -6578,32 +7042,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  BinOp.Wrap.bit_or,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    BinOp.Wrap.bit_or,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -6659,7 +7123,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -6715,12 +7186,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u8" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
                     ]
                   |)
                 |) in
@@ -6765,32 +7238,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -6846,7 +7319,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -6902,12 +7382,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u8" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
                     ]
                   |)
                 |) in
@@ -6959,12 +7441,16 @@ Module num.
                 []
               |),
               [
-                Value.StructTuple
-                  "core::num::wrapping::Wrapping"
-                  []
-                  [ Ty.path "u8" ]
-                  [ Value.Integer IntegerKind.U8 0 ];
-                M.read (| self |)
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::num::wrapping::Wrapping"
+                      [ Value.Integer IntegerKind.U8 0 ])
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -7007,32 +7493,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_associated_function (| Ty.path "u16", "wrapping_add", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    M.get_associated_function (| Ty.path "u16", "wrapping_add", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -7088,7 +7578,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -7144,12 +7641,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u16" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
                     ]
                   |)
                 |) in
@@ -7194,32 +7693,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_associated_function (| Ty.path "u16", "wrapping_sub", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    M.get_associated_function (| Ty.path "u16", "wrapping_sub", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -7275,7 +7778,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -7331,12 +7841,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u16" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
                     ]
                   |)
                 |) in
@@ -7381,32 +7893,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_associated_function (| Ty.path "u16", "wrapping_mul", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    M.get_associated_function (| Ty.path "u16", "wrapping_mul", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -7462,7 +7978,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -7518,12 +8041,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u16" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
                     ]
                   |)
                 |) in
@@ -7568,32 +8093,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_associated_function (| Ty.path "u16", "wrapping_div", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    M.get_associated_function (| Ty.path "u16", "wrapping_div", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -7649,7 +8178,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -7705,12 +8241,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u16" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
                     ]
                   |)
                 |) in
@@ -7755,32 +8293,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_associated_function (| Ty.path "u16", "wrapping_rem", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    M.get_associated_function (| Ty.path "u16", "wrapping_rem", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -7836,7 +8378,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -7892,12 +8441,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u16" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
                     ]
                   |)
                 |) in
@@ -7937,25 +8488,25 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  UnOp.not,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    UnOp.not,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -7996,32 +8547,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  BinOp.Wrap.bit_xor,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    BinOp.Wrap.bit_xor,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -8077,7 +8628,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -8133,12 +8691,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u16" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
                     ]
                   |)
                 |) in
@@ -8183,32 +8743,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  BinOp.Wrap.bit_or,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    BinOp.Wrap.bit_or,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -8264,7 +8824,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -8320,12 +8887,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u16" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
                     ]
                   |)
                 |) in
@@ -8370,32 +8939,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -8451,7 +9020,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -8507,12 +9083,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u16" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
                     ]
                   |)
                 |) in
@@ -8564,12 +9142,16 @@ Module num.
                 []
               |),
               [
-                Value.StructTuple
-                  "core::num::wrapping::Wrapping"
-                  []
-                  [ Ty.path "u16" ]
-                  [ Value.Integer IntegerKind.U16 0 ];
-                M.read (| self |)
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::num::wrapping::Wrapping"
+                      [ Value.Integer IntegerKind.U16 0 ])
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -8612,32 +9194,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_associated_function (| Ty.path "u32", "wrapping_add", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    M.get_associated_function (| Ty.path "u32", "wrapping_add", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -8693,7 +9279,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -8749,12 +9342,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u32" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
                     ]
                   |)
                 |) in
@@ -8799,32 +9394,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_associated_function (| Ty.path "u32", "wrapping_sub", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    M.get_associated_function (| Ty.path "u32", "wrapping_sub", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -8880,7 +9479,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -8936,12 +9542,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u32" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
                     ]
                   |)
                 |) in
@@ -8986,32 +9594,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_associated_function (| Ty.path "u32", "wrapping_mul", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    M.get_associated_function (| Ty.path "u32", "wrapping_mul", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -9067,7 +9679,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -9123,12 +9742,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u32" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
                     ]
                   |)
                 |) in
@@ -9173,32 +9794,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_associated_function (| Ty.path "u32", "wrapping_div", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    M.get_associated_function (| Ty.path "u32", "wrapping_div", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -9254,7 +9879,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -9310,12 +9942,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u32" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
                     ]
                   |)
                 |) in
@@ -9360,32 +9994,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_associated_function (| Ty.path "u32", "wrapping_rem", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    M.get_associated_function (| Ty.path "u32", "wrapping_rem", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -9441,7 +10079,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -9497,12 +10142,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u32" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
                     ]
                   |)
                 |) in
@@ -9542,25 +10189,25 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  UnOp.not,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    UnOp.not,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -9601,32 +10248,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  BinOp.Wrap.bit_xor,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    BinOp.Wrap.bit_xor,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -9682,7 +10329,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -9738,12 +10392,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u32" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
                     ]
                   |)
                 |) in
@@ -9788,32 +10444,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  BinOp.Wrap.bit_or,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    BinOp.Wrap.bit_or,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -9869,7 +10525,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -9925,12 +10588,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u32" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
                     ]
                   |)
                 |) in
@@ -9975,32 +10640,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -10056,7 +10721,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -10112,12 +10784,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u32" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
                     ]
                   |)
                 |) in
@@ -10169,12 +10843,16 @@ Module num.
                 []
               |),
               [
-                Value.StructTuple
-                  "core::num::wrapping::Wrapping"
-                  []
-                  [ Ty.path "u32" ]
-                  [ Value.Integer IntegerKind.U32 0 ];
-                M.read (| self |)
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::num::wrapping::Wrapping"
+                      [ Value.Integer IntegerKind.U32 0 ])
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -10217,32 +10895,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -10298,7 +10980,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -10354,12 +11043,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u64" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
                     ]
                   |)
                 |) in
@@ -10404,32 +11095,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (| Ty.path "u64", "wrapping_sub", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    M.get_associated_function (| Ty.path "u64", "wrapping_sub", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -10485,7 +11180,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -10541,12 +11243,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u64" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
                     ]
                   |)
                 |) in
@@ -10591,32 +11295,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (| Ty.path "u64", "wrapping_mul", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    M.get_associated_function (| Ty.path "u64", "wrapping_mul", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -10672,7 +11380,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -10728,12 +11443,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u64" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
                     ]
                   |)
                 |) in
@@ -10778,32 +11495,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (| Ty.path "u64", "wrapping_div", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    M.get_associated_function (| Ty.path "u64", "wrapping_div", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -10859,7 +11580,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -10915,12 +11643,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u64" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
                     ]
                   |)
                 |) in
@@ -10965,32 +11695,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (| Ty.path "u64", "wrapping_rem", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    M.get_associated_function (| Ty.path "u64", "wrapping_rem", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -11046,7 +11780,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -11102,12 +11843,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u64" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
                     ]
                   |)
                 |) in
@@ -11147,25 +11890,25 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  UnOp.not,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    UnOp.not,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -11206,32 +11949,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  BinOp.Wrap.bit_xor,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    BinOp.Wrap.bit_xor,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -11287,7 +12030,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -11343,12 +12093,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u64" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
                     ]
                   |)
                 |) in
@@ -11393,32 +12145,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  BinOp.Wrap.bit_or,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    BinOp.Wrap.bit_or,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -11474,7 +12226,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -11530,12 +12289,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u64" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
                     ]
                   |)
                 |) in
@@ -11580,32 +12341,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -11661,7 +12422,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -11717,12 +12485,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u64" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
                     ]
                   |)
                 |) in
@@ -11774,12 +12544,16 @@ Module num.
                 []
               |),
               [
-                Value.StructTuple
-                  "core::num::wrapping::Wrapping"
-                  []
-                  [ Ty.path "u64" ]
-                  [ Value.Integer IntegerKind.U64 0 ];
-                M.read (| self |)
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::num::wrapping::Wrapping"
+                      [ Value.Integer IntegerKind.U64 0 ])
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -11822,32 +12596,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  M.get_associated_function (| Ty.path "u128", "wrapping_add", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    M.get_associated_function (| Ty.path "u128", "wrapping_add", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -11903,7 +12681,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -11959,12 +12744,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u128" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "u128" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
                     ]
                   |)
                 |) in
@@ -12009,32 +12799,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  M.get_associated_function (| Ty.path "u128", "wrapping_sub", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    M.get_associated_function (| Ty.path "u128", "wrapping_sub", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -12090,7 +12884,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -12146,12 +12947,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u128" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "u128" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
                     ]
                   |)
                 |) in
@@ -12196,32 +13002,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  M.get_associated_function (| Ty.path "u128", "wrapping_mul", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    M.get_associated_function (| Ty.path "u128", "wrapping_mul", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -12277,7 +13087,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -12333,12 +13150,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u128" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "u128" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
                     ]
                   |)
                 |) in
@@ -12383,32 +13205,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  M.get_associated_function (| Ty.path "u128", "wrapping_div", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    M.get_associated_function (| Ty.path "u128", "wrapping_div", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -12464,7 +13290,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -12520,12 +13353,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u128" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "u128" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
                     ]
                   |)
                 |) in
@@ -12570,32 +13408,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  M.get_associated_function (| Ty.path "u128", "wrapping_rem", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    M.get_associated_function (| Ty.path "u128", "wrapping_rem", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -12651,7 +13493,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -12707,12 +13556,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u128" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "u128" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
                     ]
                   |)
                 |) in
@@ -12752,25 +13606,25 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  UnOp.not,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    UnOp.not,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -12811,32 +13665,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  BinOp.Wrap.bit_xor,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    BinOp.Wrap.bit_xor,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -12892,7 +13746,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -12948,12 +13809,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u128" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "u128" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
                     ]
                   |)
                 |) in
@@ -12998,32 +13864,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  BinOp.Wrap.bit_or,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    BinOp.Wrap.bit_or,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -13079,7 +13945,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -13135,12 +14008,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u128" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "u128" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
                     ]
                   |)
                 |) in
@@ -13185,32 +14063,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -13266,7 +14144,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -13322,12 +14207,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "u128" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "u128" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
                     ]
                   |)
                 |) in
@@ -13379,12 +14269,16 @@ Module num.
                 []
               |),
               [
-                Value.StructTuple
-                  "core::num::wrapping::Wrapping"
-                  []
-                  [ Ty.path "u128" ]
-                  [ Value.Integer IntegerKind.U128 0 ];
-                M.read (| self |)
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::num::wrapping::Wrapping"
+                      [ Value.Integer IntegerKind.U128 0 ])
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -13427,32 +14321,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_associated_function (| Ty.path "isize", "wrapping_add", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    M.get_associated_function (| Ty.path "isize", "wrapping_add", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -13508,7 +14406,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -13564,12 +14469,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "isize" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "isize" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
                     ]
                   |)
                 |) in
@@ -13614,32 +14524,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_associated_function (| Ty.path "isize", "wrapping_sub", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    M.get_associated_function (| Ty.path "isize", "wrapping_sub", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -13695,7 +14609,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -13751,12 +14672,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "isize" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "isize" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
                     ]
                   |)
                 |) in
@@ -13801,32 +14727,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_associated_function (| Ty.path "isize", "wrapping_mul", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    M.get_associated_function (| Ty.path "isize", "wrapping_mul", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -13882,7 +14812,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -13938,12 +14875,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "isize" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "isize" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
                     ]
                   |)
                 |) in
@@ -13988,32 +14930,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_associated_function (| Ty.path "isize", "wrapping_div", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    M.get_associated_function (| Ty.path "isize", "wrapping_div", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -14069,7 +15015,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -14125,12 +15078,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "isize" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "isize" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
                     ]
                   |)
                 |) in
@@ -14175,32 +15133,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_associated_function (| Ty.path "isize", "wrapping_rem", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    M.get_associated_function (| Ty.path "isize", "wrapping_rem", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -14256,7 +15218,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -14312,12 +15281,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "isize" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "isize" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
                     ]
                   |)
                 |) in
@@ -14357,25 +15331,25 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  UnOp.not,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    UnOp.not,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -14416,32 +15390,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  BinOp.Wrap.bit_xor,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    BinOp.Wrap.bit_xor,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -14497,7 +15471,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -14553,12 +15534,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "isize" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "isize" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
                     ]
                   |)
                 |) in
@@ -14603,32 +15589,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  BinOp.Wrap.bit_or,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    BinOp.Wrap.bit_or,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -14684,7 +15670,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -14740,12 +15733,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "isize" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "isize" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
                     ]
                   |)
                 |) in
@@ -14790,32 +15788,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -14871,7 +15869,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -14927,12 +15932,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "isize" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "isize" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
                     ]
                   |)
                 |) in
@@ -14984,12 +15994,16 @@ Module num.
                 []
               |),
               [
-                Value.StructTuple
-                  "core::num::wrapping::Wrapping"
-                  []
-                  [ Ty.path "isize" ]
-                  [ Value.Integer IntegerKind.Isize 0 ];
-                M.read (| self |)
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::num::wrapping::Wrapping"
+                      [ Value.Integer IntegerKind.Isize 0 ])
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -15032,32 +16046,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_associated_function (| Ty.path "i8", "wrapping_add", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    M.get_associated_function (| Ty.path "i8", "wrapping_add", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -15113,7 +16131,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -15169,12 +16194,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i8" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
                     ]
                   |)
                 |) in
@@ -15219,32 +16246,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_associated_function (| Ty.path "i8", "wrapping_sub", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    M.get_associated_function (| Ty.path "i8", "wrapping_sub", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -15300,7 +16331,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -15356,12 +16394,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i8" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
                     ]
                   |)
                 |) in
@@ -15406,32 +16446,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_associated_function (| Ty.path "i8", "wrapping_mul", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    M.get_associated_function (| Ty.path "i8", "wrapping_mul", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -15487,7 +16531,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -15543,12 +16594,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i8" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
                     ]
                   |)
                 |) in
@@ -15593,32 +16646,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_associated_function (| Ty.path "i8", "wrapping_div", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    M.get_associated_function (| Ty.path "i8", "wrapping_div", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -15674,7 +16731,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -15730,12 +16794,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i8" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
                     ]
                   |)
                 |) in
@@ -15780,32 +16846,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_associated_function (| Ty.path "i8", "wrapping_rem", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    M.get_associated_function (| Ty.path "i8", "wrapping_rem", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -15861,7 +16931,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -15917,12 +16994,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i8" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
                     ]
                   |)
                 |) in
@@ -15962,25 +17041,25 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  UnOp.not,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    UnOp.not,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -16021,32 +17100,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  BinOp.Wrap.bit_xor,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    BinOp.Wrap.bit_xor,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -16102,7 +17181,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -16158,12 +17244,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i8" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
                     ]
                   |)
                 |) in
@@ -16208,32 +17296,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  BinOp.Wrap.bit_or,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    BinOp.Wrap.bit_or,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -16289,7 +17377,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -16345,12 +17440,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i8" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
                     ]
                   |)
                 |) in
@@ -16395,32 +17492,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -16476,7 +17573,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -16532,12 +17636,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i8" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
                     ]
                   |)
                 |) in
@@ -16589,12 +17695,16 @@ Module num.
                 []
               |),
               [
-                Value.StructTuple
-                  "core::num::wrapping::Wrapping"
-                  []
-                  [ Ty.path "i8" ]
-                  [ Value.Integer IntegerKind.I8 0 ];
-                M.read (| self |)
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::num::wrapping::Wrapping"
+                      [ Value.Integer IntegerKind.I8 0 ])
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -16637,32 +17747,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_associated_function (| Ty.path "i16", "wrapping_add", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_associated_function (| Ty.path "i16", "wrapping_add", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -16718,7 +17832,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -16774,12 +17895,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i16" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
                     ]
                   |)
                 |) in
@@ -16824,32 +17947,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_associated_function (| Ty.path "i16", "wrapping_sub", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_associated_function (| Ty.path "i16", "wrapping_sub", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -16905,7 +18032,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -16961,12 +18095,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i16" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
                     ]
                   |)
                 |) in
@@ -17011,32 +18147,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_associated_function (| Ty.path "i16", "wrapping_mul", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_associated_function (| Ty.path "i16", "wrapping_mul", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -17092,7 +18232,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -17148,12 +18295,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i16" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
                     ]
                   |)
                 |) in
@@ -17198,32 +18347,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_associated_function (| Ty.path "i16", "wrapping_div", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_associated_function (| Ty.path "i16", "wrapping_div", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -17279,7 +18432,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -17335,12 +18495,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i16" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
                     ]
                   |)
                 |) in
@@ -17385,32 +18547,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_associated_function (| Ty.path "i16", "wrapping_rem", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_associated_function (| Ty.path "i16", "wrapping_rem", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -17466,7 +18632,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -17522,12 +18695,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i16" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
                     ]
                   |)
                 |) in
@@ -17567,25 +18742,25 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  UnOp.not,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    UnOp.not,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -17626,32 +18801,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  BinOp.Wrap.bit_xor,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    BinOp.Wrap.bit_xor,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -17707,7 +18882,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -17763,12 +18945,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i16" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
                     ]
                   |)
                 |) in
@@ -17813,32 +18997,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  BinOp.Wrap.bit_or,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    BinOp.Wrap.bit_or,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -17894,7 +19078,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -17950,12 +19141,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i16" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
                     ]
                   |)
                 |) in
@@ -18000,32 +19193,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -18081,7 +19274,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -18137,12 +19337,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i16" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
                     ]
                   |)
                 |) in
@@ -18194,12 +19396,16 @@ Module num.
                 []
               |),
               [
-                Value.StructTuple
-                  "core::num::wrapping::Wrapping"
-                  []
-                  [ Ty.path "i16" ]
-                  [ Value.Integer IntegerKind.I16 0 ];
-                M.read (| self |)
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::num::wrapping::Wrapping"
+                      [ Value.Integer IntegerKind.I16 0 ])
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -18242,32 +19448,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_associated_function (| Ty.path "i32", "wrapping_add", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    M.get_associated_function (| Ty.path "i32", "wrapping_add", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -18323,7 +19533,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -18379,12 +19596,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i32" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
                     ]
                   |)
                 |) in
@@ -18429,32 +19648,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_associated_function (| Ty.path "i32", "wrapping_sub", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    M.get_associated_function (| Ty.path "i32", "wrapping_sub", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -18510,7 +19733,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -18566,12 +19796,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i32" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
                     ]
                   |)
                 |) in
@@ -18616,32 +19848,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_associated_function (| Ty.path "i32", "wrapping_mul", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    M.get_associated_function (| Ty.path "i32", "wrapping_mul", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -18697,7 +19933,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -18753,12 +19996,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i32" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
                     ]
                   |)
                 |) in
@@ -18803,32 +20048,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_associated_function (| Ty.path "i32", "wrapping_div", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    M.get_associated_function (| Ty.path "i32", "wrapping_div", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -18884,7 +20133,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -18940,12 +20196,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i32" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
                     ]
                   |)
                 |) in
@@ -18990,32 +20248,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_associated_function (| Ty.path "i32", "wrapping_rem", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    M.get_associated_function (| Ty.path "i32", "wrapping_rem", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -19071,7 +20333,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -19127,12 +20396,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i32" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
                     ]
                   |)
                 |) in
@@ -19172,25 +20443,25 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  UnOp.not,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    UnOp.not,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -19231,32 +20502,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  BinOp.Wrap.bit_xor,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    BinOp.Wrap.bit_xor,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -19312,7 +20583,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -19368,12 +20646,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i32" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
                     ]
                   |)
                 |) in
@@ -19418,32 +20698,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  BinOp.Wrap.bit_or,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    BinOp.Wrap.bit_or,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -19499,7 +20779,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -19555,12 +20842,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i32" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
                     ]
                   |)
                 |) in
@@ -19605,32 +20894,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -19686,7 +20975,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -19742,12 +21038,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i32" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
                     ]
                   |)
                 |) in
@@ -19799,12 +21097,16 @@ Module num.
                 []
               |),
               [
-                Value.StructTuple
-                  "core::num::wrapping::Wrapping"
-                  []
-                  [ Ty.path "i32" ]
-                  [ Value.Integer IntegerKind.I32 0 ];
-                M.read (| self |)
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::num::wrapping::Wrapping"
+                      [ Value.Integer IntegerKind.I32 0 ])
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -19847,32 +21149,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_associated_function (| Ty.path "i64", "wrapping_add", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    M.get_associated_function (| Ty.path "i64", "wrapping_add", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -19928,7 +21234,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -19984,12 +21297,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i64" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
                     ]
                   |)
                 |) in
@@ -20034,32 +21349,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_associated_function (| Ty.path "i64", "wrapping_sub", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    M.get_associated_function (| Ty.path "i64", "wrapping_sub", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -20115,7 +21434,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -20171,12 +21497,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i64" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
                     ]
                   |)
                 |) in
@@ -20221,32 +21549,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_associated_function (| Ty.path "i64", "wrapping_mul", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    M.get_associated_function (| Ty.path "i64", "wrapping_mul", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -20302,7 +21634,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -20358,12 +21697,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i64" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
                     ]
                   |)
                 |) in
@@ -20408,32 +21749,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_associated_function (| Ty.path "i64", "wrapping_div", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    M.get_associated_function (| Ty.path "i64", "wrapping_div", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -20489,7 +21834,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -20545,12 +21897,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i64" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
                     ]
                   |)
                 |) in
@@ -20595,32 +21949,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_associated_function (| Ty.path "i64", "wrapping_rem", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    M.get_associated_function (| Ty.path "i64", "wrapping_rem", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -20676,7 +22034,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -20732,12 +22097,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i64" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
                     ]
                   |)
                 |) in
@@ -20777,25 +22144,25 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  UnOp.not,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    UnOp.not,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -20836,32 +22203,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  BinOp.Wrap.bit_xor,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    BinOp.Wrap.bit_xor,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -20917,7 +22284,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -20973,12 +22347,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i64" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
                     ]
                   |)
                 |) in
@@ -21023,32 +22399,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  BinOp.Wrap.bit_or,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    BinOp.Wrap.bit_or,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -21104,7 +22480,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -21160,12 +22543,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i64" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
                     ]
                   |)
                 |) in
@@ -21210,32 +22595,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -21291,7 +22676,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -21347,12 +22739,14 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i64" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
                     ]
                   |)
                 |) in
@@ -21404,12 +22798,16 @@ Module num.
                 []
               |),
               [
-                Value.StructTuple
-                  "core::num::wrapping::Wrapping"
-                  []
-                  [ Ty.path "i64" ]
-                  [ Value.Integer IntegerKind.I64 0 ];
-                M.read (| self |)
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::num::wrapping::Wrapping"
+                      [ Value.Integer IntegerKind.I64 0 ])
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -21452,32 +22850,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  M.get_associated_function (| Ty.path "i128", "wrapping_add", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    M.get_associated_function (| Ty.path "i128", "wrapping_add", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -21533,7 +22935,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -21589,12 +22998,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i128" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "i128" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
                     ]
                   |)
                 |) in
@@ -21639,32 +23053,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  M.get_associated_function (| Ty.path "i128", "wrapping_sub", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    M.get_associated_function (| Ty.path "i128", "wrapping_sub", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -21720,7 +23138,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -21776,12 +23201,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i128" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "i128" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
                     ]
                   |)
                 |) in
@@ -21826,32 +23256,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  M.get_associated_function (| Ty.path "i128", "wrapping_mul", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    M.get_associated_function (| Ty.path "i128", "wrapping_mul", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -21907,7 +23341,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -21963,12 +23404,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i128" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "i128" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
                     ]
                   |)
                 |) in
@@ -22013,32 +23459,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  M.get_associated_function (| Ty.path "i128", "wrapping_div", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    M.get_associated_function (| Ty.path "i128", "wrapping_div", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -22094,7 +23544,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -22150,12 +23607,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i128" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "i128" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
                     ]
                   |)
                 |) in
@@ -22200,32 +23662,36 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  M.get_associated_function (| Ty.path "i128", "wrapping_rem", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    M.get_associated_function (| Ty.path "i128", "wrapping_rem", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128");
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            other,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -22281,7 +23747,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -22337,12 +23810,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i128" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "i128" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
                     ]
                   |)
                 |) in
@@ -22382,25 +23860,25 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  UnOp.not,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    UnOp.not,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -22441,32 +23919,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  BinOp.Wrap.bit_xor,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    BinOp.Wrap.bit_xor,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -22522,7 +24000,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -22578,12 +24063,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i128" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "i128" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
                     ]
                   |)
                 |) in
@@ -22628,32 +24118,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  BinOp.Wrap.bit_or,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    BinOp.Wrap.bit_or,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -22709,7 +24199,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -22765,12 +24262,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i128" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "i128" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
                     ]
                   |)
                 |) in
@@ -22815,32 +24317,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
                 other
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  BinOp.Wrap.bit_and,
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    BinOp.Wrap.bit_and,
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          self,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
+                      |);
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          other,
+                          "core::num::wrapping::Wrapping",
+                          0
+                        |)
                       |)
-                    |);
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        other,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -22896,7 +24398,14 @@ Module num.
                       [],
                       []
                     |),
-                    [ M.read (| M.deref (| M.read (| self |) |) |); M.read (| other |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                      M.value_with_ty
+                        (M.read (| other |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
+                    ]
                   |)
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -22952,12 +24461,17 @@ Module num.
                       []
                     |),
                     [
-                      M.read (| M.deref (| M.read (| self |) |) |);
-                      Value.StructTuple
-                        "core::num::wrapping::Wrapping"
-                        []
-                        [ Ty.path "i128" ]
-                        [ M.read (| other |) ]
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::num::wrapping::Wrapping" [ M.read (| other |) ])
+                          (Ty.apply
+                            (Ty.path "core::num::wrapping::Wrapping")
+                            []
+                            [ Ty.path "i128" ]))
+                        (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
                     ]
                   |)
                 |) in
@@ -23009,12 +24523,16 @@ Module num.
                 []
               |),
               [
-                Value.StructTuple
-                  "core::num::wrapping::Wrapping"
-                  []
-                  [ Ty.path "i128" ]
-                  [ Value.Integer IntegerKind.I128 0 ];
-                M.read (| self |)
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::num::wrapping::Wrapping"
+                      [ Value.Integer IntegerKind.I128 0 ])
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -23040,11 +24558,12 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [ M.read (| get_associated_constant (| Ty.path "usize", "MIN", Ty.path "usize" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "usize", "MIN", Ty.path "usize" |) |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
@@ -23057,11 +24576,12 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [ M.read (| get_associated_constant (| Ty.path "usize", "MAX", Ty.path "usize" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "usize", "MAX", Ty.path "usize" |) |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
@@ -23096,9 +24616,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "usize", "count_ones", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -23127,9 +24653,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "usize", "count_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -23158,9 +24690,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "usize", "trailing_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -23186,26 +24724,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "rotate_left", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "rotate_left", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -23229,26 +24769,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "rotate_right", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "rotate_right", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -23271,25 +24813,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "swap_bytes", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "swap_bytes", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -23312,25 +24856,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "reverse_bits", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "reverse_bits", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -23353,25 +24899,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "from_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "from_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -23393,25 +24941,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "from_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "from_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -23433,25 +24983,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "to_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "to_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -23473,25 +25025,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "to_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "to_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -23514,26 +25068,28 @@ Module num.
                 self
               |) in
             let exp := M.alloc (| Ty.path "u32", exp |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (| Ty.path "usize", "wrapping_pow", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| exp |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (| Ty.path "usize", "wrapping_pow", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize");
+                      M.value_with_ty (M.read (| exp |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -23558,9 +25114,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "usize", "leading_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -23589,9 +25151,15 @@ Module num.
               Ty.path "bool",
               M.get_associated_function (| Ty.path "usize", "is_power_of_two", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -23616,30 +25184,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "usize" ]
-              [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (|
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
                     Ty.path "usize",
-                    "wrapping_next_power_of_two",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    M.get_associated_function (|
+                      Ty.path "usize",
+                      "wrapping_next_power_of_two",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "usize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -23659,11 +25229,11 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [ M.read (| get_associated_constant (| Ty.path "u8", "MIN", Ty.path "u8" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "u8", "MIN", Ty.path "u8" |) |) ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
@@ -23676,11 +25246,11 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [ M.read (| get_associated_constant (| Ty.path "u8", "MAX", Ty.path "u8" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "u8", "MAX", Ty.path "u8" |) |) ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
@@ -23715,9 +25285,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u8", "count_ones", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u8")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -23746,9 +25322,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u8", "count_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u8")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -23777,9 +25359,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u8", "trailing_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u8")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -23805,26 +25393,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (| Ty.path "u8", "rotate_left", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (| Ty.path "u8", "rotate_left", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -23848,26 +25438,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (| Ty.path "u8", "rotate_right", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (| Ty.path "u8", "rotate_right", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -23890,25 +25482,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (| Ty.path "u8", "swap_bytes", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (| Ty.path "u8", "swap_bytes", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -23931,25 +25525,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (| Ty.path "u8", "reverse_bits", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (| Ty.path "u8", "reverse_bits", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -23972,25 +25568,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (| Ty.path "u8", "from_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (| Ty.path "u8", "from_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -24012,25 +25610,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (| Ty.path "u8", "from_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (| Ty.path "u8", "from_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -24052,25 +25652,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (| Ty.path "u8", "to_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (| Ty.path "u8", "to_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -24092,25 +25694,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (| Ty.path "u8", "to_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (| Ty.path "u8", "to_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -24133,26 +25737,28 @@ Module num.
                 self
               |) in
             let exp := M.alloc (| Ty.path "u32", exp |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (| Ty.path "u8", "wrapping_pow", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| exp |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u8",
+                    M.get_associated_function (| Ty.path "u8", "wrapping_pow", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8");
+                      M.value_with_ty (M.read (| exp |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -24177,9 +25783,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u8", "leading_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u8")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -24208,9 +25820,15 @@ Module num.
               Ty.path "bool",
               M.get_associated_function (| Ty.path "u8", "is_power_of_two", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u8")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -24235,30 +25853,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u8" ]
-              [
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_associated_function (|
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
                     Ty.path "u8",
-                    "wrapping_next_power_of_two",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    M.get_associated_function (|
+                      Ty.path "u8",
+                      "wrapping_next_power_of_two",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -24278,11 +25898,11 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [ M.read (| get_associated_constant (| Ty.path "u16", "MIN", Ty.path "u16" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "u16", "MIN", Ty.path "u16" |) |) ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
@@ -24295,11 +25915,11 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [ M.read (| get_associated_constant (| Ty.path "u16", "MAX", Ty.path "u16" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "u16", "MAX", Ty.path "u16" |) |) ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
@@ -24334,9 +25954,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u16", "count_ones", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u16")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -24365,9 +25991,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u16", "count_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u16")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -24396,9 +26028,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u16", "trailing_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u16")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -24424,26 +26062,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_associated_function (| Ty.path "u16", "rotate_left", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    M.get_associated_function (| Ty.path "u16", "rotate_left", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -24467,26 +26107,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_associated_function (| Ty.path "u16", "rotate_right", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    M.get_associated_function (| Ty.path "u16", "rotate_right", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -24509,25 +26151,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_associated_function (| Ty.path "u16", "swap_bytes", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    M.get_associated_function (| Ty.path "u16", "swap_bytes", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -24550,25 +26194,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_associated_function (| Ty.path "u16", "reverse_bits", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    M.get_associated_function (| Ty.path "u16", "reverse_bits", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -24591,25 +26237,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_associated_function (| Ty.path "u16", "from_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    M.get_associated_function (| Ty.path "u16", "from_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -24631,25 +26279,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_associated_function (| Ty.path "u16", "from_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    M.get_associated_function (| Ty.path "u16", "from_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -24671,25 +26321,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_associated_function (| Ty.path "u16", "to_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    M.get_associated_function (| Ty.path "u16", "to_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -24711,25 +26363,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_associated_function (| Ty.path "u16", "to_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    M.get_associated_function (| Ty.path "u16", "to_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -24752,26 +26406,28 @@ Module num.
                 self
               |) in
             let exp := M.alloc (| Ty.path "u32", exp |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_associated_function (| Ty.path "u16", "wrapping_pow", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| exp |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u16",
+                    M.get_associated_function (| Ty.path "u16", "wrapping_pow", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16");
+                      M.value_with_ty (M.read (| exp |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -24796,9 +26452,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u16", "leading_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u16")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -24827,9 +26489,15 @@ Module num.
               Ty.path "bool",
               M.get_associated_function (| Ty.path "u16", "is_power_of_two", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u16")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -24854,30 +26522,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u16" ]
-              [
-                M.call_closure (|
-                  Ty.path "u16",
-                  M.get_associated_function (|
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
                     Ty.path "u16",
-                    "wrapping_next_power_of_two",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    M.get_associated_function (|
+                      Ty.path "u16",
+                      "wrapping_next_power_of_two",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -24897,11 +26567,11 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [ M.read (| get_associated_constant (| Ty.path "u32", "MIN", Ty.path "u32" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "u32", "MIN", Ty.path "u32" |) |) ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
@@ -24914,11 +26584,11 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [ M.read (| get_associated_constant (| Ty.path "u32", "MAX", Ty.path "u32" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "u32", "MAX", Ty.path "u32" |) |) ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
@@ -24953,9 +26623,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u32", "count_ones", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u32")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -24984,9 +26660,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u32", "count_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u32")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -25015,9 +26697,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u32", "trailing_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u32")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -25043,26 +26731,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_associated_function (| Ty.path "u32", "rotate_left", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    M.get_associated_function (| Ty.path "u32", "rotate_left", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -25086,26 +26776,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_associated_function (| Ty.path "u32", "rotate_right", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    M.get_associated_function (| Ty.path "u32", "rotate_right", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -25128,25 +26820,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_associated_function (| Ty.path "u32", "swap_bytes", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    M.get_associated_function (| Ty.path "u32", "swap_bytes", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -25169,25 +26863,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_associated_function (| Ty.path "u32", "reverse_bits", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    M.get_associated_function (| Ty.path "u32", "reverse_bits", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -25210,25 +26906,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_associated_function (| Ty.path "u32", "from_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    M.get_associated_function (| Ty.path "u32", "from_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -25250,25 +26948,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_associated_function (| Ty.path "u32", "from_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    M.get_associated_function (| Ty.path "u32", "from_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -25290,25 +26990,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_associated_function (| Ty.path "u32", "to_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    M.get_associated_function (| Ty.path "u32", "to_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -25330,25 +27032,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_associated_function (| Ty.path "u32", "to_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    M.get_associated_function (| Ty.path "u32", "to_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -25371,26 +27075,28 @@ Module num.
                 self
               |) in
             let exp := M.alloc (| Ty.path "u32", exp |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_associated_function (| Ty.path "u32", "wrapping_pow", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| exp |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u32",
+                    M.get_associated_function (| Ty.path "u32", "wrapping_pow", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32");
+                      M.value_with_ty (M.read (| exp |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -25415,9 +27121,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u32", "leading_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u32")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -25446,9 +27158,15 @@ Module num.
               Ty.path "bool",
               M.get_associated_function (| Ty.path "u32", "is_power_of_two", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u32")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -25473,30 +27191,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u32" ]
-              [
-                M.call_closure (|
-                  Ty.path "u32",
-                  M.get_associated_function (|
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
                     Ty.path "u32",
-                    "wrapping_next_power_of_two",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    M.get_associated_function (|
+                      Ty.path "u32",
+                      "wrapping_next_power_of_two",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -25516,11 +27236,11 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [ M.read (| get_associated_constant (| Ty.path "u64", "MIN", Ty.path "u64" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "u64", "MIN", Ty.path "u64" |) |) ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
@@ -25533,11 +27253,11 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [ M.read (| get_associated_constant (| Ty.path "u64", "MAX", Ty.path "u64" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "u64", "MAX", Ty.path "u64" |) |) ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
@@ -25572,9 +27292,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u64", "count_ones", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u64")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -25603,9 +27329,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u64", "count_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u64")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -25634,9 +27366,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u64", "trailing_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u64")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -25662,26 +27400,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    M.get_associated_function (| Ty.path "u64", "rotate_left", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -25705,26 +27445,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (| Ty.path "u64", "rotate_right", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    M.get_associated_function (| Ty.path "u64", "rotate_right", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -25747,25 +27489,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (| Ty.path "u64", "swap_bytes", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    M.get_associated_function (| Ty.path "u64", "swap_bytes", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -25788,25 +27532,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (| Ty.path "u64", "reverse_bits", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    M.get_associated_function (| Ty.path "u64", "reverse_bits", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -25829,25 +27575,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (| Ty.path "u64", "from_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    M.get_associated_function (| Ty.path "u64", "from_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -25869,25 +27617,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (| Ty.path "u64", "from_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    M.get_associated_function (| Ty.path "u64", "from_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -25909,25 +27659,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (| Ty.path "u64", "to_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    M.get_associated_function (| Ty.path "u64", "to_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -25949,25 +27701,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (| Ty.path "u64", "to_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    M.get_associated_function (| Ty.path "u64", "to_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -25990,26 +27744,28 @@ Module num.
                 self
               |) in
             let exp := M.alloc (| Ty.path "u32", exp |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (| Ty.path "u64", "wrapping_pow", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| exp |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u64",
+                    M.get_associated_function (| Ty.path "u64", "wrapping_pow", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64");
+                      M.value_with_ty (M.read (| exp |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -26034,9 +27790,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u64", "leading_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u64")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -26065,9 +27827,15 @@ Module num.
               Ty.path "bool",
               M.get_associated_function (| Ty.path "u64", "is_power_of_two", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u64")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -26092,30 +27860,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u64" ]
-              [
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_associated_function (|
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
                     Ty.path "u64",
-                    "wrapping_next_power_of_two",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    M.get_associated_function (|
+                      Ty.path "u64",
+                      "wrapping_next_power_of_two",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -26135,11 +27905,12 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [ M.read (| get_associated_constant (| Ty.path "u128", "MIN", Ty.path "u128" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "u128", "MIN", Ty.path "u128" |) |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
@@ -26152,11 +27923,12 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [ M.read (| get_associated_constant (| Ty.path "u128", "MAX", Ty.path "u128" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "u128", "MAX", Ty.path "u128" |) |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
@@ -26191,9 +27963,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u128", "count_ones", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -26222,9 +28000,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u128", "count_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -26253,9 +28037,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u128", "trailing_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -26281,26 +28071,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  M.get_associated_function (| Ty.path "u128", "rotate_left", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    M.get_associated_function (| Ty.path "u128", "rotate_left", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -26324,26 +28116,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  M.get_associated_function (| Ty.path "u128", "rotate_right", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    M.get_associated_function (| Ty.path "u128", "rotate_right", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -26366,25 +28160,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  M.get_associated_function (| Ty.path "u128", "swap_bytes", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    M.get_associated_function (| Ty.path "u128", "swap_bytes", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -26407,25 +28203,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  M.get_associated_function (| Ty.path "u128", "reverse_bits", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    M.get_associated_function (| Ty.path "u128", "reverse_bits", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -26448,25 +28246,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  M.get_associated_function (| Ty.path "u128", "from_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    M.get_associated_function (| Ty.path "u128", "from_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -26488,25 +28288,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  M.get_associated_function (| Ty.path "u128", "from_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    M.get_associated_function (| Ty.path "u128", "from_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -26528,25 +28330,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  M.get_associated_function (| Ty.path "u128", "to_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    M.get_associated_function (| Ty.path "u128", "to_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -26568,25 +28372,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  M.get_associated_function (| Ty.path "u128", "to_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    M.get_associated_function (| Ty.path "u128", "to_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -26609,26 +28415,28 @@ Module num.
                 self
               |) in
             let exp := M.alloc (| Ty.path "u32", exp |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  M.get_associated_function (| Ty.path "u128", "wrapping_pow", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| exp |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "u128",
+                    M.get_associated_function (| Ty.path "u128", "wrapping_pow", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128");
+                      M.value_with_ty (M.read (| exp |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -26653,9 +28461,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "u128", "leading_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -26684,9 +28498,15 @@ Module num.
               Ty.path "bool",
               M.get_associated_function (| Ty.path "u128", "is_power_of_two", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "u128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -26711,30 +28531,32 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "u128" ]
-              [
-                M.call_closure (|
-                  Ty.path "u128",
-                  M.get_associated_function (|
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
                     Ty.path "u128",
-                    "wrapping_next_power_of_two",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                    M.get_associated_function (|
+                      Ty.path "u128",
+                      "wrapping_next_power_of_two",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "u128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -26754,11 +28576,12 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [ M.read (| get_associated_constant (| Ty.path "isize", "MIN", Ty.path "isize" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "isize", "MIN", Ty.path "isize" |) |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
@@ -26771,11 +28594,12 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [ M.read (| get_associated_constant (| Ty.path "isize", "MAX", Ty.path "isize" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "isize", "MAX", Ty.path "isize" |) |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
@@ -26810,9 +28634,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "isize", "count_ones", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "isize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -26841,9 +28671,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "isize", "count_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "isize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -26872,9 +28708,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "isize", "trailing_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "isize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -26900,26 +28742,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_associated_function (| Ty.path "isize", "rotate_left", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    M.get_associated_function (| Ty.path "isize", "rotate_left", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -26943,26 +28787,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_associated_function (| Ty.path "isize", "rotate_right", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    M.get_associated_function (| Ty.path "isize", "rotate_right", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -26985,25 +28831,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_associated_function (| Ty.path "isize", "swap_bytes", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    M.get_associated_function (| Ty.path "isize", "swap_bytes", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -27026,25 +28874,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_associated_function (| Ty.path "isize", "reverse_bits", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    M.get_associated_function (| Ty.path "isize", "reverse_bits", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -27067,25 +28917,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_associated_function (| Ty.path "isize", "from_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    M.get_associated_function (| Ty.path "isize", "from_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -27107,25 +28959,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_associated_function (| Ty.path "isize", "from_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    M.get_associated_function (| Ty.path "isize", "from_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -27147,25 +29001,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_associated_function (| Ty.path "isize", "to_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    M.get_associated_function (| Ty.path "isize", "to_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -27187,25 +29043,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_associated_function (| Ty.path "isize", "to_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    M.get_associated_function (| Ty.path "isize", "to_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -27228,26 +29086,28 @@ Module num.
                 self
               |) in
             let exp := M.alloc (| Ty.path "u32", exp |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_associated_function (| Ty.path "isize", "wrapping_pow", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| exp |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    M.get_associated_function (| Ty.path "isize", "wrapping_pow", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize");
+                      M.value_with_ty (M.read (| exp |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -27272,9 +29132,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "isize", "leading_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "isize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -27299,25 +29165,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_associated_function (| Ty.path "isize", "wrapping_abs", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    M.get_associated_function (| Ty.path "isize", "wrapping_abs", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -27339,25 +29207,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "isize" ]
-              [
-                M.call_closure (|
-                  Ty.path "isize",
-                  M.get_associated_function (| Ty.path "isize", "signum", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "isize",
+                    M.get_associated_function (| Ty.path "isize", "signum", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "isize")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -27383,9 +29253,15 @@ Module num.
               Ty.path "bool",
               M.get_associated_function (| Ty.path "isize", "is_positive", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "isize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -27414,9 +29290,15 @@ Module num.
               Ty.path "bool",
               M.get_associated_function (| Ty.path "isize", "is_negative", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "isize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -27438,11 +29320,11 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [ M.read (| get_associated_constant (| Ty.path "i8", "MIN", Ty.path "i8" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "i8", "MIN", Ty.path "i8" |) |) ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
@@ -27455,11 +29337,11 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [ M.read (| get_associated_constant (| Ty.path "i8", "MAX", Ty.path "i8" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "i8", "MAX", Ty.path "i8" |) |) ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
@@ -27494,9 +29376,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i8", "count_ones", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i8")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -27525,9 +29413,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i8", "count_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i8")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -27556,9 +29450,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i8", "trailing_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i8")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -27584,26 +29484,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_associated_function (| Ty.path "i8", "rotate_left", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    M.get_associated_function (| Ty.path "i8", "rotate_left", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -27627,26 +29529,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_associated_function (| Ty.path "i8", "rotate_right", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    M.get_associated_function (| Ty.path "i8", "rotate_right", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -27669,25 +29573,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_associated_function (| Ty.path "i8", "swap_bytes", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    M.get_associated_function (| Ty.path "i8", "swap_bytes", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -27710,25 +29616,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_associated_function (| Ty.path "i8", "reverse_bits", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    M.get_associated_function (| Ty.path "i8", "reverse_bits", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -27751,25 +29659,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_associated_function (| Ty.path "i8", "from_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    M.get_associated_function (| Ty.path "i8", "from_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -27791,25 +29701,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_associated_function (| Ty.path "i8", "from_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    M.get_associated_function (| Ty.path "i8", "from_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -27831,25 +29743,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_associated_function (| Ty.path "i8", "to_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    M.get_associated_function (| Ty.path "i8", "to_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -27871,25 +29785,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_associated_function (| Ty.path "i8", "to_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    M.get_associated_function (| Ty.path "i8", "to_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -27912,26 +29828,28 @@ Module num.
                 self
               |) in
             let exp := M.alloc (| Ty.path "u32", exp |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_associated_function (| Ty.path "i8", "wrapping_pow", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| exp |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    M.get_associated_function (| Ty.path "i8", "wrapping_pow", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8");
+                      M.value_with_ty (M.read (| exp |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -27956,9 +29874,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i8", "leading_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i8")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -27983,25 +29907,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_associated_function (| Ty.path "i8", "wrapping_abs", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    M.get_associated_function (| Ty.path "i8", "wrapping_abs", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -28023,25 +29949,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i8" ]
-              [
-                M.call_closure (|
-                  Ty.path "i8",
-                  M.get_associated_function (| Ty.path "i8", "signum", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i8",
+                    M.get_associated_function (| Ty.path "i8", "signum", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i8")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -28067,9 +29995,15 @@ Module num.
               Ty.path "bool",
               M.get_associated_function (| Ty.path "i8", "is_positive", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i8")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -28098,9 +30032,15 @@ Module num.
               Ty.path "bool",
               M.get_associated_function (| Ty.path "i8", "is_negative", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i8")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -28122,11 +30062,11 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [ M.read (| get_associated_constant (| Ty.path "i16", "MIN", Ty.path "i16" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "i16", "MIN", Ty.path "i16" |) |) ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
@@ -28139,11 +30079,11 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [ M.read (| get_associated_constant (| Ty.path "i16", "MAX", Ty.path "i16" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "i16", "MAX", Ty.path "i16" |) |) ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
@@ -28178,9 +30118,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i16", "count_ones", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i16")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -28209,9 +30155,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i16", "count_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i16")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -28240,9 +30192,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i16", "trailing_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i16")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -28268,26 +30226,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_associated_function (| Ty.path "i16", "rotate_left", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_associated_function (| Ty.path "i16", "rotate_left", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -28311,26 +30271,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_associated_function (| Ty.path "i16", "rotate_right", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_associated_function (| Ty.path "i16", "rotate_right", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -28353,25 +30315,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_associated_function (| Ty.path "i16", "swap_bytes", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_associated_function (| Ty.path "i16", "swap_bytes", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -28394,25 +30358,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_associated_function (| Ty.path "i16", "reverse_bits", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_associated_function (| Ty.path "i16", "reverse_bits", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -28435,25 +30401,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_associated_function (| Ty.path "i16", "from_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_associated_function (| Ty.path "i16", "from_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -28475,25 +30443,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_associated_function (| Ty.path "i16", "from_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_associated_function (| Ty.path "i16", "from_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -28515,25 +30485,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_associated_function (| Ty.path "i16", "to_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_associated_function (| Ty.path "i16", "to_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -28555,25 +30527,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_associated_function (| Ty.path "i16", "to_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_associated_function (| Ty.path "i16", "to_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -28596,26 +30570,28 @@ Module num.
                 self
               |) in
             let exp := M.alloc (| Ty.path "u32", exp |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_associated_function (| Ty.path "i16", "wrapping_pow", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| exp |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_associated_function (| Ty.path "i16", "wrapping_pow", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16");
+                      M.value_with_ty (M.read (| exp |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -28640,9 +30616,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i16", "leading_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i16")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -28667,25 +30649,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_associated_function (| Ty.path "i16", "wrapping_abs", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_associated_function (| Ty.path "i16", "wrapping_abs", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -28707,25 +30691,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i16" ]
-              [
-                M.call_closure (|
-                  Ty.path "i16",
-                  M.get_associated_function (| Ty.path "i16", "signum", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i16",
+                    M.get_associated_function (| Ty.path "i16", "signum", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i16")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -28751,9 +30737,15 @@ Module num.
               Ty.path "bool",
               M.get_associated_function (| Ty.path "i16", "is_positive", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i16")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -28782,9 +30774,15 @@ Module num.
               Ty.path "bool",
               M.get_associated_function (| Ty.path "i16", "is_negative", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i16")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -28806,11 +30804,11 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [ M.read (| get_associated_constant (| Ty.path "i32", "MIN", Ty.path "i32" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "i32", "MIN", Ty.path "i32" |) |) ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
@@ -28823,11 +30821,11 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [ M.read (| get_associated_constant (| Ty.path "i32", "MAX", Ty.path "i32" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "i32", "MAX", Ty.path "i32" |) |) ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
@@ -28862,9 +30860,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i32", "count_ones", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i32")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -28893,9 +30897,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i32", "count_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i32")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -28924,9 +30934,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i32", "trailing_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i32")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -28952,26 +30968,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_associated_function (| Ty.path "i32", "rotate_left", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    M.get_associated_function (| Ty.path "i32", "rotate_left", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -28995,26 +31013,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_associated_function (| Ty.path "i32", "rotate_right", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    M.get_associated_function (| Ty.path "i32", "rotate_right", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -29037,25 +31057,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_associated_function (| Ty.path "i32", "swap_bytes", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    M.get_associated_function (| Ty.path "i32", "swap_bytes", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -29078,25 +31100,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_associated_function (| Ty.path "i32", "reverse_bits", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    M.get_associated_function (| Ty.path "i32", "reverse_bits", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -29119,25 +31143,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_associated_function (| Ty.path "i32", "from_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    M.get_associated_function (| Ty.path "i32", "from_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -29159,25 +31185,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_associated_function (| Ty.path "i32", "from_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    M.get_associated_function (| Ty.path "i32", "from_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -29199,25 +31227,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_associated_function (| Ty.path "i32", "to_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    M.get_associated_function (| Ty.path "i32", "to_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -29239,25 +31269,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_associated_function (| Ty.path "i32", "to_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    M.get_associated_function (| Ty.path "i32", "to_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -29280,26 +31312,28 @@ Module num.
                 self
               |) in
             let exp := M.alloc (| Ty.path "u32", exp |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_associated_function (| Ty.path "i32", "wrapping_pow", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| exp |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    M.get_associated_function (| Ty.path "i32", "wrapping_pow", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32");
+                      M.value_with_ty (M.read (| exp |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -29324,9 +31358,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i32", "leading_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i32")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -29351,25 +31391,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_associated_function (| Ty.path "i32", "wrapping_abs", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    M.get_associated_function (| Ty.path "i32", "wrapping_abs", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -29391,25 +31433,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i32" ]
-              [
-                M.call_closure (|
-                  Ty.path "i32",
-                  M.get_associated_function (| Ty.path "i32", "signum", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i32",
+                    M.get_associated_function (| Ty.path "i32", "signum", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -29435,9 +31479,15 @@ Module num.
               Ty.path "bool",
               M.get_associated_function (| Ty.path "i32", "is_positive", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i32")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -29466,9 +31516,15 @@ Module num.
               Ty.path "bool",
               M.get_associated_function (| Ty.path "i32", "is_negative", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i32")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -29490,11 +31546,11 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [ M.read (| get_associated_constant (| Ty.path "i64", "MIN", Ty.path "i64" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "i64", "MIN", Ty.path "i64" |) |) ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
@@ -29507,11 +31563,11 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [ M.read (| get_associated_constant (| Ty.path "i64", "MAX", Ty.path "i64" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "i64", "MAX", Ty.path "i64" |) |) ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
@@ -29546,9 +31602,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i64", "count_ones", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i64")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -29577,9 +31639,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i64", "count_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i64")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -29608,9 +31676,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i64", "trailing_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i64")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -29636,26 +31710,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_associated_function (| Ty.path "i64", "rotate_left", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    M.get_associated_function (| Ty.path "i64", "rotate_left", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -29679,26 +31755,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_associated_function (| Ty.path "i64", "rotate_right", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    M.get_associated_function (| Ty.path "i64", "rotate_right", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -29721,25 +31799,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_associated_function (| Ty.path "i64", "swap_bytes", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    M.get_associated_function (| Ty.path "i64", "swap_bytes", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -29762,25 +31842,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_associated_function (| Ty.path "i64", "reverse_bits", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    M.get_associated_function (| Ty.path "i64", "reverse_bits", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -29803,25 +31885,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_associated_function (| Ty.path "i64", "from_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    M.get_associated_function (| Ty.path "i64", "from_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -29843,25 +31927,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_associated_function (| Ty.path "i64", "from_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    M.get_associated_function (| Ty.path "i64", "from_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -29883,25 +31969,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_associated_function (| Ty.path "i64", "to_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    M.get_associated_function (| Ty.path "i64", "to_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -29923,25 +32011,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_associated_function (| Ty.path "i64", "to_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    M.get_associated_function (| Ty.path "i64", "to_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -29964,26 +32054,28 @@ Module num.
                 self
               |) in
             let exp := M.alloc (| Ty.path "u32", exp |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_associated_function (| Ty.path "i64", "wrapping_pow", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| exp |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    M.get_associated_function (| Ty.path "i64", "wrapping_pow", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64");
+                      M.value_with_ty (M.read (| exp |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -30008,9 +32100,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i64", "leading_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i64")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -30035,25 +32133,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_associated_function (| Ty.path "i64", "wrapping_abs", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    M.get_associated_function (| Ty.path "i64", "wrapping_abs", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -30075,25 +32175,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i64" ]
-              [
-                M.call_closure (|
-                  Ty.path "i64",
-                  M.get_associated_function (| Ty.path "i64", "signum", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i64",
+                    M.get_associated_function (| Ty.path "i64", "signum", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i64")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -30119,9 +32221,15 @@ Module num.
               Ty.path "bool",
               M.get_associated_function (| Ty.path "i64", "is_positive", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i64")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -30150,9 +32258,15 @@ Module num.
               Ty.path "bool",
               M.get_associated_function (| Ty.path "i64", "is_negative", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i64")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -30174,11 +32288,12 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [ M.read (| get_associated_constant (| Ty.path "i128", "MIN", Ty.path "i128" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "i128", "MIN", Ty.path "i128" |) |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
           |))).
       
       Global Instance AssociatedConstant_value_MIN : M.IsAssociatedFunction.C Self "MIN" value_MIN.
@@ -30191,11 +32306,12 @@ Module num.
         ltac:(M.monadic
           (M.alloc (|
             Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [ M.read (| get_associated_constant (| Ty.path "i128", "MAX", Ty.path "i128" |) |) ]
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [ M.read (| get_associated_constant (| Ty.path "i128", "MAX", Ty.path "i128" |) |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])
           |))).
       
       Global Instance AssociatedConstant_value_MAX : M.IsAssociatedFunction.C Self "MAX" value_MAX.
@@ -30230,9 +32346,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i128", "count_ones", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -30261,9 +32383,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i128", "count_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -30292,9 +32420,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i128", "trailing_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -30320,26 +32454,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  M.get_associated_function (| Ty.path "i128", "rotate_left", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    M.get_associated_function (| Ty.path "i128", "rotate_left", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -30363,26 +32499,28 @@ Module num.
                 self
               |) in
             let n := M.alloc (| Ty.path "u32", n |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  M.get_associated_function (| Ty.path "i128", "rotate_right", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| n |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    M.get_associated_function (| Ty.path "i128", "rotate_right", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128");
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -30405,25 +32543,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  M.get_associated_function (| Ty.path "i128", "swap_bytes", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    M.get_associated_function (| Ty.path "i128", "swap_bytes", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -30446,25 +32586,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  M.get_associated_function (| Ty.path "i128", "reverse_bits", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    M.get_associated_function (| Ty.path "i128", "reverse_bits", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -30487,25 +32629,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  M.get_associated_function (| Ty.path "i128", "from_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    M.get_associated_function (| Ty.path "i128", "from_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -30527,25 +32671,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
                 x
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  M.get_associated_function (| Ty.path "i128", "from_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        x,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    M.get_associated_function (| Ty.path "i128", "from_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            x,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -30567,25 +32713,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  M.get_associated_function (| Ty.path "i128", "to_be", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    M.get_associated_function (| Ty.path "i128", "to_be", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -30607,25 +32755,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  M.get_associated_function (| Ty.path "i128", "to_le", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    M.get_associated_function (| Ty.path "i128", "to_le", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -30648,26 +32798,28 @@ Module num.
                 self
               |) in
             let exp := M.alloc (| Ty.path "u32", exp |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  M.get_associated_function (| Ty.path "i128", "wrapping_pow", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |);
-                    M.read (| exp |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    M.get_associated_function (| Ty.path "i128", "wrapping_pow", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128");
+                      M.value_with_ty (M.read (| exp |)) (Ty.path "u32")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -30692,9 +32844,15 @@ Module num.
               Ty.path "u32",
               M.get_associated_function (| Ty.path "i128", "leading_zeros", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -30719,25 +32877,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  M.get_associated_function (| Ty.path "i128", "wrapping_abs", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    M.get_associated_function (| Ty.path "i128", "wrapping_abs", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -30759,25 +32919,27 @@ Module num.
                 Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ],
                 self
               |) in
-            Value.StructTuple
-              "core::num::wrapping::Wrapping"
-              []
-              [ Ty.path "i128" ]
-              [
-                M.call_closure (|
-                  Ty.path "i128",
-                  M.get_associated_function (| Ty.path "i128", "signum", [], [] |),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        self,
-                        "core::num::wrapping::Wrapping",
-                        0
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::num::wrapping::Wrapping"
+                [
+                  M.call_closure (|
+                    Ty.path "i128",
+                    M.get_associated_function (| Ty.path "i128", "signum", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            self,
+                            "core::num::wrapping::Wrapping",
+                            0
+                          |)
+                        |))
+                        (Ty.path "i128")
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -30803,9 +32965,15 @@ Module num.
               Ty.path "bool",
               M.get_associated_function (| Ty.path "i128", "is_positive", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -30834,9 +33002,15 @@ Module num.
               Ty.path "bool",
               M.get_associated_function (| Ty.path "i128", "is_negative", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (| self, "core::num::wrapping::Wrapping", 0 |)
-                |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::num::wrapping::Wrapping",
+                      0
+                    |)
+                  |))
+                  (Ty.path "i128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

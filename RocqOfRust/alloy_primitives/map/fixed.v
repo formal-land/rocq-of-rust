@@ -156,74 +156,86 @@ Module map.
                   [ Ty.apply (Ty.path "alloy_primitives::map::fixed::FbBuildHasher") [ N ] [] ],
                 self
               |) in
-            Value.mkStructRecord
-              "alloy_primitives::map::fixed::FbBuildHasher"
-              [ N ]
-              []
-              [
-                ("inner",
-                  M.call_closure (|
-                    Ty.path "foldhash::fast::RandomState",
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+            M.value_with_ty
+              (Value.mkStructRecord
+                "alloy_primitives::map::fixed::FbBuildHasher"
+                [
+                  ("inner",
+                    M.call_closure (|
                       Ty.path "foldhash::fast::RandomState",
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.path "foldhash::fast::RandomState",
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloy_primitives::map::fixed::FbBuildHasher",
-                              "inner"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloy_primitives::map::fixed::FbBuildHasher",
+                                  "inner"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |));
-                ("_marker",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::marker::PhantomData")
-                      []
-                      [ Ty.apply (Ty.path "array") [ N ] [ Ty.tuple [] ] ],
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "foldhash::fast::RandomState" ])
+                      ]
+                    |));
+                  ("_marker",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "core::marker::PhantomData")
                         []
                         [ Ty.apply (Ty.path "array") [ N ] [ Ty.tuple [] ] ],
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.apply
+                          (Ty.path "core::marker::PhantomData")
+                          []
+                          [ Ty.apply (Ty.path "array") [ N ] [ Ty.tuple [] ] ],
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloy_primitives::map::fixed::FbBuildHasher",
-                              "_marker"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloy_primitives::map::fixed::FbBuildHasher",
+                                  "_marker"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |))
-              ]))
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::marker::PhantomData")
+                                []
+                                [ Ty.apply (Ty.path "array") [ N ] [ Ty.tuple [] ] ]
+                            ])
+                      ]
+                    |))
+                ])
+              (Ty.apply (Ty.path "alloy_primitives::map::fixed::FbBuildHasher") [ N ] [])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -247,46 +259,46 @@ Module map.
         match ε, τ, α with
         | [], [], [] =>
           ltac:(M.monadic
-            (Value.mkStructRecord
-              "alloy_primitives::map::fixed::FbBuildHasher"
-              [ N ]
-              []
-              [
-                ("inner",
-                  M.call_closure (|
-                    Ty.path "foldhash::fast::RandomState",
-                    M.get_trait_method (|
-                      "core::default::Default",
+            (M.value_with_ty
+              (Value.mkStructRecord
+                "alloy_primitives::map::fixed::FbBuildHasher"
+                [
+                  ("inner",
+                    M.call_closure (|
                       Ty.path "foldhash::fast::RandomState",
-                      [],
-                      [],
-                      "default",
-                      [],
+                      M.get_trait_method (|
+                        "core::default::Default",
+                        Ty.path "foldhash::fast::RandomState",
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |));
-                ("_marker",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::marker::PhantomData")
-                      []
-                      [ Ty.apply (Ty.path "array") [ N ] [ Ty.tuple [] ] ],
-                    M.get_trait_method (|
-                      "core::default::Default",
+                    |));
+                  ("_marker",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "core::marker::PhantomData")
                         []
                         [ Ty.apply (Ty.path "array") [ N ] [ Ty.tuple [] ] ],
-                      [],
-                      [],
-                      "default",
-                      [],
+                      M.get_trait_method (|
+                        "core::default::Default",
+                        Ty.apply
+                          (Ty.path "core::marker::PhantomData")
+                          []
+                          [ Ty.apply (Ty.path "array") [ N ] [ Ty.tuple [] ] ],
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |))
-              ]))
+                    |))
+                ])
+              (Ty.apply (Ty.path "alloy_primitives::map::fixed::FbBuildHasher") [ N ] [])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -336,25 +348,34 @@ Module map.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.alloc (|
-                    Ty.path "core::fmt::builders::DebugStruct",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.alloc (|
                       Ty.path "core::fmt::builders::DebugStruct",
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::Formatter",
-                        "debug_struct",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FbBuildHasher" |) |) |)
-                      ]
+                      M.call_closure (|
+                        Ty.path "core::fmt::builders::DebugStruct",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Formatter",
+                          "debug_struct",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| mk_str (| "FbBuildHasher" |) |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -401,41 +422,44 @@ Module map.
                   [ Ty.apply (Ty.path "alloy_primitives::map::fixed::FbBuildHasher") [ N ] [] ],
                 self
               |) in
-            Value.mkStructRecord
-              "alloy_primitives::map::fixed::FbHasher"
-              [ N ]
-              []
-              [
-                ("inner",
-                  M.call_closure (|
-                    Ty.path "foldhash::fast::FoldHasher",
-                    M.get_trait_method (|
-                      "core::hash::BuildHasher",
-                      Ty.path "foldhash::fast::RandomState",
-                      [],
-                      [],
-                      "build_hasher",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloy_primitives::map::fixed::FbBuildHasher",
-                          "inner"
-                        |)
-                      |)
-                    ]
-                  |));
-                ("_marker",
-                  Value.StructTuple
-                    "core::marker::PhantomData"
-                    []
-                    [ Ty.apply (Ty.path "array") [ N ] [ Ty.tuple [] ] ]
-                    [])
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "alloy_primitives::map::fixed::FbHasher"
+                [
+                  ("inner",
+                    M.call_closure (|
+                      Ty.path "foldhash::fast::FoldHasher",
+                      M.get_trait_method (|
+                        "core::hash::BuildHasher",
+                        Ty.path "foldhash::fast::RandomState",
+                        [],
+                        [],
+                        "build_hasher",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloy_primitives::map::fixed::FbBuildHasher",
+                              "inner"
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "foldhash::fast::RandomState" ])
+                      ]
+                    |));
+                  ("_marker",
+                    M.value_with_ty
+                      (Value.StructTuple "core::marker::PhantomData" [])
+                      (Ty.apply
+                        (Ty.path "core::marker::PhantomData")
+                        []
+                        [ Ty.apply (Ty.path "array") [ N ] [ Ty.tuple [] ] ]))
+                ])
+              (Ty.apply (Ty.path "alloy_primitives::map::fixed::FbHasher") [ N ] [])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -493,74 +517,86 @@ Module map.
                   [ Ty.apply (Ty.path "alloy_primitives::map::fixed::FbHasher") [ N ] [] ],
                 self
               |) in
-            Value.mkStructRecord
-              "alloy_primitives::map::fixed::FbHasher"
-              [ N ]
-              []
-              [
-                ("inner",
-                  M.call_closure (|
-                    Ty.path "foldhash::fast::FoldHasher",
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+            M.value_with_ty
+              (Value.mkStructRecord
+                "alloy_primitives::map::fixed::FbHasher"
+                [
+                  ("inner",
+                    M.call_closure (|
                       Ty.path "foldhash::fast::FoldHasher",
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.path "foldhash::fast::FoldHasher",
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloy_primitives::map::fixed::FbHasher",
-                              "inner"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloy_primitives::map::fixed::FbHasher",
+                                  "inner"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |));
-                ("_marker",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::marker::PhantomData")
-                      []
-                      [ Ty.apply (Ty.path "array") [ N ] [ Ty.tuple [] ] ],
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "foldhash::fast::FoldHasher" ])
+                      ]
+                    |));
+                  ("_marker",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "core::marker::PhantomData")
                         []
                         [ Ty.apply (Ty.path "array") [ N ] [ Ty.tuple [] ] ],
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.apply
+                          (Ty.path "core::marker::PhantomData")
+                          []
+                          [ Ty.apply (Ty.path "array") [ N ] [ Ty.tuple [] ] ],
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloy_primitives::map::fixed::FbHasher",
-                              "_marker"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloy_primitives::map::fixed::FbHasher",
+                                  "_marker"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |))
-              ]))
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::marker::PhantomData")
+                                []
+                                [ Ty.apply (Ty.path "array") [ N ] [ Ty.tuple [] ] ]
+                            ])
+                      ]
+                    |))
+                ])
+              (Ty.apply (Ty.path "alloy_primitives::map::fixed::FbHasher") [ N ] [])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -591,52 +627,55 @@ Module map.
         match ε, τ, α with
         | [], [], [] =>
           ltac:(M.monadic
-            (Value.mkStructRecord
-              "alloy_primitives::map::fixed::FbHasher"
-              [ N ]
-              []
-              [
-                ("inner",
-                  M.call_closure (|
-                    Ty.path "foldhash::fast::FoldHasher",
-                    M.get_trait_method (|
-                      "core::hash::BuildHasher",
-                      Ty.path "foldhash::fast::RandomState",
-                      [],
-                      [],
-                      "build_hasher",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.path "foldhash::fast::RandomState",
-                          M.call_closure (|
-                            Ty.path "foldhash::fast::RandomState",
-                            M.get_trait_method (|
-                              "core::default::Default",
+            (M.value_with_ty
+              (Value.mkStructRecord
+                "alloy_primitives::map::fixed::FbHasher"
+                [
+                  ("inner",
+                    M.call_closure (|
+                      Ty.path "foldhash::fast::FoldHasher",
+                      M.get_trait_method (|
+                        "core::hash::BuildHasher",
+                        Ty.path "foldhash::fast::RandomState",
+                        [],
+                        [],
+                        "build_hasher",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
                               Ty.path "foldhash::fast::RandomState",
-                              [],
-                              [],
-                              "default",
-                              [],
-                              []
-                            |),
-                            []
-                          |)
-                        |)
-                      |)
-                    ]
-                  |));
-                ("_marker",
-                  Value.StructTuple
-                    "core::marker::PhantomData"
-                    []
-                    [ Ty.apply (Ty.path "array") [ N ] [ Ty.tuple [] ] ]
-                    [])
-              ]))
+                              M.call_closure (|
+                                Ty.path "foldhash::fast::RandomState",
+                                M.get_trait_method (|
+                                  "core::default::Default",
+                                  Ty.path "foldhash::fast::RandomState",
+                                  [],
+                                  [],
+                                  "default",
+                                  [],
+                                  []
+                                |),
+                                []
+                              |)
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "foldhash::fast::RandomState" ])
+                      ]
+                    |));
+                  ("_marker",
+                    M.value_with_ty
+                      (Value.StructTuple "core::marker::PhantomData" [])
+                      (Ty.apply
+                        (Ty.path "core::marker::PhantomData")
+                        []
+                        [ Ty.apply (Ty.path "array") [ N ] [ Ty.tuple [] ] ]))
+                ])
+              (Ty.apply (Ty.path "alloy_primitives::map::fixed::FbHasher") [ N ] [])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -686,25 +725,31 @@ Module map.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.alloc (|
-                    Ty.path "core::fmt::builders::DebugStruct",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.alloc (|
                       Ty.path "core::fmt::builders::DebugStruct",
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::Formatter",
-                        "debug_struct",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FbHasher" |) |) |)
-                      ]
+                      M.call_closure (|
+                        Ty.path "core::fmt::builders::DebugStruct",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Formatter",
+                          "debug_struct",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "FbHasher" |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -754,14 +799,16 @@ Module map.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "alloy_primitives::map::fixed::FbHasher",
-                    "inner"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "alloy_primitives::map::fixed::FbHasher",
+                      "inner"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "foldhash::fast::FoldHasher" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -831,10 +878,15 @@ Module map.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| bytes |) |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| bytes |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                           ]
                                         |)
                                       |)
@@ -897,11 +949,11 @@ Module map.
                                             M.never_to_any (|
                                               M.read (|
                                                 let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                                  Value.StructTuple
-                                                    "core::panicking::AssertKind::Eq"
-                                                    []
-                                                    []
-                                                    [] in
+                                                  M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::panicking::AssertKind::Eq"
+                                                      [])
+                                                    (Ty.path "core::panicking::AssertKind") in
                                                 M.alloc (|
                                                   Ty.path "never",
                                                   M.call_closure (|
@@ -912,30 +964,50 @@ Module map.
                                                       [ Ty.path "usize"; Ty.path "usize" ]
                                                     |),
                                                     [
-                                                      M.read (| kind |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| left_val |) |)
+                                                      M.value_with_ty
+                                                        (M.read (| kind |))
+                                                        (Ty.path "core::panicking::AssertKind");
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| left_val |) |)
+                                                            |)
                                                           |)
-                                                        |)
-                                                      |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| right_val |) |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [ Ty.path "usize" ]);
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| right_val |) |)
+                                                            |)
                                                           |)
-                                                        |)
-                                                      |);
-                                                      Value.StructTuple
-                                                        "core::option::Option::None"
-                                                        []
-                                                        [ Ty.path "core::fmt::Arguments" ]
-                                                        []
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [ Ty.path "usize" ]);
+                                                      M.value_with_ty
+                                                        (M.value_with_ty
+                                                          (Value.StructTuple
+                                                            "core::option::Option::None"
+                                                            [])
+                                                          (Ty.apply
+                                                            (Ty.path "core::option::Option")
+                                                            []
+                                                            [ Ty.path "core::fmt::Arguments" ]))
+                                                        (Ty.apply
+                                                          (Ty.path "core::option::Option")
+                                                          []
+                                                          [ Ty.path "core::fmt::Arguments" ])
                                                     ]
                                                   |)
                                                 |)
@@ -973,10 +1045,16 @@ Module map.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| bytes |) |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| bytes |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                  ])
                                             ]
                                           |);
                                           N
@@ -1037,15 +1115,28 @@ Module map.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "alloy_primitives::map::fixed::FbHasher",
-                                    "inner"
-                                  |)
-                                |);
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytes |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "alloy_primitives::map::fixed::FbHasher",
+                                      "inner"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.path "foldhash::fast::FoldHasher" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| bytes |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1062,20 +1153,33 @@ Module map.
                                 [ Ty.path "foldhash::fast::FoldHasher" ]
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "alloy_primitives::map::fixed::FbHasher",
-                                        "inner"
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloy_primitives::map::fixed::FbHasher",
+                                          "inner"
+                                        |)
                                       |)
                                     |)
-                                  |)
-                                |);
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytes |) |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.path "foldhash::fast::FoldHasher" ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| bytes |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1192,11 +1296,11 @@ Module map.
                                             M.never_to_any (|
                                               M.read (|
                                                 let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                                  Value.StructTuple
-                                                    "core::panicking::AssertKind::Eq"
-                                                    []
-                                                    []
-                                                    [] in
+                                                  M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::panicking::AssertKind::Eq"
+                                                      [])
+                                                    (Ty.path "core::panicking::AssertKind") in
                                                 M.alloc (|
                                                   Ty.path "never",
                                                   M.call_closure (|
@@ -1207,30 +1311,50 @@ Module map.
                                                       [ Ty.path "usize"; Ty.path "usize" ]
                                                     |),
                                                     [
-                                                      M.read (| kind |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| left_val |) |)
+                                                      M.value_with_ty
+                                                        (M.read (| kind |))
+                                                        (Ty.path "core::panicking::AssertKind");
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| left_val |) |)
+                                                            |)
                                                           |)
-                                                        |)
-                                                      |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| M.read (| right_val |) |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [ Ty.path "usize" ]);
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.deref (| M.read (| right_val |) |)
+                                                            |)
                                                           |)
-                                                        |)
-                                                      |);
-                                                      Value.StructTuple
-                                                        "core::option::Option::None"
-                                                        []
-                                                        [ Ty.path "core::fmt::Arguments" ]
-                                                        []
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [ Ty.path "usize" ]);
+                                                      M.value_with_ty
+                                                        (M.value_with_ty
+                                                          (Value.StructTuple
+                                                            "core::option::Option::None"
+                                                            [])
+                                                          (Ty.apply
+                                                            (Ty.path "core::option::Option")
+                                                            []
+                                                            [ Ty.path "core::fmt::Arguments" ]))
+                                                        (Ty.apply
+                                                          (Ty.path "core::option::Option")
+                                                          []
+                                                          [ Ty.path "core::fmt::Arguments" ])
                                                     ]
                                                   |)
                                                 |)
@@ -1376,10 +1500,15 @@ Module map.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| bytes |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| bytes |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                     ]
                                   |)
                                 |) in
@@ -1426,20 +1555,31 @@ Module map.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| hasher |) |)
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.read (| hasher |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&mut") [] [ impl_Hasher ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.path "usize",
-                                          "from_ne_bytes",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| M.deref (| M.read (| chunk |) |) |) ]
-                                      |)
+                                          M.get_associated_function (|
+                                            Ty.path "usize",
+                                            "from_ne_bytes",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| M.deref (| M.read (| chunk |) |) |))
+                                              (Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 8 ]
+                                                [ Ty.path "u8" ])
+                                          ]
+                                        |))
+                                        (Ty.path "usize")
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
@@ -1548,10 +1688,15 @@ Module map.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| bytes |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| bytes |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                     ]
                                   |)
                                 |) in
@@ -1598,20 +1743,31 @@ Module map.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| hasher |) |)
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "u64",
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.read (| hasher |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&mut") [] [ impl_Hasher ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.path "u64",
-                                          "from_ne_bytes",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| M.deref (| M.read (| chunk |) |) |) ]
-                                      |)
+                                          M.get_associated_function (|
+                                            Ty.path "u64",
+                                            "from_ne_bytes",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| M.deref (| M.read (| chunk |) |) |))
+                                              (Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 8 ]
+                                                [ Ty.path "u8" ])
+                                          ]
+                                        |))
+                                        (Ty.path "u64")
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
@@ -1712,10 +1868,15 @@ Module map.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| bytes |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| bytes |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                     ]
                                   |)
                                 |) in
@@ -1762,20 +1923,31 @@ Module map.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| hasher |) |)
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "u32",
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.read (| hasher |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&mut") [] [ impl_Hasher ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.path "u32",
-                                          "from_ne_bytes",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| M.deref (| M.read (| chunk |) |) |) ]
-                                      |)
+                                          M.get_associated_function (|
+                                            Ty.path "u32",
+                                            "from_ne_bytes",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| M.deref (| M.read (| chunk |) |) |))
+                                              (Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 4 ]
+                                                [ Ty.path "u8" ])
+                                          ]
+                                        |))
+                                        (Ty.path "u32")
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
@@ -1876,10 +2048,15 @@ Module map.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| bytes |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| bytes |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                     ]
                                   |)
                                 |) in
@@ -1926,20 +2103,31 @@ Module map.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| hasher |) |)
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "u16",
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.read (| hasher |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&mut") [] [ impl_Hasher ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.path "u16",
-                                          "from_ne_bytes",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| M.deref (| M.read (| chunk |) |) |) ]
-                                      |)
+                                          M.get_associated_function (|
+                                            Ty.path "u16",
+                                            "from_ne_bytes",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| M.deref (| M.read (| chunk |) |) |))
+                                              (Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 2 ]
+                                                [ Ty.path "u8" ])
+                                          ]
+                                        |))
+                                        (Ty.path "u16")
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
@@ -2040,10 +2228,15 @@ Module map.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| bytes |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| bytes |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                     ]
                                   |)
                                 |) in
@@ -2090,20 +2283,31 @@ Module map.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| hasher |) |)
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "u8",
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.read (| hasher |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&mut") [] [ impl_Hasher ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.path "u8",
-                                          "from_ne_bytes",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| M.deref (| M.read (| chunk |) |) |) ]
-                                      |)
+                                          M.get_associated_function (|
+                                            Ty.path "u8",
+                                            "from_ne_bytes",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| M.deref (| M.read (| chunk |) |) |))
+                                              (Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 1 ]
+                                                [ Ty.path "u8" ])
+                                          ]
+                                        |))
+                                        (Ty.path "u8")
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
@@ -2153,10 +2357,16 @@ Module map.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| bytes |) |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| bytes |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                    ])
                                               ]
                                             |)
                                           ]
@@ -2171,7 +2381,11 @@ Module map.
                                     M.call_closure (|
                                       Ty.path "never",
                                       M.get_function (| "core::panicking::panic", [], [] |),
-                                      [ mk_str (| "assertion failed: bytes.is_empty()" |) ]
+                                      [
+                                        M.value_with_ty
+                                          (mk_str (| "assertion failed: bytes.is_empty()" |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                      ]
                                     |)
                                   |)));
                               fun γ => ltac:(M.monadic (Value.Tuple []))

@@ -74,38 +74,50 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                 Ty.tuple [],
                 M.get_function (| "std::io::stdio::_print", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.path "core::fmt::Arguments",
-                      "new_const",
-                      [ Value.Integer IntegerKind.Usize 1 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new_const",
+                        [ Value.Integer IntegerKind.Usize 1 ],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                  Value.Array
+                                    [
+                                      mk_str (|
+                                        "Find the sum of all the squared odd numbers under 1000
+"
+                                      |)
+                                    ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array
-                                [
-                                  mk_str (|
-                                    "Find the sum of all the squared odd numbers under 1000
-"
-                                  |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            ])
+                      ]
+                    |))
+                    (Ty.path "core::fmt::Arguments")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -133,11 +145,13 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         []
                       |),
                       [
-                        Value.mkStructRecord
-                          "core::ops::range::RangeFrom"
-                          []
-                          [ Ty.path "u32" ]
-                          [ ("start", Value.Integer IntegerKind.U32 0) ]
+                        M.value_with_ty
+                          (M.value_with_ty
+                            (Value.mkStructRecord
+                              "core::ops::range::RangeFrom"
+                              [ ("start", Value.Integer IntegerKind.U32 0) ])
+                            (Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ Ty.path "u32" ]))
+                          (Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ Ty.path "u32" ])
                       ]
                     |)
                   |),
@@ -174,10 +188,20 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ops::range::RangeFrom")
+                                                []
+                                                [ Ty.path "u32" ]
+                                            ])
                                       ]
                                     |)
                                   |),
@@ -251,7 +275,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                                                       [],
                                                                       []
                                                                     |),
-                                                                    [ M.read (| n_squared |) ]
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.read (| n_squared |))
+                                                                        (Ty.path "u32")
+                                                                    ]
                                                                   |)
                                                                 |)) in
                                                             let _ :=
@@ -301,65 +329,90 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                 Ty.tuple [],
                 M.get_function (| "std::io::stdio::_print", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new_v1",
+                        [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 2 ]
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                  Value.Array
+                                    [ mk_str (| "imperative style: " |); mk_str (| "
+" |) ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array [ mk_str (| "imperative style: " |); mk_str (| "
-" |) ]
-                            |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            ]);
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ],
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.path "u32" ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.borrow (| Pointer.Kind.Ref, acc |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                                        ]
+                                      |)
+                                    ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "u32" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.borrow (| Pointer.Kind.Ref, acc |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
+                                [ Ty.path "core::fmt::rt::Argument" ]
+                            ])
+                      ]
+                    |))
+                    (Ty.path "core::fmt::Arguments")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -395,8 +448,245 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               [ Ty.path "u32" ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::iter::adapters::filter::Filter")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "core::iter::adapters::take_while::TakeWhile")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::iter::adapters::map::Map")
+                            []
+                            [
+                              Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ Ty.path "u32" ];
+                              Ty.function [ Ty.path "u32" ] (Ty.path "u32")
+                            ];
+                          Ty.function
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ]
+                            (Ty.path "bool")
+                        ];
+                      Ty.function [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ] (Ty.path "bool")
+                    ],
+                  M.get_trait_method (|
+                    "core::iter::traits::iterator::Iterator",
+                    Ty.apply
+                      (Ty.path "core::iter::adapters::take_while::TakeWhile")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::map::Map")
+                          []
+                          [
+                            Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ Ty.path "u32" ];
+                            Ty.function [ Ty.path "u32" ] (Ty.path "u32")
+                          ];
+                        Ty.function [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ] (Ty.path "bool")
+                      ],
+                    [],
+                    [],
+                    "filter",
+                    [],
+                    [ Ty.function [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ] (Ty.path "bool") ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::take_while::TakeWhile")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::iter::adapters::map::Map")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ops::range::RangeFrom")
+                                  []
+                                  [ Ty.path "u32" ];
+                                Ty.function [ Ty.path "u32" ] (Ty.path "u32")
+                              ];
+                            Ty.function
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ]
+                              (Ty.path "bool")
+                          ],
+                        M.get_trait_method (|
+                          "core::iter::traits::iterator::Iterator",
+                          Ty.apply
+                            (Ty.path "core::iter::adapters::map::Map")
+                            []
+                            [
+                              Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ Ty.path "u32" ];
+                              Ty.function [ Ty.path "u32" ] (Ty.path "u32")
+                            ],
+                          [],
+                          [],
+                          "take_while",
+                          [],
+                          [
+                            Ty.function
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ]
+                              (Ty.path "bool")
+                          ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::iter::adapters::map::Map")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::ops::range::RangeFrom")
+                                    []
+                                    [ Ty.path "u32" ];
+                                  Ty.function [ Ty.path "u32" ] (Ty.path "u32")
+                                ],
+                              M.get_trait_method (|
+                                "core::iter::traits::iterator::Iterator",
+                                Ty.apply
+                                  (Ty.path "core::ops::range::RangeFrom")
+                                  []
+                                  [ Ty.path "u32" ],
+                                [],
+                                [],
+                                "map",
+                                [],
+                                [ Ty.path "u32"; Ty.function [ Ty.path "u32" ] (Ty.path "u32") ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.mkStructRecord
+                                      "core::ops::range::RangeFrom"
+                                      [ ("start", Value.Integer IntegerKind.U32 0) ])
+                                    (Ty.apply
+                                      (Ty.path "core::ops::range::RangeFrom")
+                                      []
+                                      [ Ty.path "u32" ]))
+                                  (Ty.apply
+                                    (Ty.path "core::ops::range::RangeFrom")
+                                    []
+                                    [ Ty.path "u32" ]);
+                                M.value_with_ty
+                                  (M.closure
+                                    (fun γ =>
+                                      ltac:(M.monadic
+                                        match γ with
+                                        | [ α0 ] =>
+                                          ltac:(M.monadic
+                                            (M.match_operator (|
+                                              Ty.path "u32",
+                                              M.alloc (| Ty.path "u32", α0 |),
+                                              [
+                                                fun γ =>
+                                                  ltac:(M.monadic
+                                                    (let n := M.copy (| Ty.path "u32", γ |) in
+                                                    M.call_closure (|
+                                                      Ty.path "u32",
+                                                      BinOp.Wrap.mul,
+                                                      [ M.read (| n |); M.read (| n |) ]
+                                                    |)))
+                                              ]
+                                            |)))
+                                        | _ => M.impossible "wrong number of arguments"
+                                        end)))
+                                  (Ty.function [ Ty.path "u32" ] (Ty.path "u32"))
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "core::iter::adapters::map::Map")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::ops::range::RangeFrom")
+                                  []
+                                  [ Ty.path "u32" ];
+                                Ty.function [ Ty.path "u32" ] (Ty.path "u32")
+                              ]);
+                          M.value_with_ty
+                            (M.closure
+                              (fun γ =>
+                                ltac:(M.monadic
+                                  match γ with
+                                  | [ α0 ] =>
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "bool",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                                          α0
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ := M.deref (| M.read (| γ |) |) in
+                                              let n_squared := M.copy (| Ty.path "u32", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "bool",
+                                                BinOp.lt,
+                                                [ M.read (| n_squared |); M.read (| upper |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                  | _ => M.impossible "wrong number of arguments"
+                                  end)))
+                            (Ty.function
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ]
+                              (Ty.path "bool"))
+                        ]
+                      |))
+                      (Ty.apply
+                        (Ty.path "core::iter::adapters::take_while::TakeWhile")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::iter::adapters::map::Map")
+                            []
+                            [
+                              Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ Ty.path "u32" ];
+                              Ty.function [ Ty.path "u32" ] (Ty.path "u32")
+                            ];
+                          Ty.function
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ]
+                            (Ty.path "bool")
+                        ]);
+                    M.value_with_ty
+                      (M.closure
+                        (fun γ =>
+                          ltac:(M.monadic
+                            match γ with
+                            | [ α0 ] =>
+                              ltac:(M.monadic
+                                (M.match_operator (|
+                                  Ty.path "bool",
+                                  M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], α0 |),
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let γ := M.deref (| M.read (| γ |) |) in
+                                        let n_squared := M.copy (| Ty.path "u32", γ |) in
+                                        M.call_closure (|
+                                          Ty.path "bool",
+                                          M.get_function (|
+                                            "higher_order_functions::is_odd",
+                                            [],
+                                            []
+                                          |),
+                                          [ M.value_with_ty (M.read (| n_squared |)) (Ty.path "u32")
+                                          ]
+                                        |)))
+                                  ]
+                                |)))
+                            | _ => M.impossible "wrong number of arguments"
+                            end)))
+                      (Ty.function [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ] (Ty.path "bool"))
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::iter::adapters::filter::Filter")
                   []
                   [
@@ -414,157 +704,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         Ty.function [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ] (Ty.path "bool")
                       ];
                     Ty.function [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ] (Ty.path "bool")
-                  ],
-                M.get_trait_method (|
-                  "core::iter::traits::iterator::Iterator",
-                  Ty.apply
-                    (Ty.path "core::iter::adapters::take_while::TakeWhile")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "core::iter::adapters::map::Map")
-                        []
-                        [
-                          Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ Ty.path "u32" ];
-                          Ty.function [ Ty.path "u32" ] (Ty.path "u32")
-                        ];
-                      Ty.function [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ] (Ty.path "bool")
-                    ],
-                  [],
-                  [],
-                  "filter",
-                  [],
-                  [ Ty.function [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ] (Ty.path "bool") ]
-                |),
-                [
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::iter::adapters::take_while::TakeWhile")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "core::iter::adapters::map::Map")
-                          []
-                          [
-                            Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ Ty.path "u32" ];
-                            Ty.function [ Ty.path "u32" ] (Ty.path "u32")
-                          ];
-                        Ty.function [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ] (Ty.path "bool")
-                      ],
-                    M.get_trait_method (|
-                      "core::iter::traits::iterator::Iterator",
-                      Ty.apply
-                        (Ty.path "core::iter::adapters::map::Map")
-                        []
-                        [
-                          Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ Ty.path "u32" ];
-                          Ty.function [ Ty.path "u32" ] (Ty.path "u32")
-                        ],
-                      [],
-                      [],
-                      "take_while",
-                      [],
-                      [ Ty.function [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ] (Ty.path "bool")
-                      ]
-                    |),
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::iter::adapters::map::Map")
-                          []
-                          [
-                            Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ Ty.path "u32" ];
-                            Ty.function [ Ty.path "u32" ] (Ty.path "u32")
-                          ],
-                        M.get_trait_method (|
-                          "core::iter::traits::iterator::Iterator",
-                          Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ Ty.path "u32" ],
-                          [],
-                          [],
-                          "map",
-                          [],
-                          [ Ty.path "u32"; Ty.function [ Ty.path "u32" ] (Ty.path "u32") ]
-                        |),
-                        [
-                          Value.mkStructRecord
-                            "core::ops::range::RangeFrom"
-                            []
-                            [ Ty.path "u32" ]
-                            [ ("start", Value.Integer IntegerKind.U32 0) ];
-                          M.closure
-                            (fun γ =>
-                              ltac:(M.monadic
-                                match γ with
-                                | [ α0 ] =>
-                                  ltac:(M.monadic
-                                    (M.match_operator (|
-                                      Ty.path "u32",
-                                      M.alloc (| Ty.path "u32", α0 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let n := M.copy (| Ty.path "u32", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "u32",
-                                              BinOp.Wrap.mul,
-                                              [ M.read (| n |); M.read (| n |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                                | _ => M.impossible "wrong number of arguments"
-                                end))
-                        ]
-                      |);
-                      M.closure
-                        (fun γ =>
-                          ltac:(M.monadic
-                            match γ with
-                            | [ α0 ] =>
-                              ltac:(M.monadic
-                                (M.match_operator (|
-                                  Ty.path "bool",
-                                  M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], α0 |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ := M.deref (| M.read (| γ |) |) in
-                                        let n_squared := M.copy (| Ty.path "u32", γ |) in
-                                        M.call_closure (|
-                                          Ty.path "bool",
-                                          BinOp.lt,
-                                          [ M.read (| n_squared |); M.read (| upper |) ]
-                                        |)))
-                                  ]
-                                |)))
-                            | _ => M.impossible "wrong number of arguments"
-                            end))
-                    ]
-                  |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "bool",
-                              M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let γ := M.deref (| M.read (| γ |) |) in
-                                    let n_squared := M.copy (| Ty.path "u32", γ |) in
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_function (| "higher_order_functions::is_odd", [], [] |),
-                                      [ M.read (| n_squared |) ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
-                ]
-              |)
+                  ])
             ]
           |) in
         let~ _ : Ty.tuple [] :=
@@ -574,70 +714,95 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                 Ty.tuple [],
                 M.get_function (| "std::io::stdio::_print", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new_v1",
+                        [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 2 ]
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                  Value.Array
+                                    [ mk_str (| "functional style: " |); mk_str (| "
+" |) ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array [ mk_str (| "functional style: " |); mk_str (| "
-" |) ]
-                            |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            ]);
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ],
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.path "u32" ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  sum_of_squared_odd_numbers
+                                                |)
+                                              |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                                        ]
+                                      |)
+                                    ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "u32" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            sum_of_squared_odd_numbers
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
+                                [ Ty.path "core::fmt::rt::Argument" ]
+                            ])
+                      ]
+                    |))
+                    (Ty.path "core::fmt::Arguments")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)

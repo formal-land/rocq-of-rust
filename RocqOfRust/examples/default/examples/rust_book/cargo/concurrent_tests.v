@@ -29,33 +29,45 @@ Definition foo (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Ty.tuple [],
                     M.get_function (| "std::io::stdio::_print", [], [] |),
                     [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "some
+" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "some
-" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -69,33 +81,45 @@ Definition foo (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Ty.tuple [],
                     M.get_function (| "std::io::stdio::_print", [], [] |),
                     [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_const",
-                          [ Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_const",
+                            [ Value.Integer IntegerKind.Usize 1 ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array [ mk_str (| "nothing
+" |) ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array [ mk_str (| "nothing
-" |) ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -144,75 +168,96 @@ Module tests.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.path "std::fs::File"; Ty.path "std::io::error::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "std::fs::OpenOptions",
+                      "open",
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&mut") [] [ Ty.path "std::fs::OpenOptions" ],
+                              M.get_associated_function (|
+                                Ty.path "std::fs::OpenOptions",
+                                "create",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.path "std::fs::OpenOptions" ],
+                                        M.get_associated_function (|
+                                          Ty.path "std::fs::OpenOptions",
+                                          "append",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.alloc (|
+                                                Ty.path "std::fs::OpenOptions",
+                                                M.call_closure (|
+                                                  Ty.path "std::fs::OpenOptions",
+                                                  M.get_associated_function (|
+                                                    Ty.path "std::fs::OpenOptions",
+                                                    "new",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  []
+                                                |)
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "std::fs::OpenOptions" ]);
+                                          M.value_with_ty (Value.Bool true) (Ty.path "bool")
+                                        ]
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "std::fs::OpenOptions" ]);
+                                M.value_with_ty (Value.Bool true) (Ty.path "bool")
+                              ]
+                            |)
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "std::fs::OpenOptions" ]);
+                      M.value_with_ty
+                        (mk_str (| "ferris.txt" |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::result::Result")
                     []
-                    [ Ty.path "std::fs::File"; Ty.path "std::io::error::Error" ],
-                  M.get_associated_function (|
-                    Ty.path "std::fs::OpenOptions",
-                    "open",
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&mut") [] [ Ty.path "std::fs::OpenOptions" ],
-                          M.get_associated_function (|
-                            Ty.path "std::fs::OpenOptions",
-                            "create",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "std::fs::OpenOptions" ],
-                                  M.get_associated_function (|
-                                    Ty.path "std::fs::OpenOptions",
-                                    "append",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.alloc (|
-                                        Ty.path "std::fs::OpenOptions",
-                                        M.call_closure (|
-                                          Ty.path "std::fs::OpenOptions",
-                                          M.get_associated_function (|
-                                            Ty.path "std::fs::OpenOptions",
-                                            "new",
-                                            [],
-                                            []
-                                          |),
-                                          []
-                                        |)
-                                      |)
-                                    |);
-                                    Value.Bool true
-                                  ]
-                                |)
-                              |)
-                            |);
-                            Value.Bool true
-                          ]
-                        |)
-                      |)
-                    |);
-                    mk_str (| "ferris.txt" |)
-                  ]
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| mk_str (| "Failed to open ferris.txt" |) |)
-                |)
+                    [ Ty.path "std::fs::File"; Ty.path "std::io::error::Error" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| mk_str (| "Failed to open ferris.txt" |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |) in
           M.use
@@ -234,14 +279,16 @@ Module tests.
                       []
                     |),
                     [
-                      Value.mkStructRecord
-                        "core::ops::range::Range"
-                        []
-                        [ Ty.path "i32" ]
-                        [
-                          ("start", Value.Integer IntegerKind.I32 0);
-                          ("end_", Value.Integer IntegerKind.I32 5)
-                        ]
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.mkStructRecord
+                            "core::ops::range::Range"
+                            [
+                              ("start", Value.Integer IntegerKind.I32 0);
+                              ("end_", Value.Integer IntegerKind.I32 5)
+                            ])
+                          (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "i32" ]))
+                        (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "i32" ])
                     ]
                   |)
                 |),
@@ -275,10 +322,20 @@ Module tests.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ops::range::Range")
+                                              []
+                                              [ Ty.path "i32" ]
+                                          ])
                                     ]
                                   |)
                                 |),
@@ -310,59 +367,89 @@ Module tests.
                                               []
                                             |),
                                             [
-                                              M.call_closure (|
-                                                Ty.apply
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [ Ty.tuple []; Ty.path "std::io::error::Error"
+                                                    ],
+                                                  M.get_trait_method (|
+                                                    "std::io::Write",
+                                                    Ty.path "std::fs::File",
+                                                    [],
+                                                    [],
+                                                    "write_all",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.MutRef, file |))
+                                                      (Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [ Ty.path "std::fs::File" ]);
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "slice")
+                                                                  []
+                                                                  [ Ty.path "u8" ]
+                                                              ],
+                                                            M.get_associated_function (|
+                                                              Ty.path "str",
+                                                              "as_bytes",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    mk_str (| "Ferris
+" |)
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "str" ])
+                                                            ]
+                                                          |)
+                                                        |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "slice")
+                                                            []
+                                                            [ Ty.path "u8" ]
+                                                        ])
+                                                  ]
+                                                |))
+                                                (Ty.apply
                                                   (Ty.path "core::result::Result")
                                                   []
-                                                  [ Ty.tuple []; Ty.path "std::io::error::Error" ],
-                                                M.get_trait_method (|
-                                                  "std::io::Write",
-                                                  Ty.path "std::fs::File",
-                                                  [],
-                                                  [],
-                                                  "write_all",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (| Pointer.Kind.MutRef, file |);
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "&")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "slice")
-                                                              []
-                                                              [ Ty.path "u8" ]
-                                                          ],
-                                                        M.get_associated_function (|
-                                                          Ty.path "str",
-                                                          "as_bytes",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| mk_str (| "Ferris
-" |) |)
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    |)
+                                                  [ Ty.tuple []; Ty.path "std::io::error::Error" ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    mk_str (| "Could not write to ferris.txt" |)
                                                   |)
-                                                ]
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  mk_str (| "Could not write to ferris.txt" |)
-                                                |)
-                                              |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                             ]
                                           |) in
                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -418,75 +505,96 @@ Module tests.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [ Ty.path "std::fs::File"; Ty.path "std::io::error::Error" ],
+                    M.get_associated_function (|
+                      Ty.path "std::fs::OpenOptions",
+                      "open",
+                      [],
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&mut") [] [ Ty.path "std::fs::OpenOptions" ],
+                              M.get_associated_function (|
+                                Ty.path "std::fs::OpenOptions",
+                                "create",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.path "std::fs::OpenOptions" ],
+                                        M.get_associated_function (|
+                                          Ty.path "std::fs::OpenOptions",
+                                          "append",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.alloc (|
+                                                Ty.path "std::fs::OpenOptions",
+                                                M.call_closure (|
+                                                  Ty.path "std::fs::OpenOptions",
+                                                  M.get_associated_function (|
+                                                    Ty.path "std::fs::OpenOptions",
+                                                    "new",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  []
+                                                |)
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.path "std::fs::OpenOptions" ]);
+                                          M.value_with_ty (Value.Bool true) (Ty.path "bool")
+                                        ]
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "std::fs::OpenOptions" ]);
+                                M.value_with_ty (Value.Bool true) (Ty.path "bool")
+                              ]
+                            |)
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "std::fs::OpenOptions" ]);
+                      M.value_with_ty
+                        (mk_str (| "ferris.txt" |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::result::Result")
                     []
-                    [ Ty.path "std::fs::File"; Ty.path "std::io::error::Error" ],
-                  M.get_associated_function (|
-                    Ty.path "std::fs::OpenOptions",
-                    "open",
-                    [],
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&mut") [] [ Ty.path "std::fs::OpenOptions" ],
-                          M.get_associated_function (|
-                            Ty.path "std::fs::OpenOptions",
-                            "create",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "std::fs::OpenOptions" ],
-                                  M.get_associated_function (|
-                                    Ty.path "std::fs::OpenOptions",
-                                    "append",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.alloc (|
-                                        Ty.path "std::fs::OpenOptions",
-                                        M.call_closure (|
-                                          Ty.path "std::fs::OpenOptions",
-                                          M.get_associated_function (|
-                                            Ty.path "std::fs::OpenOptions",
-                                            "new",
-                                            [],
-                                            []
-                                          |),
-                                          []
-                                        |)
-                                      |)
-                                    |);
-                                    Value.Bool true
-                                  ]
-                                |)
-                              |)
-                            |);
-                            Value.Bool true
-                          ]
-                        |)
-                      |)
-                    |);
-                    mk_str (| "ferris.txt" |)
-                  ]
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| mk_str (| "Failed to open ferris.txt" |) |)
-                |)
+                    [ Ty.path "std::fs::File"; Ty.path "std::io::error::Error" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| mk_str (| "Failed to open ferris.txt" |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |) in
           M.use
@@ -508,14 +616,16 @@ Module tests.
                       []
                     |),
                     [
-                      Value.mkStructRecord
-                        "core::ops::range::Range"
-                        []
-                        [ Ty.path "i32" ]
-                        [
-                          ("start", Value.Integer IntegerKind.I32 0);
-                          ("end_", Value.Integer IntegerKind.I32 5)
-                        ]
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.mkStructRecord
+                            "core::ops::range::Range"
+                            [
+                              ("start", Value.Integer IntegerKind.I32 0);
+                              ("end_", Value.Integer IntegerKind.I32 5)
+                            ])
+                          (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "i32" ]))
+                        (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "i32" ])
                     ]
                   |)
                 |),
@@ -549,10 +659,20 @@ Module tests.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ops::range::Range")
+                                              []
+                                              [ Ty.path "i32" ]
+                                          ])
                                     ]
                                   |)
                                 |),
@@ -584,59 +704,89 @@ Module tests.
                                               []
                                             |),
                                             [
-                                              M.call_closure (|
-                                                Ty.apply
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [ Ty.tuple []; Ty.path "std::io::error::Error"
+                                                    ],
+                                                  M.get_trait_method (|
+                                                    "std::io::Write",
+                                                    Ty.path "std::fs::File",
+                                                    [],
+                                                    [],
+                                                    "write_all",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.MutRef, file |))
+                                                      (Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [ Ty.path "std::fs::File" ]);
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "slice")
+                                                                  []
+                                                                  [ Ty.path "u8" ]
+                                                              ],
+                                                            M.get_associated_function (|
+                                                              Ty.path "str",
+                                                              "as_bytes",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    mk_str (| "Corro
+" |)
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "str" ])
+                                                            ]
+                                                          |)
+                                                        |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "slice")
+                                                            []
+                                                            [ Ty.path "u8" ]
+                                                        ])
+                                                  ]
+                                                |))
+                                                (Ty.apply
                                                   (Ty.path "core::result::Result")
                                                   []
-                                                  [ Ty.tuple []; Ty.path "std::io::error::Error" ],
-                                                M.get_trait_method (|
-                                                  "std::io::Write",
-                                                  Ty.path "std::fs::File",
-                                                  [],
-                                                  [],
-                                                  "write_all",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (| Pointer.Kind.MutRef, file |);
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "&")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "slice")
-                                                              []
-                                                              [ Ty.path "u8" ]
-                                                          ],
-                                                        M.get_associated_function (|
-                                                          Ty.path "str",
-                                                          "as_bytes",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| mk_str (| "Corro
-" |) |)
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    |)
+                                                  [ Ty.tuple []; Ty.path "std::io::error::Error" ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    mk_str (| "Could not write to ferris.txt" |)
                                                   |)
-                                                ]
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  mk_str (| "Could not write to ferris.txt" |)
-                                                |)
-                                              |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                             ]
                                           |) in
                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)

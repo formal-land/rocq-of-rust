@@ -29,45 +29,55 @@ Module ascii.
               Ty.apply (Ty.path "&") [] [ Ty.path "core::ascii::EscapeDefault" ],
               self
             |) in
-          Value.StructTuple
-            "core::ascii::EscapeDefault"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "core::escape::EscapeIterInner")
-                  [ Value.Integer IntegerKind.Usize 4 ]
-                  [],
-                M.get_trait_method (|
-                  "core::clone::Clone",
+          M.value_with_ty
+            (Value.StructTuple
+              "core::ascii::EscapeDefault"
+              [
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 4 ]
                     [],
-                  [],
-                  [],
-                  "clone",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_trait_method (|
+                    "core::clone::Clone",
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 4 ]
+                      [],
+                    [],
+                    [],
+                    "clone",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::ascii::EscapeDefault",
-                          0
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::ascii::EscapeDefault",
+                              0
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
-            ]))
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::escape::EscapeIterInner")
+                            [ Value.Integer IntegerKind.Usize 4 ]
+                            []
+                        ])
+                  ]
+                |)
+              ])
+            (Ty.path "core::ascii::EscapeDefault")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -93,7 +103,7 @@ Module ascii.
         M.call_closure (|
           Ty.path "core::ascii::EscapeDefault",
           M.get_associated_function (| Ty.path "core::ascii::EscapeDefault", "new", [], [] |),
-          [ M.read (| c |) ]
+          [ M.value_with_ty (M.read (| c |)) (Ty.path "u8") ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -116,28 +126,28 @@ Module ascii.
       | [], [], [ c ] =>
         ltac:(M.monadic
           (let c := M.alloc (| Ty.path "u8", c |) in
-          Value.StructTuple
-            "core::ascii::EscapeDefault"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "core::escape::EscapeIterInner")
-                  [ Value.Integer IntegerKind.Usize 4 ]
-                  [],
-                M.get_associated_function (|
+          M.value_with_ty
+            (Value.StructTuple
+              "core::ascii::EscapeDefault"
+              [
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 4 ]
                     [],
-                  "ascii",
-                  [],
-                  []
-                |),
-                [ M.read (| c |) ]
-              |)
-            ]))
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 4 ]
+                      [],
+                    "ascii",
+                    [],
+                    []
+                  |),
+                  [ M.value_with_ty (M.read (| c |)) (Ty.path "u8") ]
+                |)
+              ])
+            (Ty.path "core::ascii::EscapeDefault")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -154,28 +164,28 @@ Module ascii.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.StructTuple
-            "core::ascii::EscapeDefault"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "core::escape::EscapeIterInner")
-                  [ Value.Integer IntegerKind.Usize 4 ]
-                  [],
-                M.get_associated_function (|
+          (M.value_with_ty
+            (Value.StructTuple
+              "core::ascii::EscapeDefault"
+              [
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "core::escape::EscapeIterInner")
                     [ Value.Integer IntegerKind.Usize 4 ]
                     [],
-                  "empty",
-                  [],
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 4 ]
+                      [],
+                    "empty",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |)
-            ]))
+                |)
+              ])
+            (Ty.path "core::ascii::EscapeDefault")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -212,14 +222,24 @@ Module ascii.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::ascii::EscapeDefault",
-                      0
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::ascii::EscapeDefault",
+                        0
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::escape::EscapeIterInner")
+                          [ Value.Integer IntegerKind.Usize 4 ]
+                          []
+                      ])
                 ]
               |)
             |)
@@ -264,14 +284,24 @@ Module ascii.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::ascii::EscapeDefault",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::ascii::EscapeDefault",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 4 ]
+                      []
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -306,14 +336,24 @@ Module ascii.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::ascii::EscapeDefault",
-                      0
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::ascii::EscapeDefault",
+                        0
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::escape::EscapeIterInner")
+                          [ Value.Integer IntegerKind.Usize 4 ]
+                          []
+                      ])
                 ]
               |) in
             M.alloc (|
@@ -323,11 +363,9 @@ Module ascii.
               Value.Tuple
                 [
                   M.read (| n |);
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "usize" ]
-                    [ M.read (| n |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| n |) ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                 ]
             |)
           |)))
@@ -356,10 +394,20 @@ Module ascii.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (| self, "core::ascii::EscapeDefault", 0 |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (| self, "core::ascii::EscapeDefault", 0 |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 4 ]
+                      []
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -387,10 +435,20 @@ Module ascii.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (| self, "core::ascii::EscapeDefault", 0 |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (| self, "core::ascii::EscapeDefault", 0 |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 4 ]
+                      []
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -427,15 +485,25 @@ Module ascii.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::ascii::EscapeDefault",
-                  0
-                |)
-              |);
-              M.read (| n |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::ascii::EscapeDefault",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 4 ]
+                      []
+                  ]);
+              M.value_with_ty (M.read (| n |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -487,14 +555,24 @@ Module ascii.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::ascii::EscapeDefault",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::ascii::EscapeDefault",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 4 ]
+                      []
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -531,15 +609,25 @@ Module ascii.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::ascii::EscapeDefault",
-                  0
-                |)
-              |);
-              M.read (| n |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::ascii::EscapeDefault",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 4 ]
+                      []
+                  ]);
+              M.value_with_ty (M.read (| n |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -587,14 +675,24 @@ Module ascii.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "core::ascii::EscapeDefault",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "core::ascii::EscapeDefault",
+                    0
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [
+                    Ty.apply
+                      (Ty.path "core::escape::EscapeIterInner")
+                      [ Value.Integer IntegerKind.Usize 4 ]
+                      []
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -647,34 +745,48 @@ Module ascii.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                    M.get_associated_function (|
-                      Ty.apply
-                        (Ty.path "core::escape::EscapeIterInner")
-                        [ Value.Integer IntegerKind.Usize 4 ]
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "core::escape::EscapeIterInner")
+                          [ Value.Integer IntegerKind.Usize 4 ]
+                          [],
+                        "as_str",
                         [],
-                      "as_str",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "core::ascii::EscapeDefault",
-                          0
-                        |)
-                      |)
-                    ]
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::ascii::EscapeDefault",
+                              0
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::escape::EscapeIterInner")
+                                [ Value.Integer IntegerKind.Usize 4 ]
+                                []
+                            ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -720,25 +832,34 @@ Module ascii.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.alloc (|
-                  Ty.path "core::fmt::builders::DebugStruct",
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.alloc (|
                     Ty.path "core::fmt::builders::DebugStruct",
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "debug_struct",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EscapeDefault" |) |) |)
-                    ]
+                    M.call_closure (|
+                      Ty.path "core::fmt::builders::DebugStruct",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Formatter",
+                        "debug_struct",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| mk_str (| "EscapeDefault" |) |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

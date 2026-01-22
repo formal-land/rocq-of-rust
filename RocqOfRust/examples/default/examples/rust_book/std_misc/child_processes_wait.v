@@ -27,48 +27,63 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.path "std::process::Child"; Ty.path "std::io::error::Error" ],
+                  M.get_associated_function (| Ty.path "std::process::Command", "spawn", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&mut") [] [ Ty.path "std::process::Command" ],
+                            M.get_associated_function (|
+                              Ty.path "std::process::Command",
+                              "arg",
+                              [],
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.alloc (|
+                                    Ty.path "std::process::Command",
+                                    M.call_closure (|
+                                      Ty.path "std::process::Command",
+                                      M.get_associated_function (|
+                                        Ty.path "std::process::Command",
+                                        "new",
+                                        [],
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (mk_str (| "sleep" |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                      ]
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ Ty.path "std::process::Command" ]);
+                              M.value_with_ty
+                                (mk_str (| "5" |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                            ]
+                          |)
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "std::process::Command" ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::result::Result")
                   []
-                  [ Ty.path "std::process::Child"; Ty.path "std::io::error::Error" ],
-                M.get_associated_function (| Ty.path "std::process::Command", "spawn", [], [] |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "std::process::Command" ],
-                        M.get_associated_function (|
-                          Ty.path "std::process::Command",
-                          "arg",
-                          [],
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.alloc (|
-                              Ty.path "std::process::Command",
-                              M.call_closure (|
-                                Ty.path "std::process::Command",
-                                M.get_associated_function (|
-                                  Ty.path "std::process::Command",
-                                  "new",
-                                  [],
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                |),
-                                [ mk_str (| "sleep" |) ]
-                              |)
-                            |)
-                          |);
-                          mk_str (| "5" |)
-                        ]
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                  [ Ty.path "std::process::Child"; Ty.path "std::io::error::Error" ])
             ]
           |) in
         let~ _result : Ty.path "std::process::ExitStatus" :=
@@ -84,14 +99,23 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.path "std::process::ExitStatus"; Ty.path "std::io::error::Error" ],
+                  M.get_associated_function (| Ty.path "std::process::Child", "wait", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, child |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "std::process::Child" ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::result::Result")
                   []
-                  [ Ty.path "std::process::ExitStatus"; Ty.path "std::io::error::Error" ],
-                M.get_associated_function (| Ty.path "std::process::Child", "wait", [], [] |),
-                [ M.borrow (| Pointer.Kind.MutRef, child |) ]
-              |)
+                  [ Ty.path "std::process::ExitStatus"; Ty.path "std::io::error::Error" ])
             ]
           |) in
         let~ _ : Ty.tuple [] :=
@@ -101,33 +125,45 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                 Ty.tuple [],
                 M.get_function (| "std::io::stdio::_print", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.path "core::fmt::Arguments",
-                      "new_const",
-                      [ Value.Integer IntegerKind.Usize 1 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new_const",
+                        [ Value.Integer IntegerKind.Usize 1 ],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                  Value.Array [ mk_str (| "reached end of main
+" |) ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array [ mk_str (| "reached end of main
-" |) ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            ])
+                      ]
+                    |))
+                    (Ty.path "core::fmt::Arguments")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)

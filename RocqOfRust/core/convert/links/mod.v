@@ -134,6 +134,17 @@ End AsRef.
 
 (* impl<T> AsRef<[T]> for [T] *)
 Module Impl_AsRef_for_Slice.
+  Instance run_as_ref 
+    (T : Set) `{Link T}
+    (self : '& (list T)) :
+    Run.Trait
+      (convert.Impl_core_convert_AsRef_slice_T_for_slice_T.as_ref (Φ T))
+      [] [] [φ self] ('& (list T)).
+  Proof.
+    constructor.
+    run_symbolic.
+  Defined.
+
   Instance method_as_ref
     (T : Set) `{Link T} :
     AsRef.Method_as_ref (list T) (list T).
@@ -141,12 +152,10 @@ Module Impl_AsRef_for_Slice.
     eexists.
     { constructor.
       eapply IsTraitMethod.Defined.
-      { apply convert.Impl_core_convert_AsRef_slice_T_for_slice_T.Implements. }
+      { with_strategy transparent [Φ] apply convert.Impl_core_convert_AsRef_slice_T_for_slice_T.Implements. }
       { reflexivity. }
     }
-    { constructor.
-      run_symbolic.
-    }
+    { typeclasses eauto. }
   Defined.
 
   Instance run
@@ -154,6 +163,7 @@ Module Impl_AsRef_for_Slice.
     AsRef.Run (list T) (list T) :=
   {}.
 End Impl_AsRef_for_Slice.
+Export (hints) Impl_AsRef_for_Slice.
 
 (*
 pub trait TryFrom<T>: Sized {

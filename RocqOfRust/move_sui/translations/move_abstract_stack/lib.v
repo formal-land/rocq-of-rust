@@ -27,46 +27,46 @@ Module Impl_core_default_Default_where_core_default_Default_T_for_move_abstract_
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "move_abstract_stack::AbstractStack"
-          []
-          [ T ]
-          [
-            ("values",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::vec::Vec")
-                  []
-                  [ Ty.tuple [ Ty.path "u64"; T ]; Ty.path "alloc::alloc::Global" ],
-                M.get_trait_method (|
-                  "core::default::Default",
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "move_abstract_stack::AbstractStack"
+            [
+              ("values",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "alloc::vec::Vec")
                     []
                     [ Ty.tuple [ Ty.path "u64"; T ]; Ty.path "alloc::alloc::Global" ],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [ Ty.tuple [ Ty.path "u64"; T ]; Ty.path "alloc::alloc::Global" ],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("len",
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_trait_method (|
-                  "core::default::Default",
+                |));
+              ("len",
+                M.call_closure (|
                   Ty.path "u64",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "u64",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |))
-          ]))
+                |))
+            ])
+          (Ty.apply (Ty.path "move_abstract_stack::AbstractStack") [] [ T ])))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -108,68 +108,80 @@ Module Impl_core_fmt_Debug_where_core_fmt_Debug_T_for_move_abstract_stack_Abstra
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AbstractStack" |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "values" |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "alloc::vec::Vec")
-                      []
-                      [ Ty.tuple [ Ty.path "u64"; T ]; Ty.path "alloc::alloc::Global" ]
-                  ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "move_abstract_stack::AbstractStack",
-                        "values"
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "AbstractStack" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "values" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.tuple [ Ty.path "u64"; T ]; Ty.path "alloc::alloc::Global" ]
+                    ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "move_abstract_stack::AbstractStack",
+                          "values"
+                        |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "len" |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "move_abstract_stack::AbstractStack",
-                            "len"
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "len" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "move_abstract_stack::AbstractStack",
+                              "len"
+                            |)
                           |)
                         |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -202,30 +214,30 @@ Module Impl_move_abstract_stack_AbstractStack_T.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "move_abstract_stack::AbstractStack"
-          []
-          [ T ]
-          [
-            ("values",
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::vec::Vec")
-                  []
-                  [ Ty.tuple [ Ty.path "u64"; T ]; Ty.path "alloc::alloc::Global" ],
-                M.get_associated_function (|
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "move_abstract_stack::AbstractStack"
+            [
+              ("values",
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "alloc::vec::Vec")
                     []
                     [ Ty.tuple [ Ty.path "u64"; T ]; Ty.path "alloc::alloc::Global" ],
-                  "new",
-                  [],
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [ Ty.tuple [ Ty.path "u64"; T ]; Ty.path "alloc::alloc::Global" ],
+                    "new",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |));
-            ("len", Value.Integer IntegerKind.U64 0)
-          ]))
+                |));
+              ("len", Value.Integer IntegerKind.U64 0)
+            ])
+          (Ty.apply (Ty.path "move_abstract_stack::AbstractStack") [] [ T ])))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -303,14 +315,27 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.SubPointer.get_struct_record_field (|
-                                                        M.deref (| M.read (| self |) |),
-                                                        "move_abstract_stack::AbstractStack",
-                                                        "values"
-                                                      |)
-                                                    |)
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "move_abstract_stack::AbstractStack",
+                                                          "values"
+                                                        |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "alloc::vec::Vec")
+                                                            []
+                                                            [
+                                                              Ty.tuple [ Ty.path "u64"; T ];
+                                                              Ty.path "alloc::alloc::Global"
+                                                            ]
+                                                        ])
                                                   ]
                                                 |)
                                               ]
@@ -344,9 +369,11 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                     Ty.path "never",
                                     M.get_function (| "core::panicking::panic", [], [] |),
                                     [
-                                      mk_str (|
-                                        "assertion failed: !self.values.is_empty() || self.len == 0"
-                                      |)
+                                      M.value_with_ty
+                                        (mk_str (|
+                                          "assertion failed: !self.values.is_empty() || self.len == 0"
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                     ]
                                   |)
                                 |)));
@@ -399,14 +426,27 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "move_abstract_stack::AbstractStack",
-                                                    "values"
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      M.deref (| M.read (| self |) |),
+                                                      "move_abstract_stack::AbstractStack",
+                                                      "values"
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "alloc::vec::Vec")
+                                                        []
+                                                        [
+                                                          Ty.tuple [ Ty.path "u64"; T ];
+                                                          Ty.path "alloc::alloc::Global"
+                                                        ]
+                                                    ])
                                               ]
                                             |),
                                             ltac:(M.monadic
@@ -437,8 +477,122 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                                             []
                                                           |),
                                                           [
-                                                            M.call_closure (|
-                                                              Ty.apply
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.apply
+                                                                  (Ty.path "core::option::Option")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.tuple
+                                                                          [ Ty.path "u64"; T ]
+                                                                      ]
+                                                                  ],
+                                                                M.get_associated_function (|
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [ Ty.tuple [ Ty.path "u64"; T ]
+                                                                    ],
+                                                                  "last",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        M.call_closure (|
+                                                                          Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [
+                                                                              Ty.apply
+                                                                                (Ty.path "slice")
+                                                                                []
+                                                                                [
+                                                                                  Ty.tuple
+                                                                                    [
+                                                                                      Ty.path "u64";
+                                                                                      T
+                                                                                    ]
+                                                                                ]
+                                                                            ],
+                                                                          M.get_trait_method (|
+                                                                            "core::ops::deref::Deref",
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "alloc::vec::Vec")
+                                                                              []
+                                                                              [
+                                                                                Ty.tuple
+                                                                                  [ Ty.path "u64"; T
+                                                                                  ];
+                                                                                Ty.path
+                                                                                  "alloc::alloc::Global"
+                                                                              ],
+                                                                            [],
+                                                                            [],
+                                                                            "deref",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.SubPointer.get_struct_record_field (|
+                                                                                  M.deref (|
+                                                                                    M.read (|
+                                                                                      self
+                                                                                    |)
+                                                                                  |),
+                                                                                  "move_abstract_stack::AbstractStack",
+                                                                                  "values"
+                                                                                |)
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "alloc::vec::Vec")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.tuple
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "u64";
+                                                                                          T
+                                                                                        ];
+                                                                                      Ty.path
+                                                                                        "alloc::alloc::Global"
+                                                                                    ]
+                                                                                ])
+                                                                          ]
+                                                                        |)
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "slice")
+                                                                          []
+                                                                          [
+                                                                            Ty.tuple
+                                                                              [ Ty.path "u64"; T ]
+                                                                          ]
+                                                                      ])
+                                                                ]
+                                                              |))
+                                                              (Ty.apply
                                                                 (Ty.path "core::option::Option")
                                                                 []
                                                                 [
@@ -447,68 +601,7 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                                                     []
                                                                     [ Ty.tuple [ Ty.path "u64"; T ]
                                                                     ]
-                                                                ],
-                                                              M.get_associated_function (|
-                                                                Ty.apply
-                                                                  (Ty.path "slice")
-                                                                  []
-                                                                  [ Ty.tuple [ Ty.path "u64"; T ] ],
-                                                                "last",
-                                                                [],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.call_closure (|
-                                                                      Ty.apply
-                                                                        (Ty.path "&")
-                                                                        []
-                                                                        [
-                                                                          Ty.apply
-                                                                            (Ty.path "slice")
-                                                                            []
-                                                                            [
-                                                                              Ty.tuple
-                                                                                [ Ty.path "u64"; T ]
-                                                                            ]
-                                                                        ],
-                                                                      M.get_trait_method (|
-                                                                        "core::ops::deref::Deref",
-                                                                        Ty.apply
-                                                                          (Ty.path
-                                                                            "alloc::vec::Vec")
-                                                                          []
-                                                                          [
-                                                                            Ty.tuple
-                                                                              [ Ty.path "u64"; T ];
-                                                                            Ty.path
-                                                                              "alloc::alloc::Global"
-                                                                          ],
-                                                                        [],
-                                                                        [],
-                                                                        "deref",
-                                                                        [],
-                                                                        []
-                                                                      |),
-                                                                      [
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.SubPointer.get_struct_record_field (|
-                                                                            M.deref (|
-                                                                              M.read (| self |)
-                                                                            |),
-                                                                            "move_abstract_stack::AbstractStack",
-                                                                            "values"
-                                                                          |)
-                                                                        |)
-                                                                      ]
-                                                                    |)
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |)
+                                                                ])
                                                           ]
                                                         |)
                                                       |),
@@ -538,9 +631,11 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                     Ty.path "never",
                                     M.get_function (| "core::panicking::panic", [], [] |),
                                     [
-                                      mk_str (|
-                                        "assertion failed: self.values.is_empty() || self.values.last().unwrap().0 <= self.len"
-                                      |)
+                                      M.value_with_ty
+                                        (mk_str (|
+                                          "assertion failed: self.values.is_empty() || self.values.last().unwrap().0 <= self.len"
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                     ]
                                   |)
                                 |)));
@@ -566,14 +661,24 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "move_abstract_stack::AbstractStack",
-                    "values"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "move_abstract_stack::AbstractStack",
+                      "values"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.tuple [ Ty.path "u64"; T ]; Ty.path "alloc::alloc::Global" ]
+                    ])
               ]
             |)
           |)
@@ -668,14 +773,27 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "move_abstract_stack::AbstractStack",
-                                                      "values"
-                                                    |)
-                                                  |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "move_abstract_stack::AbstractStack",
+                                                        "values"
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "alloc::vec::Vec")
+                                                          []
+                                                          [
+                                                            Ty.tuple [ Ty.path "u64"; T ];
+                                                            Ty.path "alloc::alloc::Global"
+                                                          ]
+                                                      ])
                                                 ]
                                               |)))
                                           |)
@@ -692,9 +810,11 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                     Ty.path "never",
                                     M.get_function (| "core::panicking::panic", [], [] |),
                                     [
-                                      mk_str (|
-                                        "assertion failed: self.len != 0 || self.values.is_empty()"
-                                      |)
+                                      M.value_with_ty
+                                        (mk_str (|
+                                          "assertion failed: self.len != 0 || self.values.is_empty()"
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                     ]
                                   |)
                                 |)));
@@ -767,14 +887,27 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            M.deref (| M.read (| self |) |),
-                                                            "move_abstract_stack::AbstractStack",
-                                                            "values"
-                                                          |)
-                                                        |)
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              M.deref (| M.read (| self |) |),
+                                                              "move_abstract_stack::AbstractStack",
+                                                              "values"
+                                                            |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "alloc::vec::Vec")
+                                                                []
+                                                                [
+                                                                  Ty.tuple [ Ty.path "u64"; T ];
+                                                                  Ty.path "alloc::alloc::Global"
+                                                                ]
+                                                            ])
                                                       ]
                                                     |)
                                                   ]
@@ -810,8 +943,131 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                                                 []
                                                               |),
                                                               [
-                                                                M.call_closure (|
-                                                                  Ty.apply
+                                                                M.value_with_ty
+                                                                  (M.call_closure (|
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "core::option::Option")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.tuple
+                                                                              [ Ty.path "u64"; T ]
+                                                                          ]
+                                                                      ],
+                                                                    M.get_associated_function (|
+                                                                      Ty.apply
+                                                                        (Ty.path "slice")
+                                                                        []
+                                                                        [
+                                                                          Ty.tuple
+                                                                            [ Ty.path "u64"; T ]
+                                                                        ],
+                                                                      "last",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.deref (|
+                                                                            M.call_closure (|
+                                                                              Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "slice")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.tuple
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "u64";
+                                                                                          T
+                                                                                        ]
+                                                                                    ]
+                                                                                ],
+                                                                              M.get_trait_method (|
+                                                                                "core::ops::deref::Deref",
+                                                                                Ty.apply
+                                                                                  (Ty.path
+                                                                                    "alloc::vec::Vec")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.tuple
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "u64";
+                                                                                        T
+                                                                                      ];
+                                                                                    Ty.path
+                                                                                      "alloc::alloc::Global"
+                                                                                  ],
+                                                                                [],
+                                                                                [],
+                                                                                "deref",
+                                                                                [],
+                                                                                []
+                                                                              |),
+                                                                              [
+                                                                                M.value_with_ty
+                                                                                  (M.borrow (|
+                                                                                    Pointer.Kind.Ref,
+                                                                                    M.SubPointer.get_struct_record_field (|
+                                                                                      M.deref (|
+                                                                                        M.read (|
+                                                                                          self
+                                                                                        |)
+                                                                                      |),
+                                                                                      "move_abstract_stack::AbstractStack",
+                                                                                      "values"
+                                                                                    |)
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path "&")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "alloc::vec::Vec")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.tuple
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "u64";
+                                                                                              T
+                                                                                            ];
+                                                                                          Ty.path
+                                                                                            "alloc::alloc::Global"
+                                                                                        ]
+                                                                                    ])
+                                                                              ]
+                                                                            |)
+                                                                          |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "slice")
+                                                                              []
+                                                                              [
+                                                                                Ty.tuple
+                                                                                  [ Ty.path "u64"; T
+                                                                                  ]
+                                                                              ]
+                                                                          ])
+                                                                    ]
+                                                                  |))
+                                                                  (Ty.apply
                                                                     (Ty.path "core::option::Option")
                                                                     []
                                                                     [
@@ -822,75 +1078,7 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                                                           Ty.tuple
                                                                             [ Ty.path "u64"; T ]
                                                                         ]
-                                                                    ],
-                                                                  M.get_associated_function (|
-                                                                    Ty.apply
-                                                                      (Ty.path "slice")
-                                                                      []
-                                                                      [
-                                                                        Ty.tuple
-                                                                          [ Ty.path "u64"; T ]
-                                                                      ],
-                                                                    "last",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.deref (|
-                                                                        M.call_closure (|
-                                                                          Ty.apply
-                                                                            (Ty.path "&")
-                                                                            []
-                                                                            [
-                                                                              Ty.apply
-                                                                                (Ty.path "slice")
-                                                                                []
-                                                                                [
-                                                                                  Ty.tuple
-                                                                                    [
-                                                                                      Ty.path "u64";
-                                                                                      T
-                                                                                    ]
-                                                                                ]
-                                                                            ],
-                                                                          M.get_trait_method (|
-                                                                            "core::ops::deref::Deref",
-                                                                            Ty.apply
-                                                                              (Ty.path
-                                                                                "alloc::vec::Vec")
-                                                                              []
-                                                                              [
-                                                                                Ty.tuple
-                                                                                  [ Ty.path "u64"; T
-                                                                                  ];
-                                                                                Ty.path
-                                                                                  "alloc::alloc::Global"
-                                                                              ],
-                                                                            [],
-                                                                            [],
-                                                                            "deref",
-                                                                            [],
-                                                                            []
-                                                                          |),
-                                                                          [
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.SubPointer.get_struct_record_field (|
-                                                                                M.deref (|
-                                                                                  M.read (| self |)
-                                                                                |),
-                                                                                "move_abstract_stack::AbstractStack",
-                                                                                "values"
-                                                                              |)
-                                                                            |)
-                                                                          ]
-                                                                        |)
-                                                                      |)
-                                                                    |)
-                                                                  ]
-                                                                |)
+                                                                    ])
                                                               ]
                                                             |)
                                                           |),
@@ -921,10 +1109,12 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                     Ty.path "never",
                                     M.get_function (| "core::panicking::panic", [], [] |),
                                     [
-                                      mk_str (|
-                                        "assertion failed: self.len == 0 ||
+                                      M.value_with_ty
+                                        (mk_str (|
+                                          "assertion failed: self.len == 0 ||
     (!self.values.is_empty() && self.values.last().unwrap().0 <= self.len)"
-                                      |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                     ]
                                   |)
                                 |)));
@@ -982,9 +1172,14 @@ Module Impl_move_abstract_stack_AbstractStack_T.
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-            M.read (| item |);
-            Value.Integer IntegerKind.U64 1
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+              (Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.apply (Ty.path "move_abstract_stack::AbstractStack") [] [ T ] ]);
+            M.value_with_ty (M.read (| item |)) T;
+            M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1059,11 +1254,12 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Ok"
-                                []
-                                [ Ty.tuple []; Ty.path "move_abstract_stack::AbsStackError" ]
-                                [ Value.Tuple [] ]
+                              M.value_with_ty
+                                (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "move_abstract_stack::AbsStackError" ])
                             |)
                           |)
                         |)));
@@ -1086,14 +1282,16 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                       Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ],
                       M.get_associated_function (| Ty.path "u64", "checked_add", [], [] |),
                       [
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "move_abstract_stack::AbstractStack",
-                            "len"
-                          |)
-                        |);
-                        M.read (| n |)
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "move_abstract_stack::AbstractStack",
+                              "len"
+                            |)
+                          |))
+                          (Ty.path "u64");
+                        M.value_with_ty (M.read (| n |)) (Ty.path "u64")
                       ]
                     |)
                   |),
@@ -1139,47 +1337,70 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&mut")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "slice")
-                                                []
-                                                [ Ty.tuple [ Ty.path "u64"; T ] ]
-                                            ],
-                                          M.get_trait_method (|
-                                            "core::ops::deref::DerefMut",
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.call_closure (|
                                             Ty.apply
-                                              (Ty.path "alloc::vec::Vec")
+                                              (Ty.path "&mut")
                                               []
                                               [
-                                                Ty.tuple [ Ty.path "u64"; T ];
-                                                Ty.path "alloc::alloc::Global"
+                                                Ty.apply
+                                                  (Ty.path "slice")
+                                                  []
+                                                  [ Ty.tuple [ Ty.path "u64"; T ] ]
                                               ],
-                                            [],
-                                            [],
-                                            "deref_mut",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.SubPointer.get_struct_record_field (|
-                                                M.deref (| M.read (| self |) |),
-                                                "move_abstract_stack::AbstractStack",
-                                                "values"
-                                              |)
-                                            |)
-                                          ]
+                                            M.get_trait_method (|
+                                              "core::ops::deref::DerefMut",
+                                              Ty.apply
+                                                (Ty.path "alloc::vec::Vec")
+                                                []
+                                                [
+                                                  Ty.tuple [ Ty.path "u64"; T ];
+                                                  Ty.path "alloc::alloc::Global"
+                                                ],
+                                              [],
+                                              [],
+                                              "deref_mut",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "move_abstract_stack::AbstractStack",
+                                                    "values"
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "alloc::vec::Vec")
+                                                      []
+                                                      [
+                                                        Ty.tuple [ Ty.path "u64"; T ];
+                                                        Ty.path "alloc::alloc::Global"
+                                                      ]
+                                                  ])
+                                            ]
+                                          |)
                                         |)
-                                      |)
-                                    |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "slice")
+                                            []
+                                            [ Ty.tuple [ Ty.path "u64"; T ] ]
+                                        ])
                                   ]
                                 |)
                               |),
@@ -1217,14 +1438,24 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.alloc (|
-                                                Ty.apply (Ty.path "&") [] [ T ],
-                                                M.borrow (| Pointer.Kind.Ref, item |)
-                                              |)
-                                            |);
-                                            M.borrow (| Pointer.Kind.Ref, last_item |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.alloc (|
+                                                  Ty.apply (Ty.path "&") [] [ T ],
+                                                  M.borrow (| Pointer.Kind.Ref, item |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "&") [] [ T ] ]);
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, last_item |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "&mut") [] [ T ] ])
                                           ]
                                         |)
                                       |) in
@@ -1299,9 +1530,14 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                                                   []
                                                                 |),
                                                                 [
-                                                                  mk_str (|
-                                                                    "assertion failed: *count > 0"
-                                                                  |)
+                                                                  M.value_with_ty
+                                                                    (mk_str (|
+                                                                      "assertion failed: *count > 0"
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [ Ty.path "str" ])
                                                                 ]
                                                               |)
                                                             |)));
@@ -1343,15 +1579,30 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "move_abstract_stack::AbstractStack",
-                                            "values"
-                                          |)
-                                        |);
-                                        Value.Tuple [ M.read (| n |); M.read (| item |) ]
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "move_abstract_stack::AbstractStack",
+                                              "values"
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::vec::Vec")
+                                                []
+                                                [
+                                                  Ty.tuple [ Ty.path "u64"; T ];
+                                                  Ty.path "alloc::alloc::Global"
+                                                ]
+                                            ]);
+                                        M.value_with_ty
+                                          (Value.Tuple [ M.read (| n |); M.read (| item |) ])
+                                          (Ty.tuple [ Ty.path "u64"; T ])
                                       ]
                                     |)))
                               ]
@@ -1361,28 +1612,32 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                               (Ty.path "core::result::Result")
                               []
                               [ Ty.tuple []; Ty.path "move_abstract_stack::AbsStackError" ],
-                            Value.StructTuple
-                              "core::result::Result::Ok"
-                              []
-                              [ Ty.tuple []; Ty.path "move_abstract_stack::AbsStackError" ]
-                              [ Value.Tuple [] ]
+                            M.value_with_ty
+                              (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "move_abstract_stack::AbsStackError" ])
                           |)
                         |)));
                     fun γ =>
                       ltac:(M.monadic
                         (M.read (|
                           M.return_ (|
-                            Value.StructTuple
-                              "core::result::Result::Err"
-                              []
-                              [ Ty.tuple []; Ty.path "move_abstract_stack::AbsStackError" ]
-                              [
-                                Value.StructTuple
-                                  "move_abstract_stack::AbsStackError::Overflow"
-                                  []
-                                  []
-                                  []
-                              ]
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::result::Result::Err"
+                                [
+                                  M.value_with_ty
+                                    (Value.StructTuple
+                                      "move_abstract_stack::AbsStackError::Overflow"
+                                      [])
+                                    (Ty.path "move_abstract_stack::AbsStackError")
+                                ])
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ Ty.tuple []; Ty.path "move_abstract_stack::AbsStackError" ])
                           |)
                         |)))
                   ]
@@ -1429,34 +1684,46 @@ Module Impl_move_abstract_stack_AbstractStack_T.
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
-              M.get_associated_function (|
-                Ty.apply
-                  (Ty.path "core::option::Option")
-                  []
-                  [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ] ],
-                "unwrap",
-                [],
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+              (Ty.apply
+                (Ty.path "&mut")
                 []
-              |),
-              [
-                M.call_closure (|
+                [ Ty.apply (Ty.path "move_abstract_stack::AbstractStack") [] [ T ] ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                M.get_associated_function (|
                   Ty.apply
                     (Ty.path "core::option::Option")
                     []
                     [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ] ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
-                    "new",
-                    [],
-                    []
-                  |),
-                  [ Value.Integer IntegerKind.U64 1 ]
-                |)
-              ]
-            |)
+                  "unwrap",
+                  [],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ] ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ],
+                        "new",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64") ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ] ])
+                ]
+              |))
+              (Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1522,7 +1789,11 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                     [],
                     []
                   |),
-                  [ M.read (| n |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| n |))
+                      (Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ])
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|
@@ -1547,7 +1818,21 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "move_abstract_stack::AbstractStack")
+                                            []
+                                            [ T ]
+                                        ])
                                   ]
                                 |),
                                 ltac:(M.monadic
@@ -1571,17 +1856,20 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ T; Ty.path "move_abstract_stack::AbsStackError" ]
-                                [
-                                  Value.StructTuple
-                                    "move_abstract_stack::AbsStackError::Underflow"
-                                    []
-                                    []
-                                    []
-                                ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "move_abstract_stack::AbsStackError::Underflow"
+                                        [])
+                                      (Ty.path "move_abstract_stack::AbsStackError")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ T; Ty.path "move_abstract_stack::AbsStackError" ])
                             |)
                           |)
                         |)));
@@ -1612,61 +1900,85 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ Ty.path "u64"; T ] ] ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "slice") [] [ Ty.tuple [ Ty.path "u64"; T ] ],
+                              "last_mut",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "slice")
+                                            []
+                                            [ Ty.tuple [ Ty.path "u64"; T ] ]
+                                        ],
+                                      M.get_trait_method (|
+                                        "core::ops::deref::DerefMut",
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [
+                                            Ty.tuple [ Ty.path "u64"; T ];
+                                            Ty.path "alloc::alloc::Global"
+                                          ],
+                                        [],
+                                        [],
+                                        "deref_mut",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "move_abstract_stack::AbstractStack",
+                                              "values"
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::vec::Vec")
+                                                []
+                                                [
+                                                  Ty.tuple [ Ty.path "u64"; T ];
+                                                  Ty.path "alloc::alloc::Global"
+                                                ]
+                                            ])
+                                      ]
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.tuple [ Ty.path "u64"; T ] ]
+                                  ])
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::option::Option")
                             []
-                            [ Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ Ty.path "u64"; T ] ] ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "slice") [] [ Ty.tuple [ Ty.path "u64"; T ] ],
-                            "last_mut",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "slice")
-                                        []
-                                        [ Ty.tuple [ Ty.path "u64"; T ] ]
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::ops::deref::DerefMut",
-                                    Ty.apply
-                                      (Ty.path "alloc::vec::Vec")
-                                      []
-                                      [
-                                        Ty.tuple [ Ty.path "u64"; T ];
-                                        Ty.path "alloc::alloc::Global"
-                                      ],
-                                    [],
-                                    [],
-                                    "deref_mut",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "move_abstract_stack::AbstractStack",
-                                        "values"
-                                      |)
-                                    |)
-                                  ]
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                            [ Ty.apply (Ty.path "&mut") [] [ Ty.tuple [ Ty.path "u64"; T ] ] ])
                       ]
                     |)
                   |),
@@ -1736,7 +2048,16 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                                       [],
                                                       []
                                                     |),
-                                                    [ mk_str (| "assertion failed: *count > 0" |) ]
+                                                    [
+                                                      M.value_with_ty
+                                                        (mk_str (|
+                                                          "assertion failed: *count > 0"
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [ Ty.path "str" ])
+                                                    ]
                                                   |)
                                                 |)));
                                             fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -1764,14 +2085,18 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| count |) |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.borrow (| Pointer.Kind.Ref, n |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| count |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.borrow (| Pointer.Kind.Ref, n |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
                                   ]
                                 |)
                               |),
@@ -1783,17 +2108,20 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                     M.never_to_any (|
                                       M.read (|
                                         M.return_ (|
-                                          Value.StructTuple
-                                            "core::result::Result::Err"
-                                            []
-                                            [ T; Ty.path "move_abstract_stack::AbsStackError" ]
-                                            [
-                                              Value.StructTuple
-                                                "move_abstract_stack::AbsStackError::ElementNotEqual"
-                                                []
-                                                []
-                                                []
-                                            ]
+                                          M.value_with_ty
+                                            (Value.StructTuple
+                                              "core::result::Result::Err"
+                                              [
+                                                M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "move_abstract_stack::AbsStackError::ElementNotEqual"
+                                                    [])
+                                                  (Ty.path "move_abstract_stack::AbsStackError")
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "core::result::Result")
+                                              []
+                                              [ T; Ty.path "move_abstract_stack::AbsStackError" ])
                                         |)
                                       |)
                                     |)));
@@ -1817,34 +2145,52 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                             []
                                           |),
                                           [
-                                            M.call_closure (|
-                                              Ty.apply
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [ Ty.tuple [ Ty.path "u64"; T ] ],
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "alloc::vec::Vec")
+                                                    []
+                                                    [
+                                                      Ty.tuple [ Ty.path "u64"; T ];
+                                                      Ty.path "alloc::alloc::Global"
+                                                    ],
+                                                  "pop",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "move_abstract_stack::AbstractStack",
+                                                        "values"
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "alloc::vec::Vec")
+                                                          []
+                                                          [
+                                                            Ty.tuple [ Ty.path "u64"; T ];
+                                                            Ty.path "alloc::alloc::Global"
+                                                          ]
+                                                      ])
+                                                ]
+                                              |))
+                                              (Ty.apply
                                                 (Ty.path "core::option::Option")
                                                 []
-                                                [ Ty.tuple [ Ty.path "u64"; T ] ],
-                                              M.get_associated_function (|
-                                                Ty.apply
-                                                  (Ty.path "alloc::vec::Vec")
-                                                  []
-                                                  [
-                                                    Ty.tuple [ Ty.path "u64"; T ];
-                                                    Ty.path "alloc::alloc::Global"
-                                                  ],
-                                                "pop",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "move_abstract_stack::AbstractStack",
-                                                    "values"
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
+                                                [ Ty.tuple [ Ty.path "u64"; T ] ])
                                           ]
                                         |)
                                       |),
@@ -1886,10 +2232,12 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| last |) |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| last |) |)
+                                              |))
+                                              (Ty.apply (Ty.path "&") [] [ T ])
                                           ]
                                         |)
                                       |)
@@ -1916,11 +2264,12 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                               (Ty.path "core::result::Result")
                               []
                               [ T; Ty.path "move_abstract_stack::AbsStackError" ],
-                            Value.StructTuple
-                              "core::result::Result::Ok"
-                              []
-                              [ T; Ty.path "move_abstract_stack::AbsStackError" ]
-                              [ M.read (| ret |) ]
+                            M.value_with_ty
+                              (Value.StructTuple "core::result::Result::Ok" [ M.read (| ret |) ])
+                              (Ty.apply
+                                (Ty.path "core::result::Result")
+                                []
+                                [ T; Ty.path "move_abstract_stack::AbsStackError" ])
                           |)
                         |)))
                   ]
@@ -1993,7 +2342,11 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                     [],
                     []
                   |),
-                  [ M.read (| n |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| n |))
+                      (Ty.apply (Ty.path "core::num::nonzero::NonZero") [] [ Ty.path "u64" ])
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.match_operator (|
@@ -2018,7 +2371,21 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                     [],
                                     []
                                   |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "move_abstract_stack::AbstractStack")
+                                            []
+                                            [ T ]
+                                        ])
                                   ]
                                 |),
                                 ltac:(M.monadic
@@ -2042,17 +2409,20 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Err"
-                                []
-                                [ Ty.tuple []; Ty.path "move_abstract_stack::AbsStackError" ]
-                                [
-                                  Value.StructTuple
-                                    "move_abstract_stack::AbsStackError::Underflow"
-                                    []
-                                    []
-                                    []
-                                ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Err"
+                                  [
+                                    M.value_with_ty
+                                      (Value.StructTuple
+                                        "move_abstract_stack::AbsStackError::Underflow"
+                                        [])
+                                      (Ty.path "move_abstract_stack::AbsStackError")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [ Ty.tuple []; Ty.path "move_abstract_stack::AbsStackError" ])
                             |)
                           |)
                         |)));
@@ -2112,8 +2482,94 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                         []
                                       |),
                                       [
-                                        M.call_closure (|
-                                          Ty.apply
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [ Ty.tuple [ Ty.path "u64"; T ] ]
+                                              ],
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "slice")
+                                                []
+                                                [ Ty.tuple [ Ty.path "u64"; T ] ],
+                                              "last_mut",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (|
+                                                    M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "slice")
+                                                            []
+                                                            [ Ty.tuple [ Ty.path "u64"; T ] ]
+                                                        ],
+                                                      M.get_trait_method (|
+                                                        "core::ops::deref::DerefMut",
+                                                        Ty.apply
+                                                          (Ty.path "alloc::vec::Vec")
+                                                          []
+                                                          [
+                                                            Ty.tuple [ Ty.path "u64"; T ];
+                                                            Ty.path "alloc::alloc::Global"
+                                                          ],
+                                                        [],
+                                                        [],
+                                                        "deref_mut",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              M.deref (| M.read (| self |) |),
+                                                              "move_abstract_stack::AbstractStack",
+                                                              "values"
+                                                            |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "alloc::vec::Vec")
+                                                                []
+                                                                [
+                                                                  Ty.tuple [ Ty.path "u64"; T ];
+                                                                  Ty.path "alloc::alloc::Global"
+                                                                ]
+                                                            ])
+                                                      ]
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "slice")
+                                                      []
+                                                      [ Ty.tuple [ Ty.path "u64"; T ] ]
+                                                  ])
+                                            ]
+                                          |))
+                                          (Ty.apply
                                             (Ty.path "core::option::Option")
                                             []
                                             [
@@ -2121,60 +2577,7 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                                 (Ty.path "&mut")
                                                 []
                                                 [ Ty.tuple [ Ty.path "u64"; T ] ]
-                                            ],
-                                          M.get_associated_function (|
-                                            Ty.apply
-                                              (Ty.path "slice")
-                                              []
-                                              [ Ty.tuple [ Ty.path "u64"; T ] ],
-                                            "last_mut",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (|
-                                                M.call_closure (|
-                                                  Ty.apply
-                                                    (Ty.path "&mut")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "slice")
-                                                        []
-                                                        [ Ty.tuple [ Ty.path "u64"; T ] ]
-                                                    ],
-                                                  M.get_trait_method (|
-                                                    "core::ops::deref::DerefMut",
-                                                    Ty.apply
-                                                      (Ty.path "alloc::vec::Vec")
-                                                      []
-                                                      [
-                                                        Ty.tuple [ Ty.path "u64"; T ];
-                                                        Ty.path "alloc::alloc::Global"
-                                                      ],
-                                                    [],
-                                                    [],
-                                                    "deref_mut",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.MutRef,
-                                                      M.SubPointer.get_struct_record_field (|
-                                                        M.deref (| M.read (| self |) |),
-                                                        "move_abstract_stack::AbstractStack",
-                                                        "values"
-                                                      |)
-                                                    |)
-                                                  ]
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)
+                                            ])
                                       ]
                                     |)
                                   |),
@@ -2257,9 +2660,14 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      mk_str (|
-                                                                        "assertion failed: *count > 0"
-                                                                      |)
+                                                                      M.value_with_ty
+                                                                        (mk_str (|
+                                                                          "assertion failed: *count > 0"
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [ Ty.path "str" ])
                                                                     ]
                                                                   |)
                                                                 |)));
@@ -2290,16 +2698,20 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| count |) |)
-                                                    |);
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (|
-                                                        M.borrow (| Pointer.Kind.Ref, rem |)
-                                                      |)
-                                                    |)
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| count |) |)
+                                                      |))
+                                                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.borrow (| Pointer.Kind.Ref, rem |)
+                                                        |)
+                                                      |))
+                                                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
                                                   ]
                                                 |)
                                               |),
@@ -2367,44 +2779,75 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.call_closure (|
-                                                                        Ty.apply
+                                                                      M.value_with_ty
+                                                                        (M.call_closure (|
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "core::option::Option")
+                                                                            []
+                                                                            [
+                                                                              Ty.tuple
+                                                                                [ Ty.path "u64"; T ]
+                                                                            ],
+                                                                          M.get_associated_function (|
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "alloc::vec::Vec")
+                                                                              []
+                                                                              [
+                                                                                Ty.tuple
+                                                                                  [ Ty.path "u64"; T
+                                                                                  ];
+                                                                                Ty.path
+                                                                                  "alloc::alloc::Global"
+                                                                              ],
+                                                                            "pop",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.MutRef,
+                                                                                M.SubPointer.get_struct_record_field (|
+                                                                                  M.deref (|
+                                                                                    M.read (|
+                                                                                      self
+                                                                                    |)
+                                                                                  |),
+                                                                                  "move_abstract_stack::AbstractStack",
+                                                                                  "values"
+                                                                                |)
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&mut")
+                                                                                []
+                                                                                [
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "alloc::vec::Vec")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.tuple
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "u64";
+                                                                                          T
+                                                                                        ];
+                                                                                      Ty.path
+                                                                                        "alloc::alloc::Global"
+                                                                                    ]
+                                                                                ])
+                                                                          ]
+                                                                        |))
+                                                                        (Ty.apply
                                                                           (Ty.path
                                                                             "core::option::Option")
                                                                           []
                                                                           [
                                                                             Ty.tuple
                                                                               [ Ty.path "u64"; T ]
-                                                                          ],
-                                                                        M.get_associated_function (|
-                                                                          Ty.apply
-                                                                            (Ty.path
-                                                                              "alloc::vec::Vec")
-                                                                            []
-                                                                            [
-                                                                              Ty.tuple
-                                                                                [ Ty.path "u64"; T
-                                                                                ];
-                                                                              Ty.path
-                                                                                "alloc::alloc::Global"
-                                                                            ],
-                                                                          "pop",
-                                                                          [],
-                                                                          []
-                                                                        |),
-                                                                        [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.MutRef,
-                                                                            M.SubPointer.get_struct_record_field (|
-                                                                              M.deref (|
-                                                                                M.read (| self |)
-                                                                              |),
-                                                                              "move_abstract_stack::AbstractStack",
-                                                                              "values"
-                                                                            |)
-                                                                          |)
-                                                                        ]
-                                                                      |)
+                                                                          ])
                                                                     ]
                                                                   |) in
                                                                 M.alloc (|
@@ -2479,11 +2922,12 @@ Module Impl_move_abstract_stack_AbstractStack_T.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "move_abstract_stack::AbsStackError" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "move_abstract_stack::AbsStackError" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "move_abstract_stack::AbsStackError" ])
               |)
             |)))
         |)))
@@ -2597,7 +3041,11 @@ Module Impl_core_cmp_PartialEq_move_abstract_stack_AbsStackError_for_move_abstra
                 [],
                 [ Ty.path "move_abstract_stack::AbsStackError" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "move_abstract_stack::AbsStackError" ])
+              ]
             |) in
           let~ __arg1_discr : Ty.path "isize" :=
             M.call_closure (|
@@ -2607,7 +3055,11 @@ Module Impl_core_cmp_PartialEq_move_abstract_stack_AbsStackError_for_move_abstra
                 [],
                 [ Ty.path "move_abstract_stack::AbsStackError" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "move_abstract_stack::AbsStackError" ])
+              ]
             |) in
           M.alloc (|
             Ty.path "bool",
@@ -2657,7 +3109,11 @@ Module Impl_core_cmp_PartialOrd_move_abstract_stack_AbsStackError_for_move_abstr
                 [],
                 [ Ty.path "move_abstract_stack::AbsStackError" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "move_abstract_stack::AbsStackError" ])
+              ]
             |) in
           let~ __arg1_discr : Ty.path "isize" :=
             M.call_closure (|
@@ -2667,7 +3123,11 @@ Module Impl_core_cmp_PartialOrd_move_abstract_stack_AbsStackError_for_move_abstr
                 [],
                 [ Ty.path "move_abstract_stack::AbsStackError" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "move_abstract_stack::AbsStackError" ])
+              ]
             |) in
           M.alloc (|
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
@@ -2683,14 +3143,18 @@ Module Impl_core_cmp_PartialOrd_move_abstract_stack_AbsStackError_for_move_abstr
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ])
               ]
             |)
           |)
@@ -2734,7 +3198,11 @@ Module Impl_core_cmp_Ord_for_move_abstract_stack_AbsStackError.
                 [],
                 [ Ty.path "move_abstract_stack::AbsStackError" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "move_abstract_stack::AbsStackError" ])
+              ]
             |) in
           let~ __arg1_discr : Ty.path "isize" :=
             M.call_closure (|
@@ -2744,7 +3212,11 @@ Module Impl_core_cmp_Ord_for_move_abstract_stack_AbsStackError.
                 [],
                 [ Ty.path "move_abstract_stack::AbsStackError" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "move_abstract_stack::AbsStackError" ])
+              ]
             |) in
           M.alloc (|
             Ty.path "core::cmp::Ordering",
@@ -2752,14 +3224,18 @@ Module Impl_core_cmp_Ord_for_move_abstract_stack_AbsStackError.
               Ty.path "core::cmp::Ordering",
               M.get_trait_method (| "core::cmp::Ord", Ty.path "isize", [], [], "cmp", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ])
               ]
             |)
           |)
@@ -2832,34 +3308,44 @@ Module Impl_core_fmt_Debug_for_move_abstract_stack_AbsStackError.
           Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.path "core::fmt::Error" ],
           M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.match_operator (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-              self,
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ :=
-                      M.is_struct_tuple (|
-                        γ,
-                        "move_abstract_stack::AbsStackError::ElementNotEqual"
-                      |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ElementNotEqual" |) |) |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ :=
-                      M.is_struct_tuple (| γ, "move_abstract_stack::AbsStackError::Underflow" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Underflow" |) |) |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ :=
-                      M.is_struct_tuple (| γ, "move_abstract_stack::AbsStackError::Overflow" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Overflow" |) |) |)))
-              ]
-            |)
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.match_operator (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                self,
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "move_abstract_stack::AbsStackError::ElementNotEqual"
+                        |) in
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "ElementNotEqual" |) |)
+                      |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "move_abstract_stack::AbsStackError::Underflow"
+                        |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Underflow" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (| γ, "move_abstract_stack::AbsStackError::Overflow" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Overflow" |) |) |)))
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2926,34 +3412,49 @@ Module Impl_core_fmt_Display_for_move_abstract_stack_AbsStackError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.call_closure (|
-                      Ty.path "core::fmt::Arguments",
-                      M.get_associated_function (|
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.path "core::fmt::Arguments",
-                        "new_const",
-                        [ Value.Integer IntegerKind.Usize 1 ],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new_const",
+                          [ Value.Integer IntegerKind.Usize 1 ],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
                               Pointer.Kind.Ref,
-                              M.alloc (|
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                    Value.Array
+                                      [ mk_str (| "Popped element is not equal to specified item" |)
+                                      ]
+                                  |)
+                                |)
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
                                 Ty.apply
                                   (Ty.path "array")
                                   [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array
-                                  [ mk_str (| "Popped element is not equal to specified item" |) ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |)
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                              ])
+                        ]
+                      |))
+                      (Ty.path "core::fmt::Arguments")
                   ]
                 |)));
             fun γ =>
@@ -2973,34 +3474,48 @@ Module Impl_core_fmt_Display_for_move_abstract_stack_AbsStackError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.call_closure (|
-                      Ty.path "core::fmt::Arguments",
-                      M.get_associated_function (|
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.path "core::fmt::Arguments",
-                        "new_const",
-                        [ Value.Integer IntegerKind.Usize 1 ],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new_const",
+                          [ Value.Integer IntegerKind.Usize 1 ],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
                               Pointer.Kind.Ref,
-                              M.alloc (|
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                    Value.Array
+                                      [ mk_str (| "Popped more values than are on the stack" |) ]
+                                  |)
+                                |)
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
                                 Ty.apply
                                   (Ty.path "array")
                                   [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array
-                                  [ mk_str (| "Popped more values than are on the stack" |) ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |)
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                              ])
+                        ]
+                      |))
+                      (Ty.path "core::fmt::Arguments")
                   ]
                 |)));
             fun γ =>
@@ -3020,33 +3535,48 @@ Module Impl_core_fmt_Display_for_move_abstract_stack_AbsStackError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.call_closure (|
-                      Ty.path "core::fmt::Arguments",
-                      M.get_associated_function (|
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.path "core::fmt::Arguments",
-                        "new_const",
-                        [ Value.Integer IntegerKind.Usize 1 ],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new_const",
+                          [ Value.Integer IntegerKind.Usize 1 ],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
                               Pointer.Kind.Ref,
-                              M.alloc (|
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                    Value.Array
+                                      [ mk_str (| "Pushed too many elements on the stack" |) ]
+                                  |)
+                                |)
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
                                 Ty.apply
                                   (Ty.path "array")
                                   [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array [ mk_str (| "Pushed too many elements on the stack" |) ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |)
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                              ])
+                        ]
+                      |))
+                      (Ty.path "core::fmt::Arguments")
                   ]
                 |)))
           ]

@@ -65,10 +65,21 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "alloc::collections::vec_deque::VecDeque")
+                                                  []
+                                                  [ T; A ]
+                                              ])
                                         ]
                                       |);
                                       M.call_closure (|
@@ -80,10 +91,15 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| other |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| other |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "alloc::vec::Vec") [] [ U; A ] ])
                                         ]
                                       |)
                                     ]
@@ -120,7 +136,19 @@ Module collections.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                    []
+                                    [ T; A ]
+                                ])
+                          ]
                         |)
                       |),
                       [
@@ -171,48 +199,72 @@ Module collections.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [ Ty.apply (Ty.path "slice") [] [ U ] ],
-                                          M.get_trait_method (|
-                                            "core::ops::index::Index",
-                                            Ty.apply (Ty.path "alloc::vec::Vec") [] [ U; A ],
-                                            [],
-                                            [ Ty.path "core::ops::range::RangeFull" ],
-                                            "index",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| other |) |)
-                                            |);
-                                            Value.StructTuple "core::ops::range::RangeFull" [] [] []
-                                          ]
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ U ] ],
+                                            M.get_trait_method (|
+                                              "core::ops::index::Index",
+                                              Ty.apply (Ty.path "alloc::vec::Vec") [] [ U; A ],
+                                              [],
+                                              [ Ty.path "core::ops::range::RangeFull" ],
+                                              "index",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| other |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "alloc::vec::Vec") [] [ U; A ]
+                                                  ]);
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::ops::range::RangeFull"
+                                                    [])
+                                                  (Ty.path "core::ops::range::RangeFull"))
+                                                (Ty.path "core::ops::range::RangeFull")
+                                            ]
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.apply (Ty.path "slice") [] [ T ],
-                                        "len",
-                                        [],
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| sa |) |)
-                                        |)
-                                      ]
-                                    |)
+                                        [ Ty.apply (Ty.path "slice") [] [ U ] ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "slice") [] [ T ],
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| sa |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
                                   ]
                                 |)
                               |),
@@ -258,8 +310,28 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (| Pointer.Kind.Ref, sa |);
-                                          M.borrow (| Pointer.Kind.Ref, oa |)
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, sa |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                              ]);
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, oa |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ U ] ]
+                                              ])
                                         ]
                                       |),
                                       ltac:(M.monadic
@@ -283,8 +355,28 @@ Module collections.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.Ref, sb |);
-                                            M.borrow (| Pointer.Kind.Ref, ob |)
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, sb |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                                ]);
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, ob |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ U ] ]
+                                                ])
                                           ]
                                         |)))
                                     |)))
@@ -373,10 +465,21 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "alloc::collections::vec_deque::VecDeque")
+                                                  []
+                                                  [ T; A ]
+                                              ])
                                         ]
                                       |);
                                       M.call_closure (|
@@ -388,12 +491,17 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.read (| M.deref (| M.read (| other |) |) |)
-                                            |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.read (| M.deref (| M.read (| other |) |) |)
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ U ] ])
                                         ]
                                       |)
                                     ]
@@ -430,7 +538,19 @@ Module collections.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                    []
+                                    [ T; A ]
+                                ])
+                          ]
                         |)
                       |),
                       [
@@ -481,50 +601,73 @@ Module collections.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [ Ty.apply (Ty.path "slice") [] [ U ] ],
-                                          M.get_trait_method (|
-                                            "core::ops::index::Index",
-                                            Ty.apply (Ty.path "slice") [] [ U ],
-                                            [],
-                                            [ Ty.path "core::ops::range::RangeFull" ],
-                                            "index",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.read (| M.deref (| M.read (| other |) |) |)
-                                              |)
-                                            |);
-                                            Value.StructTuple "core::ops::range::RangeFull" [] [] []
-                                          ]
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ U ] ],
+                                            M.get_trait_method (|
+                                              "core::ops::index::Index",
+                                              Ty.apply (Ty.path "slice") [] [ U ],
+                                              [],
+                                              [ Ty.path "core::ops::range::RangeFull" ],
+                                              "index",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.read (| M.deref (| M.read (| other |) |) |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ U ] ]);
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::ops::range::RangeFull"
+                                                    [])
+                                                  (Ty.path "core::ops::range::RangeFull"))
+                                                (Ty.path "core::ops::range::RangeFull")
+                                            ]
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.apply (Ty.path "slice") [] [ T ],
-                                        "len",
-                                        [],
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| sa |) |)
-                                        |)
-                                      ]
-                                    |)
+                                        [ Ty.apply (Ty.path "slice") [] [ U ] ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "slice") [] [ T ],
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| sa |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
                                   ]
                                 |)
                               |),
@@ -570,8 +713,28 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (| Pointer.Kind.Ref, sa |);
-                                          M.borrow (| Pointer.Kind.Ref, oa |)
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, sa |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                              ]);
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, oa |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ U ] ]
+                                              ])
                                         ]
                                       |),
                                       ltac:(M.monadic
@@ -595,8 +758,28 @@ Module collections.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.Ref, sb |);
-                                            M.borrow (| Pointer.Kind.Ref, ob |)
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, sb |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                                ]);
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, ob |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ U ] ]
+                                                ])
                                           ]
                                         |)))
                                     |)))
@@ -686,10 +869,21 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "alloc::collections::vec_deque::VecDeque")
+                                                  []
+                                                  [ T; A ]
+                                              ])
                                         ]
                                       |);
                                       M.call_closure (|
@@ -701,12 +895,17 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.read (| M.deref (| M.read (| other |) |) |)
-                                            |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.read (| M.deref (| M.read (| other |) |) |)
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ U ] ])
                                         ]
                                       |)
                                     ]
@@ -743,7 +942,19 @@ Module collections.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                    []
+                                    [ T; A ]
+                                ])
+                          ]
                         |)
                       |),
                       [
@@ -794,50 +1005,73 @@ Module collections.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [ Ty.apply (Ty.path "slice") [] [ U ] ],
-                                          M.get_trait_method (|
-                                            "core::ops::index::Index",
-                                            Ty.apply (Ty.path "slice") [] [ U ],
-                                            [],
-                                            [ Ty.path "core::ops::range::RangeFull" ],
-                                            "index",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.read (| M.deref (| M.read (| other |) |) |)
-                                              |)
-                                            |);
-                                            Value.StructTuple "core::ops::range::RangeFull" [] [] []
-                                          ]
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ U ] ],
+                                            M.get_trait_method (|
+                                              "core::ops::index::Index",
+                                              Ty.apply (Ty.path "slice") [] [ U ],
+                                              [],
+                                              [ Ty.path "core::ops::range::RangeFull" ],
+                                              "index",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.read (| M.deref (| M.read (| other |) |) |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ U ] ]);
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::ops::range::RangeFull"
+                                                    [])
+                                                  (Ty.path "core::ops::range::RangeFull"))
+                                                (Ty.path "core::ops::range::RangeFull")
+                                            ]
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.apply (Ty.path "slice") [] [ T ],
-                                        "len",
-                                        [],
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| sa |) |)
-                                        |)
-                                      ]
-                                    |)
+                                        [ Ty.apply (Ty.path "slice") [] [ U ] ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "slice") [] [ T ],
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| sa |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
                                   ]
                                 |)
                               |),
@@ -883,8 +1117,28 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (| Pointer.Kind.Ref, sa |);
-                                          M.borrow (| Pointer.Kind.Ref, oa |)
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, sa |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                              ]);
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, oa |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ U ] ]
+                                              ])
                                         ]
                                       |),
                                       ltac:(M.monadic
@@ -908,8 +1162,28 @@ Module collections.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.Ref, sb |);
-                                            M.borrow (| Pointer.Kind.Ref, ob |)
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, sb |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                                ]);
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, ob |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ U ] ]
+                                                ])
                                           ]
                                         |)))
                                     |)))
@@ -1002,10 +1276,21 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "alloc::collections::vec_deque::VecDeque")
+                                                  []
+                                                  [ T; A ]
+                                              ])
                                         ]
                                       |);
                                       M.call_closure (|
@@ -1017,28 +1302,33 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.call_closure (|
-                                            Ty.apply
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ U ] ],
+                                              M.pointer_coercion
+                                                M.PointerCoercion.Unsize
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "array") [ N ] [ U ] ])
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ U ] ]),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| other |) |)
+                                                |)
+                                              ]
+                                            |))
+                                            (Ty.apply
                                               (Ty.path "&")
                                               []
-                                              [ Ty.apply (Ty.path "slice") [] [ U ] ],
-                                            M.pointer_coercion
-                                              M.PointerCoercion.Unsize
-                                              (Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.apply (Ty.path "array") [ N ] [ U ] ])
-                                              (Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.apply (Ty.path "slice") [] [ U ] ]),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| other |) |)
-                                              |)
-                                            ]
-                                          |)
+                                              [ Ty.apply (Ty.path "slice") [] [ U ] ])
                                         ]
                                       |)
                                     ]
@@ -1075,7 +1365,19 @@ Module collections.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                    []
+                                    [ T; A ]
+                                ])
+                          ]
                         |)
                       |),
                       [
@@ -1126,48 +1428,71 @@ Module collections.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [ Ty.apply (Ty.path "slice") [] [ U ] ],
-                                          M.get_trait_method (|
-                                            "core::ops::index::Index",
-                                            Ty.apply (Ty.path "array") [ N ] [ U ],
-                                            [],
-                                            [ Ty.path "core::ops::range::RangeFull" ],
-                                            "index",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| other |) |)
-                                            |);
-                                            Value.StructTuple "core::ops::range::RangeFull" [] [] []
-                                          ]
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ U ] ],
+                                            M.get_trait_method (|
+                                              "core::ops::index::Index",
+                                              Ty.apply (Ty.path "array") [ N ] [ U ],
+                                              [],
+                                              [ Ty.path "core::ops::range::RangeFull" ],
+                                              "index",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| other |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "array") [ N ] [ U ] ]);
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::ops::range::RangeFull"
+                                                    [])
+                                                  (Ty.path "core::ops::range::RangeFull"))
+                                                (Ty.path "core::ops::range::RangeFull")
+                                            ]
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.apply (Ty.path "slice") [] [ T ],
-                                        "len",
-                                        [],
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| sa |) |)
-                                        |)
-                                      ]
-                                    |)
+                                        [ Ty.apply (Ty.path "slice") [] [ U ] ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "slice") [] [ T ],
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| sa |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
                                   ]
                                 |)
                               |),
@@ -1213,8 +1538,28 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (| Pointer.Kind.Ref, sa |);
-                                          M.borrow (| Pointer.Kind.Ref, oa |)
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, sa |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                              ]);
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, oa |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ U ] ]
+                                              ])
                                         ]
                                       |),
                                       ltac:(M.monadic
@@ -1238,8 +1583,28 @@ Module collections.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.Ref, sb |);
-                                            M.borrow (| Pointer.Kind.Ref, ob |)
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, sb |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                                ]);
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, ob |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ U ] ]
+                                                ])
                                           ]
                                         |)))
                                     |)))
@@ -1334,10 +1699,21 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "alloc::collections::vec_deque::VecDeque")
+                                                  []
+                                                  [ T; A ]
+                                              ])
                                         ]
                                       |);
                                       M.call_closure (|
@@ -1349,30 +1725,35 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.call_closure (|
-                                            Ty.apply
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ U ] ],
+                                              M.pointer_coercion
+                                                M.PointerCoercion.Unsize
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "array") [ N ] [ U ] ])
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ U ] ]),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.read (| M.deref (| M.read (| other |) |) |)
+                                                  |)
+                                                |)
+                                              ]
+                                            |))
+                                            (Ty.apply
                                               (Ty.path "&")
                                               []
-                                              [ Ty.apply (Ty.path "slice") [] [ U ] ],
-                                            M.pointer_coercion
-                                              M.PointerCoercion.Unsize
-                                              (Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.apply (Ty.path "array") [ N ] [ U ] ])
-                                              (Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.apply (Ty.path "slice") [] [ U ] ]),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.read (| M.deref (| M.read (| other |) |) |)
-                                                |)
-                                              |)
-                                            ]
-                                          |)
+                                              [ Ty.apply (Ty.path "slice") [] [ U ] ])
                                         ]
                                       |)
                                     ]
@@ -1409,7 +1790,19 @@ Module collections.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                    []
+                                    [ T; A ]
+                                ])
+                          ]
                         |)
                       |),
                       [
@@ -1460,50 +1853,73 @@ Module collections.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [ Ty.apply (Ty.path "slice") [] [ U ] ],
-                                          M.get_trait_method (|
-                                            "core::ops::index::Index",
-                                            Ty.apply (Ty.path "array") [ N ] [ U ],
-                                            [],
-                                            [ Ty.path "core::ops::range::RangeFull" ],
-                                            "index",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.read (| M.deref (| M.read (| other |) |) |)
-                                              |)
-                                            |);
-                                            Value.StructTuple "core::ops::range::RangeFull" [] [] []
-                                          ]
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ U ] ],
+                                            M.get_trait_method (|
+                                              "core::ops::index::Index",
+                                              Ty.apply (Ty.path "array") [ N ] [ U ],
+                                              [],
+                                              [ Ty.path "core::ops::range::RangeFull" ],
+                                              "index",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.read (| M.deref (| M.read (| other |) |) |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "array") [ N ] [ U ] ]);
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::ops::range::RangeFull"
+                                                    [])
+                                                  (Ty.path "core::ops::range::RangeFull"))
+                                                (Ty.path "core::ops::range::RangeFull")
+                                            ]
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.apply (Ty.path "slice") [] [ T ],
-                                        "len",
-                                        [],
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| sa |) |)
-                                        |)
-                                      ]
-                                    |)
+                                        [ Ty.apply (Ty.path "slice") [] [ U ] ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "slice") [] [ T ],
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| sa |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
                                   ]
                                 |)
                               |),
@@ -1549,8 +1965,28 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (| Pointer.Kind.Ref, sa |);
-                                          M.borrow (| Pointer.Kind.Ref, oa |)
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, sa |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                              ]);
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, oa |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ U ] ]
+                                              ])
                                         ]
                                       |),
                                       ltac:(M.monadic
@@ -1574,8 +2010,28 @@ Module collections.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.Ref, sb |);
-                                            M.borrow (| Pointer.Kind.Ref, ob |)
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, sb |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                                ]);
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, ob |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ U ] ]
+                                                ])
                                           ]
                                         |)))
                                     |)))
@@ -1671,10 +2127,21 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "alloc::collections::vec_deque::VecDeque")
+                                                  []
+                                                  [ T; A ]
+                                              ])
                                         ]
                                       |);
                                       M.call_closure (|
@@ -1686,30 +2153,35 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.call_closure (|
-                                            Ty.apply
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ U ] ],
+                                              M.pointer_coercion
+                                                M.PointerCoercion.Unsize
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "array") [ N ] [ U ] ])
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ U ] ]),
+                                              [
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.read (| M.deref (| M.read (| other |) |) |)
+                                                  |)
+                                                |)
+                                              ]
+                                            |))
+                                            (Ty.apply
                                               (Ty.path "&")
                                               []
-                                              [ Ty.apply (Ty.path "slice") [] [ U ] ],
-                                            M.pointer_coercion
-                                              M.PointerCoercion.Unsize
-                                              (Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.apply (Ty.path "array") [ N ] [ U ] ])
-                                              (Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.apply (Ty.path "slice") [] [ U ] ]),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.read (| M.deref (| M.read (| other |) |) |)
-                                                |)
-                                              |)
-                                            ]
-                                          |)
+                                              [ Ty.apply (Ty.path "slice") [] [ U ] ])
                                         ]
                                       |)
                                     ]
@@ -1746,7 +2218,19 @@ Module collections.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                    []
+                                    [ T; A ]
+                                ])
+                          ]
                         |)
                       |),
                       [
@@ -1797,50 +2281,73 @@ Module collections.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [ Ty.apply (Ty.path "slice") [] [ U ] ],
-                                          M.get_trait_method (|
-                                            "core::ops::index::Index",
-                                            Ty.apply (Ty.path "array") [ N ] [ U ],
-                                            [],
-                                            [ Ty.path "core::ops::range::RangeFull" ],
-                                            "index",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.read (| M.deref (| M.read (| other |) |) |)
-                                              |)
-                                            |);
-                                            Value.StructTuple "core::ops::range::RangeFull" [] [] []
-                                          ]
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ U ] ],
+                                            M.get_trait_method (|
+                                              "core::ops::index::Index",
+                                              Ty.apply (Ty.path "array") [ N ] [ U ],
+                                              [],
+                                              [ Ty.path "core::ops::range::RangeFull" ],
+                                              "index",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.read (| M.deref (| M.read (| other |) |) |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "array") [ N ] [ U ] ]);
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::ops::range::RangeFull"
+                                                    [])
+                                                  (Ty.path "core::ops::range::RangeFull"))
+                                                (Ty.path "core::ops::range::RangeFull")
+                                            ]
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      M.get_associated_function (|
-                                        Ty.apply (Ty.path "slice") [] [ T ],
-                                        "len",
-                                        [],
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
                                         []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| sa |) |)
-                                        |)
-                                      ]
-                                    |)
+                                        [ Ty.apply (Ty.path "slice") [] [ U ] ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "slice") [] [ T ],
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| sa |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
                                   ]
                                 |)
                               |),
@@ -1886,8 +2393,28 @@ Module collections.
                                           []
                                         |),
                                         [
-                                          M.borrow (| Pointer.Kind.Ref, sa |);
-                                          M.borrow (| Pointer.Kind.Ref, oa |)
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, sa |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                              ]);
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, oa |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ U ] ]
+                                              ])
                                         ]
                                       |),
                                       ltac:(M.monadic
@@ -1911,8 +2438,28 @@ Module collections.
                                             []
                                           |),
                                           [
-                                            M.borrow (| Pointer.Kind.Ref, sb |);
-                                            M.borrow (| Pointer.Kind.Ref, ob |)
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, sb |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]
+                                                ]);
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, ob |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ U ] ]
+                                                ])
                                           ]
                                         |)))
                                     |)))

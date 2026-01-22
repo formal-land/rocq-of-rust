@@ -32,36 +32,42 @@ Module Impl_core_fmt_Debug_for_try_from_and_try_into_EvenNumber.
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EvenNumber" |) |) |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply (Ty.path "&") [] [ Ty.path "i32" ],
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "try_from_and_try_into::EvenNumber",
-                            0
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EvenNumber" |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "i32" ],
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "try_from_and_try_into::EvenNumber",
+                              0
+                            |)
                           |)
                         |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -185,24 +191,28 @@ Module Impl_core_convert_TryFrom_i32_for_try_from_and_try_into_EvenNumber.
                       |)
                     |)) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple [] ]
-                  [
-                    Value.StructTuple
-                      "try_from_and_try_into::EvenNumber"
-                      []
-                      []
-                      [ M.read (| value |) ]
-                  ]));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Ok"
+                    [
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "try_from_and_try_into::EvenNumber"
+                          [ M.read (| value |) ])
+                        (Ty.path "try_from_and_try_into::EvenNumber")
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple [] ])));
             fun γ =>
               ltac:(M.monadic
-                (Value.StructTuple
-                  "core::result::Result::Err"
-                  []
-                  [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple [] ]
-                  [ Value.Tuple [] ]))
+                (M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Err" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple [] ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -286,7 +296,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           [],
                           []
                         |),
-                        [ Value.Integer IntegerKind.I32 8 ]
+                        [ M.value_with_ty (Value.Integer IntegerKind.I32 8) (Ty.path "i32") ]
                       |)
                     |)
                   |);
@@ -297,17 +307,20 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         (Ty.path "core::result::Result")
                         []
                         [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple [] ],
-                      Value.StructTuple
-                        "core::result::Result::Ok"
-                        []
-                        [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple [] ]
-                        [
-                          Value.StructTuple
-                            "try_from_and_try_into::EvenNumber"
-                            []
-                            []
-                            [ Value.Integer IntegerKind.I32 8 ]
-                        ]
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::result::Result::Ok"
+                          [
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "try_from_and_try_into::EvenNumber"
+                                [ Value.Integer IntegerKind.I32 8 ])
+                              (Ty.path "try_from_and_try_into::EvenNumber")
+                          ])
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple [] ])
                     |)
                   |)
                 ]
@@ -381,14 +394,40 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "try_from_and_try_into::EvenNumber";
+                                                  Ty.tuple []
+                                                ]
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "try_from_and_try_into::EvenNumber";
+                                                  Ty.tuple []
+                                                ]
+                                            ])
                                       ]
                                     |)
                                   ]
@@ -399,7 +438,9 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           M.never_to_any (|
                             M.read (|
                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                M.value_with_ty
+                                  (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                  (Ty.path "core::panicking::AssertKind") in
                               M.alloc (|
                                 Ty.path "never",
                                 M.call_closure (|
@@ -420,30 +461,64 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                     ]
                                   |),
                                   [
-                                    M.read (| kind |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
+                                    M.value_with_ty
+                                      (M.read (| kind |))
+                                      (Ty.path "core::panicking::AssertKind");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "try_from_and_try_into::EvenNumber";
+                                              Ty.tuple []
+                                            ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::option::Option::None"
-                                      []
-                                      [ Ty.path "core::fmt::Arguments" ]
-                                      []
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "try_from_and_try_into::EvenNumber";
+                                              Ty.tuple []
+                                            ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::fmt::Arguments" ])
                                   ]
                                 |)
                               |)
@@ -502,7 +577,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           [],
                           []
                         |),
-                        [ Value.Integer IntegerKind.I32 5 ]
+                        [ M.value_with_ty (Value.Integer IntegerKind.I32 5) (Ty.path "i32") ]
                       |)
                     |)
                   |);
@@ -513,11 +588,12 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         (Ty.path "core::result::Result")
                         []
                         [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple [] ],
-                      Value.StructTuple
-                        "core::result::Result::Err"
-                        []
-                        [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple [] ]
-                        [ Value.Tuple [] ]
+                      M.value_with_ty
+                        (Value.StructTuple "core::result::Result::Err" [ Value.Tuple [] ])
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple [] ])
                     |)
                   |)
                 ]
@@ -591,14 +667,40 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "try_from_and_try_into::EvenNumber";
+                                                  Ty.tuple []
+                                                ]
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "try_from_and_try_into::EvenNumber";
+                                                  Ty.tuple []
+                                                ]
+                                            ])
                                       ]
                                     |)
                                   ]
@@ -609,7 +711,9 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           M.never_to_any (|
                             M.read (|
                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                M.value_with_ty
+                                  (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                  (Ty.path "core::panicking::AssertKind") in
                               M.alloc (|
                                 Ty.path "never",
                                 M.call_closure (|
@@ -630,30 +734,64 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                     ]
                                   |),
                                   [
-                                    M.read (| kind |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
+                                    M.value_with_ty
+                                      (M.read (| kind |))
+                                      (Ty.path "core::panicking::AssertKind");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "try_from_and_try_into::EvenNumber";
+                                              Ty.tuple []
+                                            ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::option::Option::None"
-                                      []
-                                      [ Ty.path "core::fmt::Arguments" ]
-                                      []
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "try_from_and_try_into::EvenNumber";
+                                              Ty.tuple []
+                                            ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::fmt::Arguments" ])
                                   ]
                                 |)
                               |)
@@ -683,7 +821,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               [],
               []
             |),
-            [ Value.Integer IntegerKind.I32 8 ]
+            [ M.value_with_ty (Value.Integer IntegerKind.I32 8) (Ty.path "i32") ]
           |) in
         let~ _ : Ty.tuple [] :=
           M.match_operator (|
@@ -720,17 +858,20 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         (Ty.path "core::result::Result")
                         []
                         [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple [] ],
-                      Value.StructTuple
-                        "core::result::Result::Ok"
-                        []
-                        [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple [] ]
-                        [
-                          Value.StructTuple
-                            "try_from_and_try_into::EvenNumber"
-                            []
-                            []
-                            [ Value.Integer IntegerKind.I32 8 ]
-                        ]
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::result::Result::Ok"
+                          [
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "try_from_and_try_into::EvenNumber"
+                                [ Value.Integer IntegerKind.I32 8 ])
+                              (Ty.path "try_from_and_try_into::EvenNumber")
+                          ])
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple [] ])
                     |)
                   |)
                 ]
@@ -804,14 +945,40 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "try_from_and_try_into::EvenNumber";
+                                                  Ty.tuple []
+                                                ]
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "try_from_and_try_into::EvenNumber";
+                                                  Ty.tuple []
+                                                ]
+                                            ])
                                       ]
                                     |)
                                   ]
@@ -822,7 +989,9 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           M.never_to_any (|
                             M.read (|
                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                M.value_with_ty
+                                  (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                  (Ty.path "core::panicking::AssertKind") in
                               M.alloc (|
                                 Ty.path "never",
                                 M.call_closure (|
@@ -843,30 +1012,64 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                     ]
                                   |),
                                   [
-                                    M.read (| kind |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
+                                    M.value_with_ty
+                                      (M.read (| kind |))
+                                      (Ty.path "core::panicking::AssertKind");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "try_from_and_try_into::EvenNumber";
+                                              Ty.tuple []
+                                            ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::option::Option::None"
-                                      []
-                                      [ Ty.path "core::fmt::Arguments" ]
-                                      []
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "try_from_and_try_into::EvenNumber";
+                                              Ty.tuple []
+                                            ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::fmt::Arguments" ])
                                   ]
                                 |)
                               |)
@@ -896,7 +1099,7 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               [],
               []
             |),
-            [ Value.Integer IntegerKind.I32 5 ]
+            [ M.value_with_ty (Value.Integer IntegerKind.I32 5) (Ty.path "i32") ]
           |) in
         let~ _ : Ty.tuple [] :=
           M.match_operator (|
@@ -933,11 +1136,12 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         (Ty.path "core::result::Result")
                         []
                         [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple [] ],
-                      Value.StructTuple
-                        "core::result::Result::Err"
-                        []
-                        [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple [] ]
-                        [ Value.Tuple [] ]
+                      M.value_with_ty
+                        (Value.StructTuple "core::result::Result::Err" [ Value.Tuple [] ])
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [ Ty.path "try_from_and_try_into::EvenNumber"; Ty.tuple [] ])
                     |)
                   |)
                 ]
@@ -1011,14 +1215,40 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "try_from_and_try_into::EvenNumber";
+                                                  Ty.tuple []
+                                                ]
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "try_from_and_try_into::EvenNumber";
+                                                  Ty.tuple []
+                                                ]
+                                            ])
                                       ]
                                     |)
                                   ]
@@ -1029,7 +1259,9 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           M.never_to_any (|
                             M.read (|
                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                M.value_with_ty
+                                  (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                  (Ty.path "core::panicking::AssertKind") in
                               M.alloc (|
                                 Ty.path "never",
                                 M.call_closure (|
@@ -1050,30 +1282,64 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                     ]
                                   |),
                                   [
-                                    M.read (| kind |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
+                                    M.value_with_ty
+                                      (M.read (| kind |))
+                                      (Ty.path "core::panicking::AssertKind");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "try_from_and_try_into::EvenNumber";
+                                              Ty.tuple []
+                                            ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::option::Option::None"
-                                      []
-                                      [ Ty.path "core::fmt::Arguments" ]
-                                      []
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.path "try_from_and_try_into::EvenNumber";
+                                              Ty.tuple []
+                                            ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::fmt::Arguments" ])
                                   ]
                                 |)
                               |)

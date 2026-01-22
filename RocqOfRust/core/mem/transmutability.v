@@ -22,23 +22,26 @@ Module mem.
                     (Ty.path "core::mem::transmutability::TransmuteFrom::transmute::Transmute")
                     []
                     [ Src; Self ] :=
-                Value.mkStructRecord
-                  "core::mem::transmutability::TransmuteFrom::transmute::Transmute"
-                  []
-                  [ Src; Self ]
-                  [
-                    ("src",
-                      M.call_closure (|
-                        Ty.apply (Ty.path "core::mem::manually_drop::ManuallyDrop") [] [ Src ],
-                        M.get_associated_function (|
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::mem::transmutability::TransmuteFrom::transmute::Transmute"
+                    [
+                      ("src",
+                        M.call_closure (|
                           Ty.apply (Ty.path "core::mem::manually_drop::ManuallyDrop") [] [ Src ],
-                          "new",
-                          [],
-                          []
-                        |),
-                        [ M.read (| src |) ]
-                      |))
-                  ] in
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::mem::manually_drop::ManuallyDrop") [] [ Src ],
+                            "new",
+                            [],
+                            []
+                          |),
+                          [ M.value_with_ty (M.read (| src |)) Src ]
+                        |))
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::mem::transmutability::TransmuteFrom::transmute::Transmute")
+                    []
+                    [ Src; Self ]) in
               let~ dst : Ty.apply (Ty.path "core::mem::manually_drop::ManuallyDrop") [] [ Self ] :=
                 M.read (|
                   M.SubPointer.get_struct_record_field (|
@@ -57,7 +60,11 @@ Module mem.
                     [],
                     []
                   |),
-                  [ M.read (| dst |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| dst |))
+                      (Ty.apply (Ty.path "core::mem::manually_drop::ManuallyDrop") [] [ Self ])
+                  ]
                 |)
               |)
             |)))
@@ -321,106 +328,126 @@ Module mem.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Assume" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "alignment" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::mem::transmutability::Assume",
-                            "alignment"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Assume" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "alignment" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::mem::transmutability::Assume",
+                              "alignment"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "lifetimes" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::mem::transmutability::Assume",
-                            "lifetimes"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "lifetimes" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::mem::transmutability::Assume",
+                              "lifetimes"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "safety" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::mem::transmutability::Assume",
-                            "safety"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "safety" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::mem::transmutability::Assume",
+                              "safety"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "validity" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::mem::transmutability::Assume",
-                                "validity"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "validity" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "bool" ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "bool" ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::mem::transmutability::Assume",
+                                  "validity"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -471,16 +498,16 @@ Module mem.
         ltac:(M.monadic
           (M.alloc (|
             Ty.path "core::mem::transmutability::Assume",
-            Value.mkStructRecord
-              "core::mem::transmutability::Assume"
-              []
-              []
-              [
-                ("alignment", Value.Bool false);
-                ("lifetimes", Value.Bool false);
-                ("safety", Value.Bool false);
-                ("validity", Value.Bool false)
-              ]
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::mem::transmutability::Assume"
+                [
+                  ("alignment", Value.Bool false);
+                  ("lifetimes", Value.Bool false);
+                  ("safety", Value.Bool false);
+                  ("validity", Value.Bool false)
+                ])
+              (Ty.path "core::mem::transmutability::Assume")
           |))).
       
       Global Instance AssociatedConstant_value_NOTHING :
@@ -593,84 +620,84 @@ Module mem.
             (let self := M.alloc (| Ty.path "core::mem::transmutability::Assume", self |) in
             let other_assumptions :=
               M.alloc (| Ty.path "core::mem::transmutability::Assume", other_assumptions |) in
-            Value.mkStructRecord
-              "core::mem::transmutability::Assume"
-              []
-              []
-              [
-                ("alignment",
-                  LogicalOp.or (|
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::mem::transmutability::Assume",
-                        "alignment"
-                      |)
-                    |),
-                    ltac:(M.monadic
-                      (M.read (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::mem::transmutability::Assume"
+                [
+                  ("alignment",
+                    LogicalOp.or (|
+                      M.read (|
                         M.SubPointer.get_struct_record_field (|
-                          other_assumptions,
+                          self,
                           "core::mem::transmutability::Assume",
                           "alignment"
                         |)
-                      |)))
-                  |));
-                ("lifetimes",
-                  LogicalOp.or (|
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::mem::transmutability::Assume",
-                        "lifetimes"
-                      |)
-                    |),
-                    ltac:(M.monadic
-                      (M.read (|
+                      |),
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            other_assumptions,
+                            "core::mem::transmutability::Assume",
+                            "alignment"
+                          |)
+                        |)))
+                    |));
+                  ("lifetimes",
+                    LogicalOp.or (|
+                      M.read (|
                         M.SubPointer.get_struct_record_field (|
-                          other_assumptions,
+                          self,
                           "core::mem::transmutability::Assume",
                           "lifetimes"
                         |)
-                      |)))
-                  |));
-                ("safety",
-                  LogicalOp.or (|
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::mem::transmutability::Assume",
-                        "safety"
-                      |)
-                    |),
-                    ltac:(M.monadic
-                      (M.read (|
+                      |),
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            other_assumptions,
+                            "core::mem::transmutability::Assume",
+                            "lifetimes"
+                          |)
+                        |)))
+                    |));
+                  ("safety",
+                    LogicalOp.or (|
+                      M.read (|
                         M.SubPointer.get_struct_record_field (|
-                          other_assumptions,
+                          self,
                           "core::mem::transmutability::Assume",
                           "safety"
                         |)
-                      |)))
-                  |));
-                ("validity",
-                  LogicalOp.or (|
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::mem::transmutability::Assume",
-                        "validity"
-                      |)
-                    |),
-                    ltac:(M.monadic
-                      (M.read (|
+                      |),
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            other_assumptions,
+                            "core::mem::transmutability::Assume",
+                            "safety"
+                          |)
+                        |)))
+                    |));
+                  ("validity",
+                    LogicalOp.or (|
+                      M.read (|
                         M.SubPointer.get_struct_record_field (|
-                          other_assumptions,
+                          self,
                           "core::mem::transmutability::Assume",
                           "validity"
                         |)
-                      |)))
-                  |))
-              ]))
+                      |),
+                      ltac:(M.monadic
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            other_assumptions,
+                            "core::mem::transmutability::Assume",
+                            "validity"
+                          |)
+                        |)))
+                    |))
+                ])
+              (Ty.path "core::mem::transmutability::Assume")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -695,108 +722,108 @@ Module mem.
             (let self := M.alloc (| Ty.path "core::mem::transmutability::Assume", self |) in
             let other_assumptions :=
               M.alloc (| Ty.path "core::mem::transmutability::Assume", other_assumptions |) in
-            Value.mkStructRecord
-              "core::mem::transmutability::Assume"
-              []
-              []
-              [
-                ("alignment",
-                  LogicalOp.and (|
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::mem::transmutability::Assume",
-                        "alignment"
-                      |)
-                    |),
-                    ltac:(M.monadic
-                      (M.call_closure (|
-                        Ty.path "bool",
-                        UnOp.not,
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              other_assumptions,
-                              "core::mem::transmutability::Assume",
-                              "alignment"
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::mem::transmutability::Assume"
+                [
+                  ("alignment",
+                    LogicalOp.and (|
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "core::mem::transmutability::Assume",
+                          "alignment"
+                        |)
+                      |),
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "bool",
+                          UnOp.not,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                other_assumptions,
+                                "core::mem::transmutability::Assume",
+                                "alignment"
+                              |)
                             |)
-                          |)
-                        ]
-                      |)))
-                  |));
-                ("lifetimes",
-                  LogicalOp.and (|
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::mem::transmutability::Assume",
-                        "lifetimes"
-                      |)
-                    |),
-                    ltac:(M.monadic
-                      (M.call_closure (|
-                        Ty.path "bool",
-                        UnOp.not,
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              other_assumptions,
-                              "core::mem::transmutability::Assume",
-                              "lifetimes"
+                          ]
+                        |)))
+                    |));
+                  ("lifetimes",
+                    LogicalOp.and (|
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "core::mem::transmutability::Assume",
+                          "lifetimes"
+                        |)
+                      |),
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "bool",
+                          UnOp.not,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                other_assumptions,
+                                "core::mem::transmutability::Assume",
+                                "lifetimes"
+                              |)
                             |)
-                          |)
-                        ]
-                      |)))
-                  |));
-                ("safety",
-                  LogicalOp.and (|
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::mem::transmutability::Assume",
-                        "safety"
-                      |)
-                    |),
-                    ltac:(M.monadic
-                      (M.call_closure (|
-                        Ty.path "bool",
-                        UnOp.not,
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              other_assumptions,
-                              "core::mem::transmutability::Assume",
-                              "safety"
+                          ]
+                        |)))
+                    |));
+                  ("safety",
+                    LogicalOp.and (|
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "core::mem::transmutability::Assume",
+                          "safety"
+                        |)
+                      |),
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "bool",
+                          UnOp.not,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                other_assumptions,
+                                "core::mem::transmutability::Assume",
+                                "safety"
+                              |)
                             |)
-                          |)
-                        ]
-                      |)))
-                  |));
-                ("validity",
-                  LogicalOp.and (|
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "core::mem::transmutability::Assume",
-                        "validity"
-                      |)
-                    |),
-                    ltac:(M.monadic
-                      (M.call_closure (|
-                        Ty.path "bool",
-                        UnOp.not,
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              other_assumptions,
-                              "core::mem::transmutability::Assume",
-                              "validity"
+                          ]
+                        |)))
+                    |));
+                  ("validity",
+                    LogicalOp.and (|
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "core::mem::transmutability::Assume",
+                          "validity"
+                        |)
+                      |),
+                      ltac:(M.monadic
+                        (M.call_closure (|
+                          Ty.path "bool",
+                          UnOp.not,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                other_assumptions,
+                                "core::mem::transmutability::Assume",
+                                "validity"
+                              |)
                             |)
-                          |)
-                        ]
-                      |)))
-                  |))
-              ]))
+                          ]
+                        |)))
+                    |))
+                ])
+              (Ty.path "core::mem::transmutability::Assume")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -831,7 +858,12 @@ Module mem.
                 [],
                 []
               |),
-              [ M.read (| self |); M.read (| other_assumptions |) ]
+              [
+                M.value_with_ty (M.read (| self |)) (Ty.path "core::mem::transmutability::Assume");
+                M.value_with_ty
+                  (M.read (| other_assumptions |))
+                  (Ty.path "core::mem::transmutability::Assume")
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -872,7 +904,12 @@ Module mem.
                 [],
                 []
               |),
-              [ M.read (| self |); M.read (| other_assumptions |) ]
+              [
+                M.value_with_ty (M.read (| self |)) (Ty.path "core::mem::transmutability::Assume");
+                M.value_with_ty
+                  (M.read (| other_assumptions |))
+                  (Ty.path "core::mem::transmutability::Assume")
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.

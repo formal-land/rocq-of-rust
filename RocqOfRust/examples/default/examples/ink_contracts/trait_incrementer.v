@@ -28,11 +28,11 @@ Module Impl_trait_incrementer_Incrementer.
     | [], [], [ init_value ] =>
       ltac:(M.monadic
         (let init_value := M.alloc (| Ty.path "u64", init_value |) in
-        Value.mkStructRecord
-          "trait_incrementer::Incrementer"
-          []
-          []
-          [ ("value", M.read (| init_value |)) ]))
+        M.value_with_ty
+          (Value.mkStructRecord
+            "trait_incrementer::Incrementer"
+            [ ("value", M.read (| init_value |)) ])
+          (Ty.path "trait_incrementer::Incrementer")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -107,8 +107,10 @@ Module Impl_trait_incrementer_Increment_for_trait_incrementer_Incrementer.
             []
           |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-            Value.Integer IntegerKind.U64 1
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "trait_incrementer::Incrementer" ]);
+            M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"

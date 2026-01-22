@@ -36,66 +36,78 @@ Module sealed.
                 [ Ty.apply (Ty.path "alloy_primitives::sealed::Sealed") [] [ T ] ],
               self
             |) in
-          Value.mkStructRecord
-            "alloy_primitives::sealed::Sealed"
-            []
-            [ T ]
-            [
-              ("inner",
-                M.call_closure (|
-                  T,
-                  M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "alloy_primitives::sealed::Sealed"
+              [
+                ("inner",
+                  M.call_closure (|
+                    T,
+                    M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloy_primitives::sealed::Sealed",
-                            "inner"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloy_primitives::sealed::Sealed",
+                                "inner"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("seal",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                    [ Value.Integer IntegerKind.Usize 32 ]
-                    [],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ T ])
+                    ]
+                  |));
+                ("seal",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
                       [ Value.Integer IntegerKind.Usize 32 ]
                       [],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.apply
+                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloy_primitives::sealed::Sealed",
-                            "seal"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloy_primitives::sealed::Sealed",
+                                "seal"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              []
+                          ])
+                    ]
+                  |))
+              ])
+            (Ty.apply (Ty.path "alloy_primitives::sealed::Sealed") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -155,81 +167,93 @@ Module sealed.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Sealed" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "inner" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ T ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloy_primitives::sealed::Sealed",
-                          "inner"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Sealed" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "inner" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ T ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloy_primitives::sealed::Sealed",
+                            "inner"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "seal" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                            [ Value.Integer IntegerKind.Usize 32 ]
-                            []
-                        ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                                [ Value.Integer IntegerKind.Usize 32 ]
-                                []
-                            ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloy_primitives::sealed::Sealed",
-                              "seal"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "seal" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              []
+                          ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                  []
+                              ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloy_primitives::sealed::Sealed",
+                                "seal"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -290,22 +314,26 @@ Module sealed.
               Ty.path "bool",
               M.get_trait_method (| "core::cmp::PartialEq", T, [], [ T ], "eq", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "alloy_primitives::sealed::Sealed",
-                    "inner"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "alloy_primitives::sealed::Sealed",
-                    "inner"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "alloy_primitives::sealed::Sealed",
+                      "inner"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "alloy_primitives::sealed::Sealed",
+                      "inner"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |),
             ltac:(M.monadic
@@ -329,22 +357,42 @@ Module sealed.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloy_primitives::sealed::Sealed",
-                      "seal"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "alloy_primitives::sealed::Sealed",
-                      "seal"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloy_primitives::sealed::Sealed",
+                        "seal"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                          [ Value.Integer IntegerKind.Usize 32 ]
+                          []
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "alloy_primitives::sealed::Sealed",
+                        "seal"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                          [ Value.Integer IntegerKind.Usize 32 ]
+                          []
+                      ])
                 ]
               |)))
           |)))
@@ -437,20 +485,24 @@ Module sealed.
                 Ty.tuple [],
                 M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ __H ] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloy_primitives::sealed::Sealed",
-                          "inner"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloy_primitives::sealed::Sealed",
+                            "inner"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             M.alloc (|
@@ -470,20 +522,32 @@ Module sealed.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloy_primitives::sealed::Sealed",
-                          "seal"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloy_primitives::sealed::Sealed",
+                            "seal"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                          [ Value.Integer IntegerKind.Usize 32 ]
+                          []
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)
@@ -632,15 +696,19 @@ Module sealed.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, inner |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, inner |))
+                    (Ty.apply (Ty.path "&") [] [ T ])
+                ]
               |) in
             M.alloc (|
               Ty.apply (Ty.path "alloy_primitives::sealed::Sealed") [] [ T ],
-              Value.mkStructRecord
-                "alloy_primitives::sealed::Sealed"
-                []
-                [ T ]
-                [ ("inner", M.read (| inner |)); ("seal", M.read (| seal |)) ]
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "alloy_primitives::sealed::Sealed"
+                  [ ("inner", M.read (| inner |)); ("seal", M.read (| seal |)) ])
+                (Ty.apply (Ty.path "alloy_primitives::sealed::Sealed") [] [ T ])
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -687,21 +755,28 @@ Module sealed.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| inner |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| inner |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ T ])
+                ]
               |) in
             M.alloc (|
               Ty.apply
                 (Ty.path "alloy_primitives::sealed::Sealed")
                 []
                 [ Ty.apply (Ty.path "&") [] [ T ] ],
-              Value.mkStructRecord
-                "alloy_primitives::sealed::Sealed"
-                []
-                [ Ty.apply (Ty.path "&") [] [ T ] ]
-                [
-                  ("inner", M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| inner |) |) |));
-                  ("seal", M.read (| seal |))
-                ]
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "alloy_primitives::sealed::Sealed"
+                  [
+                    ("inner", M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| inner |) |) |));
+                    ("seal", M.read (| seal |))
+                  ])
+                (Ty.apply
+                  (Ty.path "alloy_primitives::sealed::Sealed")
+                  []
+                  [ Ty.apply (Ty.path "&") [] [ T ] ])
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -751,14 +826,16 @@ Module sealed.
                   []
                 |),
                 [
-                  M.read (| f |);
-                  Value.Tuple
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| M.borrow (| Pointer.Kind.Ref, inner |) |)
-                      |)
-                    ]
+                  M.value_with_ty (M.read (| f |)) F;
+                  M.value_with_ty
+                    (Value.Tuple
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.borrow (| Pointer.Kind.Ref, inner |) |)
+                        |)
+                      ])
+                    (Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ])
                 ]
               |) in
             M.alloc (|
@@ -771,7 +848,15 @@ Module sealed.
                   [],
                   []
                 |),
-                [ M.read (| inner |); M.read (| seal |) ]
+                [
+                  M.value_with_ty (M.read (| inner |)) T;
+                  M.value_with_ty
+                    (M.read (| seal |))
+                    (Ty.apply
+                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                      [ Value.Integer IntegerKind.Usize 32 ]
+                      [])
+                ]
               |)
             |)
           |)))
@@ -822,8 +907,11 @@ Module sealed.
                   []
                 |),
                 [
-                  M.read (| f |);
-                  Value.Tuple [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| inner |) |) |) ]
+                  M.value_with_ty (M.read (| f |)) F;
+                  M.value_with_ty
+                    (Value.Tuple
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| inner |) |) |) ])
+                    (Ty.tuple [ Ty.apply (Ty.path "&") [] [ T ] ])
                 ]
               |) in
             M.alloc (|
@@ -846,8 +934,15 @@ Module sealed.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| inner |) |) |);
-                  M.read (| seal |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| inner |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ T ]);
+                  M.value_with_ty
+                    (M.read (| seal |))
+                    (Ty.apply
+                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                      [ Value.Integer IntegerKind.Usize 32 ]
+                      [])
                 ]
               |)
             |)
@@ -880,11 +975,11 @@ Module sealed.
                 [],
               seal
             |) in
-          Value.mkStructRecord
-            "alloy_primitives::sealed::Sealed"
-            []
-            [ T ]
-            [ ("inner", M.read (| inner |)); ("seal", M.read (| seal |)) ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "alloy_primitives::sealed::Sealed"
+              [ ("inner", M.read (| inner |)); ("seal", M.read (| seal |)) ])
+            (Ty.apply (Ty.path "alloy_primitives::sealed::Sealed") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -959,7 +1054,11 @@ Module sealed.
               [],
               []
             |),
-            [ M.read (| self |) ]
+            [
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "alloy_primitives::sealed::Sealed") [] [ T ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1126,7 +1225,11 @@ Module sealed.
               [],
               []
             |),
-            [ M.read (| self |) ]
+            [
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "alloy_primitives::sealed::Sealed") [] [ T ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1164,11 +1267,13 @@ Module sealed.
               []
             |),
             [
-              M.call_closure (|
-                T,
-                M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                []
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  T,
+                  M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                  []
+                |))
+                T
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1199,7 +1304,7 @@ Module sealed.
               [],
               []
             |),
-            [ M.read (| self |) ]
+            [ M.value_with_ty (M.read (| self |)) Self ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1227,7 +1332,11 @@ Module sealed.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Self ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1260,7 +1369,15 @@ Module sealed.
               [],
               []
             |),
-            [ M.read (| self |); M.read (| seal |) ]
+            [
+              M.value_with_ty (M.read (| self |)) Self;
+              M.value_with_ty
+                (M.read (| seal |))
+                (Ty.apply
+                  (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                  [ Value.Integer IntegerKind.Usize 32 ]
+                  [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1299,7 +1416,17 @@ Module sealed.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |); M.read (| seal |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Self ]);
+              M.value_with_ty
+                (M.read (| seal |))
+                (Ty.apply
+                  (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                  [ Value.Integer IntegerKind.Usize 32 ]
+                  [])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.

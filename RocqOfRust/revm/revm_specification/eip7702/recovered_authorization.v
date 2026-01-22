@@ -53,87 +53,99 @@ Module eip7702.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| mk_str (| "RecoveredAuthorization" |) |)
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "inner" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.path "alloy_eip7702::auth_list::SignedAuthorization" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
-                            "inner"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| mk_str (| "RecoveredAuthorization" |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "inner" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "alloy_eip7702::auth_list::SignedAuthorization" ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
+                              "inner"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "authority" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::option::Option")
-                              []
-                              [ Ty.path "alloy_primitives::bits::address::Address" ]
-                          ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "core::option::Option")
-                                  []
-                                  [ Ty.path "alloy_primitives::bits::address::Address" ]
-                              ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
-                                "authority"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "authority" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "alloy_primitives::bits::address::Address" ]
+                            ]
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.path "alloy_primitives::bits::address::Address" ]
+                                ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
+                                  "authority"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -168,74 +180,90 @@ Module eip7702.
                   ],
                 self
               |) in
-            Value.mkStructRecord
-              "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization"
-              []
-              []
-              [
-                ("inner",
-                  M.call_closure (|
-                    Ty.path "alloy_eip7702::auth_list::SignedAuthorization",
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+            M.value_with_ty
+              (Value.mkStructRecord
+                "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization"
+                [
+                  ("inner",
+                    M.call_closure (|
                       Ty.path "alloy_eip7702::auth_list::SignedAuthorization",
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.path "alloy_eip7702::auth_list::SignedAuthorization",
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
-                              "inner"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
+                                  "inner"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |));
-                ("authority",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "core::option::Option")
-                      []
-                      [ Ty.path "alloy_primitives::bits::address::Address" ],
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.path "alloy_eip7702::auth_list::SignedAuthorization" ])
+                      ]
+                    |));
+                  ("authority",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "core::option::Option")
                         []
                         [ Ty.path "alloy_primitives::bits::address::Address" ],
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.path "alloy_primitives::bits::address::Address" ],
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
-                              "authority"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
+                                  "authority"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |))
-              ]))
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "alloy_primitives::bits::address::Address" ]
+                            ])
+                      ]
+                    |))
+                ])
+              (Ty.path
+                "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -283,20 +311,27 @@ Module eip7702.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
-                            "inner"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
+                              "inner"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "alloy_eip7702::auth_list::SignedAuthorization" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |) in
               M.alloc (|
@@ -316,20 +351,32 @@ Module eip7702.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
-                            "authority"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
+                              "authority"
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [ Ty.path "alloy_primitives::bits::address::Address" ]
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |)
               |)
@@ -453,22 +500,32 @@ Module eip7702.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
-                      "inner"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
-                      "inner"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
+                        "inner"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "alloy_eip7702::auth_list::SignedAuthorization" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
+                        "inner"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "alloy_eip7702::auth_list::SignedAuthorization" ])
                 ]
               |),
               ltac:(M.monadic
@@ -492,22 +549,42 @@ Module eip7702.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
-                        "authority"
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| other |) |),
-                        "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
-                        "authority"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
+                          "authority"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [ Ty.path "alloy_primitives::bits::address::Address" ]
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| other |) |),
+                          "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
+                          "authority"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [ Ty.path "alloy_primitives::bits::address::Address" ]
+                        ])
                   ]
                 |)))
             |)))
@@ -547,11 +624,12 @@ Module eip7702.
                   [ Ty.path "alloy_primitives::bits::address::Address" ],
                 authority
               |) in
-            Value.mkStructRecord
-              "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization"
-              []
-              []
-              [ ("inner", M.read (| inner |)); ("authority", M.read (| authority |)) ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization"
+                [ ("inner", M.read (| inner |)); ("authority", M.read (| authority |)) ])
+              (Ty.path
+                "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -716,22 +794,37 @@ Module eip7702.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.path "alloy_primitives::bits::address::Address";
+                            Ty.path "alloy_primitives::signature::error::SignatureError"
+                          ],
+                        M.get_associated_function (|
+                          Ty.path "alloy_eip7702::auth_list::SignedAuthorization",
+                          "recover_authority",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, signed_auth |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "alloy_eip7702::auth_list::SignedAuthorization" ])
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "core::result::Result")
                         []
                         [
                           Ty.path "alloy_primitives::bits::address::Address";
                           Ty.path "alloy_primitives::signature::error::SignatureError"
-                        ],
-                      M.get_associated_function (|
-                        Ty.path "alloy_eip7702::auth_list::SignedAuthorization",
-                        "recover_authority",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, signed_auth |) ]
-                    |)
+                        ])
                   ]
                 |) in
               M.alloc (|
@@ -747,7 +840,17 @@ Module eip7702.
                     [],
                     []
                   |),
-                  [ M.read (| signed_auth |); M.read (| authority |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| signed_auth |))
+                      (Ty.path "alloy_eip7702::auth_list::SignedAuthorization");
+                    M.value_with_ty
+                      (M.read (| authority |))
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "alloy_primitives::bits::address::Address" ])
+                  ]
                 |)
               |)
             |)))
@@ -805,19 +908,24 @@ Module eip7702.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
-                            "inner"
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "revm_specification::eip7702::recovered_authorization::RecoveredAuthorization",
+                              "inner"
+                            |)
                           |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "alloy_eip7702::auth_list::SignedAuthorization" ])
                   ]
                 |)
               |)

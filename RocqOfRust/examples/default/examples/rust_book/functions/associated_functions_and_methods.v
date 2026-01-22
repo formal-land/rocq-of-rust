@@ -21,11 +21,11 @@ Module Impl_associated_functions_and_methods_Point.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "associated_functions_and_methods::Point"
-          []
-          []
-          [ ("y", M.read (| UnsupportedLiteral |)); ("x", M.read (| UnsupportedLiteral |)) ]))
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "associated_functions_and_methods::Point"
+            [ ("y", M.read (| UnsupportedLiteral |)); ("x", M.read (| UnsupportedLiteral |)) ])
+          (Ty.path "associated_functions_and_methods::Point")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -44,11 +44,11 @@ Module Impl_associated_functions_and_methods_Point.
       ltac:(M.monadic
         (let x := M.alloc (| Ty.path "f64", x |) in
         let y := M.alloc (| Ty.path "f64", y |) in
-        Value.mkStructRecord
-          "associated_functions_and_methods::Point"
-          []
-          []
-          [ ("x", M.read (| x |)); ("y", M.read (| y |)) ]))
+        M.value_with_ty
+          (Value.mkStructRecord
+            "associated_functions_and_methods::Point"
+            [ ("x", M.read (| x |)); ("y", M.read (| y |)) ])
+          (Ty.path "associated_functions_and_methods::Point")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -172,22 +172,24 @@ Module Impl_associated_functions_and_methods_Rectangle.
                           Ty.path "f64",
                           M.get_associated_function (| Ty.path "f64", "abs", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "f64",
-                              BinOp.Wrap.mul,
-                              [
-                                M.call_closure (|
-                                  Ty.path "f64",
-                                  BinOp.Wrap.sub,
-                                  [ M.read (| x1 |); M.read (| x2 |) ]
-                                |);
-                                M.call_closure (|
-                                  Ty.path "f64",
-                                  BinOp.Wrap.sub,
-                                  [ M.read (| y1 |); M.read (| y2 |) ]
-                                |)
-                              ]
-                            |)
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "f64",
+                                BinOp.Wrap.mul,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "f64",
+                                    BinOp.Wrap.sub,
+                                    [ M.read (| x1 |); M.read (| x2 |) ]
+                                  |);
+                                  M.call_closure (|
+                                    Ty.path "f64",
+                                    BinOp.Wrap.sub,
+                                    [ M.read (| y1 |); M.read (| y2 |) ]
+                                  |)
+                                ]
+                              |))
+                              (Ty.path "f64")
                           ]
                         |)))
                   ]
@@ -279,22 +281,26 @@ Module Impl_associated_functions_and_methods_Rectangle.
                                   Ty.path "f64",
                                   M.get_associated_function (| Ty.path "f64", "abs", [], [] |),
                                   [
-                                    M.call_closure (|
-                                      Ty.path "f64",
-                                      BinOp.Wrap.sub,
-                                      [ M.read (| x1 |); M.read (| x2 |) ]
-                                    |)
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "f64",
+                                        BinOp.Wrap.sub,
+                                        [ M.read (| x1 |); M.read (| x2 |) ]
+                                      |))
+                                      (Ty.path "f64")
                                   ]
                                 |);
                                 M.call_closure (|
                                   Ty.path "f64",
                                   M.get_associated_function (| Ty.path "f64", "abs", [], [] |),
                                   [
-                                    M.call_closure (|
-                                      Ty.path "f64",
-                                      BinOp.Wrap.sub,
-                                      [ M.read (| y1 |); M.read (| y2 |) ]
-                                    |)
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "f64",
+                                        BinOp.Wrap.sub,
+                                        [ M.read (| y1 |); M.read (| y2 |) ]
+                                      |))
+                                      (Ty.path "f64")
                                   ]
                                 |)
                               ]
@@ -477,104 +483,156 @@ Module Impl_associated_functions_and_methods_Pair.
                           Ty.tuple [],
                           M.get_function (| "std::io::stdio::_print", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_v1",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_v1",
+                                  [
+                                    Value.Integer IntegerKind.Usize 3;
+                                    Value.Integer IntegerKind.Usize 2
+                                  ],
+                                  []
+                                |),
                                 [
-                                  Value.Integer IntegerKind.Usize 3;
-                                  Value.Integer IntegerKind.Usize 2
-                                ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 3 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [
+                                                mk_str (| "Destroying Pair(" |);
+                                                mk_str (| ", " |);
+                                                mk_str (| ")
+" |)
+                                              ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 3 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [
-                                            mk_str (| "Destroying Pair(" |);
-                                            mk_str (| ", " |);
-                                            mk_str (| ")
-" |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 2 ]
+                                              [ Ty.path "core::fmt::rt::Argument" ],
+                                            Value.Array
+                                              [
+                                                M.call_closure (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  M.get_associated_function (|
+                                                    Ty.path "core::fmt::rt::Argument",
+                                                    "new_display",
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "alloc::boxed::Box")
+                                                        []
+                                                        [
+                                                          Ty.path "i32";
+                                                          Ty.path "alloc::alloc::Global"
+                                                        ]
+                                                    ]
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.borrow (| Pointer.Kind.Ref, first |)
+                                                        |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "alloc::boxed::Box")
+                                                            []
+                                                            [
+                                                              Ty.path "i32";
+                                                              Ty.path "alloc::alloc::Global"
+                                                            ]
+                                                        ])
+                                                  ]
+                                                |);
+                                                M.call_closure (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  M.get_associated_function (|
+                                                    Ty.path "core::fmt::rt::Argument",
+                                                    "new_display",
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "alloc::boxed::Box")
+                                                        []
+                                                        [
+                                                          Ty.path "i32";
+                                                          Ty.path "alloc::alloc::Global"
+                                                        ]
+                                                    ]
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.borrow (| Pointer.Kind.Ref, second |)
+                                                        |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "alloc::boxed::Box")
+                                                            []
+                                                            [
+                                                              Ty.path "i32";
+                                                              Ty.path "alloc::alloc::Global"
+                                                            ]
+                                                        ])
+                                                  ]
+                                                |)
+                                              ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 2 ]
-                                          [ Ty.path "core::fmt::rt::Argument" ],
-                                        Value.Array
-                                          [
-                                            M.call_closure (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              M.get_associated_function (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                "new_display",
-                                                [],
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "alloc::boxed::Box")
-                                                    []
-                                                    [ Ty.path "i32"; Ty.path "alloc::alloc::Global"
-                                                    ]
-                                                ]
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.Ref, first |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |);
-                                            M.call_closure (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              M.get_associated_function (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                "new_display",
-                                                [],
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "alloc::boxed::Box")
-                                                    []
-                                                    [ Ty.path "i32"; Ty.path "alloc::alloc::Global"
-                                                    ]
-                                                ]
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.Ref, second |)
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.path "core::fmt::rt::Argument" ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -633,34 +691,37 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     ltac:(M.monadic
       (M.read (|
         let~ rectangle : Ty.path "associated_functions_and_methods::Rectangle" :=
-          Value.mkStructRecord
-            "associated_functions_and_methods::Rectangle"
-            []
-            []
-            [
-              ("p1",
-                M.call_closure (|
-                  Ty.path "associated_functions_and_methods::Point",
-                  M.get_associated_function (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "associated_functions_and_methods::Rectangle"
+              [
+                ("p1",
+                  M.call_closure (|
                     Ty.path "associated_functions_and_methods::Point",
-                    "origin",
-                    [],
+                    M.get_associated_function (|
+                      Ty.path "associated_functions_and_methods::Point",
+                      "origin",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("p2",
-                M.call_closure (|
-                  Ty.path "associated_functions_and_methods::Point",
-                  M.get_associated_function (|
+                  |));
+                ("p2",
+                  M.call_closure (|
                     Ty.path "associated_functions_and_methods::Point",
-                    "new",
-                    [],
-                    []
-                  |),
-                  [ M.read (| UnsupportedLiteral |); M.read (| UnsupportedLiteral |) ]
-                |))
-            ] in
+                    M.get_associated_function (|
+                      Ty.path "associated_functions_and_methods::Point",
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty (M.read (| UnsupportedLiteral |)) (Ty.path "f64");
+                      M.value_with_ty (M.read (| UnsupportedLiteral |)) (Ty.path "f64")
+                    ]
+                  |))
+              ])
+            (Ty.path "associated_functions_and_methods::Rectangle") in
         let~ _ : Ty.tuple [] :=
           M.read (|
             let~ _ : Ty.tuple [] :=
@@ -668,83 +729,121 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                 Ty.tuple [],
                 M.get_function (| "std::io::stdio::_print", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new_v1",
+                        [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 2 ]
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                  Value.Array
+                                    [ mk_str (| "Rectangle perimeter: " |); mk_str (| "
+" |) ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array [ mk_str (| "Rectangle perimeter: " |); mk_str (| "
-" |) ]
-                            |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            ]);
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ],
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.path "f64" ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.alloc (|
+                                                    Ty.path "f64",
+                                                    M.call_closure (|
+                                                      Ty.path "f64",
+                                                      M.get_associated_function (|
+                                                        Ty.path
+                                                          "associated_functions_and_methods::Rectangle",
+                                                        "perimeter",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            rectangle
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "associated_functions_and_methods::Rectangle"
+                                                            ])
+                                                      ]
+                                                    |)
+                                                  |)
+                                                |)
+                                              |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "f64" ])
+                                        ]
+                                      |)
+                                    ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "f64" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.path "f64",
-                                              M.call_closure (|
-                                                Ty.path "f64",
-                                                M.get_associated_function (|
-                                                  Ty.path
-                                                    "associated_functions_and_methods::Rectangle",
-                                                  "perimeter",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.borrow (| Pointer.Kind.Ref, rectangle |) ]
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
+                                [ Ty.path "core::fmt::rt::Argument" ]
+                            ])
+                      ]
+                    |))
+                    (Ty.path "core::fmt::Arguments")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -756,116 +855,156 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                 Ty.tuple [],
                 M.get_function (| "std::io::stdio::_print", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new_v1",
+                        [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 2 ]
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                  Value.Array [ mk_str (| "Rectangle area: " |); mk_str (| "
+" |) ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array [ mk_str (| "Rectangle area: " |); mk_str (| "
-" |) ]
-                            |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            ]);
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ],
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.path "f64" ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.alloc (|
+                                                    Ty.path "f64",
+                                                    M.call_closure (|
+                                                      Ty.path "f64",
+                                                      M.get_associated_function (|
+                                                        Ty.path
+                                                          "associated_functions_and_methods::Rectangle",
+                                                        "area",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            rectangle
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "associated_functions_and_methods::Rectangle"
+                                                            ])
+                                                      ]
+                                                    |)
+                                                  |)
+                                                |)
+                                              |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "f64" ])
+                                        ]
+                                      |)
+                                    ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "f64" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.alloc (|
-                                              Ty.path "f64",
-                                              M.call_closure (|
-                                                Ty.path "f64",
-                                                M.get_associated_function (|
-                                                  Ty.path
-                                                    "associated_functions_and_methods::Rectangle",
-                                                  "area",
-                                                  [],
-                                                  []
-                                                |),
-                                                [ M.borrow (| Pointer.Kind.Ref, rectangle |) ]
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
+                                [ Ty.path "core::fmt::rt::Argument" ]
+                            ])
+                      ]
+                    |))
+                    (Ty.path "core::fmt::Arguments")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
           |) in
         let~ square : Ty.path "associated_functions_and_methods::Rectangle" :=
-          Value.mkStructRecord
-            "associated_functions_and_methods::Rectangle"
-            []
-            []
-            [
-              ("p1",
-                M.call_closure (|
-                  Ty.path "associated_functions_and_methods::Point",
-                  M.get_associated_function (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "associated_functions_and_methods::Rectangle"
+              [
+                ("p1",
+                  M.call_closure (|
                     Ty.path "associated_functions_and_methods::Point",
-                    "origin",
-                    [],
+                    M.get_associated_function (|
+                      Ty.path "associated_functions_and_methods::Point",
+                      "origin",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("p2",
-                M.call_closure (|
-                  Ty.path "associated_functions_and_methods::Point",
-                  M.get_associated_function (|
+                  |));
+                ("p2",
+                  M.call_closure (|
                     Ty.path "associated_functions_and_methods::Point",
-                    "new",
-                    [],
-                    []
-                  |),
-                  [ M.read (| UnsupportedLiteral |); M.read (| UnsupportedLiteral |) ]
-                |))
-            ] in
+                    M.get_associated_function (|
+                      Ty.path "associated_functions_and_methods::Point",
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty (M.read (| UnsupportedLiteral |)) (Ty.path "f64");
+                      M.value_with_ty (M.read (| UnsupportedLiteral |)) (Ty.path "f64")
+                    ]
+                  |))
+              ])
+            (Ty.path "associated_functions_and_methods::Rectangle") in
         let~ _ : Ty.tuple [] :=
           M.call_closure (|
             Ty.tuple [],
@@ -876,50 +1015,55 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, square |);
-              M.read (| UnsupportedLiteral |);
-              M.read (| UnsupportedLiteral |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, square |))
+                (Ty.apply
+                  (Ty.path "&mut")
+                  []
+                  [ Ty.path "associated_functions_and_methods::Rectangle" ]);
+              M.value_with_ty (M.read (| UnsupportedLiteral |)) (Ty.path "f64");
+              M.value_with_ty (M.read (| UnsupportedLiteral |)) (Ty.path "f64")
             ]
           |) in
         let~ pair_ : Ty.path "associated_functions_and_methods::Pair" :=
-          Value.StructTuple
-            "associated_functions_and_methods::Pair"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::boxed::Box")
-                  []
-                  [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
-                M.get_associated_function (|
+          M.value_with_ty
+            (Value.StructTuple
+              "associated_functions_and_methods::Pair"
+              [
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
                     [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
-                  "new",
-                  [],
-                  []
-                |),
-                [ Value.Integer IntegerKind.I32 1 ]
-              |);
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::boxed::Box")
-                  []
-                  [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
-                M.get_associated_function (|
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
+                    "new",
+                    [],
+                    []
+                  |),
+                  [ M.value_with_ty (Value.Integer IntegerKind.I32 1) (Ty.path "i32") ]
+                |);
+                M.call_closure (|
                   Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
                     [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
-                  "new",
-                  [],
-                  []
-                |),
-                [ Value.Integer IntegerKind.I32 2 ]
-              |)
-            ] in
+                  M.get_associated_function (|
+                    Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
+                    "new",
+                    [],
+                    []
+                  |),
+                  [ M.value_with_ty (Value.Integer IntegerKind.I32 2) (Ty.path "i32") ]
+                |)
+              ])
+            (Ty.path "associated_functions_and_methods::Pair") in
         let~ _ : Ty.tuple [] :=
           M.call_closure (|
             Ty.tuple [],
@@ -929,7 +1073,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               [],
               []
             |),
-            [ M.read (| pair_ |) ]
+            [
+              M.value_with_ty
+                (M.read (| pair_ |))
+                (Ty.path "associated_functions_and_methods::Pair")
+            ]
           |) in
         M.alloc (| Ty.tuple [], Value.Tuple [] |)
       |)))

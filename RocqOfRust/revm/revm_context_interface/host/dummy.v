@@ -87,90 +87,78 @@ Module host.
                   ],
                 self
               |) in
-            Value.mkStructRecord
-              "revm_context_interface::host::dummy::DummyHost"
-              []
-              [ BLOCK; TX; CFG ]
-              [
-                ("tx",
-                  M.call_closure (|
-                    TX,
-                    M.get_trait_method (| "core::clone::Clone", TX, [], [], "clone", [], [] |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_context_interface::host::dummy::DummyHost",
-                              "tx"
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |));
-                ("block",
-                  M.call_closure (|
-                    BLOCK,
-                    M.get_trait_method (| "core::clone::Clone", BLOCK, [], [], "clone", [], [] |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_context_interface::host::dummy::DummyHost",
-                              "block"
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |));
-                ("cfg",
-                  M.call_closure (|
-                    CFG,
-                    M.get_trait_method (| "core::clone::Clone", CFG, [], [], "clone", [], [] |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_context_interface::host::dummy::DummyHost",
-                              "cfg"
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |));
-                ("storage",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "hashbrown::map::HashMap")
-                      []
+            M.value_with_ty
+              (Value.mkStructRecord
+                "revm_context_interface::host::dummy::DummyHost"
+                [
+                  ("tx",
+                    M.call_closure (|
+                      TX,
+                      M.get_trait_method (| "core::clone::Clone", TX, [], [], "clone", [], [] |),
                       [
-                        Ty.apply
-                          (Ty.path "ruint::Uint")
-                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                          [];
-                        Ty.apply
-                          (Ty.path "ruint::Uint")
-                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                          [];
-                        Ty.path "foldhash::seed::fast::RandomState";
-                        Ty.path "hashbrown::raw::alloc::inner::Global"
-                      ],
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_context_interface::host::dummy::DummyHost",
+                                  "tx"
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ TX ])
+                      ]
+                    |));
+                  ("block",
+                    M.call_closure (|
+                      BLOCK,
+                      M.get_trait_method (| "core::clone::Clone", BLOCK, [], [], "clone", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_context_interface::host::dummy::DummyHost",
+                                  "block"
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ BLOCK ])
+                      ]
+                    |));
+                  ("cfg",
+                    M.call_closure (|
+                      CFG,
+                      M.get_trait_method (| "core::clone::Clone", CFG, [], [], "clone", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_context_interface::host::dummy::DummyHost",
+                                  "cfg"
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ CFG ])
+                      ]
+                    |));
+                  ("storage",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "hashbrown::map::HashMap")
                         []
@@ -188,100 +176,171 @@ Module host.
                           Ty.path "foldhash::seed::fast::RandomState";
                           Ty.path "hashbrown::raw::alloc::inner::Global"
                         ],
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_context_interface::host::dummy::DummyHost",
-                              "storage"
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |));
-                ("transient_storage",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "hashbrown::map::HashMap")
-                      []
-                      [
+                      M.get_trait_method (|
+                        "core::clone::Clone",
                         Ty.apply
-                          (Ty.path "ruint::Uint")
-                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                          [];
-                        Ty.apply
-                          (Ty.path "ruint::Uint")
-                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                          [];
-                        Ty.path "foldhash::seed::fast::RandomState";
-                        Ty.path "hashbrown::raw::alloc::inner::Global"
-                      ],
-                    M.get_trait_method (|
-                      "core::clone::Clone",
-                      Ty.apply
-                        (Ty.path "hashbrown::map::HashMap")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "ruint::Uint")
-                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
-                            ]
-                            [];
-                          Ty.apply
-                            (Ty.path "ruint::Uint")
-                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
-                            ]
-                            [];
-                          Ty.path "foldhash::seed::fast::RandomState";
-                          Ty.path "hashbrown::raw::alloc::inner::Global"
-                        ],
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_context_interface::host::dummy::DummyHost",
-                              "transient_storage"
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |));
-                ("log",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "alloc::vec::Vec")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "alloy_primitives::log::Log")
+                          (Ty.path "hashbrown::map::HashMap")
                           []
-                          [ Ty.path "alloy_primitives::log::LogData" ];
-                        Ty.path "alloc::alloc::Global"
-                      ],
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+                          [
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              [];
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              [];
+                            Ty.path "foldhash::seed::fast::RandomState";
+                            Ty.path "hashbrown::raw::alloc::inner::Global"
+                          ],
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_context_interface::host::dummy::DummyHost",
+                                  "storage"
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "hashbrown::map::HashMap")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    [];
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    [];
+                                  Ty.path "foldhash::seed::fast::RandomState";
+                                  Ty.path "hashbrown::raw::alloc::inner::Global"
+                                ]
+                            ])
+                      ]
+                    |));
+                  ("transient_storage",
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "hashbrown::map::HashMap")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            [];
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            [];
+                          Ty.path "foldhash::seed::fast::RandomState";
+                          Ty.path "hashbrown::raw::alloc::inner::Global"
+                        ],
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.apply
+                          (Ty.path "hashbrown::map::HashMap")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              [];
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              [];
+                            Ty.path "foldhash::seed::fast::RandomState";
+                            Ty.path "hashbrown::raw::alloc::inner::Global"
+                          ],
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_context_interface::host::dummy::DummyHost",
+                                  "transient_storage"
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "hashbrown::map::HashMap")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    [];
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    [];
+                                  Ty.path "foldhash::seed::fast::RandomState";
+                                  Ty.path "hashbrown::raw::alloc::inner::Global"
+                                ]
+                            ])
+                      ]
+                    |));
+                  ("log",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "alloc::vec::Vec")
                         []
@@ -292,29 +351,61 @@ Module host.
                             [ Ty.path "alloy_primitives::log::LogData" ];
                           Ty.path "alloc::alloc::Global"
                         ],
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloy_primitives::log::Log")
+                              []
+                              [ Ty.path "alloy_primitives::log::LogData" ];
+                            Ty.path "alloc::alloc::Global"
+                          ],
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "revm_context_interface::host::dummy::DummyHost",
-                              "log"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_context_interface::host::dummy::DummyHost",
+                                  "log"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |))
-              ]))
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::vec::Vec")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "alloy_primitives::log::Log")
+                                    []
+                                    [ Ty.path "alloy_primitives::log::LogData" ];
+                                  Ty.path "alloc::alloc::Global"
+                                ]
+                            ])
+                      ]
+                    |))
+                ])
+              (Ty.apply
+                (Ty.path "revm_context_interface::host::dummy::DummyHost")
+                []
+                [ BLOCK; TX; CFG ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -736,30 +827,15 @@ Module host.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "DummyHost" |) |) |);
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "slice")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                        ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 6 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                          ])
-                        (Ty.apply
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "DummyHost" |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
                           (Ty.path "&")
                           []
                           [
@@ -767,10 +843,54 @@ Module host.
                               (Ty.path "slice")
                               []
                               [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                          ]),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| names |) |) |) ]
-                    |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| values |) |) |)
+                          ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 6 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            ]),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| names |) |) |) ]
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| values |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                            ]
+                        ])
                   ]
                 |)
               |)
@@ -803,72 +923,54 @@ Module host.
         match ε, τ, α with
         | [], [], [] =>
           ltac:(M.monadic
-            (Value.mkStructRecord
-              "revm_context_interface::host::dummy::DummyHost"
-              []
-              [ BLOCK; TX; CFG ]
-              [
-                ("tx",
-                  M.call_closure (|
-                    TX,
-                    M.get_trait_method (|
-                      "core::default::Default",
+            (M.value_with_ty
+              (Value.mkStructRecord
+                "revm_context_interface::host::dummy::DummyHost"
+                [
+                  ("tx",
+                    M.call_closure (|
                       TX,
-                      [],
-                      [],
-                      "default",
-                      [],
+                      M.get_trait_method (|
+                        "core::default::Default",
+                        TX,
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |));
-                ("block",
-                  M.call_closure (|
-                    BLOCK,
-                    M.get_trait_method (|
-                      "core::default::Default",
+                    |));
+                  ("block",
+                    M.call_closure (|
                       BLOCK,
-                      [],
-                      [],
-                      "default",
-                      [],
+                      M.get_trait_method (|
+                        "core::default::Default",
+                        BLOCK,
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |));
-                ("cfg",
-                  M.call_closure (|
-                    CFG,
-                    M.get_trait_method (|
-                      "core::default::Default",
+                    |));
+                  ("cfg",
+                    M.call_closure (|
                       CFG,
-                      [],
-                      [],
-                      "default",
-                      [],
+                      M.get_trait_method (|
+                        "core::default::Default",
+                        CFG,
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |));
-                ("storage",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "hashbrown::map::HashMap")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "ruint::Uint")
-                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                          [];
-                        Ty.apply
-                          (Ty.path "ruint::Uint")
-                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                          [];
-                        Ty.path "foldhash::seed::fast::RandomState";
-                        Ty.path "hashbrown::raw::alloc::inner::Global"
-                      ],
-                    M.get_trait_method (|
-                      "core::default::Default",
+                    |));
+                  ("storage",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "hashbrown::map::HashMap")
                         []
@@ -886,72 +988,89 @@ Module host.
                           Ty.path "foldhash::seed::fast::RandomState";
                           Ty.path "hashbrown::raw::alloc::inner::Global"
                         ],
-                      [],
-                      [],
-                      "default",
-                      [],
-                      []
-                    |),
-                    []
-                  |));
-                ("transient_storage",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "hashbrown::map::HashMap")
-                      []
-                      [
+                      M.get_trait_method (|
+                        "core::default::Default",
                         Ty.apply
-                          (Ty.path "ruint::Uint")
-                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                          [];
-                        Ty.apply
-                          (Ty.path "ruint::Uint")
-                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                          [];
-                        Ty.path "foldhash::seed::fast::RandomState";
-                        Ty.path "hashbrown::raw::alloc::inner::Global"
-                      ],
-                    M.get_trait_method (|
-                      "core::default::Default",
-                      Ty.apply
-                        (Ty.path "hashbrown::map::HashMap")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "ruint::Uint")
-                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
-                            ]
-                            [];
-                          Ty.apply
-                            (Ty.path "ruint::Uint")
-                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
-                            ]
-                            [];
-                          Ty.path "foldhash::seed::fast::RandomState";
-                          Ty.path "hashbrown::raw::alloc::inner::Global"
-                        ],
-                      [],
-                      [],
-                      "default",
-                      [],
-                      []
-                    |),
-                    []
-                  |));
-                ("log",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "alloc::vec::Vec")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "alloy_primitives::log::Log")
+                          (Ty.path "hashbrown::map::HashMap")
                           []
-                          [ Ty.path "alloy_primitives::log::LogData" ];
-                        Ty.path "alloc::alloc::Global"
-                      ],
-                    M.get_trait_method (|
-                      "core::default::Default",
+                          [
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              [];
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              [];
+                            Ty.path "foldhash::seed::fast::RandomState";
+                            Ty.path "hashbrown::raw::alloc::inner::Global"
+                          ],
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
+                      []
+                    |));
+                  ("transient_storage",
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "hashbrown::map::HashMap")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            [];
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            [];
+                          Ty.path "foldhash::seed::fast::RandomState";
+                          Ty.path "hashbrown::raw::alloc::inner::Global"
+                        ],
+                      M.get_trait_method (|
+                        "core::default::Default",
+                        Ty.apply
+                          (Ty.path "hashbrown::map::HashMap")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              [];
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              [];
+                            Ty.path "foldhash::seed::fast::RandomState";
+                            Ty.path "hashbrown::raw::alloc::inner::Global"
+                          ],
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
+                      []
+                    |));
+                  ("log",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "alloc::vec::Vec")
                         []
@@ -962,15 +1081,31 @@ Module host.
                             [ Ty.path "alloy_primitives::log::LogData" ];
                           Ty.path "alloc::alloc::Global"
                         ],
-                      [],
-                      [],
-                      "default",
-                      [],
+                      M.get_trait_method (|
+                        "core::default::Default",
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloy_primitives::log::Log")
+                              []
+                              [ Ty.path "alloy_primitives::log::LogData" ];
+                            Ty.path "alloc::alloc::Global"
+                          ],
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |))
-              ]))
+                    |))
+                ])
+              (Ty.apply
+                (Ty.path "revm_context_interface::host::dummy::DummyHost")
+                []
+                [ BLOCK; TX; CFG ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1012,46 +1147,28 @@ Module host.
           ltac:(M.monadic
             (let tx := M.alloc (| TX, tx |) in
             let block := M.alloc (| BLOCK, block |) in
-            Value.mkStructRecord
-              "revm_context_interface::host::dummy::DummyHost"
-              []
-              [ BLOCK; TX; CFG ]
-              [
-                ("tx", M.read (| tx |));
-                ("block", M.read (| block |));
-                ("cfg",
-                  M.call_closure (|
-                    CFG,
-                    M.get_trait_method (|
-                      "core::default::Default",
+            M.value_with_ty
+              (Value.mkStructRecord
+                "revm_context_interface::host::dummy::DummyHost"
+                [
+                  ("tx", M.read (| tx |));
+                  ("block", M.read (| block |));
+                  ("cfg",
+                    M.call_closure (|
                       CFG,
-                      [],
-                      [],
-                      "default",
-                      [],
+                      M.get_trait_method (|
+                        "core::default::Default",
+                        CFG,
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |));
-                ("storage",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "hashbrown::map::HashMap")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "ruint::Uint")
-                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                          [];
-                        Ty.apply
-                          (Ty.path "ruint::Uint")
-                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                          [];
-                        Ty.path "foldhash::seed::fast::RandomState";
-                        Ty.path "hashbrown::raw::alloc::inner::Global"
-                      ],
-                    M.get_trait_method (|
-                      "core::default::Default",
+                    |));
+                  ("storage",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "hashbrown::map::HashMap")
                         []
@@ -1069,71 +1186,89 @@ Module host.
                           Ty.path "foldhash::seed::fast::RandomState";
                           Ty.path "hashbrown::raw::alloc::inner::Global"
                         ],
-                      [],
-                      [],
-                      "default",
-                      [],
-                      []
-                    |),
-                    []
-                  |));
-                ("transient_storage",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "hashbrown::map::HashMap")
-                      []
-                      [
+                      M.get_trait_method (|
+                        "core::default::Default",
                         Ty.apply
-                          (Ty.path "ruint::Uint")
-                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                          [];
-                        Ty.apply
-                          (Ty.path "ruint::Uint")
-                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                          [];
-                        Ty.path "foldhash::seed::fast::RandomState";
-                        Ty.path "hashbrown::raw::alloc::inner::Global"
-                      ],
-                    M.get_trait_method (|
-                      "core::default::Default",
-                      Ty.apply
-                        (Ty.path "hashbrown::map::HashMap")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "ruint::Uint")
-                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
-                            ]
-                            [];
-                          Ty.apply
-                            (Ty.path "ruint::Uint")
-                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
-                            ]
-                            [];
-                          Ty.path "foldhash::seed::fast::RandomState";
-                          Ty.path "hashbrown::raw::alloc::inner::Global"
-                        ],
-                      [],
-                      [],
-                      "default",
-                      [],
-                      []
-                    |),
-                    []
-                  |));
-                ("log",
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "alloc::vec::Vec")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "alloy_primitives::log::Log")
+                          (Ty.path "hashbrown::map::HashMap")
                           []
-                          [ Ty.path "alloy_primitives::log::LogData" ];
-                        Ty.path "alloc::alloc::Global"
-                      ],
-                    M.get_associated_function (|
+                          [
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              [];
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              [];
+                            Ty.path "foldhash::seed::fast::RandomState";
+                            Ty.path "hashbrown::raw::alloc::inner::Global"
+                          ],
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
+                      []
+                    |));
+                  ("transient_storage",
+                    M.call_closure (|
+                      Ty.apply
+                        (Ty.path "hashbrown::map::HashMap")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            [];
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            [];
+                          Ty.path "foldhash::seed::fast::RandomState";
+                          Ty.path "hashbrown::raw::alloc::inner::Global"
+                        ],
+                      M.get_trait_method (|
+                        "core::default::Default",
+                        Ty.apply
+                          (Ty.path "hashbrown::map::HashMap")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              [];
+                            Ty.apply
+                              (Ty.path "ruint::Uint")
+                              [
+                                Value.Integer IntegerKind.Usize 256;
+                                Value.Integer IntegerKind.Usize 4
+                              ]
+                              [];
+                            Ty.path "foldhash::seed::fast::RandomState";
+                            Ty.path "hashbrown::raw::alloc::inner::Global"
+                          ],
+                        [],
+                        [],
+                        "default",
+                        [],
+                        []
+                      |),
+                      []
+                    |));
+                  ("log",
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "alloc::vec::Vec")
                         []
@@ -1144,13 +1279,28 @@ Module host.
                             [ Ty.path "alloy_primitives::log::LogData" ];
                           Ty.path "alloc::alloc::Global"
                         ],
-                      "new",
-                      [],
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloy_primitives::log::Log")
+                              []
+                              [ Ty.path "alloy_primitives::log::LogData" ];
+                            Ty.path "alloc::alloc::Global"
+                          ],
+                        "new",
+                        [],
+                        []
+                      |),
                       []
-                    |),
-                    []
-                  |))
-              ]))
+                    |))
+                ])
+              (Ty.apply
+                (Ty.path "revm_context_interface::host::dummy::DummyHost")
+                []
+                [ BLOCK; TX; CFG ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1214,14 +1364,41 @@ Module host.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_context_interface::host::dummy::DummyHost",
-                        "storage"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context_interface::host::dummy::DummyHost",
+                          "storage"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "hashbrown::map::HashMap")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                [];
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                [];
+                              Ty.path "foldhash::seed::fast::RandomState";
+                              Ty.path "hashbrown::raw::alloc::inner::Global"
+                            ]
+                        ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -1243,14 +1420,30 @@ Module host.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_context_interface::host::dummy::DummyHost",
-                        "log"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context_interface::host::dummy::DummyHost",
+                          "log"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloy_primitives::log::Log")
+                                []
+                                [ Ty.path "alloy_primitives::log::LogData" ];
+                              Ty.path "alloc::alloc::Global"
+                            ]
+                        ])
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1494,25 +1687,28 @@ Module host.
               |) in
             let _address :=
               M.alloc (| Ty.path "alloy_primitives::bits::address::Address", _address |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "revm_context_interface::journaled_state::AccountLoad" ]
-              [
-                M.call_closure (|
-                  Ty.path "revm_context_interface::journaled_state::AccountLoad",
-                  M.get_trait_method (|
-                    "core::default::Default",
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
                     Ty.path "revm_context_interface::journaled_state::AccountLoad",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "revm_context_interface::journaled_state::AccountLoad",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |)
-              ]))
+                  |)
+                ])
+              (Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [ Ty.path "revm_context_interface::journaled_state::AccountLoad" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1545,30 +1741,33 @@ Module host.
                 self
               |) in
             let _number := M.alloc (| Ty.path "u64", _number |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [
-                Ty.apply
-                  (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                  [ Value.Integer IntegerKind.Usize 32 ]
-                  []
-              ]
-              [
-                M.read (|
-                  get_associated_constant (|
-                    Ty.apply
-                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                      [ Value.Integer IntegerKind.Usize 32 ]
-                      [],
-                    "ZERO",
-                    Ty.apply
-                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                      [ Value.Integer IntegerKind.Usize 32 ]
-                      []
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.read (|
+                    get_associated_constant (|
+                      Ty.apply
+                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        [],
+                      "ZERO",
+                      Ty.apply
+                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        []
+                    |)
                   |)
-                |)
-              ]))
+                ])
+              (Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                    [ Value.Integer IntegerKind.Usize 32 ]
+                    []
+                ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1602,33 +1801,11 @@ Module host.
               |) in
             let _address :=
               M.alloc (| Ty.path "alloy_primitives::bits::address::Address", _address |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [
-                Ty.apply
-                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "ruint::Uint")
-                      [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                      []
-                  ]
-              ]
-              [
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "ruint::Uint")
-                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                        []
-                    ],
-                  M.get_trait_method (|
-                    "core::default::Default",
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "revm_context_interface::journaled_state::StateLoad")
                       []
@@ -1638,15 +1815,41 @@ Module host.
                           [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
                           []
                       ],
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "ruint::Uint")
+                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
+                            ]
+                            []
+                        ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |)
-              ]))
+                  |)
+                ])
+              (Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []
+                    ]
+                ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1680,36 +1883,39 @@ Module host.
               |) in
             let _address :=
               M.alloc (| Ty.path "alloy_primitives::bits::address::Address", _address |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [
-                Ty.apply
-                  (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                  []
-                  [ Ty.path "alloy_primitives::bytes_::Bytes" ]
-              ]
-              [
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                  M.get_trait_method (|
-                    "core::default::Default",
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
                       []
                       [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+                        []
+                        [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |)
-              ]))
+                  |)
+                ])
+              (Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+                    []
+                    [ Ty.path "alloy_primitives::bytes_::Bytes" ]
+                ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1743,32 +1949,11 @@ Module host.
               |) in
             let _address :=
               M.alloc (| Ty.path "alloy_primitives::bits::address::Address", _address |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [
-                Ty.apply
-                  (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                      [ Value.Integer IntegerKind.Usize 32 ]
-                      []
-                  ]
-              ]
-              [
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                        [ Value.Integer IntegerKind.Usize 32 ]
-                        []
-                    ],
-                  M.get_associated_function (|
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
                       []
@@ -1778,24 +1963,53 @@ Module host.
                           [ Value.Integer IntegerKind.Usize 32 ]
                           []
                       ],
-                    "new_not_delegated",
-                    [],
-                    []
-                  |),
-                  [
-                    M.read (|
-                      get_constant (|
-                        "revm_primitives::KECCAK_EMPTY",
-                        Ty.apply
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            []
+                        ],
+                      "new_not_delegated",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (|
+                          get_constant (|
+                            "revm_primitives::KECCAK_EMPTY",
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              []
+                          |)
+                        |))
+                        (Ty.apply
                           (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
                           [ Value.Integer IntegerKind.Usize 32 ]
-                          []
-                      |)
-                    |);
-                    Value.Bool false
-                  ]
-                |)
-              ]))
+                          []);
+                      M.value_with_ty (Value.Bool false) (Ty.path "bool")
+                    ]
+                  |)
+                ])
+              (Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::Eip7702CodeLoad")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                        [ Value.Integer IntegerKind.Usize 32 ]
+                        []
+                    ]
+                ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1911,15 +2125,47 @@ Module host.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_context_interface::host::dummy::DummyHost",
-                        "storage"
-                      |)
-                    |);
-                    M.read (| index |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context_interface::host::dummy::DummyHost",
+                          "storage"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "hashbrown::map::HashMap")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                [];
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                [];
+                              Ty.path "foldhash::seed::fast::RandomState";
+                              Ty.path "hashbrown::raw::alloc::inner::Global"
+                            ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (| index |))
+                      (Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        [])
                   ]
                 |)
               |),
@@ -1957,38 +2203,11 @@ Module host.
                           ],
                         γ0_0
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "ruint::Uint")
-                              [
-                                Value.Integer IntegerKind.Usize 256;
-                                Value.Integer IntegerKind.Usize 4
-                              ]
-                              []
-                          ]
-                      ]
-                      [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "ruint::Uint")
-                                [
-                                  Value.Integer IntegerKind.Usize 256;
-                                  Value.Integer IntegerKind.Usize 4
-                                ]
-                                []
-                            ],
-                          M.get_associated_function (|
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.call_closure (|
                             Ty.apply
                               (Ty.path "revm_context_interface::journaled_state::StateLoad")
                               []
@@ -2001,60 +2220,127 @@ Module host.
                                   ]
                                   []
                               ],
-                            "new",
-                            [],
-                            []
-                          |),
-                          [
-                            M.read (|
-                              M.deref (|
-                                M.call_closure (|
+                            M.get_associated_function (|
+                              Ty.apply
+                                (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                                []
+                                [
                                   Ty.apply
-                                    (Ty.path "&")
-                                    []
+                                    (Ty.path "ruint::Uint")
                                     [
-                                      Ty.apply
-                                        (Ty.path "ruint::Uint")
-                                        [
-                                          Value.Integer IntegerKind.Usize 256;
-                                          Value.Integer IntegerKind.Usize 4
-                                        ]
-                                        []
-                                    ],
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "hashbrown::map::OccupiedEntry")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "ruint::Uint")
-                                          [
-                                            Value.Integer IntegerKind.Usize 256;
-                                            Value.Integer IntegerKind.Usize 4
-                                          ]
-                                          [];
-                                        Ty.apply
-                                          (Ty.path "ruint::Uint")
-                                          [
-                                            Value.Integer IntegerKind.Usize 256;
-                                            Value.Integer IntegerKind.Usize 4
-                                          ]
-                                          [];
-                                        Ty.path "foldhash::seed::fast::RandomState";
-                                        Ty.path "hashbrown::raw::alloc::inner::Global"
-                                      ],
-                                    "get",
-                                    [],
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
                                     []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, entry |) ]
-                                |)
-                              |)
-                            |);
-                            Value.Bool false
-                          ]
-                        |)
-                      ]));
+                                ],
+                              "new",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (|
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [
+                                              Value.Integer IntegerKind.Usize 256;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ]
+                                            []
+                                        ],
+                                      M.get_associated_function (|
+                                        Ty.apply
+                                          (Ty.path "hashbrown::map::OccupiedEntry")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              [];
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              [];
+                                            Ty.path "foldhash::seed::fast::RandomState";
+                                            Ty.path "hashbrown::raw::alloc::inner::Global"
+                                          ],
+                                        "get",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, entry |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "hashbrown::map::OccupiedEntry")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 256;
+                                                      Value.Integer IntegerKind.Usize 4
+                                                    ]
+                                                    [];
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [
+                                                      Value.Integer IntegerKind.Usize 256;
+                                                      Value.Integer IntegerKind.Usize 4
+                                                    ]
+                                                    [];
+                                                  Ty.path "foldhash::seed::fast::RandomState";
+                                                  Ty.path "hashbrown::raw::alloc::inner::Global"
+                                                ]
+                                            ])
+                                      ]
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []);
+                              M.value_with_ty (Value.Bool false) (Ty.path "bool")
+                            ]
+                          |)
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
+                            ]
+                        ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ0_0 :=
@@ -2142,26 +2428,56 @@ Module host.
                             []
                           |),
                           [
-                            M.read (| entry |);
-                            M.read (|
-                              get_associated_constant (|
-                                Ty.apply
-                                  (Ty.path "ruint::Uint")
-                                  [
-                                    Value.Integer IntegerKind.Usize 256;
-                                    Value.Integer IntegerKind.Usize 4
-                                  ]
-                                  [],
-                                "ZERO",
-                                Ty.apply
-                                  (Ty.path "ruint::Uint")
-                                  [
-                                    Value.Integer IntegerKind.Usize 256;
-                                    Value.Integer IntegerKind.Usize 4
-                                  ]
-                                  []
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.read (| entry |))
+                              (Ty.apply
+                                (Ty.path "hashbrown::map::VacantEntry")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    [];
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    [];
+                                  Ty.path "foldhash::seed::fast::RandomState";
+                                  Ty.path "hashbrown::raw::alloc::inner::Global"
+                                ]);
+                            M.value_with_ty
+                              (M.read (|
+                                get_associated_constant (|
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    [],
+                                  "ZERO",
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    []
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                [])
                           ]
                         |) in
                       M.alloc (|
@@ -2182,38 +2498,11 @@ Module host.
                                   []
                               ]
                           ],
-                        Value.StructTuple
-                          "core::option::Option::Some"
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "ruint::Uint")
-                                  [
-                                    Value.Integer IntegerKind.Usize 256;
-                                    Value.Integer IntegerKind.Usize 4
-                                  ]
-                                  []
-                              ]
-                          ]
-                          [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    []
-                                ],
-                              M.get_associated_function (|
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "core::option::Option::Some"
+                            [
+                              M.call_closure (|
                                 Ty.apply
                                   (Ty.path "revm_context_interface::journaled_state::StateLoad")
                                   []
@@ -2226,34 +2515,72 @@ Module host.
                                       ]
                                       []
                                   ],
-                                "new",
-                                [],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ],
+                                  "new",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (|
+                                      get_associated_constant (|
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          [],
+                                        "ZERO",
+                                        Ty.apply
+                                          (Ty.path "ruint::Uint")
+                                          [
+                                            Value.Integer IntegerKind.Usize 256;
+                                            Value.Integer IntegerKind.Usize 4
+                                          ]
+                                          []
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "ruint::Uint")
+                                      [
+                                        Value.Integer IntegerKind.Usize 256;
+                                        Value.Integer IntegerKind.Usize 4
+                                      ]
+                                      []);
+                                  M.value_with_ty (Value.Bool true) (Ty.path "bool")
+                                ]
+                              |)
+                            ])
+                          (Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "revm_context_interface::journaled_state::StateLoad")
                                 []
-                              |),
-                              [
-                                M.read (|
-                                  get_associated_constant (|
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      [],
-                                    "ZERO",
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  |)
-                                |);
-                                Value.Bool true
-                              ]
-                            |)
-                          ]
+                                [
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    []
+                                ]
+                            ])
                       |)
                     |)))
               ]
@@ -2362,16 +2689,53 @@ Module host.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_context_interface::host::dummy::DummyHost",
-                        "storage"
-                      |)
-                    |);
-                    M.read (| index |);
-                    M.read (| value |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context_interface::host::dummy::DummyHost",
+                          "storage"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "hashbrown::map::HashMap")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                [];
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                [];
+                              Ty.path "foldhash::seed::fast::RandomState";
+                              Ty.path "hashbrown::raw::alloc::inner::Global"
+                            ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (| index |))
+                      (Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []);
+                    M.value_with_ty
+                      (M.read (| value |))
+                      (Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        [])
                   ]
                 |) in
               M.alloc (|
@@ -2384,77 +2748,41 @@ Module host.
                       []
                       [ Ty.path "revm_context_interface::host::SStoreResult" ]
                   ],
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [
-                    Ty.apply
-                      (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                      []
-                      [ Ty.path "revm_context_interface::host::SStoreResult" ]
-                  ]
-                  [
-                    Value.mkStructRecord
-                      "revm_context_interface::journaled_state::StateLoad"
-                      []
-                      [ Ty.path "revm_context_interface::host::SStoreResult" ]
-                      [
-                        ("data",
-                          Value.mkStructRecord
-                            "revm_context_interface::host::SStoreResult"
-                            []
-                            []
-                            [
-                              ("original_value",
-                                M.read (|
-                                  get_associated_constant (|
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      [],
-                                    "ZERO",
-                                    Ty.apply
-                                      (Ty.path "ruint::Uint")
-                                      [
-                                        Value.Integer IntegerKind.Usize 256;
-                                        Value.Integer IntegerKind.Usize 4
-                                      ]
-                                      []
-                                  |)
-                                |));
-                              ("present_value",
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                    [],
-                                  M.get_associated_function (|
-                                    Ty.apply
-                                      (Ty.path "core::option::Option")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "ruint::Uint")
-                                          [
-                                            Value.Integer IntegerKind.Usize 256;
-                                            Value.Integer IntegerKind.Usize 4
-                                          ]
-                                          []
-                                      ],
-                                    "unwrap_or",
-                                    [],
-                                    []
-                                  |),
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::option::Option::Some"
+                    [
+                      M.value_with_ty
+                        (Value.mkStructRecord
+                          "revm_context_interface::journaled_state::StateLoad"
+                          [
+                            ("data",
+                              M.value_with_ty
+                                (Value.mkStructRecord
+                                  "revm_context_interface::host::SStoreResult"
                                   [
-                                    M.read (| present |);
-                                    M.read (|
-                                      get_associated_constant (|
+                                    ("original_value",
+                                      M.read (|
+                                        get_associated_constant (|
+                                          Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [
+                                              Value.Integer IntegerKind.Usize 256;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ]
+                                            [],
+                                          "ZERO",
+                                          Ty.apply
+                                            (Ty.path "ruint::Uint")
+                                            [
+                                              Value.Integer IntegerKind.Usize 256;
+                                              Value.Integer IntegerKind.Usize 4
+                                            ]
+                                            []
+                                        |)
+                                      |));
+                                    ("present_value",
+                                      M.call_closure (|
                                         Ty.apply
                                           (Ty.path "ruint::Uint")
                                           [
@@ -2462,44 +2790,127 @@ Module host.
                                             Value.Integer IntegerKind.Usize 4
                                           ]
                                           [],
-                                        "ZERO",
-                                        Ty.apply
-                                          (Ty.path "ruint::Uint")
-                                          [
-                                            Value.Integer IntegerKind.Usize 256;
-                                            Value.Integer IntegerKind.Usize 4
-                                          ]
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "ruint::Uint")
+                                                [
+                                                  Value.Integer IntegerKind.Usize 256;
+                                                  Value.Integer IntegerKind.Usize 4
+                                                ]
+                                                []
+                                            ],
+                                          "unwrap_or",
+                                          [],
                                           []
-                                      |)
-                                    |)
-                                  ]
-                                |));
-                              ("new_value", M.read (| value |))
-                            ]);
-                        ("is_cold",
-                          M.call_closure (|
-                            Ty.path "bool",
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "core::option::Option")
-                                []
-                                [
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| present |))
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "ruint::Uint")
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 256;
+                                                    Value.Integer IntegerKind.Usize 4
+                                                  ]
+                                                  []
+                                              ]);
+                                          M.value_with_ty
+                                            (M.read (|
+                                              get_associated_constant (|
+                                                Ty.apply
+                                                  (Ty.path "ruint::Uint")
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 256;
+                                                    Value.Integer IntegerKind.Usize 4
+                                                  ]
+                                                  [],
+                                                "ZERO",
+                                                Ty.apply
+                                                  (Ty.path "ruint::Uint")
+                                                  [
+                                                    Value.Integer IntegerKind.Usize 256;
+                                                    Value.Integer IntegerKind.Usize 4
+                                                  ]
+                                                  []
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              [])
+                                        ]
+                                      |));
+                                    ("new_value", M.read (| value |))
+                                  ])
+                                (Ty.path "revm_context_interface::host::SStoreResult"));
+                            ("is_cold",
+                              M.call_closure (|
+                                Ty.path "bool",
+                                M.get_associated_function (|
                                   Ty.apply
-                                    (Ty.path "ruint::Uint")
-                                    [
-                                      Value.Integer IntegerKind.Usize 256;
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
+                                    (Ty.path "core::option::Option")
                                     []
-                                ],
-                              "is_none",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, present |) ]
-                          |))
-                      ]
-                  ]
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        []
+                                    ],
+                                  "is_none",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, present |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "ruint::Uint")
+                                              [
+                                                Value.Integer IntegerKind.Usize 256;
+                                                Value.Integer IntegerKind.Usize 4
+                                              ]
+                                              []
+                                          ]
+                                      ])
+                                ]
+                              |))
+                          ])
+                        (Ty.apply
+                          (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                          []
+                          [ Ty.path "revm_context_interface::host::SStoreResult" ])
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                        []
+                        [ Ty.path "revm_context_interface::host::SStoreResult" ]
+                    ])
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2566,40 +2977,18 @@ Module host.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "core::option::Option")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "ruint::Uint")
-                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
-                        []
-                    ],
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply
                       (Ty.path "core::option::Option")
                       []
                       [
                         Ty.apply
-                          (Ty.path "&")
+                          (Ty.path "ruint::Uint")
+                          [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
                           []
-                          [
-                            Ty.apply
-                              (Ty.path "ruint::Uint")
-                              [
-                                Value.Integer IntegerKind.Usize 256;
-                                Value.Integer IntegerKind.Usize 4
-                              ]
-                              []
-                          ]
                       ],
-                    "copied",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
+                    M.get_associated_function (|
                       Ty.apply
                         (Ty.path "core::option::Option")
                         []
@@ -2617,55 +3006,147 @@ Module host.
                                 []
                             ]
                         ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "hashbrown::map::HashMap")
+                      "copied",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    []
+                                ]
+                            ],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "hashbrown::map::HashMap")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  [];
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  [];
+                                Ty.path "foldhash::seed::fast::RandomState";
+                                Ty.path "hashbrown::raw::alloc::inner::Global"
+                              ],
+                            "get",
+                            [],
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                []
+                            ]
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_context_interface::host::dummy::DummyHost",
+                                  "transient_storage"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "hashbrown::map::HashMap")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        [];
+                                      Ty.apply
+                                        (Ty.path "ruint::Uint")
+                                        [
+                                          Value.Integer IntegerKind.Usize 256;
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                        [];
+                                      Ty.path "foldhash::seed::fast::RandomState";
+                                      Ty.path "hashbrown::raw::alloc::inner::Global"
+                                    ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, index |) |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "ruint::Uint")
+                                    [
+                                      Value.Integer IntegerKind.Usize 256;
+                                      Value.Integer IntegerKind.Usize 4
+                                    ]
+                                    []
+                                ])
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
                           []
                           [
                             Ty.apply
-                              (Ty.path "ruint::Uint")
+                              (Ty.path "&")
+                              []
                               [
-                                Value.Integer IntegerKind.Usize 256;
-                                Value.Integer IntegerKind.Usize 4
+                                Ty.apply
+                                  (Ty.path "ruint::Uint")
+                                  [
+                                    Value.Integer IntegerKind.Usize 256;
+                                    Value.Integer IntegerKind.Usize 4
+                                  ]
+                                  []
                               ]
-                              [];
-                            Ty.apply
-                              (Ty.path "ruint::Uint")
-                              [
-                                Value.Integer IntegerKind.Usize 256;
-                                Value.Integer IntegerKind.Usize 4
-                              ]
-                              [];
-                            Ty.path "foldhash::seed::fast::RandomState";
-                            Ty.path "hashbrown::raw::alloc::inner::Global"
-                          ],
-                        "get",
-                        [],
-                        [
-                          Ty.apply
-                            (Ty.path "ruint::Uint")
-                            [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4
-                            ]
-                            []
-                        ]
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_context_interface::host::dummy::DummyHost",
-                            "transient_storage"
-                          |)
-                        |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| M.borrow (| Pointer.Kind.Ref, index |) |)
-                        |)
-                      ]
-                    |)
-                  ]
-                |)
+                          ])
+                    ]
+                  |))
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2759,16 +3240,53 @@ Module host.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_context_interface::host::dummy::DummyHost",
-                        "transient_storage"
-                      |)
-                    |);
-                    M.read (| index |);
-                    M.read (| value |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_context_interface::host::dummy::DummyHost",
+                          "transient_storage"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "hashbrown::map::HashMap")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                [];
+                              Ty.apply
+                                (Ty.path "ruint::Uint")
+                                [
+                                  Value.Integer IntegerKind.Usize 256;
+                                  Value.Integer IntegerKind.Usize 4
+                                ]
+                                [];
+                              Ty.path "foldhash::seed::fast::RandomState";
+                              Ty.path "hashbrown::raw::alloc::inner::Global"
+                            ]
+                        ]);
+                    M.value_with_ty
+                      (M.read (| index |))
+                      (Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        []);
+                    M.value_with_ty
+                      (M.read (| value |))
+                      (Ty.apply
+                        (Ty.path "ruint::Uint")
+                        [ Value.Integer IntegerKind.Usize 256; Value.Integer IntegerKind.Usize 4 ]
+                        [])
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2830,15 +3348,36 @@ Module host.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_context_interface::host::dummy::DummyHost",
-                    "log"
-                  |)
-                |);
-                M.read (| log |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_context_interface::host::dummy::DummyHost",
+                      "log"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloy_primitives::log::Log")
+                            []
+                            [ Ty.path "alloy_primitives::log::LogData" ];
+                          Ty.path "alloc::alloc::Global"
+                        ]
+                    ]);
+                M.value_with_ty
+                  (M.read (| log |))
+                  (Ty.apply
+                    (Ty.path "alloy_primitives::log::Log")
+                    []
+                    [ Ty.path "alloy_primitives::log::LogData" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2880,36 +3419,39 @@ Module host.
               M.alloc (| Ty.path "alloy_primitives::bits::address::Address", _address |) in
             let _target :=
               M.alloc (| Ty.path "alloy_primitives::bits::address::Address", _target |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [
-                Ty.apply
-                  (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                  []
-                  [ Ty.path "revm_context_interface::host::SelfDestructResult" ]
-              ]
-              [
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
-                    []
-                    [ Ty.path "revm_context_interface::host::SelfDestructResult" ],
-                  M.get_trait_method (|
-                    "core::default::Default",
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "revm_context_interface::journaled_state::StateLoad")
                       []
                       [ Ty.path "revm_context_interface::host::SelfDestructResult" ],
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.apply
+                        (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                        []
+                        [ Ty.path "revm_context_interface::host::SelfDestructResult" ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |)
-              ]))
+                  |)
+                ])
+              (Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "revm_context_interface::journaled_state::StateLoad")
+                    []
+                    [ Ty.path "revm_context_interface::host::SelfDestructResult" ]
+                ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       

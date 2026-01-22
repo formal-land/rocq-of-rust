@@ -68,8 +68,104 @@ Definition combine_vecs_explicit_return_type
           []
         |),
         [
-          M.call_closure (|
-            Ty.apply
+          M.value_with_ty
+            (M.call_closure (|
+              Ty.apply
+                (Ty.path "core::iter::adapters::chain::Chain")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                    []
+                    [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ];
+                  Ty.apply
+                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                    []
+                    [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ]
+                ],
+              M.get_trait_method (|
+                "core::iter::traits::iterator::Iterator",
+                Ty.apply
+                  (Ty.path "alloc::vec::into_iter::IntoIter")
+                  []
+                  [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
+                [],
+                [],
+                "chain",
+                [],
+                [
+                  Ty.apply
+                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                    []
+                    [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ]
+                ]
+              |),
+              [
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "alloc::vec::into_iter::IntoIter")
+                      []
+                      [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::IntoIterator",
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
+                      [],
+                      [],
+                      "into_iter",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| v |))
+                        (Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ])
+                    ]
+                  |))
+                  (Ty.apply
+                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                    []
+                    [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "alloc::vec::into_iter::IntoIter")
+                      []
+                      [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::IntoIterator",
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
+                      [],
+                      [],
+                      "into_iter",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| u |))
+                        (Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ])
+                    ]
+                  |))
+                  (Ty.apply
+                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                    []
+                    [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ])
+              ]
+            |))
+            (Ty.apply
               (Ty.path "core::iter::adapters::chain::Chain")
               []
               [
@@ -81,65 +177,7 @@ Definition combine_vecs_explicit_return_type
                   (Ty.path "alloc::vec::into_iter::IntoIter")
                   []
                   [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ]
-              ],
-            M.get_trait_method (|
-              "core::iter::traits::iterator::Iterator",
-              Ty.apply
-                (Ty.path "alloc::vec::into_iter::IntoIter")
-                []
-                [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
-              [],
-              [],
-              "chain",
-              [],
-              [
-                Ty.apply
-                  (Ty.path "alloc::vec::into_iter::IntoIter")
-                  []
-                  [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ]
-              ]
-            |),
-            [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::vec::into_iter::IntoIter")
-                  []
-                  [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
-                M.get_trait_method (|
-                  "core::iter::traits::collect::IntoIterator",
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
-                    []
-                    [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
-                  [],
-                  [],
-                  "into_iter",
-                  [],
-                  []
-                |),
-                [ M.read (| v |) ]
-              |);
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::vec::into_iter::IntoIter")
-                  []
-                  [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
-                M.get_trait_method (|
-                  "core::iter::traits::collect::IntoIterator",
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
-                    []
-                    [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
-                  [],
-                  [],
-                  "into_iter",
-                  [],
-                  []
-                |),
-                [ M.read (| u |) ]
-              |)
-            ]
-          |)
+              ])
         ]
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"
@@ -212,8 +250,104 @@ Definition combine_vecs (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
           []
         |),
         [
-          M.call_closure (|
-            Ty.apply
+          M.value_with_ty
+            (M.call_closure (|
+              Ty.apply
+                (Ty.path "core::iter::adapters::chain::Chain")
+                []
+                [
+                  Ty.apply
+                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                    []
+                    [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ];
+                  Ty.apply
+                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                    []
+                    [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ]
+                ],
+              M.get_trait_method (|
+                "core::iter::traits::iterator::Iterator",
+                Ty.apply
+                  (Ty.path "alloc::vec::into_iter::IntoIter")
+                  []
+                  [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
+                [],
+                [],
+                "chain",
+                [],
+                [
+                  Ty.apply
+                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                    []
+                    [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ]
+                ]
+              |),
+              [
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "alloc::vec::into_iter::IntoIter")
+                      []
+                      [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::IntoIterator",
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
+                      [],
+                      [],
+                      "into_iter",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| v |))
+                        (Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ])
+                    ]
+                  |))
+                  (Ty.apply
+                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                    []
+                    [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "alloc::vec::into_iter::IntoIter")
+                      []
+                      [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::IntoIterator",
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
+                      [],
+                      [],
+                      "into_iter",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| u |))
+                        (Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ])
+                    ]
+                  |))
+                  (Ty.apply
+                    (Ty.path "alloc::vec::into_iter::IntoIter")
+                    []
+                    [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ])
+              ]
+            |))
+            (Ty.apply
               (Ty.path "core::iter::adapters::chain::Chain")
               []
               [
@@ -225,65 +359,7 @@ Definition combine_vecs (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
                   (Ty.path "alloc::vec::into_iter::IntoIter")
                   []
                   [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ]
-              ],
-            M.get_trait_method (|
-              "core::iter::traits::iterator::Iterator",
-              Ty.apply
-                (Ty.path "alloc::vec::into_iter::IntoIter")
-                []
-                [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
-              [],
-              [],
-              "chain",
-              [],
-              [
-                Ty.apply
-                  (Ty.path "alloc::vec::into_iter::IntoIter")
-                  []
-                  [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ]
-              ]
-            |),
-            [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::vec::into_iter::IntoIter")
-                  []
-                  [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
-                M.get_trait_method (|
-                  "core::iter::traits::collect::IntoIterator",
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
-                    []
-                    [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
-                  [],
-                  [],
-                  "into_iter",
-                  [],
-                  []
-                |),
-                [ M.read (| v |) ]
-              |);
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::vec::into_iter::IntoIter")
-                  []
-                  [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
-                M.get_trait_method (|
-                  "core::iter::traits::collect::IntoIterator",
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
-                    []
-                    [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ],
-                  [],
-                  [],
-                  "into_iter",
-                  [],
-                  []
-                |),
-                [ M.read (| u |) ]
-              |)
-            ]
-          |)
+              ])
         ]
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"
@@ -329,45 +405,37 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               [ Ty.path "alloc::alloc::Global" ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::boxed::Box")
-                  []
-                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "i32" ]; Ty.path "alloc::alloc::Global"
-                  ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "alloc::boxed::Box")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 3 ]
-                        [ Ty.path "i32" ];
-                      Ty.path "alloc::alloc::Global"
-                    ])
-                  (Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
                     [
                       Ty.apply (Ty.path "slice") [] [ Ty.path "i32" ];
                       Ty.path "alloc::alloc::Global"
-                    ]),
-                [
-                  M.read (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "alloc::boxed::Box")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 3 ]
-                            [ Ty.path "i32" ];
-                          Ty.path "alloc::alloc::Global"
-                        ],
-                      M.get_associated_function (|
+                    ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 3 ]
+                          [ Ty.path "i32" ];
+                        Ty.path "alloc::alloc::Global"
+                      ])
+                    (Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [
+                        Ty.apply (Ty.path "slice") [] [ Ty.path "i32" ];
+                        Ty.path "alloc::alloc::Global"
+                      ]),
+                  [
+                    M.read (|
+                      M.call_closure (|
                         Ty.apply
                           (Ty.path "alloc::boxed::Box")
                           []
@@ -378,28 +446,44 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                               [ Ty.path "i32" ];
                             Ty.path "alloc::alloc::Global"
                           ],
-                        "new",
-                        [],
-                        []
-                      |),
-                      [
-                        M.alloc (|
+                        M.get_associated_function (|
                           Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 3 ]
-                            [ Ty.path "i32" ],
-                          Value.Array
+                            (Ty.path "alloc::boxed::Box")
+                            []
                             [
-                              Value.Integer IntegerKind.I32 1;
-                              Value.Integer IntegerKind.I32 2;
-                              Value.Integer IntegerKind.I32 3
-                            ]
-                        |)
-                      ]
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 3 ]
+                                [ Ty.path "i32" ];
+                              Ty.path "alloc::alloc::Global"
+                            ],
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 3 ]
+                              [ Ty.path "i32" ],
+                            Value.Array
+                              [
+                                Value.Integer IntegerKind.I32 1;
+                                Value.Integer IntegerKind.I32 2;
+                                Value.Integer IntegerKind.I32 3
+                              ]
+                          |)
+                        ]
+                      |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply
+                  (Ty.path "alloc::boxed::Box")
+                  []
+                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "i32" ]; Ty.path "alloc::alloc::Global"
+                  ])
             ]
           |) in
         let~ v2 :
@@ -419,45 +503,37 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               [ Ty.path "alloc::alloc::Global" ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::boxed::Box")
-                  []
-                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "i32" ]; Ty.path "alloc::alloc::Global"
-                  ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "alloc::boxed::Box")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 2 ]
-                        [ Ty.path "i32" ];
-                      Ty.path "alloc::alloc::Global"
-                    ])
-                  (Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
                     [
                       Ty.apply (Ty.path "slice") [] [ Ty.path "i32" ];
                       Ty.path "alloc::alloc::Global"
-                    ]),
-                [
-                  M.read (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "alloc::boxed::Box")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 2 ]
-                            [ Ty.path "i32" ];
-                          Ty.path "alloc::alloc::Global"
-                        ],
-                      M.get_associated_function (|
+                    ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 2 ]
+                          [ Ty.path "i32" ];
+                        Ty.path "alloc::alloc::Global"
+                      ])
+                    (Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [
+                        Ty.apply (Ty.path "slice") [] [ Ty.path "i32" ];
+                        Ty.path "alloc::alloc::Global"
+                      ]),
+                  [
+                    M.read (|
+                      M.call_closure (|
                         Ty.apply
                           (Ty.path "alloc::boxed::Box")
                           []
@@ -468,31 +544,60 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                               [ Ty.path "i32" ];
                             Ty.path "alloc::alloc::Global"
                           ],
-                        "new",
-                        [],
-                        []
-                      |),
-                      [
-                        M.alloc (|
+                        M.get_associated_function (|
                           Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 2 ]
-                            [ Ty.path "i32" ],
-                          Value.Array
-                            [ Value.Integer IntegerKind.I32 4; Value.Integer IntegerKind.I32 5 ]
-                        |)
-                      ]
+                            (Ty.path "alloc::boxed::Box")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 2 ]
+                                [ Ty.path "i32" ];
+                              Ty.path "alloc::alloc::Global"
+                            ],
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 2 ]
+                              [ Ty.path "i32" ],
+                            Value.Array
+                              [ Value.Integer IntegerKind.I32 4; Value.Integer IntegerKind.I32 5 ]
+                          |)
+                        ]
+                      |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply
+                  (Ty.path "alloc::boxed::Box")
+                  []
+                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "i32" ]; Ty.path "alloc::alloc::Global"
+                  ])
             ]
           |) in
         let~ v3 : Ty.associated_unknown :=
           M.call_closure (|
             Ty.associated_unknown,
             M.get_function (| "impl_trait_as_return_type::combine_vecs", [], [] |),
-            [ M.read (| v1 |); M.read (| v2 |) ]
+            [
+              M.value_with_ty
+                (M.read (| v1 |))
+                (Ty.apply
+                  (Ty.path "alloc::vec::Vec")
+                  []
+                  [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ]);
+              M.value_with_ty
+                (M.read (| v2 |))
+                (Ty.apply
+                  (Ty.path "alloc::vec::Vec")
+                  []
+                  [ Ty.path "i32"; Ty.path "alloc::alloc::Global" ])
+            ]
           |) in
         let~ _ : Ty.tuple [] :=
           M.match_operator (|
@@ -515,11 +620,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Pointer.Kind.Ref,
                     M.alloc (|
                       Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ],
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.path "i32" ]
-                        [ Value.Integer IntegerKind.I32 1 ]
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [ Value.Integer IntegerKind.I32 1 ])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ])
                     |)
                   |);
                   M.borrow (|
@@ -537,7 +642,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.MutRef, v3 |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, v3 |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.associated_unknown ])
+                        ]
                       |)
                     |)
                   |)
@@ -598,14 +707,34 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "i32" ]
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "i32" ]
+                                            ])
                                       ]
                                     |)
                                   ]
@@ -616,7 +745,9 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           M.never_to_any (|
                             M.read (|
                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                M.value_with_ty
+                                  (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                  (Ty.path "core::panicking::AssertKind") in
                               M.alloc (|
                                 Ty.path "never",
                                 M.call_closure (|
@@ -633,30 +764,58 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                     ]
                                   |),
                                   [
-                                    M.read (| kind |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
+                                    M.value_with_ty
+                                      (M.read (| kind |))
+                                      (Ty.path "core::panicking::AssertKind");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "i32" ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::option::Option::None"
-                                      []
-                                      [ Ty.path "core::fmt::Arguments" ]
-                                      []
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "i32" ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::fmt::Arguments" ])
                                   ]
                                 |)
                               |)
@@ -688,11 +847,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Pointer.Kind.Ref,
                     M.alloc (|
                       Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ],
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.path "i32" ]
-                        [ Value.Integer IntegerKind.I32 2 ]
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [ Value.Integer IntegerKind.I32 2 ])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ])
                     |)
                   |);
                   M.borrow (|
@@ -710,7 +869,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.MutRef, v3 |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, v3 |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.associated_unknown ])
+                        ]
                       |)
                     |)
                   |)
@@ -771,14 +934,34 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "i32" ]
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "i32" ]
+                                            ])
                                       ]
                                     |)
                                   ]
@@ -789,7 +972,9 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           M.never_to_any (|
                             M.read (|
                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                M.value_with_ty
+                                  (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                  (Ty.path "core::panicking::AssertKind") in
                               M.alloc (|
                                 Ty.path "never",
                                 M.call_closure (|
@@ -806,30 +991,58 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                     ]
                                   |),
                                   [
-                                    M.read (| kind |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
+                                    M.value_with_ty
+                                      (M.read (| kind |))
+                                      (Ty.path "core::panicking::AssertKind");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "i32" ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::option::Option::None"
-                                      []
-                                      [ Ty.path "core::fmt::Arguments" ]
-                                      []
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "i32" ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::fmt::Arguments" ])
                                   ]
                                 |)
                               |)
@@ -861,11 +1074,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Pointer.Kind.Ref,
                     M.alloc (|
                       Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ],
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.path "i32" ]
-                        [ Value.Integer IntegerKind.I32 3 ]
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [ Value.Integer IntegerKind.I32 3 ])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ])
                     |)
                   |);
                   M.borrow (|
@@ -883,7 +1096,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.MutRef, v3 |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, v3 |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.associated_unknown ])
+                        ]
                       |)
                     |)
                   |)
@@ -944,14 +1161,34 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "i32" ]
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "i32" ]
+                                            ])
                                       ]
                                     |)
                                   ]
@@ -962,7 +1199,9 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           M.never_to_any (|
                             M.read (|
                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                M.value_with_ty
+                                  (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                  (Ty.path "core::panicking::AssertKind") in
                               M.alloc (|
                                 Ty.path "never",
                                 M.call_closure (|
@@ -979,30 +1218,58 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                     ]
                                   |),
                                   [
-                                    M.read (| kind |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
+                                    M.value_with_ty
+                                      (M.read (| kind |))
+                                      (Ty.path "core::panicking::AssertKind");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "i32" ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::option::Option::None"
-                                      []
-                                      [ Ty.path "core::fmt::Arguments" ]
-                                      []
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "i32" ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::fmt::Arguments" ])
                                   ]
                                 |)
                               |)
@@ -1034,11 +1301,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Pointer.Kind.Ref,
                     M.alloc (|
                       Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ],
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.path "i32" ]
-                        [ Value.Integer IntegerKind.I32 4 ]
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [ Value.Integer IntegerKind.I32 4 ])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ])
                     |)
                   |);
                   M.borrow (|
@@ -1056,7 +1323,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.MutRef, v3 |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, v3 |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.associated_unknown ])
+                        ]
                       |)
                     |)
                   |)
@@ -1117,14 +1388,34 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "i32" ]
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "i32" ]
+                                            ])
                                       ]
                                     |)
                                   ]
@@ -1135,7 +1426,9 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           M.never_to_any (|
                             M.read (|
                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                M.value_with_ty
+                                  (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                  (Ty.path "core::panicking::AssertKind") in
                               M.alloc (|
                                 Ty.path "never",
                                 M.call_closure (|
@@ -1152,30 +1445,58 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                     ]
                                   |),
                                   [
-                                    M.read (| kind |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
+                                    M.value_with_ty
+                                      (M.read (| kind |))
+                                      (Ty.path "core::panicking::AssertKind");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "i32" ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::option::Option::None"
-                                      []
-                                      [ Ty.path "core::fmt::Arguments" ]
-                                      []
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "i32" ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::fmt::Arguments" ])
                                   ]
                                 |)
                               |)
@@ -1207,11 +1528,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Pointer.Kind.Ref,
                     M.alloc (|
                       Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ],
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.path "i32" ]
-                        [ Value.Integer IntegerKind.I32 5 ]
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [ Value.Integer IntegerKind.I32 5 ])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "i32" ])
                     |)
                   |);
                   M.borrow (|
@@ -1229,7 +1550,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.MutRef, v3 |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, v3 |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.associated_unknown ])
+                        ]
                       |)
                     |)
                   |)
@@ -1290,14 +1615,34 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "i32" ]
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "i32" ]
+                                            ])
                                       ]
                                     |)
                                   ]
@@ -1308,7 +1653,9 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           M.never_to_any (|
                             M.read (|
                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                M.value_with_ty
+                                  (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                  (Ty.path "core::panicking::AssertKind") in
                               M.alloc (|
                                 Ty.path "never",
                                 M.call_closure (|
@@ -1325,30 +1672,58 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                     ]
                                   |),
                                   [
-                                    M.read (| kind |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
+                                    M.value_with_ty
+                                      (M.read (| kind |))
+                                      (Ty.path "core::panicking::AssertKind");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "i32" ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::option::Option::None"
-                                      []
-                                      [ Ty.path "core::fmt::Arguments" ]
-                                      []
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "i32" ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::fmt::Arguments" ])
                                   ]
                                 |)
                               |)
@@ -1366,33 +1741,45 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                 Ty.tuple [],
                 M.get_function (| "std::io::stdio::_print", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.path "core::fmt::Arguments",
-                      "new_const",
-                      [ Value.Integer IntegerKind.Usize 1 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new_const",
+                        [ Value.Integer IntegerKind.Usize 1 ],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                  Value.Array [ mk_str (| "all done
+" |) ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 1 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array [ mk_str (| "all done
-" |) ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            ])
+                      ]
+                    |))
+                    (Ty.path "core::fmt::Arguments")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)

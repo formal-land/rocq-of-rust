@@ -13,30 +13,35 @@ Module future.
       | [], [ T ], [ value ] =>
         ltac:(M.monadic
           (let value := M.alloc (| T, value |) in
-          Value.mkStructRecord
-            "core::future::async_drop::AsyncDropOwning"
-            []
-            [ T ]
-            [
-              ("value",
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                  M.get_associated_function (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::future::async_drop::AsyncDropOwning"
+              [
+                ("value",
+                  M.call_closure (|
                     Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
-                    "new",
-                    [],
-                    []
-                  |),
-                  [ M.read (| value |) ]
-                |));
-              ("dtor",
-                Value.StructTuple
-                  "core::option::Option::None"
-                  []
-                  [ Ty.apply (Ty.path "core::future::async_drop::AsyncDropInPlace") [] [ T ] ]
-                  []);
-              ("_pinned", Value.StructTuple "core::marker::PhantomPinned" [] [] [])
-            ]))
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [ M.value_with_ty (M.read (| value |)) T ]
+                  |));
+                ("dtor",
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "core::future::async_drop::AsyncDropInPlace") [] [ T ]
+                      ]));
+                ("_pinned",
+                  M.value_with_ty
+                    (Value.StructTuple "core::marker::PhantomPinned" [])
+                    (Ty.path "core::marker::PhantomPinned"))
+              ])
+            (Ty.apply (Ty.path "core::future::async_drop::AsyncDropOwning") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -98,28 +103,34 @@ Module future.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.alloc (|
-                    Ty.path "core::fmt::builders::DebugStruct",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.alloc (|
                       Ty.path "core::fmt::builders::DebugStruct",
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::Formatter",
-                        "debug_struct",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| mk_str (| "AsyncDropOwning" |) |)
-                        |)
-                      ]
+                      M.call_closure (|
+                        Ty.path "core::fmt::builders::DebugStruct",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Formatter",
+                          "debug_struct",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| mk_str (| "AsyncDropOwning" |) |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -204,7 +215,24 @@ Module future.
                     [],
                     []
                   |),
-                  [ M.read (| self |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| self |))
+                      (Ty.apply
+                        (Ty.path "core::pin::Pin")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::future::async_drop::AsyncDropOwning")
+                                []
+                                [ T ]
+                            ]
+                        ])
+                  ]
                 |) in
               let~ dtor :
                   Ty.apply
@@ -242,94 +270,141 @@ Module future.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "core::future::async_drop::AsyncDropInPlace") [] [ T ]
-                        ],
-                      M.get_associated_function (|
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.apply
-                          (Ty.path "core::option::Option")
+                          (Ty.path "&mut")
                           []
                           [ Ty.apply (Ty.path "core::future::async_drop::AsyncDropInPlace") [] [ T ]
                           ],
-                        "get_or_insert_with",
-                        [],
-                        [
-                          Ty.function
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
                             []
-                            (Ty.apply
-                              (Ty.path "core::future::async_drop::AsyncDropInPlace")
+                            [
+                              Ty.apply
+                                (Ty.path "core::future::async_drop::AsyncDropInPlace")
+                                []
+                                [ T ]
+                            ],
+                          "get_or_insert_with",
+                          [],
+                          [
+                            Ty.function
                               []
-                              [ T ])
-                        ]
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| this |) |),
-                            "core::future::async_drop::AsyncDropOwning",
-                            "dtor"
-                          |)
-                        |);
-                        M.closure
-                          (fun γ =>
-                            ltac:(M.monadic
-                              match γ with
-                              | [ α0 ] =>
-                                ltac:(M.monadic
-                                  (M.match_operator (|
+                              (Ty.apply
+                                (Ty.path "core::future::async_drop::AsyncDropInPlace")
+                                []
+                                [ T ])
+                          ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| this |) |),
+                                "core::future::async_drop::AsyncDropOwning",
+                                "dtor"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "core::future::async_drop::AsyncDropInPlace")
                                       []
-                                      [ T ],
-                                    M.alloc (| Ty.tuple [], α0 |),
-                                    [
-                                      fun γ =>
-                                        ltac:(M.monadic
-                                          (M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "core::future::async_drop::AsyncDropInPlace")
-                                              []
-                                              [ T ],
-                                            M.get_function (|
-                                              "core::future::async_drop::async_drop_in_place",
-                                              [],
-                                              [ T ]
-                                            |),
-                                            [
-                                              M.call_closure (|
-                                                Ty.apply (Ty.path "*mut") [] [ T ],
-                                                M.get_associated_function (|
-                                                  Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                    []
-                                                    [ T ],
-                                                  "as_mut_ptr",
-                                                  [],
+                                      [ T ]
+                                  ]
+                              ]);
+                          M.value_with_ty
+                            (M.closure
+                              (fun γ =>
+                                ltac:(M.monadic
+                                  match γ with
+                                  | [ α0 ] =>
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.apply
+                                          (Ty.path "core::future::async_drop::AsyncDropInPlace")
+                                          []
+                                          [ T ],
+                                        M.alloc (| Ty.tuple [], α0 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "core::future::async_drop::AsyncDropInPlace")
                                                   []
+                                                  [ T ],
+                                                M.get_function (|
+                                                  "core::future::async_drop::async_drop_in_place",
+                                                  [],
+                                                  [ T ]
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| this |) |),
-                                                      "core::future::async_drop::AsyncDropOwning",
-                                                      "value"
-                                                    |)
-                                                  |)
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
+                                                      Ty.apply (Ty.path "*mut") [] [ T ],
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          []
+                                                          [ T ],
+                                                        "as_mut_ptr",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.SubPointer.get_struct_record_field (|
+                                                              M.deref (| M.read (| this |) |),
+                                                              "core::future::async_drop::AsyncDropOwning",
+                                                              "value"
+                                                            |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "core::mem::maybe_uninit::MaybeUninit")
+                                                                []
+                                                                [ T ]
+                                                            ])
+                                                      ]
+                                                    |))
+                                                    (Ty.apply (Ty.path "*mut") [] [ T ])
                                                 ]
-                                              |)
-                                            ]
-                                          |)))
-                                    ]
-                                  |)))
-                              | _ => M.impossible "wrong number of arguments"
-                              end))
-                      ]
-                    |)
+                                              |)))
+                                        ]
+                                      |)))
+                                  | _ => M.impossible "wrong number of arguments"
+                                  end)))
+                            (Ty.function
+                              []
+                              (Ty.apply
+                                (Ty.path "core::future::async_drop::AsyncDropInPlace")
+                                []
+                                [ T ]))
+                        ]
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "core::future::async_drop::AsyncDropInPlace") [] [ T ]
+                        ])
                   ]
                 |) in
               M.alloc (|
@@ -346,8 +421,25 @@ Module future.
                     []
                   |),
                   [
-                    M.read (| dtor |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |)
+                    M.value_with_ty
+                      (M.read (| dtor |))
+                      (Ty.apply
+                        (Ty.path "core::pin::Pin")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::future::async_drop::AsyncDropInPlace")
+                                []
+                                [ T ]
+                            ]
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::task::wake::Context" ])
                   ]
                 |)
               |)
@@ -390,7 +482,7 @@ Module future.
               T
               "AsyncDestructor",
             M.get_function (| "core::future::async_drop::async_drop_in_place_raw", [], [ T ] |),
-            [ M.read (| to_drop |) ]
+            [ M.value_with_ty (M.read (| to_drop |)) (Ty.apply (Ty.path "*mut") [] [ T ]) ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -411,22 +503,26 @@ Module future.
       | [], [ T ], [ to_drop ] =>
         ltac:(M.monadic
           (let to_drop := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], to_drop |) in
-          Value.StructTuple
-            "core::future::async_drop::AsyncDropInPlace"
-            []
-            [ T ]
-            [
-              M.call_closure (|
-                Ty.associated_in_trait
-                  "core::future::async_drop::AsyncDestruct"
-                  []
-                  []
-                  T
-                  "AsyncDestructor",
-                M.get_function (| "core::future::async_drop::async_drop_in_place_raw", [], [ T ] |),
-                [ M.read (| to_drop |) ]
-              |)
-            ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "core::future::async_drop::AsyncDropInPlace"
+              [
+                M.call_closure (|
+                  Ty.associated_in_trait
+                    "core::future::async_drop::AsyncDestruct"
+                    []
+                    []
+                    T
+                    "AsyncDestructor",
+                  M.get_function (|
+                    "core::future::async_drop::async_drop_in_place_raw",
+                    [],
+                    [ T ]
+                  |),
+                  [ M.value_with_ty (M.read (| to_drop |)) (Ty.apply (Ty.path "*mut") [] [ T ]) ]
+                |)
+              ])
+            (Ty.apply (Ty.path "core::future::async_drop::AsyncDropInPlace") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -487,28 +583,34 @@ Module future.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.alloc (|
-                    Ty.path "core::fmt::builders::DebugStruct",
-                    M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.alloc (|
                       Ty.path "core::fmt::builders::DebugStruct",
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::Formatter",
-                        "debug_struct",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| mk_str (| "AsyncDropInPlace" |) |)
-                        |)
-                      ]
+                      M.call_closure (|
+                        Ty.path "core::fmt::builders::DebugStruct",
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Formatter",
+                          "debug_struct",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| mk_str (| "AsyncDropInPlace" |) |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -577,24 +679,8 @@ Module future.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "core::pin::Pin")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [
-                          Ty.associated_in_trait
-                            "core::future::async_drop::AsyncDestruct"
-                            []
-                            []
-                            T
-                            "AsyncDestructor"
-                        ]
-                    ],
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply
                       (Ty.path "core::pin::Pin")
                       []
@@ -611,54 +697,118 @@ Module future.
                               "AsyncDestructor"
                           ]
                       ],
-                    "new_unchecked",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "core::future::async_drop::AsyncDropInPlace")
-                                  []
-                                  [ T ]
-                              ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "core::pin::Pin")
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "core::pin::Pin")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.associated_in_trait
+                                "core::future::async_drop::AsyncDestruct"
                                 []
-                                [
+                                []
+                                T
+                                "AsyncDestructor"
+                            ]
+                        ],
+                      "new_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_struct_tuple_field (|
+                            M.deref (|
+                              M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::future::async_drop::AsyncDropInPlace")
+                                      []
+                                      [ T ]
+                                  ],
+                                M.get_associated_function (|
                                   Ty.apply
-                                    (Ty.path "&mut")
+                                    (Ty.path "core::pin::Pin")
                                     []
                                     [
                                       Ty.apply
-                                        (Ty.path "core::future::async_drop::AsyncDropInPlace")
+                                        (Ty.path "&mut")
                                         []
-                                        [ T ]
-                                    ]
-                                ],
-                              "get_unchecked_mut",
-                              [],
-                              []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::future::async_drop::AsyncDropInPlace")
+                                            []
+                                            [ T ]
+                                        ]
+                                    ],
+                                  "get_unchecked_mut",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| self |))
+                                    (Ty.apply
+                                      (Ty.path "core::pin::Pin")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::future::async_drop::AsyncDropInPlace")
+                                              []
+                                              [ T ]
+                                          ]
+                                      ])
+                                ]
+                              |)
                             |),
-                            [ M.read (| self |) ]
+                            "core::future::async_drop::AsyncDropInPlace",
+                            0
                           |)
-                        |),
-                        "core::future::async_drop::AsyncDropInPlace",
-                        0
-                      |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "core::future::async_drop::AsyncDestruct"
+                              []
+                              []
+                              T
+                              "AsyncDestructor"
+                          ])
+                    ]
+                  |))
+                  (Ty.apply
+                    (Ty.path "core::pin::Pin")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.associated_in_trait
+                            "core::future::async_drop::AsyncDestruct"
+                            []
+                            []
+                            T
+                            "AsyncDestructor"
+                        ]
+                    ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| cx |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::task::wake::Context" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -747,51 +897,65 @@ Module future.
                                           []
                                         |),
                                         [
-                                          M.call_closure (|
-                                            Ty.associated_in_trait
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.associated_in_trait
+                                                "core::future::async_drop::AsyncDrop"
+                                                []
+                                                []
+                                                T
+                                                "Dropper",
+                                              M.get_trait_method (|
+                                                "core::future::async_drop::AsyncDrop",
+                                                T,
+                                                [],
+                                                [],
+                                                "async_drop",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "core::pin::Pin")
+                                                      []
+                                                      [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path "core::pin::Pin")
+                                                        []
+                                                        [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                                                      "new_unchecked",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.MutRef,
+                                                          M.deref (|
+                                                            M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.deref (| M.read (| ptr |) |)
+                                                            |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply (Ty.path "&mut") [] [ T ])
+                                                    ]
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::pin::Pin")
+                                                    []
+                                                    [ Ty.apply (Ty.path "&mut") [] [ T ] ])
+                                              ]
+                                            |))
+                                            (Ty.associated_in_trait
                                               "core::future::async_drop::AsyncDrop"
                                               []
                                               []
                                               T
-                                              "Dropper",
-                                            M.get_trait_method (|
-                                              "core::future::async_drop::AsyncDrop",
-                                              T,
-                                              [],
-                                              [],
-                                              "async_drop",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "core::pin::Pin")
-                                                  []
-                                                  [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                                                M.get_associated_function (|
-                                                  Ty.apply
-                                                    (Ty.path "core::pin::Pin")
-                                                    []
-                                                    [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                                                  "new_unchecked",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.deref (|
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.deref (| M.read (| ptr |) |)
-                                                      |)
-                                                    |)
-                                                  |)
-                                                ]
-                                              |)
-                                            ]
-                                          |)
+                                              "Dropper")
                                         ]
                                       |)
                                     |),
@@ -838,24 +1002,8 @@ Module future.
                                                           []
                                                         |),
                                                         [
-                                                          M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path "core::pin::Pin")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "&mut")
-                                                                  []
-                                                                  [
-                                                                    Ty.associated_in_trait
-                                                                      "core::future::async_drop::AsyncDrop"
-                                                                      []
-                                                                      []
-                                                                      T
-                                                                      "Dropper"
-                                                                  ]
-                                                              ],
-                                                            M.get_associated_function (|
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
                                                               Ty.apply
                                                                 (Ty.path "core::pin::Pin")
                                                                 []
@@ -872,42 +1020,98 @@ Module future.
                                                                         "Dropper"
                                                                     ]
                                                                 ],
-                                                              "new_unchecked",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.deref (|
-                                                                  M.borrow (|
+                                                              M.get_associated_function (|
+                                                                Ty.apply
+                                                                  (Ty.path "core::pin::Pin")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [
+                                                                        Ty.associated_in_trait
+                                                                          "core::future::async_drop::AsyncDrop"
+                                                                          []
+                                                                          []
+                                                                          T
+                                                                          "Dropper"
+                                                                      ]
+                                                                  ],
+                                                                "new_unchecked",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
                                                                     Pointer.Kind.MutRef,
-                                                                    __awaitee
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            ]
-                                                          |);
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            M.deref (|
-                                                              M.call_closure (|
+                                                                    M.deref (|
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        __awaitee
+                                                                      |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [
+                                                                      Ty.associated_in_trait
+                                                                        "core::future::async_drop::AsyncDrop"
+                                                                        []
+                                                                        []
+                                                                        T
+                                                                        "Dropper"
+                                                                    ])
+                                                              ]
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "core::pin::Pin")
+                                                              []
+                                                              [
                                                                 Ty.apply
                                                                   (Ty.path "&mut")
                                                                   []
                                                                   [
-                                                                    Ty.path
-                                                                      "core::task::wake::Context"
-                                                                  ],
-                                                                M.get_function (|
-                                                                  "core::future::get_context",
-                                                                  [],
-                                                                  []
-                                                                |),
-                                                                [ M.read (| _task_context |) ]
+                                                                    Ty.associated_in_trait
+                                                                      "core::future::async_drop::AsyncDrop"
+                                                                      []
+                                                                      []
+                                                                      T
+                                                                      "Dropper"
+                                                                  ]
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.deref (|
+                                                                M.call_closure (|
+                                                                  Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "core::task::wake::Context"
+                                                                    ],
+                                                                  M.get_function (|
+                                                                    "core::future::get_context",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.read (| _task_context |))
+                                                                      (Ty.path
+                                                                        "core::future::ResumeTy")
+                                                                  ]
+                                                                |)
                                                               |)
-                                                            |)
-                                                          |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [ Ty.path "core::task::wake::Context"
+                                                              ])
                                                         ]
                                                       |)
                                                     |),
@@ -1004,15 +1208,17 @@ Module future.
                                       [ T ]
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| ptr |) |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.read (| ptr |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |)
+                                        |))
+                                        (Ty.apply (Ty.path "&mut") [] [ T ])
                                     ]
                                   |)
                                 |))
@@ -1047,14 +1253,16 @@ Module future.
       | [], [ T ], [ inner ] =>
         ltac:(M.monadic
           (let inner := M.alloc (| T, inner |) in
-          Value.mkStructRecord
-            "core::future::async_drop::Fuse"
-            []
-            [ T ]
-            [
-              ("inner",
-                Value.StructTuple "core::option::Option::Some" [] [ T ] [ M.read (| inner |) ])
-            ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::future::async_drop::Fuse"
+              [
+                ("inner",
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::Some" [ M.read (| inner |) ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ T ]))
+              ])
+            (Ty.apply (Ty.path "core::future::async_drop::Fuse") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1145,7 +1353,19 @@ Module future.
                             [],
                             []
                           |),
-                          [ M.read (| self |) ]
+                          [
+                            M.value_with_ty
+                              (M.read (| self |))
+                              (Ty.apply
+                                (Ty.path "core::pin::Pin")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.apply (Ty.path "core::future::async_drop::Fuse") [] [ T ] ]
+                                ])
+                          ]
                         |) in
                       M.alloc (|
                         Ty.tuple [],
@@ -1203,26 +1423,40 @@ Module future.
                                             []
                                           |),
                                           [
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::pin::Pin")
-                                                []
-                                                [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                                              M.get_associated_function (|
+                                            M.value_with_ty
+                                              (M.call_closure (|
                                                 Ty.apply
                                                   (Ty.path "core::pin::Pin")
                                                   []
                                                   [ Ty.apply (Ty.path "&mut") [] [ T ] ],
-                                                "new_unchecked",
-                                                [],
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "core::pin::Pin")
+                                                    []
+                                                    [ Ty.apply (Ty.path "&mut") [] [ T ] ],
+                                                  "new_unchecked",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| inner |))
+                                                    (Ty.apply (Ty.path "&mut") [] [ T ])
+                                                ]
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "core::pin::Pin")
                                                 []
-                                              |),
-                                              [ M.read (| inner |) ]
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| cx |) |)
-                                            |)
+                                                [ Ty.apply (Ty.path "&mut") [] [ T ] ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| cx |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.path "core::task::wake::Context" ])
                                           ]
                                         |)
                                       |),
@@ -1247,11 +1481,14 @@ Module future.
                                             M.never_to_any (|
                                               M.read (|
                                                 M.return_ (|
-                                                  Value.StructTuple
-                                                    "core::task::poll::Poll::Pending"
-                                                    []
-                                                    [ Ty.tuple [] ]
-                                                    []
+                                                  M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::task::poll::Poll::Pending"
+                                                      [])
+                                                    (Ty.apply
+                                                      (Ty.path "core::task::poll::Poll")
+                                                      []
+                                                      [ Ty.tuple [] ])
                                                 |)
                                               |)
                                             |)))
@@ -1264,7 +1501,9 @@ Module future.
                                         "core::future::async_drop::Fuse",
                                         "inner"
                                       |),
-                                      Value.StructTuple "core::option::Option::None" [] [ T ] []
+                                      M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply (Ty.path "core::option::Option") [] [ T ])
                                     |) in
                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                 |)));
@@ -1275,11 +1514,9 @@ Module future.
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "core::task::poll::Poll") [] [ Ty.tuple [] ],
-                    Value.StructTuple
-                      "core::task::poll::Poll::Ready"
-                      []
-                      [ Ty.tuple [] ]
-                      [ Value.Tuple [] ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::task::poll::Poll::Ready" [ Value.Tuple [] ])
+                      (Ty.apply (Ty.path "core::task::poll::Poll") [] [ Ty.tuple [] ])
                   |)
                 |)))
             |)))
@@ -1347,7 +1584,14 @@ Module future.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| s |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| s |))
+                                        (Ty.apply
+                                          (Ty.path "*mut")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                    ]
                                   |) in
                                 let~ ptr : Ty.apply (Ty.path "*mut") [] [ T ] :=
                                   M.call_closure (|
@@ -1361,7 +1605,14 @@ Module future.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| s |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| s |))
+                                        (Ty.apply
+                                          (Ty.path "*mut")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                    ]
                                   |) in
                                 M.use
                                   (M.alloc (|
@@ -1391,14 +1642,22 @@ Module future.
                                             []
                                           |),
                                           [
-                                            Value.mkStructRecord
-                                              "core::ops::range::Range"
-                                              []
-                                              [ Ty.path "usize" ]
-                                              [
-                                                ("start", Value.Integer IntegerKind.Usize 0);
-                                                ("end_", M.read (| len |))
-                                              ]
+                                            M.value_with_ty
+                                              (M.value_with_ty
+                                                (Value.mkStructRecord
+                                                  "core::ops::range::Range"
+                                                  [
+                                                    ("start", Value.Integer IntegerKind.Usize 0);
+                                                    ("end_", M.read (| len |))
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "core::ops::range::Range")
+                                                  []
+                                                  [ Ty.path "usize" ]))
+                                              (Ty.apply
+                                                (Ty.path "core::ops::range::Range")
+                                                []
+                                                [ Ty.path "usize" ])
                                           ]
                                         |)
                                       |),
@@ -1441,15 +1700,26 @@ Module future.
                                                             []
                                                           |),
                                                           [
-                                                            M.borrow (|
-                                                              Pointer.Kind.MutRef,
-                                                              M.deref (|
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  iter
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                M.deref (|
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    iter
+                                                                  |)
                                                                 |)
-                                                              |)
-                                                            |)
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "core::ops::range::Range")
+                                                                    []
+                                                                    [ Ty.path "usize" ]
+                                                                ])
                                                           ]
                                                         |)
                                                       |),
@@ -1505,40 +1775,59 @@ Module future.
                                                                     []
                                                                   |),
                                                                   [
-                                                                    M.call_closure (|
-                                                                      Ty.associated_in_trait
+                                                                    M.value_with_ty
+                                                                      (M.call_closure (|
+                                                                        Ty.associated_in_trait
+                                                                          "core::future::async_drop::AsyncDestruct"
+                                                                          []
+                                                                          []
+                                                                          T
+                                                                          "AsyncDestructor",
+                                                                        M.get_function (|
+                                                                          "core::future::async_drop::async_drop_in_place_raw",
+                                                                          [],
+                                                                          [ T ]
+                                                                        |),
+                                                                        [
+                                                                          M.value_with_ty
+                                                                            (M.call_closure (|
+                                                                              Ty.apply
+                                                                                (Ty.path "*mut")
+                                                                                []
+                                                                                [ T ],
+                                                                              M.get_associated_function (|
+                                                                                Ty.apply
+                                                                                  (Ty.path "*mut")
+                                                                                  []
+                                                                                  [ T ],
+                                                                                "add",
+                                                                                [],
+                                                                                []
+                                                                              |),
+                                                                              [
+                                                                                M.value_with_ty
+                                                                                  (M.read (| ptr |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path "*mut")
+                                                                                    []
+                                                                                    [ T ]);
+                                                                                M.value_with_ty
+                                                                                  (M.read (| i |))
+                                                                                  (Ty.path "usize")
+                                                                              ]
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path "*mut")
+                                                                              []
+                                                                              [ T ])
+                                                                        ]
+                                                                      |))
+                                                                      (Ty.associated_in_trait
                                                                         "core::future::async_drop::AsyncDestruct"
                                                                         []
                                                                         []
                                                                         T
-                                                                        "AsyncDestructor",
-                                                                      M.get_function (|
-                                                                        "core::future::async_drop::async_drop_in_place_raw",
-                                                                        [],
-                                                                        [ T ]
-                                                                      |),
-                                                                      [
-                                                                        M.call_closure (|
-                                                                          Ty.apply
-                                                                            (Ty.path "*mut")
-                                                                            []
-                                                                            [ T ],
-                                                                          M.get_associated_function (|
-                                                                            Ty.apply
-                                                                              (Ty.path "*mut")
-                                                                              []
-                                                                              [ T ],
-                                                                            "add",
-                                                                            [],
-                                                                            []
-                                                                          |),
-                                                                          [
-                                                                            M.read (| ptr |);
-                                                                            M.read (| i |)
-                                                                          ]
-                                                                        |)
-                                                                      ]
-                                                                    |)
+                                                                        "AsyncDestructor")
                                                                   ]
                                                                 |)
                                                               |),
@@ -1587,26 +1876,8 @@ Module future.
                                                                                     []
                                                                                   |),
                                                                                   [
-                                                                                    M.call_closure (|
-                                                                                      Ty.apply
-                                                                                        (Ty.path
-                                                                                          "core::pin::Pin")
-                                                                                        []
-                                                                                        [
-                                                                                          Ty.apply
-                                                                                            (Ty.path
-                                                                                              "&mut")
-                                                                                            []
-                                                                                            [
-                                                                                              Ty.associated_in_trait
-                                                                                                "core::future::async_drop::AsyncDestruct"
-                                                                                                []
-                                                                                                []
-                                                                                                T
-                                                                                                "AsyncDestructor"
-                                                                                            ]
-                                                                                        ],
-                                                                                      M.get_associated_function (|
+                                                                                    M.value_with_ty
+                                                                                      (M.call_closure (|
                                                                                         Ty.apply
                                                                                           (Ty.path
                                                                                             "core::pin::Pin")
@@ -1625,47 +1896,109 @@ Module future.
                                                                                                   "AsyncDestructor"
                                                                                               ]
                                                                                           ],
-                                                                                        "new_unchecked",
-                                                                                        [],
-                                                                                        []
-                                                                                      |),
-                                                                                      [
-                                                                                        M.borrow (|
-                                                                                          Pointer.Kind.MutRef,
-                                                                                          M.deref (|
-                                                                                            M.borrow (|
+                                                                                        M.get_associated_function (|
+                                                                                          Ty.apply
+                                                                                            (Ty.path
+                                                                                              "core::pin::Pin")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.apply
+                                                                                                (Ty.path
+                                                                                                  "&mut")
+                                                                                                []
+                                                                                                [
+                                                                                                  Ty.associated_in_trait
+                                                                                                    "core::future::async_drop::AsyncDestruct"
+                                                                                                    []
+                                                                                                    []
+                                                                                                    T
+                                                                                                    "AsyncDestructor"
+                                                                                                ]
+                                                                                            ],
+                                                                                          "new_unchecked",
+                                                                                          [],
+                                                                                          []
+                                                                                        |),
+                                                                                        [
+                                                                                          M.value_with_ty
+                                                                                            (M.borrow (|
                                                                                               Pointer.Kind.MutRef,
-                                                                                              __awaitee
-                                                                                            |)
-                                                                                          |)
-                                                                                        |)
-                                                                                      ]
-                                                                                    |);
-                                                                                    M.borrow (|
-                                                                                      Pointer.Kind.MutRef,
-                                                                                      M.deref (|
-                                                                                        M.call_closure (|
+                                                                                              M.deref (|
+                                                                                                M.borrow (|
+                                                                                                  Pointer.Kind.MutRef,
+                                                                                                  __awaitee
+                                                                                                |)
+                                                                                              |)
+                                                                                            |))
+                                                                                            (Ty.apply
+                                                                                              (Ty.path
+                                                                                                "&mut")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.associated_in_trait
+                                                                                                  "core::future::async_drop::AsyncDestruct"
+                                                                                                  []
+                                                                                                  []
+                                                                                                  T
+                                                                                                  "AsyncDestructor"
+                                                                                              ])
+                                                                                        ]
+                                                                                      |))
+                                                                                      (Ty.apply
+                                                                                        (Ty.path
+                                                                                          "core::pin::Pin")
+                                                                                        []
+                                                                                        [
                                                                                           Ty.apply
                                                                                             (Ty.path
                                                                                               "&mut")
                                                                                             []
                                                                                             [
-                                                                                              Ty.path
-                                                                                                "core::task::wake::Context"
-                                                                                            ],
-                                                                                          M.get_function (|
-                                                                                            "core::future::get_context",
-                                                                                            [],
-                                                                                            []
-                                                                                          |),
-                                                                                          [
-                                                                                            M.read (|
-                                                                                              _task_context
-                                                                                            |)
-                                                                                          ]
+                                                                                              Ty.associated_in_trait
+                                                                                                "core::future::async_drop::AsyncDestruct"
+                                                                                                []
+                                                                                                []
+                                                                                                T
+                                                                                                "AsyncDestructor"
+                                                                                            ]
+                                                                                        ]);
+                                                                                    M.value_with_ty
+                                                                                      (M.borrow (|
+                                                                                        Pointer.Kind.MutRef,
+                                                                                        M.deref (|
+                                                                                          M.call_closure (|
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "&mut")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "core::task::wake::Context"
+                                                                                              ],
+                                                                                            M.get_function (|
+                                                                                              "core::future::get_context",
+                                                                                              [],
+                                                                                              []
+                                                                                            |),
+                                                                                            [
+                                                                                              M.value_with_ty
+                                                                                                (M.read (|
+                                                                                                  _task_context
+                                                                                                |))
+                                                                                                (Ty.path
+                                                                                                  "core::future::ResumeTy")
+                                                                                            ]
+                                                                                          |)
                                                                                         |)
-                                                                                      |)
-                                                                                    |)
+                                                                                      |))
+                                                                                      (Ty.apply
+                                                                                        (Ty.path
+                                                                                          "&mut")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "core::task::wake::Context"
+                                                                                        ])
                                                                                   ]
                                                                                 |)
                                                                               |),
@@ -1799,7 +2132,7 @@ Module future.
                                           [],
                                           []
                                         |),
-                                        [ M.read (| first |) ]
+                                        [ M.value_with_ty (M.read (| first |)) F ]
                                       |)
                                     |),
                                     [
@@ -1845,24 +2178,8 @@ Module future.
                                                           []
                                                         |),
                                                         [
-                                                          M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path "core::pin::Pin")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "&mut")
-                                                                  []
-                                                                  [
-                                                                    Ty.associated_in_trait
-                                                                      "core::future::into_future::IntoFuture"
-                                                                      []
-                                                                      []
-                                                                      F
-                                                                      "IntoFuture"
-                                                                  ]
-                                                              ],
-                                                            M.get_associated_function (|
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
                                                               Ty.apply
                                                                 (Ty.path "core::pin::Pin")
                                                                 []
@@ -1879,42 +2196,98 @@ Module future.
                                                                         "IntoFuture"
                                                                     ]
                                                                 ],
-                                                              "new_unchecked",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.deref (|
-                                                                  M.borrow (|
+                                                              M.get_associated_function (|
+                                                                Ty.apply
+                                                                  (Ty.path "core::pin::Pin")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [
+                                                                        Ty.associated_in_trait
+                                                                          "core::future::into_future::IntoFuture"
+                                                                          []
+                                                                          []
+                                                                          F
+                                                                          "IntoFuture"
+                                                                      ]
+                                                                  ],
+                                                                "new_unchecked",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
                                                                     Pointer.Kind.MutRef,
-                                                                    __awaitee
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            ]
-                                                          |);
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            M.deref (|
-                                                              M.call_closure (|
+                                                                    M.deref (|
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        __awaitee
+                                                                      |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [
+                                                                      Ty.associated_in_trait
+                                                                        "core::future::into_future::IntoFuture"
+                                                                        []
+                                                                        []
+                                                                        F
+                                                                        "IntoFuture"
+                                                                    ])
+                                                              ]
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "core::pin::Pin")
+                                                              []
+                                                              [
                                                                 Ty.apply
                                                                   (Ty.path "&mut")
                                                                   []
                                                                   [
-                                                                    Ty.path
-                                                                      "core::task::wake::Context"
-                                                                  ],
-                                                                M.get_function (|
-                                                                  "core::future::get_context",
-                                                                  [],
-                                                                  []
-                                                                |),
-                                                                [ M.read (| _task_context |) ]
+                                                                    Ty.associated_in_trait
+                                                                      "core::future::into_future::IntoFuture"
+                                                                      []
+                                                                      []
+                                                                      F
+                                                                      "IntoFuture"
+                                                                  ]
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.deref (|
+                                                                M.call_closure (|
+                                                                  Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "core::task::wake::Context"
+                                                                    ],
+                                                                  M.get_function (|
+                                                                    "core::future::get_context",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.read (| _task_context |))
+                                                                      (Ty.path
+                                                                        "core::future::ResumeTy")
+                                                                  ]
+                                                                |)
                                                               |)
-                                                            |)
-                                                          |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [ Ty.path "core::task::wake::Context"
+                                                              ])
                                                         ]
                                                       |)
                                                     |),
@@ -1982,7 +2355,7 @@ Module future.
                                           [],
                                           []
                                         |),
-                                        [ M.read (| last |) ]
+                                        [ M.value_with_ty (M.read (| last |)) G ]
                                       |)
                                     |),
                                     [
@@ -2028,24 +2401,8 @@ Module future.
                                                           []
                                                         |),
                                                         [
-                                                          M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path "core::pin::Pin")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "&mut")
-                                                                  []
-                                                                  [
-                                                                    Ty.associated_in_trait
-                                                                      "core::future::into_future::IntoFuture"
-                                                                      []
-                                                                      []
-                                                                      G
-                                                                      "IntoFuture"
-                                                                  ]
-                                                              ],
-                                                            M.get_associated_function (|
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
                                                               Ty.apply
                                                                 (Ty.path "core::pin::Pin")
                                                                 []
@@ -2062,42 +2419,98 @@ Module future.
                                                                         "IntoFuture"
                                                                     ]
                                                                 ],
-                                                              "new_unchecked",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.deref (|
-                                                                  M.borrow (|
+                                                              M.get_associated_function (|
+                                                                Ty.apply
+                                                                  (Ty.path "core::pin::Pin")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [
+                                                                        Ty.associated_in_trait
+                                                                          "core::future::into_future::IntoFuture"
+                                                                          []
+                                                                          []
+                                                                          G
+                                                                          "IntoFuture"
+                                                                      ]
+                                                                  ],
+                                                                "new_unchecked",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
                                                                     Pointer.Kind.MutRef,
-                                                                    __awaitee
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            ]
-                                                          |);
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            M.deref (|
-                                                              M.call_closure (|
+                                                                    M.deref (|
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        __awaitee
+                                                                      |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [
+                                                                      Ty.associated_in_trait
+                                                                        "core::future::into_future::IntoFuture"
+                                                                        []
+                                                                        []
+                                                                        G
+                                                                        "IntoFuture"
+                                                                    ])
+                                                              ]
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "core::pin::Pin")
+                                                              []
+                                                              [
                                                                 Ty.apply
                                                                   (Ty.path "&mut")
                                                                   []
                                                                   [
-                                                                    Ty.path
-                                                                      "core::task::wake::Context"
-                                                                  ],
-                                                                M.get_function (|
-                                                                  "core::future::get_context",
-                                                                  [],
-                                                                  []
-                                                                |),
-                                                                [ M.read (| _task_context |) ]
+                                                                    Ty.associated_in_trait
+                                                                      "core::future::into_future::IntoFuture"
+                                                                      []
+                                                                      []
+                                                                      G
+                                                                      "IntoFuture"
+                                                                  ]
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.deref (|
+                                                                M.call_closure (|
+                                                                  Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "core::task::wake::Context"
+                                                                    ],
+                                                                  M.get_function (|
+                                                                    "core::future::get_context",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.read (| _task_context |))
+                                                                      (Ty.path
+                                                                        "core::future::ResumeTy")
+                                                                  ]
+                                                                |)
                                                               |)
-                                                            |)
-                                                          |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [ Ty.path "core::task::wake::Context"
+                                                              ])
                                                         ]
                                                       |)
                                                     |),
@@ -2209,18 +2622,28 @@ Module future.
                                           []
                                         |),
                                         [
-                                          M.call_closure (|
-                                            Ty.apply
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path
+                                                  "core::future::async_drop::AsyncDropInPlace")
+                                                []
+                                                [ T ],
+                                              M.get_function (|
+                                                "core::future::async_drop::async_drop_in_place",
+                                                [],
+                                                [ T ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| to_drop |))
+                                                  (Ty.apply (Ty.path "*mut") [] [ T ])
+                                              ]
+                                            |))
+                                            (Ty.apply
                                               (Ty.path "core::future::async_drop::AsyncDropInPlace")
                                               []
-                                              [ T ],
-                                            M.get_function (|
-                                              "core::future::async_drop::async_drop_in_place",
-                                              [],
-                                              [ T ]
-                                            |),
-                                            [ M.read (| to_drop |) ]
-                                          |)
+                                              [ T ])
                                         ]
                                       |)
                                     |),
@@ -2265,23 +2688,8 @@ Module future.
                                                           []
                                                         |),
                                                         [
-                                                          M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path "core::pin::Pin")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "&mut")
-                                                                  []
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path
-                                                                        "core::future::async_drop::AsyncDropInPlace")
-                                                                      []
-                                                                      [ T ]
-                                                                  ]
-                                                              ],
-                                                            M.get_associated_function (|
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
                                                               Ty.apply
                                                                 (Ty.path "core::pin::Pin")
                                                                 []
@@ -2297,42 +2705,95 @@ Module future.
                                                                         [ T ]
                                                                     ]
                                                                 ],
-                                                              "new_unchecked",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.deref (|
-                                                                  M.borrow (|
+                                                              M.get_associated_function (|
+                                                                Ty.apply
+                                                                  (Ty.path "core::pin::Pin")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "core::future::async_drop::AsyncDropInPlace")
+                                                                          []
+                                                                          [ T ]
+                                                                      ]
+                                                                  ],
+                                                                "new_unchecked",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
                                                                     Pointer.Kind.MutRef,
-                                                                    __awaitee
-                                                                  |)
-                                                                |)
-                                                              |)
-                                                            ]
-                                                          |);
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            M.deref (|
-                                                              M.call_closure (|
+                                                                    M.deref (|
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        __awaitee
+                                                                      |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "core::future::async_drop::AsyncDropInPlace")
+                                                                        []
+                                                                        [ T ]
+                                                                    ])
+                                                              ]
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "core::pin::Pin")
+                                                              []
+                                                              [
                                                                 Ty.apply
                                                                   (Ty.path "&mut")
                                                                   []
                                                                   [
-                                                                    Ty.path
-                                                                      "core::task::wake::Context"
-                                                                  ],
-                                                                M.get_function (|
-                                                                  "core::future::get_context",
-                                                                  [],
-                                                                  []
-                                                                |),
-                                                                [ M.read (| _task_context |) ]
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "core::future::async_drop::AsyncDropInPlace")
+                                                                      []
+                                                                      [ T ]
+                                                                  ]
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.deref (|
+                                                                M.call_closure (|
+                                                                  Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "core::task::wake::Context"
+                                                                    ],
+                                                                  M.get_function (|
+                                                                    "core::future::get_context",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.read (| _task_context |))
+                                                                      (Ty.path
+                                                                        "core::future::ResumeTy")
+                                                                  ]
+                                                                |)
                                                               |)
-                                                            |)
-                                                          |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [ Ty.path "core::task::wake::Context"
+                                                              ])
                                                         ]
                                                       |)
                                                     |),
@@ -2480,42 +2941,70 @@ Module future.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.alloc (|
-                                                        Ty.associated_in_trait
-                                                          "core::marker::DiscriminantKind"
-                                                          []
-                                                          []
-                                                          T
-                                                          "Discriminant",
-                                                        M.call_closure (|
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.alloc (|
                                                           Ty.associated_in_trait
                                                             "core::marker::DiscriminantKind"
                                                             []
                                                             []
                                                             T
                                                             "Discriminant",
-                                                          M.get_function (|
-                                                            "core::intrinsics::discriminant_value",
-                                                            [],
-                                                            [ T ]
-                                                          |),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (|
+                                                          M.call_closure (|
+                                                            Ty.associated_in_trait
+                                                              "core::marker::DiscriminantKind"
+                                                              []
+                                                              []
+                                                              T
+                                                              "Discriminant",
+                                                            M.get_function (|
+                                                              "core::intrinsics::discriminant_value",
+                                                              [],
+                                                              [ T ]
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
                                                                   Pointer.Kind.Ref,
-                                                                  M.deref (| M.read (| this |) |)
-                                                                |)
-                                                              |)
-                                                            |)
-                                                          ]
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        M.read (| this |)
+                                                                      |)
+                                                                    |)
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply (Ty.path "&") [] [ T ])
+                                                            ]
+                                                          |)
                                                         |)
-                                                      |)
-                                                    |);
-                                                    M.borrow (| Pointer.Kind.Ref, discr |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.associated_in_trait
+                                                            "core::marker::DiscriminantKind"
+                                                            []
+                                                            []
+                                                            T
+                                                            "Discriminant"
+                                                        ]);
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.Ref, discr |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.associated_in_trait
+                                                            "core::marker::DiscriminantKind"
+                                                            []
+                                                            []
+                                                            T
+                                                            "Discriminant"
+                                                        ])
                                                   ]
                                                 |)
                                               |)) in
@@ -2529,7 +3018,7 @@ Module future.
                                               M.call_closure (|
                                                 Ty.tuple [],
                                                 M.get_function (| "core::mem::drop", [], [ O ] |),
-                                                [ M.read (| other |) ]
+                                                [ M.value_with_ty (M.read (| other |)) O ]
                                               |) in
                                             M.alloc (|
                                               Ty.tuple [],
@@ -2558,7 +3047,7 @@ Module future.
                                                       [],
                                                       []
                                                     |),
-                                                    [ M.read (| matched |) ]
+                                                    [ M.value_with_ty (M.read (| matched |)) M_ ]
                                                   |)
                                                 |),
                                                 [
@@ -2606,24 +3095,8 @@ Module future.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.call_closure (|
-                                                                        Ty.apply
-                                                                          (Ty.path "core::pin::Pin")
-                                                                          []
-                                                                          [
-                                                                            Ty.apply
-                                                                              (Ty.path "&mut")
-                                                                              []
-                                                                              [
-                                                                                Ty.associated_in_trait
-                                                                                  "core::future::into_future::IntoFuture"
-                                                                                  []
-                                                                                  []
-                                                                                  M_
-                                                                                  "IntoFuture"
-                                                                              ]
-                                                                          ],
-                                                                        M.get_associated_function (|
+                                                                      M.value_with_ty
+                                                                        (M.call_closure (|
                                                                           Ty.apply
                                                                             (Ty.path
                                                                               "core::pin::Pin")
@@ -2641,46 +3114,103 @@ Module future.
                                                                                     "IntoFuture"
                                                                                 ]
                                                                             ],
-                                                                          "new_unchecked",
-                                                                          [],
-                                                                          []
-                                                                        |),
-                                                                        [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.MutRef,
-                                                                            M.deref (|
-                                                                              M.borrow (|
+                                                                          M.get_associated_function (|
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "core::pin::Pin")
+                                                                              []
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path "&mut")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.associated_in_trait
+                                                                                      "core::future::into_future::IntoFuture"
+                                                                                      []
+                                                                                      []
+                                                                                      M_
+                                                                                      "IntoFuture"
+                                                                                  ]
+                                                                              ],
+                                                                            "new_unchecked",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
                                                                                 Pointer.Kind.MutRef,
-                                                                                __awaitee
-                                                                              |)
-                                                                            |)
-                                                                          |)
-                                                                        ]
-                                                                      |);
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.MutRef,
-                                                                        M.deref (|
-                                                                          M.call_closure (|
+                                                                                M.deref (|
+                                                                                  M.borrow (|
+                                                                                    Pointer.Kind.MutRef,
+                                                                                    __awaitee
+                                                                                  |)
+                                                                                |)
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&mut")
+                                                                                []
+                                                                                [
+                                                                                  Ty.associated_in_trait
+                                                                                    "core::future::into_future::IntoFuture"
+                                                                                    []
+                                                                                    []
+                                                                                    M_
+                                                                                    "IntoFuture"
+                                                                                ])
+                                                                          ]
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "core::pin::Pin")
+                                                                          []
+                                                                          [
                                                                             Ty.apply
                                                                               (Ty.path "&mut")
                                                                               []
                                                                               [
-                                                                                Ty.path
-                                                                                  "core::task::wake::Context"
-                                                                              ],
-                                                                            M.get_function (|
-                                                                              "core::future::get_context",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [
-                                                                              M.read (|
-                                                                                _task_context
-                                                                              |)
-                                                                            ]
+                                                                                Ty.associated_in_trait
+                                                                                  "core::future::into_future::IntoFuture"
+                                                                                  []
+                                                                                  []
+                                                                                  M_
+                                                                                  "IntoFuture"
+                                                                              ]
+                                                                          ]);
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.MutRef,
+                                                                          M.deref (|
+                                                                            M.call_closure (|
+                                                                              Ty.apply
+                                                                                (Ty.path "&mut")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "core::task::wake::Context"
+                                                                                ],
+                                                                              M.get_function (|
+                                                                                "core::future::get_context",
+                                                                                [],
+                                                                                []
+                                                                              |),
+                                                                              [
+                                                                                M.value_with_ty
+                                                                                  (M.read (|
+                                                                                    _task_context
+                                                                                  |))
+                                                                                  (Ty.path
+                                                                                    "core::future::ResumeTy")
+                                                                              ]
+                                                                            |)
                                                                           |)
-                                                                        |)
-                                                                      |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&mut")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "core::task::wake::Context"
+                                                                          ])
                                                                     ]
                                                                   |)
                                                                 |),
@@ -2740,7 +3270,7 @@ Module future.
                                               M.call_closure (|
                                                 Ty.tuple [],
                                                 M.get_function (| "core::mem::drop", [], [ M_ ] |),
-                                                [ M.read (| matched |) ]
+                                                [ M.value_with_ty (M.read (| matched |)) M_ ]
                                               |) in
                                             M.alloc (|
                                               Ty.tuple [],
@@ -2769,7 +3299,7 @@ Module future.
                                                       [],
                                                       []
                                                     |),
-                                                    [ M.read (| other |) ]
+                                                    [ M.value_with_ty (M.read (| other |)) O ]
                                                   |)
                                                 |),
                                                 [
@@ -2817,24 +3347,8 @@ Module future.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.call_closure (|
-                                                                        Ty.apply
-                                                                          (Ty.path "core::pin::Pin")
-                                                                          []
-                                                                          [
-                                                                            Ty.apply
-                                                                              (Ty.path "&mut")
-                                                                              []
-                                                                              [
-                                                                                Ty.associated_in_trait
-                                                                                  "core::future::into_future::IntoFuture"
-                                                                                  []
-                                                                                  []
-                                                                                  O
-                                                                                  "IntoFuture"
-                                                                              ]
-                                                                          ],
-                                                                        M.get_associated_function (|
+                                                                      M.value_with_ty
+                                                                        (M.call_closure (|
                                                                           Ty.apply
                                                                             (Ty.path
                                                                               "core::pin::Pin")
@@ -2852,46 +3366,103 @@ Module future.
                                                                                     "IntoFuture"
                                                                                 ]
                                                                             ],
-                                                                          "new_unchecked",
-                                                                          [],
-                                                                          []
-                                                                        |),
-                                                                        [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.MutRef,
-                                                                            M.deref (|
-                                                                              M.borrow (|
+                                                                          M.get_associated_function (|
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "core::pin::Pin")
+                                                                              []
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path "&mut")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.associated_in_trait
+                                                                                      "core::future::into_future::IntoFuture"
+                                                                                      []
+                                                                                      []
+                                                                                      O
+                                                                                      "IntoFuture"
+                                                                                  ]
+                                                                              ],
+                                                                            "new_unchecked",
+                                                                            [],
+                                                                            []
+                                                                          |),
+                                                                          [
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
                                                                                 Pointer.Kind.MutRef,
-                                                                                __awaitee
-                                                                              |)
-                                                                            |)
-                                                                          |)
-                                                                        ]
-                                                                      |);
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.MutRef,
-                                                                        M.deref (|
-                                                                          M.call_closure (|
+                                                                                M.deref (|
+                                                                                  M.borrow (|
+                                                                                    Pointer.Kind.MutRef,
+                                                                                    __awaitee
+                                                                                  |)
+                                                                                |)
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&mut")
+                                                                                []
+                                                                                [
+                                                                                  Ty.associated_in_trait
+                                                                                    "core::future::into_future::IntoFuture"
+                                                                                    []
+                                                                                    []
+                                                                                    O
+                                                                                    "IntoFuture"
+                                                                                ])
+                                                                          ]
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "core::pin::Pin")
+                                                                          []
+                                                                          [
                                                                             Ty.apply
                                                                               (Ty.path "&mut")
                                                                               []
                                                                               [
-                                                                                Ty.path
-                                                                                  "core::task::wake::Context"
-                                                                              ],
-                                                                            M.get_function (|
-                                                                              "core::future::get_context",
-                                                                              [],
-                                                                              []
-                                                                            |),
-                                                                            [
-                                                                              M.read (|
-                                                                                _task_context
-                                                                              |)
-                                                                            ]
+                                                                                Ty.associated_in_trait
+                                                                                  "core::future::into_future::IntoFuture"
+                                                                                  []
+                                                                                  []
+                                                                                  O
+                                                                                  "IntoFuture"
+                                                                              ]
+                                                                          ]);
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.MutRef,
+                                                                          M.deref (|
+                                                                            M.call_closure (|
+                                                                              Ty.apply
+                                                                                (Ty.path "&mut")
+                                                                                []
+                                                                                [
+                                                                                  Ty.path
+                                                                                    "core::task::wake::Context"
+                                                                                ],
+                                                                              M.get_function (|
+                                                                                "core::future::get_context",
+                                                                                [],
+                                                                                []
+                                                                              |),
+                                                                              [
+                                                                                M.value_with_ty
+                                                                                  (M.read (|
+                                                                                    _task_context
+                                                                                  |))
+                                                                                  (Ty.path
+                                                                                    "core::future::ResumeTy")
+                                                                              ]
+                                                                            |)
                                                                           |)
-                                                                        |)
-                                                                      |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&mut")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "core::task::wake::Context"
+                                                                          ])
                                                                     ]
                                                                   |)
                                                                 |),
@@ -2995,7 +3566,11 @@ Module future.
                                   M.call_closure (|
                                     Ty.tuple [],
                                     M.get_function (| "core::ptr::drop_in_place", [], [ T ] |),
-                                    [ M.read (| to_drop |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| to_drop |))
+                                        (Ty.apply (Ty.path "*mut") [] [ T ])
+                                    ]
                                   |)
                                 |))
                             |)))
@@ -3064,7 +3639,11 @@ Module future.
     *)
     Definition noop (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
-      | [], [], [] => ltac:(M.monadic (Value.StructTuple "core::future::async_drop::Noop" [] [] []))
+      | [], [], [] =>
+        ltac:(M.monadic
+          (M.value_with_ty
+            (Value.StructTuple "core::future::async_drop::Noop" [])
+            (Ty.path "core::future::async_drop::Noop")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3116,11 +3695,9 @@ Module future.
               [
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::task::poll::Poll::Ready"
-                      []
-                      [ Ty.tuple [] ]
-                      [ Value.Tuple [] ]))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::task::poll::Poll::Ready" [ Value.Tuple [] ])
+                      (Ty.apply (Ty.path "core::task::poll::Poll") [] [ Ty.tuple [] ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

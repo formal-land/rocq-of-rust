@@ -9,11 +9,12 @@ Module error.
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Self ], self |) in
-          Value.StructTuple
-            "core::option::Option::None"
-            []
-            [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ]
-            []))
+          M.value_with_ty
+            (Value.StructTuple "core::option::Option::None" [])
+            (Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -71,7 +72,11 @@ Module error.
               []
               [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ],
             M.get_trait_method (| "core::error::Error", Self, [], [], "source", [], [] |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Self ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -125,8 +130,12 @@ Module error.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Internal" |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Internal" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -198,8 +207,14 @@ Module error.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  Value.StructTuple "core::error::private::Internal" [] [] []
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]);
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple "core::error::private::Internal" [])
+                      (Ty.path "core::error::private::Internal"))
+                    (Ty.path "core::error::private::Internal")
                 ]
               |) in
             M.alloc (|
@@ -215,7 +230,14 @@ Module error.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, t |); M.borrow (| Pointer.Kind.Ref, concrete |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, t |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::any::TypeId" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, concrete |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::any::TypeId" ])
+                ]
               |)
             |)
           |)))
@@ -263,66 +285,77 @@ Module error.
                             [],
                             [ T ]
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
+                          ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ T ] ]
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.cast
-                                (Ty.apply (Ty.path "*const") [] [ T ])
-                                (M.read (|
-                                  M.use
-                                    (M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "*const")
-                                        []
-                                        [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
-                                      M.call_closure (|
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.cast
+                                  (Ty.apply (Ty.path "*const") [] [ T ])
+                                  (M.read (|
+                                    M.use
+                                      (M.alloc (|
                                         Ty.apply
                                           (Ty.path "*const")
                                           []
                                           [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
-                                        M.pointer_coercion
-                                          M.PointerCoercion.Unsize
-                                          (Ty.apply
+                                        M.call_closure (|
+                                          Ty.apply
                                             (Ty.path "*const")
                                             []
-                                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
-                                          (Ty.apply
-                                            (Ty.path "*const")
-                                            []
-                                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.ConstPointer,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    |))
-                                |))
+                                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                                          M.pointer_coercion
+                                            M.PointerCoercion.Unsize
+                                            (Ty.apply
+                                              (Ty.path "*const")
+                                              []
+                                              [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
+                                            (Ty.apply
+                                              (Ty.path "*const")
+                                              []
+                                              [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.ConstPointer,
+                                              M.deref (| M.read (| self |) |)
+                                            |)
+                                          ]
+                                        |)
+                                      |))
+                                  |))
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    ]));
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ T ] ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ T ] ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ T ] ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -370,66 +403,77 @@ Module error.
                             [],
                             [ T ]
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
+                          ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
-                              M.cast
-                                (Ty.apply (Ty.path "*mut") [] [ T ])
-                                (M.read (|
-                                  M.use
-                                    (M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "*mut")
-                                        []
-                                        [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
-                                      M.call_closure (|
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.cast
+                                  (Ty.apply (Ty.path "*mut") [] [ T ])
+                                  (M.read (|
+                                    M.use
+                                      (M.alloc (|
                                         Ty.apply
                                           (Ty.path "*mut")
                                           []
                                           [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
-                                        M.pointer_coercion
-                                          M.PointerCoercion.Unsize
-                                          (Ty.apply
+                                        M.call_closure (|
+                                          Ty.apply
                                             (Ty.path "*mut")
                                             []
-                                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
-                                          (Ty.apply
-                                            (Ty.path "*mut")
-                                            []
-                                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutPointer,
-                                            M.deref (| M.read (| self |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    |))
-                                |))
+                                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                                          M.pointer_coercion
+                                            M.PointerCoercion.Unsize
+                                            (Ty.apply
+                                              (Ty.path "*mut")
+                                              []
+                                              [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
+                                            (Ty.apply
+                                              (Ty.path "*mut")
+                                              []
+                                              [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.MutPointer,
+                                              M.deref (| M.read (| self |) |)
+                                            |)
+                                          ]
+                                        |)
+                                      |))
+                                  |))
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    ]));
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&mut") [] [ T ] ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&mut") [] [ T ] ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -465,30 +509,40 @@ Module error.
               Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
               self
             |) in
-          Value.mkStructRecord
-            "core::error::Source"
-            []
-            []
-            [
-              ("current",
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ]
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |)
-                  ])
-            ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::error::Source"
+              [
+                ("current",
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                      ]))
+              ])
+            (Ty.path "core::error::Source")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -530,20 +584,23 @@ Module error.
               [ T ]
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.dyn
-                        [ ("core::error::Error::Trait", []); ("core::marker::Send::AutoTrait", []) ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.dyn
+                          [ ("core::error::Error::Trait", []); ("core::marker::Send::AutoTrait", [])
+                          ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -582,20 +639,23 @@ Module error.
               [ T ]
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.dyn
-                        [ ("core::error::Error::Trait", []); ("core::marker::Send::AutoTrait", []) ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.dyn
+                          [ ("core::error::Error::Trait", []); ("core::marker::Send::AutoTrait", [])
+                          ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -635,20 +695,23 @@ Module error.
               [ T ]
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&mut")
-                    []
-                    [
-                      Ty.dyn
-                        [ ("core::error::Error::Trait", []); ("core::marker::Send::AutoTrait", []) ]
-                    ])
-                  (Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [
+                        Ty.dyn
+                          [ ("core::error::Error::Trait", []); ("core::marker::Send::AutoTrait", [])
+                          ]
+                      ])
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                  [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -702,24 +765,26 @@ Module error.
               [ T ]
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.dyn
-                        [
-                          ("core::error::Error::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
-                        ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.dyn
+                          [
+                            ("core::error::Error::Trait", []);
+                            ("core::marker::Sync::AutoTrait", []);
+                            ("core::marker::Send::AutoTrait", [])
+                          ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -762,24 +827,26 @@ Module error.
               [ T ]
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.dyn
-                        [
-                          ("core::error::Error::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
-                        ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.dyn
+                          [
+                            ("core::error::Error::Trait", []);
+                            ("core::marker::Sync::AutoTrait", []);
+                            ("core::marker::Send::AutoTrait", [])
+                          ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -823,24 +890,26 @@ Module error.
               [ T ]
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&mut")
-                    []
-                    [
-                      Ty.dyn
-                        [
-                          ("core::error::Error::Trait", []);
-                          ("core::marker::Sync::AutoTrait", []);
-                          ("core::marker::Send::AutoTrait", [])
-                        ]
-                    ])
-                  (Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [
+                        Ty.dyn
+                          [
+                            ("core::error::Error::Trait", []);
+                            ("core::marker::Sync::AutoTrait", []);
+                            ("core::marker::Send::AutoTrait", [])
+                          ]
+                      ])
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                  [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -873,7 +942,11 @@ Module error.
             [],
             [ Ty.apply (Ty.path "core::error::tags::Value") [] [ T ]; impl_Error__plus___Sized ]
           |),
-          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| err |) |) |) ]
+          [
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| err |) |) |))
+              (Ty.apply (Ty.path "&") [] [ impl_Error__plus___Sized ])
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -909,7 +982,11 @@ Module error.
               impl_Error__plus___Sized
             ]
           |),
-          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| err |) |) |) ]
+          [
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| err |) |) |))
+              (Ty.apply (Ty.path "&") [] [ impl_Error__plus___Sized ])
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -940,30 +1017,35 @@ Module error.
                 (Ty.path "core::error::Tagged")
                 []
                 [ Ty.apply (Ty.path "core::error::TaggedOption") [] [ I ] ] :=
-            Value.mkStructRecord
-              "core::error::Tagged"
-              []
-              [ Ty.apply (Ty.path "core::error::TaggedOption") [] [ I ] ]
-              [
-                ("tag_id",
-                  M.call_closure (|
-                    Ty.path "core::any::TypeId",
-                    M.get_associated_function (| Ty.path "core::any::TypeId", "of", [], [ I ] |),
-                    []
-                  |));
-                ("value",
-                  Value.StructTuple
-                    "core::error::TaggedOption"
-                    []
-                    [ I ]
-                    [
-                      Value.StructTuple
-                        "core::option::Option::None"
-                        []
-                        [ Ty.associated_in_trait "core::error::tags::Type" [] [] I "Reified" ]
-                        []
-                    ])
-              ] in
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::error::Tagged"
+                [
+                  ("tag_id",
+                    M.call_closure (|
+                      Ty.path "core::any::TypeId",
+                      M.get_associated_function (| Ty.path "core::any::TypeId", "of", [], [ I ] |),
+                      []
+                    |));
+                  ("value",
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::error::TaggedOption"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple "core::option::Option::None" [])
+                            (Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.associated_in_trait "core::error::tags::Type" [] [] I "Reified"
+                              ])
+                        ])
+                      (Ty.apply (Ty.path "core::error::TaggedOption") [] [ I ]))
+                ])
+              (Ty.apply
+                (Ty.path "core::error::Tagged")
+                []
+                [ Ty.apply (Ty.path "core::error::TaggedOption") [] [ I ] ]) in
           let~ _ : Ty.tuple [] :=
             M.call_closure (|
               Ty.tuple [],
@@ -977,25 +1059,41 @@ Module error.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| err |) |) |);
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::error::Request" ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "core::error::Tagged")
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| err |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ impl_Error__plus___Sized ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::error::Request" ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "core::error::Tagged")
+                            []
+                            [ Ty.apply (Ty.path "core::error::TaggedOption") [] [ I ] ],
+                          "as_request",
+                          [],
                           []
-                          [ Ty.apply (Ty.path "core::error::TaggedOption") [] [ I ] ],
-                        "as_request",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.MutRef, tagged |) ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, tagged |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::error::Tagged")
+                                  []
+                                  [ Ty.apply (Ty.path "core::error::TaggedOption") [] [ I ] ]
+                              ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::error::Request" ])
               ]
             |) in
           M.SubPointer.get_struct_tuple_field (|
@@ -1059,8 +1157,10 @@ Module error.
                       [ Ty.apply (Ty.path "core::error::tags::Value") [] [ T ] ]
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                      M.read (| value |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::error::Request" ]);
+                      M.value_with_ty (M.read (| value |)) T
                     ]
                   |)
                 |)
@@ -1108,8 +1208,10 @@ Module error.
                       ]
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                      M.read (| fulfil |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::error::Request" ]);
+                      M.value_with_ty (M.read (| fulfil |)) impl_FnOnce___arrow_T
                     ]
                   |)
                 |)
@@ -1156,8 +1258,10 @@ Module error.
                       ]
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                      M.read (| value |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::error::Request" ]);
+                      M.value_with_ty (M.read (| value |)) (Ty.apply (Ty.path "&") [] [ T ])
                     ]
                   |)
                 |)
@@ -1208,8 +1312,10 @@ Module error.
                       ]
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                      M.read (| fulfil |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::error::Request" ]);
+                      M.value_with_ty (M.read (| fulfil |)) impl_FnOnce___arrow__'a_T
                     ]
                   |)
                 |)
@@ -1288,14 +1394,24 @@ Module error.
                                   [ I ]
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_tuple_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::error::Request",
-                                      0
-                                    |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_tuple_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::error::Request",
+                                        0
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::error::Tagged")
+                                          []
+                                          [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                                      ])
                                 ]
                               |)
                             |) in
@@ -1329,18 +1445,21 @@ Module error.
                                   "core::error::TaggedOption",
                                   0
                                 |),
-                                Value.StructTuple
-                                  "core::option::Option::Some"
-                                  []
-                                  [
-                                    Ty.associated_in_trait
-                                      "core::error::tags::Type"
-                                      []
-                                      []
-                                      I
-                                      "Reified"
-                                  ]
-                                  [ M.read (| value |) ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::option::Option::Some"
+                                    [ M.read (| value |) ])
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "core::error::tags::Type"
+                                        []
+                                        []
+                                        I
+                                        "Reified"
+                                    ])
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -1421,14 +1540,24 @@ Module error.
                                   [ I ]
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_tuple_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::error::Request",
-                                      0
-                                    |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_tuple_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::error::Request",
+                                        0
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::error::Tagged")
+                                          []
+                                          [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                                      ])
                                 ]
                               |)
                             |) in
@@ -1462,37 +1591,45 @@ Module error.
                                   "core::error::TaggedOption",
                                   0
                                 |),
-                                Value.StructTuple
-                                  "core::option::Option::Some"
-                                  []
-                                  [
-                                    Ty.associated_in_trait
-                                      "core::error::tags::Type"
-                                      []
-                                      []
-                                      I
-                                      "Reified"
-                                  ]
-                                  [
-                                    M.call_closure (|
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::option::Option::Some"
+                                    [
+                                      M.call_closure (|
+                                        Ty.associated_in_trait
+                                          "core::error::tags::Type"
+                                          []
+                                          []
+                                          I
+                                          "Reified",
+                                        M.get_trait_method (|
+                                          "core::ops::function::FnOnce",
+                                          impl_FnOnce___arrow_I_Reified,
+                                          [],
+                                          [ Ty.tuple [] ],
+                                          "call_once",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| fulfil |))
+                                            impl_FnOnce___arrow_I_Reified;
+                                          M.value_with_ty (Value.Tuple []) (Ty.tuple [])
+                                        ]
+                                      |)
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
                                       Ty.associated_in_trait
                                         "core::error::tags::Type"
                                         []
                                         []
                                         I
-                                        "Reified",
-                                      M.get_trait_method (|
-                                        "core::ops::function::FnOnce",
-                                        impl_FnOnce___arrow_I_Reified,
-                                        [],
-                                        [ Ty.tuple [] ],
-                                        "call_once",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| fulfil |); Value.Tuple [] ]
-                                    |)
-                                  ]
+                                        "Reified"
+                                    ])
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
                           |)));
@@ -1540,7 +1677,11 @@ Module error.
               [],
               [ Ty.apply (Ty.path "core::error::tags::Value") [] [ T ] ]
             |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "core::error::Request" ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1581,7 +1722,11 @@ Module error.
                   [ Ty.apply (Ty.path "core::error::tags::MaybeSizedValue") [] [ T ] ]
               ]
             |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "core::error::Request" ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1637,14 +1782,24 @@ Module error.
                   [ I ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::error::Request",
-                      0
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::error::Request",
+                        0
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "core::error::Tagged")
+                          []
+                          [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                      ])
                 ]
               |)
             |),
@@ -1702,25 +1857,31 @@ Module error.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.alloc (|
-                  Ty.path "core::fmt::builders::DebugStruct",
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.alloc (|
                     Ty.path "core::fmt::builders::DebugStruct",
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "debug_struct",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Request" |) |) |)
-                    ]
+                    M.call_closure (|
+                      Ty.path "core::fmt::builders::DebugStruct",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Formatter",
+                        "debug_struct",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Request" |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1798,47 +1959,53 @@ Module error.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Value" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ] ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ] ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_tuple_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::error::tags::Value",
-                                0
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Value" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ] ]
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ] ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_tuple_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::error::tags::Value",
+                                  0
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1910,47 +2077,53 @@ Module error.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MaybeSizedValue" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ] ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ] ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_tuple_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::error::tags::MaybeSizedValue",
-                                0
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "MaybeSizedValue" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ] ]
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ T ] ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_tuple_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::error::tags::MaybeSizedValue",
+                                  0
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2019,47 +2192,53 @@ Module error.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Ref" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ I ] ]
-                      ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ I ] ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_tuple_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::error::tags::Ref",
-                                0
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Ref" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ I ] ]
+                        ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "core::marker::PhantomData") [] [ I ] ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_tuple_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::error::tags::Ref",
+                                  0
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2375,70 +2554,53 @@ Module error.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::error::Tagged",
-                                "tag_id"
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.path "core::any::TypeId",
-                                M.call_closure (|
-                                  Ty.path "core::any::TypeId",
-                                  M.get_associated_function (|
-                                    Ty.path "core::any::TypeId",
-                                    "of",
-                                    [],
-                                    [ I ]
-                                  |),
-                                  []
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::error::Tagged",
+                                  "tag_id"
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::any::TypeId" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.path "core::any::TypeId",
+                                  M.call_closure (|
+                                    Ty.path "core::any::TypeId",
+                                    M.get_associated_function (|
+                                      Ty.path "core::any::TypeId",
+                                      "of",
+                                      [],
+                                      [ I ]
+                                    |),
+                                    []
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::any::TypeId" ])
                           ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "core::error::TaggedOption") [] [ I ] ]
-                    ]
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "*const")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::error::Tagged")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "core::error::TaggedOption")
-                                                []
-                                                [ I ]
-                                            ]
-                                        ],
-                                      M.get_associated_function (|
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.call_closure (|
                                         Ty.apply
                                           (Ty.path "*const")
                                           []
@@ -2446,108 +2608,147 @@ Module error.
                                             Ty.apply
                                               (Ty.path "core::error::Tagged")
                                               []
-                                              [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::error::TaggedOption")
+                                                  []
+                                                  [ I ]
+                                              ]
                                           ],
-                                        "cast",
-                                        [],
-                                        [
+                                        M.get_associated_function (|
                                           Ty.apply
-                                            (Ty.path "core::error::Tagged")
+                                            (Ty.path "*const")
                                             []
                                             [
                                               Ty.apply
-                                                (Ty.path "core::error::TaggedOption")
+                                                (Ty.path "core::error::Tagged")
                                                 []
-                                                [ I ]
-                                            ]
-                                        ]
-                                      |),
-                                      [
-                                        M.read (|
-                                          M.use
-                                            (M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "*const")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::error::Tagged")
-                                                    []
-                                                    [ Ty.dyn [ ("core::error::Erased::Trait", []) ]
-                                                    ]
-                                                ],
-                                              M.call_closure (|
+                                                [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                                            ],
+                                          "cast",
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::error::Tagged")
+                                              []
+                                              [
                                                 Ty.apply
-                                                  (Ty.path "*const")
+                                                  (Ty.path "core::error::TaggedOption")
                                                   []
-                                                  [
+                                                  [ I ]
+                                              ]
+                                          ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (|
+                                              M.use
+                                                (M.alloc (|
+                                                  Ty.apply
+                                                    (Ty.path "*const")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::error::Tagged")
+                                                        []
+                                                        [
+                                                          Ty.dyn
+                                                            [ ("core::error::Erased::Trait", []) ]
+                                                        ]
+                                                    ],
+                                                  M.call_closure (|
                                                     Ty.apply
-                                                      (Ty.path "core::error::Tagged")
+                                                      (Ty.path "*const")
                                                       []
                                                       [
-                                                        Ty.dyn
-                                                          [ ("core::error::Erased::Trait", []) ]
-                                                      ]
-                                                  ],
-                                                M.pointer_coercion
-                                                  M.PointerCoercion.Unsize
-                                                  (Ty.apply
-                                                    (Ty.path "*const")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "core::error::Tagged")
+                                                        Ty.apply
+                                                          (Ty.path "core::error::Tagged")
+                                                          []
+                                                          [
+                                                            Ty.dyn
+                                                              [ ("core::error::Erased::Trait", []) ]
+                                                          ]
+                                                      ],
+                                                    M.pointer_coercion
+                                                      M.PointerCoercion.Unsize
+                                                      (Ty.apply
+                                                        (Ty.path "*const")
                                                         []
                                                         [
-                                                          Ty.dyn
-                                                            [ ("core::error::Erased::Trait", []) ]
-                                                        ]
-                                                    ])
-                                                  (Ty.apply
-                                                    (Ty.path "*const")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "core::error::Tagged")
+                                                          Ty.apply
+                                                            (Ty.path "core::error::Tagged")
+                                                            []
+                                                            [
+                                                              Ty.dyn
+                                                                [ ("core::error::Erased::Trait", [])
+                                                                ]
+                                                            ]
+                                                        ])
+                                                      (Ty.apply
+                                                        (Ty.path "*const")
                                                         []
                                                         [
-                                                          Ty.dyn
-                                                            [ ("core::error::Erased::Trait", []) ]
-                                                        ]
-                                                    ]),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.ConstPointer,
-                                                    M.deref (| M.read (| self |) |)
+                                                          Ty.apply
+                                                            (Ty.path "core::error::Tagged")
+                                                            []
+                                                            [
+                                                              Ty.dyn
+                                                                [ ("core::error::Erased::Trait", [])
+                                                                ]
+                                                            ]
+                                                        ]),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.ConstPointer,
+                                                        M.deref (| M.read (| self |) |)
+                                                      |)
+                                                    ]
                                                   |)
-                                                ]
-                                              |)
+                                                |))
                                             |))
-                                        |)
-                                      ]
+                                            (Ty.apply
+                                              (Ty.path "*const")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::error::Tagged")
+                                                  []
+                                                  [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                                              ])
+                                        ]
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |),
-                              "core::error::Tagged",
-                              "value"
+                                |),
+                                "core::error::Tagged",
+                                "value"
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    ]));
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::error::TaggedOption") [] [ I ] ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "core::error::TaggedOption") [] [ I ] ]
-                    ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::error::TaggedOption") [] [ I ] ]
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2620,70 +2821,53 @@ Module error.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::error::Tagged",
-                                "tag_id"
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.path "core::any::TypeId",
-                                M.call_closure (|
-                                  Ty.path "core::any::TypeId",
-                                  M.get_associated_function (|
-                                    Ty.path "core::any::TypeId",
-                                    "of",
-                                    [],
-                                    [ I ]
-                                  |),
-                                  []
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::error::Tagged",
+                                  "tag_id"
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::any::TypeId" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.path "core::any::TypeId",
+                                  M.call_closure (|
+                                    Ty.path "core::any::TypeId",
+                                    M.get_associated_function (|
+                                      Ty.path "core::any::TypeId",
+                                      "of",
+                                      [],
+                                      [ I ]
+                                    |),
+                                    []
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::any::TypeId" ])
                           ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "core::error::TaggedOption") [] [ I ] ]
-                    ]
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "*mut")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::error::Tagged")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "core::error::TaggedOption")
-                                                []
-                                                [ I ]
-                                            ]
-                                        ],
-                                      M.get_associated_function (|
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
                                         Ty.apply
                                           (Ty.path "*mut")
                                           []
@@ -2691,108 +2875,147 @@ Module error.
                                             Ty.apply
                                               (Ty.path "core::error::Tagged")
                                               []
-                                              [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::error::TaggedOption")
+                                                  []
+                                                  [ I ]
+                                              ]
                                           ],
-                                        "cast",
-                                        [],
-                                        [
+                                        M.get_associated_function (|
                                           Ty.apply
-                                            (Ty.path "core::error::Tagged")
+                                            (Ty.path "*mut")
                                             []
                                             [
                                               Ty.apply
-                                                (Ty.path "core::error::TaggedOption")
+                                                (Ty.path "core::error::Tagged")
                                                 []
-                                                [ I ]
-                                            ]
-                                        ]
-                                      |),
-                                      [
-                                        M.read (|
-                                          M.use
-                                            (M.alloc (|
-                                              Ty.apply
-                                                (Ty.path "*mut")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::error::Tagged")
-                                                    []
-                                                    [ Ty.dyn [ ("core::error::Erased::Trait", []) ]
-                                                    ]
-                                                ],
-                                              M.call_closure (|
+                                                [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                                            ],
+                                          "cast",
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::error::Tagged")
+                                              []
+                                              [
                                                 Ty.apply
-                                                  (Ty.path "*mut")
+                                                  (Ty.path "core::error::TaggedOption")
                                                   []
-                                                  [
+                                                  [ I ]
+                                              ]
+                                          ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (|
+                                              M.use
+                                                (M.alloc (|
+                                                  Ty.apply
+                                                    (Ty.path "*mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::error::Tagged")
+                                                        []
+                                                        [
+                                                          Ty.dyn
+                                                            [ ("core::error::Erased::Trait", []) ]
+                                                        ]
+                                                    ],
+                                                  M.call_closure (|
                                                     Ty.apply
-                                                      (Ty.path "core::error::Tagged")
+                                                      (Ty.path "*mut")
                                                       []
                                                       [
-                                                        Ty.dyn
-                                                          [ ("core::error::Erased::Trait", []) ]
-                                                      ]
-                                                  ],
-                                                M.pointer_coercion
-                                                  M.PointerCoercion.Unsize
-                                                  (Ty.apply
-                                                    (Ty.path "*mut")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "core::error::Tagged")
+                                                        Ty.apply
+                                                          (Ty.path "core::error::Tagged")
+                                                          []
+                                                          [
+                                                            Ty.dyn
+                                                              [ ("core::error::Erased::Trait", []) ]
+                                                          ]
+                                                      ],
+                                                    M.pointer_coercion
+                                                      M.PointerCoercion.Unsize
+                                                      (Ty.apply
+                                                        (Ty.path "*mut")
                                                         []
                                                         [
-                                                          Ty.dyn
-                                                            [ ("core::error::Erased::Trait", []) ]
-                                                        ]
-                                                    ])
-                                                  (Ty.apply
-                                                    (Ty.path "*mut")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "core::error::Tagged")
+                                                          Ty.apply
+                                                            (Ty.path "core::error::Tagged")
+                                                            []
+                                                            [
+                                                              Ty.dyn
+                                                                [ ("core::error::Erased::Trait", [])
+                                                                ]
+                                                            ]
+                                                        ])
+                                                      (Ty.apply
+                                                        (Ty.path "*mut")
                                                         []
                                                         [
-                                                          Ty.dyn
-                                                            [ ("core::error::Erased::Trait", []) ]
-                                                        ]
-                                                    ]),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutPointer,
-                                                    M.deref (| M.read (| self |) |)
+                                                          Ty.apply
+                                                            (Ty.path "core::error::Tagged")
+                                                            []
+                                                            [
+                                                              Ty.dyn
+                                                                [ ("core::error::Erased::Trait", [])
+                                                                ]
+                                                            ]
+                                                        ]),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.MutPointer,
+                                                        M.deref (| M.read (| self |) |)
+                                                      |)
+                                                    ]
                                                   |)
-                                                ]
-                                              |)
+                                                |))
                                             |))
-                                        |)
-                                      ]
+                                            (Ty.apply
+                                              (Ty.path "*mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::error::Tagged")
+                                                  []
+                                                  [ Ty.dyn [ ("core::error::Erased::Trait", []) ] ]
+                                              ])
+                                        ]
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |),
-                              "core::error::Tagged",
-                              "value"
+                                |),
+                                "core::error::Tagged",
+                                "value"
+                              |)
                             |)
                           |)
                         |)
-                      |)
-                    ]));
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "core::error::TaggedOption") [] [ I ] ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "core::error::TaggedOption") [] [ I ] ]
-                    ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "core::error::TaggedOption") [] [ I ] ]
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2829,47 +3052,63 @@ Module error.
         ltac:(M.monadic
           (let self :=
             M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::error::Source" ], self |) in
-          Value.mkStructRecord
-            "core::error::Source"
-            []
-            []
-            [
-              ("current",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "core::option::Option")
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::error::Source"
+              [
+                ("current",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "core::option::Option")
                       []
                       [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
                       ],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                        ],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::error::Source",
-                            "current"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::error::Source",
+                                "current"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                              ]
+                          ])
+                    ]
+                  |))
+              ])
+            (Ty.path "core::error::Source")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2906,68 +3145,76 @@ Module error.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Source" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "current" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::option::Option")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
-                            ]
-                        ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "core::option::Option")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
-                                ]
-                            ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::error::Source",
-                              "current"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Source" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "current" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                              ]
+                          ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                                  ]
+                              ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::error::Source",
+                                "current"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3052,22 +3299,41 @@ Module error.
                     ]
                   |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::error::Source",
-                        "current"
-                      |)
-                    |);
-                    M.get_trait_method (|
-                      "core::error::Error",
-                      Ty.dyn [ ("core::error::Error::Trait", []) ],
-                      [],
-                      [],
-                      "source",
-                      [],
-                      []
-                    |)
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::error::Source",
+                          "current"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                        ]);
+                    M.value_with_ty
+                      (M.get_trait_method (|
+                        "core::error::Error",
+                        Ty.dyn [ ("core::error::Error::Trait", []) ],
+                        [],
+                        [],
+                        "source",
+                        [],
+                        []
+                      |))
+                      (Ty.function
+                        [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                        ]
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                          ]))
                   ]
                 |)
               |) in
@@ -3115,14 +3381,29 @@ Module error.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::error::Source",
-                                "current"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::error::Source",
+                                  "current"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                                    ]
+                                ])
                           ]
                         |)
                       |)) in
@@ -3130,18 +3411,20 @@ Module error.
                   Value.Tuple
                     [
                       Value.Integer IntegerKind.Usize 1;
-                      Value.StructTuple "core::option::Option::None" [] [ Ty.path "usize" ] []
+                      M.value_with_ty
+                        (Value.StructTuple "core::option::Option::None" [])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                     ]));
               fun γ =>
                 ltac:(M.monadic
                   (Value.Tuple
                     [
                       Value.Integer IntegerKind.Usize 0;
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.path "usize" ]
-                        [ Value.Integer IntegerKind.Usize 0 ]
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [ Value.Integer IntegerKind.Usize 0 ])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                     ]))
             ]
           |)))
@@ -3196,15 +3479,17 @@ Module error.
                 Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                 M.get_trait_method (| "core::error::Error", T, [], [], "description", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ])
                 ]
               |)
             |)
@@ -3231,15 +3516,17 @@ Module error.
               [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ],
             M.get_trait_method (| "core::error::Error", T, [], [], "cause", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3264,15 +3551,17 @@ Module error.
               [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ],
             M.get_trait_method (| "core::error::Error", T, [], [], "source", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ T ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3301,16 +3590,20 @@ Module error.
                 Ty.tuple [],
                 M.get_trait_method (| "core::error::Error", T, [], [], "provide", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                        |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| request |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| request |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::error::Request" ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)

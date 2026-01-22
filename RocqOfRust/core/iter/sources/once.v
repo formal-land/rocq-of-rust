@@ -14,27 +14,32 @@ Module iter.
         | [], [ T ], [ value ] =>
           ltac:(M.monadic
             (let value := M.alloc (| T, value |) in
-            Value.mkStructRecord
-              "core::iter::sources::once::Once"
-              []
-              [ T ]
-              [
-                ("inner",
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::option::IntoIter") [] [ T ],
-                    M.get_trait_method (|
-                      "core::iter::traits::collect::IntoIterator",
-                      Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                      [],
-                      [],
-                      "into_iter",
-                      [],
-                      []
-                    |),
-                    [ Value.StructTuple "core::option::Option::Some" [] [ T ] [ M.read (| value |) ]
-                    ]
-                  |))
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::iter::sources::once::Once"
+                [
+                  ("inner",
+                    M.call_closure (|
+                      Ty.apply (Ty.path "core::option::IntoIter") [] [ T ],
+                      M.get_trait_method (|
+                        "core::iter::traits::collect::IntoIterator",
+                        Ty.apply (Ty.path "core::option::Option") [] [ T ],
+                        [],
+                        [],
+                        "into_iter",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.value_with_ty
+                            (Value.StructTuple "core::option::Option::Some" [ M.read (| value |) ])
+                            (Ty.apply (Ty.path "core::option::Option") [] [ T ]))
+                          (Ty.apply (Ty.path "core::option::Option") [] [ T ])
+                      ]
+                    |))
+                ])
+              (Ty.apply (Ty.path "core::iter::sources::once::Once") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -69,40 +74,45 @@ Module iter.
                     [ Ty.apply (Ty.path "core::iter::sources::once::Once") [] [ T ] ],
                   self
                 |) in
-              Value.mkStructRecord
-                "core::iter::sources::once::Once"
-                []
-                [ T ]
-                [
-                  ("inner",
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::option::IntoIter") [] [ T ],
-                      M.get_trait_method (|
-                        "core::clone::Clone",
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "core::iter::sources::once::Once"
+                  [
+                    ("inner",
+                      M.call_closure (|
                         Ty.apply (Ty.path "core::option::IntoIter") [] [ T ],
-                        [],
-                        [],
-                        "clone",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
+                        M.get_trait_method (|
+                          "core::clone::Clone",
+                          Ty.apply (Ty.path "core::option::IntoIter") [] [ T ],
+                          [],
+                          [],
+                          "clone",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
                               Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::iter::sources::once::Once",
-                                "inner"
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::iter::sources::once::Once",
+                                    "inner"
+                                  |)
+                                |)
                               |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |))
-                ]))
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::option::IntoIter") [] [ T ] ])
+                        ]
+                      |))
+                  ])
+                (Ty.apply (Ty.path "core::iter::sources::once::Once") [] [ T ])))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -148,48 +158,56 @@ Module iter.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Once" |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "inner" |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "core::option::IntoIter") [] [ T ] ]
-                        ])
-                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.apply (Ty.path "core::option::IntoIter") [] [ T ] ],
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "core::iter::sources::once::Once",
-                                  "inner"
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Once" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "inner" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::option::IntoIter") [] [ T ] ]
+                          ])
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "core::option::IntoIter") [] [ T ] ],
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::iter::sources::once::Once",
+                                    "inner"
+                                  |)
                                 |)
                               |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |)
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -242,14 +260,19 @@ Module iter.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::iter::sources::once::Once",
-                      "inner"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::iter::sources::once::Once",
+                        "inner"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "core::option::IntoIter") [] [ T ] ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -289,14 +312,19 @@ Module iter.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::iter::sources::once::Once",
-                      "inner"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::iter::sources::once::Once",
+                        "inner"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::option::IntoIter") [] [ T ] ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -351,14 +379,19 @@ Module iter.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::iter::sources::once::Once",
-                      "inner"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::iter::sources::once::Once",
+                        "inner"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "core::option::IntoIter") [] [ T ] ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -408,14 +441,19 @@ Module iter.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "core::iter::sources::once::Once",
-                      "inner"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "core::iter::sources::once::Once",
+                        "inner"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::option::IntoIter") [] [ T ] ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"

@@ -61,24 +61,31 @@ Module panicking.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, fmt |) |) |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::location::Location" ],
-                      M.get_associated_function (|
-                        Ty.path "core::panic::location::Location",
-                        "caller",
-                        [],
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, fmt |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Arguments" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::location::Location" ],
+                        M.get_associated_function (|
+                          Ty.path "core::panic::location::Location",
+                          "caller",
+                          [],
+                          []
+                        |),
                         []
-                      |),
-                      []
+                      |)
                     |)
-                  |)
-                |);
-                Value.Bool true;
-                Value.Bool false
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::location::Location" ]);
+                M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                M.value_with_ty (Value.Bool false) (Ty.path "bool")
               ]
             |) in
           M.alloc (|
@@ -86,7 +93,14 @@ Module panicking.
             M.call_closure (|
               Ty.path "never",
               M.get_function (| "core::panicking::panic_fmt::panic_impl", [], [] |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, pi |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, pi |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::panic_info::PanicInfo" ])
+              ]
             |)
           |)
         |)))
@@ -158,9 +172,15 @@ Module panicking.
             ]
           |),
           [
-            Value.Tuple [ M.read (| fmt |); M.read (| force_no_backtrace |) ];
-            M.get_function (| "core::panicking::panic_nounwind_fmt.compiletime", [], [] |);
-            M.get_function (| "core::panicking::panic_nounwind_fmt.runtime", [], [] |)
+            M.value_with_ty
+              (Value.Tuple [ M.read (| fmt |); M.read (| force_no_backtrace |) ])
+              (Ty.tuple [ Ty.path "core::fmt::Arguments"; Ty.path "bool" ]);
+            M.value_with_ty
+              (M.get_function (| "core::panicking::panic_nounwind_fmt.compiletime", [], [] |))
+              (Ty.function [ Ty.path "core::fmt::Arguments"; Ty.path "bool" ] (Ty.path "never"));
+            M.value_with_ty
+              (M.get_function (| "core::panicking::panic_nounwind_fmt.runtime", [], [] |))
+              (Ty.function [ Ty.path "core::fmt::Arguments"; Ty.path "bool" ] (Ty.path "never"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -206,32 +226,44 @@ Module panicking.
           Ty.path "never",
           M.get_function (| "core::panicking::panic_fmt", [], [] |),
           [
-            M.call_closure (|
-              Ty.path "core::fmt::Arguments",
-              M.get_associated_function (|
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                "new_const",
-                [ Value.Integer IntegerKind.Usize 1 ],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+                M.get_associated_function (|
+                  Ty.path "core::fmt::Arguments",
+                  "new_const",
+                  [ Value.Integer IntegerKind.Usize 1 ],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.alloc (|
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                            Value.Array [ M.read (| expr |) ]
+                          |)
+                        |)
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
                         Ty.apply
                           (Ty.path "array")
                           [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        Value.Array [ M.read (| expr |) ]
-                      |)
-                    |)
-                  |)
-                |)
-              ]
-            |)
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                      ])
+                ]
+              |))
+              (Ty.path "core::fmt::Arguments")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -261,32 +293,44 @@ Module panicking.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array [ mk_str (| "attempt to add with overflow" |) ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "attempt to add with overflow" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -318,32 +362,44 @@ Module panicking.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array [ mk_str (| "attempt to subtract with overflow" |) ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "attempt to subtract with overflow" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -375,32 +431,44 @@ Module panicking.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array [ mk_str (| "attempt to multiply with overflow" |) ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "attempt to multiply with overflow" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -432,32 +500,44 @@ Module panicking.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array [ mk_str (| "attempt to divide with overflow" |) ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "attempt to divide with overflow" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -489,33 +569,45 @@ Module panicking.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array
+                                [ mk_str (| "attempt to calculate the remainder with overflow" |) ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array
-                            [ mk_str (| "attempt to calculate the remainder with overflow" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -547,32 +639,44 @@ Module panicking.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array [ mk_str (| "attempt to negate with overflow" |) ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "attempt to negate with overflow" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -604,32 +708,44 @@ Module panicking.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array [ mk_str (| "attempt to shift right with overflow" |) ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "attempt to shift right with overflow" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -661,32 +777,44 @@ Module panicking.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array [ mk_str (| "attempt to shift left with overflow" |) ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "attempt to shift left with overflow" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -718,32 +846,44 @@ Module panicking.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array [ mk_str (| "attempt to divide by zero" |) ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "attempt to divide by zero" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -775,37 +915,49 @@ Module panicking.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array
+                                [
+                                  mk_str (|
+                                    "attempt to calculate the remainder with a divisor of zero"
+                                  |)
+                                ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array
-                            [
-                              mk_str (|
-                                "attempt to calculate the remainder with a divisor of zero"
-                              |)
-                            ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -841,32 +993,44 @@ Module panicking.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array [ mk_str (| "coroutine resumed after completion" |) ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "coroutine resumed after completion" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -902,32 +1066,44 @@ Module panicking.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array [ mk_str (| "`async fn` resumed after completion" |) ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "`async fn` resumed after completion" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -963,32 +1139,44 @@ Module panicking.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array [ mk_str (| "`async gen fn` resumed after completion" |) ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "`async gen fn` resumed after completion" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1020,37 +1208,49 @@ Module panicking.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array
+                                [
+                                  mk_str (|
+                                    "`gen fn` should just keep returning `None` after completion"
+                                  |)
+                                ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array
-                            [
-                              mk_str (|
-                                "`gen fn` should just keep returning `None` after completion"
-                              |)
-                            ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1086,32 +1286,44 @@ Module panicking.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array [ mk_str (| "coroutine resumed after panicking" |) ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "coroutine resumed after panicking" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1147,32 +1359,44 @@ Module panicking.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array [ mk_str (| "`async fn` resumed after panicking" |) ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "`async fn` resumed after panicking" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1208,32 +1432,44 @@ Module panicking.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array [ mk_str (| "`async gen fn` resumed after panicking" |) ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array [ mk_str (| "`async gen fn` resumed after panicking" |) ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1269,37 +1505,49 @@ Module panicking.
             Ty.path "never",
             M.get_function (| "core::panicking::panic_fmt", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "core::fmt::Arguments",
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.path "core::fmt::Arguments",
-                  "new_const",
-                  [ Value.Integer IntegerKind.Usize 1 ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+                  M.get_associated_function (|
+                    Ty.path "core::fmt::Arguments",
+                    "new_const",
+                    [ Value.Integer IntegerKind.Usize 1 ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.alloc (|
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 1 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                              Value.Array
+                                [
+                                  mk_str (|
+                                    "`gen fn` should just keep returning `None` after panicking"
+                                  |)
+                                ]
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
                           Ty.apply
                             (Ty.path "array")
                             [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array
-                            [
-                              mk_str (|
-                                "`gen fn` should just keep returning `None` after panicking"
-                              |)
-                            ]
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                        ])
+                  ]
+                |))
+                (Ty.path "core::fmt::Arguments")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1327,33 +1575,45 @@ Module panicking.
           Ty.path "never",
           M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
           [
-            M.call_closure (|
-              Ty.path "core::fmt::Arguments",
-              M.get_associated_function (|
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                "new_const",
-                [ Value.Integer IntegerKind.Usize 1 ],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+                M.get_associated_function (|
+                  Ty.path "core::fmt::Arguments",
+                  "new_const",
+                  [ Value.Integer IntegerKind.Usize 1 ],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.alloc (|
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                            Value.Array [ M.read (| expr |) ]
+                          |)
+                        |)
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
                         Ty.apply
                           (Ty.path "array")
                           [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        Value.Array [ M.read (| expr |) ]
-                      |)
-                    |)
-                  |)
-                |)
-              ]
-            |);
-            Value.Bool false
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                      ])
+                ]
+              |))
+              (Ty.path "core::fmt::Arguments");
+            M.value_with_ty (Value.Bool false) (Ty.path "bool")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1378,33 +1638,45 @@ Module panicking.
           Ty.path "never",
           M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
           [
-            M.call_closure (|
-              Ty.path "core::fmt::Arguments",
-              M.get_associated_function (|
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                "new_const",
-                [ Value.Integer IntegerKind.Usize 1 ],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+                M.get_associated_function (|
+                  Ty.path "core::fmt::Arguments",
+                  "new_const",
+                  [ Value.Integer IntegerKind.Usize 1 ],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.alloc (|
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                            Value.Array [ M.read (| expr |) ]
+                          |)
+                        |)
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
                         Ty.apply
                           (Ty.path "array")
                           [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        Value.Array [ M.read (| expr |) ]
-                      |)
-                    |)
-                  |)
-                |)
-              ]
-            |);
-            Value.Bool true
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                      ])
+                ]
+              |))
+              (Ty.path "core::fmt::Arguments");
+            M.value_with_ty (Value.Bool true) (Ty.path "bool")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1432,18 +1704,20 @@ Module panicking.
             [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
           |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.deref (|
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                    mk_str (| "explicit panic" |)
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.deref (|
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                      mk_str (| "explicit panic" |)
+                    |)
                   |)
                 |)
-              |)
-            |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1468,66 +1742,94 @@ Module panicking.
           Ty.path "never",
           M.get_function (| "core::panicking::panic_fmt", [], [] |),
           [
-            M.call_closure (|
-              Ty.path "core::fmt::Arguments",
-              M.get_associated_function (|
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                "new_v1",
-                [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+                M.get_associated_function (|
+                  Ty.path "core::fmt::Arguments",
+                  "new_v1",
+                  [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        Value.Array [ mk_str (| "internal error: entered unreachable code: " |) ]
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                            Value.Array
+                              [ mk_str (| "internal error: entered unreachable code: " |) ]
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
                         Ty.apply
                           (Ty.path "array")
                           [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.path "core::fmt::rt::Argument" ],
-                        Value.Array
-                          [
-                            M.call_closure (|
-                              Ty.path "core::fmt::rt::Argument",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "new_display",
-                                [],
-                                [ T ]
-                              |),
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.path "core::fmt::rt::Argument" ],
+                            Value.Array
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |)
-                                  |)
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_display",
+                                    [],
+                                    [ T ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| x |) |)
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ T ])
+                                  ]
                                 |)
                               ]
-                            |)
-                          ]
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |)
-              ]
-            |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 1 ]
+                          [ Ty.path "core::fmt::rt::Argument" ]
+                      ])
+                ]
+              |))
+              (Ty.path "core::fmt::Arguments")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1555,7 +1857,11 @@ Module panicking.
             [],
             [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
           |),
-          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, expr |) |) |) ]
+          [
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, expr |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -1579,66 +1885,93 @@ Module panicking.
           Ty.path "never",
           M.get_function (| "core::panicking::panic_fmt", [], [] |),
           [
-            M.call_closure (|
-              Ty.path "core::fmt::Arguments",
-              M.get_associated_function (|
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                "new_v1",
-                [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+                M.get_associated_function (|
+                  Ty.path "core::fmt::Arguments",
+                  "new_v1",
+                  [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        Value.Array [ mk_str (| "" |) ]
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                            Value.Array [ mk_str (| "" |) ]
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
                         Ty.apply
                           (Ty.path "array")
                           [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.path "core::fmt::rt::Argument" ],
-                        Value.Array
-                          [
-                            M.call_closure (|
-                              Ty.path "core::fmt::rt::Argument",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "new_display",
-                                [],
-                                [ T ]
-                              |),
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.path "core::fmt::rt::Argument" ],
+                            Value.Array
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| x |) |) |)
-                                  |)
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_display",
+                                    [],
+                                    [ T ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| x |) |)
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ T ])
+                                  ]
                                 |)
                               ]
-                            |)
-                          ]
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |)
-              ]
-            |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 1 ]
+                          [ Ty.path "core::fmt::rt::Argument" ]
+                      ])
+                ]
+              |))
+              (Ty.path "core::fmt::Arguments")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1690,83 +2023,109 @@ Module panicking.
               Ty.path "never",
               M.get_function (| "core::panicking::panic_fmt", [], [] |),
               [
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Arguments",
+                      "new_v1",
+                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 2 ]
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                Value.Array
+                                  [
+                                    mk_str (| "index out of bounds: the len is " |);
+                                    mk_str (| " but the index is " |)
+                                  ]
+                              |)
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 2 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array
-                              [
-                                mk_str (| "index out of bounds: the len is " |);
-                                mk_str (| " but the index is " |)
-                              ]
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 2 ]
+                                  [ Ty.path "core::fmt::rt::Argument" ],
+                                Value.Array
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "core::fmt::rt::Argument",
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        "new_display",
+                                        [],
+                                        [ Ty.path "usize" ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.borrow (| Pointer.Kind.Ref, len |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                      ]
+                                    |);
+                                    M.call_closure (|
+                                      Ty.path "core::fmt::rt::Argument",
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        "new_display",
+                                        [],
+                                        [ Ty.path "usize" ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.borrow (| Pointer.Kind.Ref, index |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                      ]
+                                    |)
+                                  ]
+                              |)
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 2 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            Value.Array
-                              [
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_display",
-                                    [],
-                                    [ Ty.path "usize" ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.borrow (| Pointer.Kind.Ref, len |) |)
-                                    |)
-                                  ]
-                                |);
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_display",
-                                    [],
-                                    [ Ty.path "usize" ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.borrow (| Pointer.Kind.Ref, index |) |)
-                                    |)
-                                  ]
-                                |)
-                              ]
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
+                              [ Ty.path "core::fmt::rt::Argument" ]
+                          ])
+                    ]
+                  |))
+                  (Ty.path "core::fmt::Arguments")
               ]
             |)
           |)
@@ -1829,36 +2188,71 @@ Module panicking.
               Ty.path "never",
               M.get_function (| "core::panicking::panic_nounwind_fmt", [], [] |),
               [
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1_formatted",
-                    [],
-                    []
-                  |),
-                  [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Arguments",
+                      "new_v1_formatted",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.apply
-                            (Ty.path "slice")
+                            (Ty.path "&")
                             []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                        ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 2 ]
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                              ]),
                           [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 2 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                          ])
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 2 ]
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                    Value.Array
+                                      [
+                                        mk_str (|
+                                          "misaligned pointer dereference: address must be a multiple of "
+                                        |);
+                                        mk_str (| " but is " |)
+                                      ]
+                                  |)
+                                |)
+                              |)
+                            |)
+                          ]
+                        |))
                         (Ty.apply
                           (Ty.path "&")
                           []
@@ -1867,197 +2261,235 @@ Module panicking.
                               (Ty.path "slice")
                               []
                               [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                          ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
+                          ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
                                 Ty.apply
                                   (Ty.path "array")
                                   [ Value.Integer IntegerKind.Usize 2 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array
-                                  [
-                                    mk_str (|
-                                      "misaligned pointer dereference: address must be a multiple of "
-                                    |);
-                                    mk_str (| " but is " |)
-                                  ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ] ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
+                                  [ Ty.path "core::fmt::rt::Argument" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ]
+                              ]),
                           [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 2 ]
-                              [ Ty.path "core::fmt::rt::Argument" ]
-                          ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ] ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
                             M.borrow (|
                               Pointer.Kind.Ref,
-                              M.alloc (|
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 2 ]
+                                      [ Ty.path "core::fmt::rt::Argument" ],
+                                    Value.Array
+                                      [
+                                        M.call_closure (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          M.get_associated_function (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            "new_lower_hex",
+                                            [],
+                                            [ Ty.path "usize" ]
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.borrow (| Pointer.Kind.Ref, required |)
+                                                |)
+                                              |))
+                                              (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                          ]
+                                        |);
+                                        M.call_closure (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          M.get_associated_function (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            "new_lower_hex",
+                                            [],
+                                            [ Ty.path "usize" ]
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.borrow (| Pointer.Kind.Ref, found |) |)
+                                              |))
+                                              (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                          ]
+                                        |)
+                                      ]
+                                  |)
+                                |)
+                              |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ] ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ]
+                            ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
                                 Ty.apply
                                   (Ty.path "array")
                                   [ Value.Integer IntegerKind.Usize 2 ]
-                                  [ Ty.path "core::fmt::rt::Argument" ],
-                                Value.Array
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        "new_lower_hex",
-                                        [],
-                                        [ Ty.path "usize" ]
-                                      |),
+                                  [ Ty.path "core::fmt::rt::Placeholder" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [ Ty.path "core::fmt::rt::Placeholder" ]
+                              ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 2 ]
+                                      [ Ty.path "core::fmt::rt::Placeholder" ],
+                                    Value.Array
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.borrow (| Pointer.Kind.Ref, required |) |)
+                                        M.call_closure (|
+                                          Ty.path "core::fmt::rt::Placeholder",
+                                          M.get_associated_function (|
+                                            Ty.path "core::fmt::rt::Placeholder",
+                                            "new",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (Value.Integer IntegerKind.Usize 0)
+                                              (Ty.path "usize");
+                                            M.value_with_ty (Value.UnicodeChar 32) (Ty.path "char");
+                                            M.value_with_ty
+                                              (M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::fmt::rt::Alignment::Unknown"
+                                                  [])
+                                                (Ty.path "core::fmt::rt::Alignment"))
+                                              (Ty.path "core::fmt::rt::Alignment");
+                                            M.value_with_ty
+                                              (Value.Integer IntegerKind.U32 4)
+                                              (Ty.path "u32");
+                                            M.value_with_ty
+                                              (M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::fmt::rt::Count::Implied"
+                                                  [])
+                                                (Ty.path "core::fmt::rt::Count"))
+                                              (Ty.path "core::fmt::rt::Count");
+                                            M.value_with_ty
+                                              (M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::fmt::rt::Count::Implied"
+                                                  [])
+                                                (Ty.path "core::fmt::rt::Count"))
+                                              (Ty.path "core::fmt::rt::Count")
+                                          ]
+                                        |);
+                                        M.call_closure (|
+                                          Ty.path "core::fmt::rt::Placeholder",
+                                          M.get_associated_function (|
+                                            Ty.path "core::fmt::rt::Placeholder",
+                                            "new",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (Value.Integer IntegerKind.Usize 1)
+                                              (Ty.path "usize");
+                                            M.value_with_ty (Value.UnicodeChar 32) (Ty.path "char");
+                                            M.value_with_ty
+                                              (M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::fmt::rt::Alignment::Unknown"
+                                                  [])
+                                                (Ty.path "core::fmt::rt::Alignment"))
+                                              (Ty.path "core::fmt::rt::Alignment");
+                                            M.value_with_ty
+                                              (Value.Integer IntegerKind.U32 4)
+                                              (Ty.path "u32");
+                                            M.value_with_ty
+                                              (M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::fmt::rt::Count::Implied"
+                                                  [])
+                                                (Ty.path "core::fmt::rt::Count"))
+                                              (Ty.path "core::fmt::rt::Count");
+                                            M.value_with_ty
+                                              (M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::fmt::rt::Count::Implied"
+                                                  [])
+                                                (Ty.path "core::fmt::rt::Count"))
+                                              (Ty.path "core::fmt::rt::Count")
+                                          ]
                                         |)
                                       ]
-                                    |);
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        "new_lower_hex",
-                                        [],
-                                        [ Ty.path "usize" ]
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.borrow (| Pointer.Kind.Ref, found |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
+                                  |)
+                                |)
                               |)
                             |)
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ] ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 2 ]
-                              [ Ty.path "core::fmt::rt::Placeholder" ]
-                          ])
+                          ]
+                        |))
                         (Ty.apply
                           (Ty.path "&")
                           []
                           [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ]
-                          ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 2 ]
-                                  [ Ty.path "core::fmt::rt::Placeholder" ],
-                                Value.Array
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::rt::Placeholder",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Placeholder",
-                                        "new",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        Value.Integer IntegerKind.Usize 0;
-                                        Value.UnicodeChar 32;
-                                        Value.StructTuple
-                                          "core::fmt::rt::Alignment::Unknown"
-                                          []
-                                          []
-                                          [];
-                                        Value.Integer IntegerKind.U32 4;
-                                        Value.StructTuple "core::fmt::rt::Count::Implied" [] [] [];
-                                        Value.StructTuple "core::fmt::rt::Count::Implied" [] [] []
-                                      ]
-                                    |);
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::rt::Placeholder",
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Placeholder",
-                                        "new",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        Value.Integer IntegerKind.Usize 1;
-                                        Value.UnicodeChar 32;
-                                        Value.StructTuple
-                                          "core::fmt::rt::Alignment::Unknown"
-                                          []
-                                          []
-                                          [];
-                                        Value.Integer IntegerKind.U32 4;
-                                        Value.StructTuple "core::fmt::rt::Count::Implied" [] [] [];
-                                        Value.StructTuple "core::fmt::rt::Count::Implied" [] [] []
-                                      ]
-                                    |)
-                                  ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |);
-                    M.call_closure (|
-                      Ty.path "core::fmt::rt::UnsafeArg",
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::rt::UnsafeArg",
-                        "new",
-                        [],
-                        []
-                      |),
-                      []
-                    |)
-                  ]
-                |);
-                Value.Bool false
+                          ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "core::fmt::rt::UnsafeArg",
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::rt::UnsafeArg",
+                            "new",
+                            [],
+                            []
+                          |),
+                          []
+                        |))
+                        (Ty.path "core::fmt::rt::UnsafeArg")
+                    ]
+                  |))
+                  (Ty.path "core::fmt::Arguments");
+                M.value_with_ty (Value.Bool false) (Ty.path "bool")
               ]
             |)
           |)
@@ -2085,7 +2517,11 @@ Module panicking.
         (M.call_closure (|
           Ty.path "never",
           M.get_function (| "core::panicking::panic_nounwind", [], [] |),
-          [ mk_str (| "panic in a function that cannot unwind" |) ]
+          [
+            M.value_with_ty
+              (mk_str (| "panic in a function that cannot unwind" |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -2108,7 +2544,11 @@ Module panicking.
         (M.call_closure (|
           Ty.path "never",
           M.get_function (| "core::panicking::panic_nounwind_nobacktrace", [], [] |),
-          [ mk_str (| "panic in a destructor during cleanup" |) ]
+          [
+            M.value_with_ty
+              (mk_str (| "panic in a destructor during cleanup" |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -2159,7 +2599,11 @@ Module panicking.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, fmt |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, fmt |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Arguments" ])
+                      ]
                     |)
                   |) in
                 let γ0_0 :=
@@ -2173,10 +2617,12 @@ Module panicking.
                     [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, msg |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, msg |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])
                   ]
                 |)));
             fun γ =>
@@ -2251,28 +2697,32 @@ Module panicking.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ := M.is_struct_tuple (| γ, "core::panicking::AssertKind::Eq" |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Eq" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ := M.is_struct_tuple (| γ, "core::panicking::AssertKind::Ne" |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Ne" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ := M.is_struct_tuple (| γ, "core::panicking::AssertKind::Match" |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Match" |) |) |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ := M.is_struct_tuple (| γ, "core::panicking::AssertKind::Eq" |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Eq" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ := M.is_struct_tuple (| γ, "core::panicking::AssertKind::Ne" |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Ne" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ := M.is_struct_tuple (| γ, "core::panicking::AssertKind::Match" |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Match" |) |) |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2317,30 +2767,40 @@ Module panicking.
           Ty.path "never",
           M.get_function (| "core::panicking::assert_failed_inner", [], [] |),
           [
-            M.read (| kind |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, left |) |) |)
-              ]
-            |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ U ] ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, right |) |)
-                |)
-              ]
-            |);
-            M.read (| args |)
+            M.value_with_ty (M.read (| kind |)) (Ty.path "core::panicking::AssertKind");
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, left |) |)
+                  |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ U ] ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, right |) |)
+                  |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+            M.value_with_ty
+              (M.read (| args |))
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::fmt::Arguments" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2382,45 +2842,59 @@ Module panicking.
           Ty.path "never",
           M.get_function (| "core::panicking::assert_failed_inner", [], [] |),
           [
-            Value.StructTuple "core::panicking::AssertKind::Match" [] [] [];
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, left |) |) |)
-              ]
-            |);
-            M.call_closure (|
-              Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-              M.pointer_coercion
-                M.PointerCoercion.Unsize
-                (Ty.apply
-                  (Ty.path "&")
-                  []
-                  [ Ty.path "core::panicking::assert_matches_failed::Pattern" ])
-                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.path "core::panicking::assert_matches_failed::Pattern",
-                        Value.StructTuple
-                          "core::panicking::assert_matches_failed::Pattern"
-                          []
-                          []
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| right |) |) |) ]
+            M.value_with_ty
+              (M.value_with_ty
+                (Value.StructTuple "core::panicking::AssertKind::Match" [])
+                (Ty.path "core::panicking::AssertKind"))
+              (Ty.path "core::panicking::AssertKind");
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, left |) |)
+                  |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+            M.value_with_ty
+              (M.call_closure (|
+                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                M.pointer_coercion
+                  M.PointerCoercion.Unsize
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.path "core::panicking::assert_matches_failed::Pattern" ])
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
+                          Ty.path "core::panicking::assert_matches_failed::Pattern",
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::panicking::assert_matches_failed::Pattern"
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| right |) |) |) ])
+                            (Ty.path "core::panicking::assert_matches_failed::Pattern")
+                        |)
                       |)
                     |)
                   |)
-                |)
-              ]
-            |);
-            M.read (| args |)
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+            M.value_with_ty
+              (M.read (| args |))
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::fmt::Arguments" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2469,19 +2943,23 @@ Module panicking.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::panicking::assert_matches_failed::Pattern",
-                        0
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::panicking::assert_matches_failed::Pattern",
+                          0
+                        |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2583,128 +3061,190 @@ Module panicking.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                       [
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.path "core::fmt::Arguments",
-                            "new_v1",
-                            [ Value.Integer IntegerKind.Usize 4; Value.Integer IntegerKind.Usize 4
-                            ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new_v1",
+                              [ Value.Integer IntegerKind.Usize 4; Value.Integer IntegerKind.Usize 4
+                              ],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 4 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [
-                                        mk_str (| "assertion `left " |);
-                                        mk_str (| " right` failed: " |);
-                                        mk_str (| "
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 4 ]
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        Value.Array
+                                          [
+                                            mk_str (| "assertion `left " |);
+                                            mk_str (| " right` failed: " |);
+                                            mk_str (| "
   left: " |);
-                                        mk_str (| "
+                                            mk_str (| "
  right: " |)
-                                      ]
+                                          ]
+                                      |)
+                                    |)
                                   |)
-                                |)
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 4 ]
-                                      [ Ty.path "core::fmt::rt::Argument" ],
-                                    Value.Array
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_display",
-                                            [],
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                          |),
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 4 ]
+                                          [ Ty.path "core::fmt::rt::Argument" ],
+                                        Value.Array
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, op |) |)
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_display",
+                                                [],
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.Ref, op |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_display",
+                                                [],
+                                                [ Ty.path "core::fmt::Arguments" ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.Ref, args |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.path "core::fmt::Arguments" ])
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_debug",
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                                                ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.Ref, left |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ]
+                                                        ]
+                                                    ])
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_debug",
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                                                ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.Ref, right |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ]
+                                                        ]
+                                                    ])
+                                              ]
                                             |)
                                           ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_display",
-                                            [],
-                                            [ Ty.path "core::fmt::Arguments" ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, args |) |)
-                                            |)
-                                          ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_debug",
-                                            [],
-                                            [
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
-                                            ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, left |) |)
-                                            |)
-                                          ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_debug",
-                                            [],
-                                            [
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
-                                            ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, right |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
+                                      |)
+                                    |)
                                   |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 4 ]
+                                      [ Ty.path "core::fmt::rt::Argument" ]
+                                  ])
+                            ]
+                          |))
+                          (Ty.path "core::fmt::Arguments")
                       ]
                     |)));
                 fun γ =>
@@ -2714,112 +3254,167 @@ Module panicking.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                       [
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.path "core::fmt::Arguments",
-                            "new_v1",
-                            [ Value.Integer IntegerKind.Usize 3; Value.Integer IntegerKind.Usize 3
-                            ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new_v1",
+                              [ Value.Integer IntegerKind.Usize 3; Value.Integer IntegerKind.Usize 3
+                              ],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 3 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [
-                                        mk_str (| "assertion `left " |);
-                                        mk_str (| " right` failed
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 3 ]
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        Value.Array
+                                          [
+                                            mk_str (| "assertion `left " |);
+                                            mk_str (| " right` failed
   left: " |);
-                                        mk_str (| "
+                                            mk_str (| "
  right: " |)
-                                      ]
+                                          ]
+                                      |)
+                                    |)
                                   |)
-                                |)
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 3 ]
-                                      [ Ty.path "core::fmt::rt::Argument" ],
-                                    Value.Array
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_display",
-                                            [],
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                          |),
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 3 ]
+                                          [ Ty.path "core::fmt::rt::Argument" ],
+                                        Value.Array
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, op |) |)
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_display",
+                                                [],
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.Ref, op |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_debug",
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                                                ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.Ref, left |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ]
+                                                        ]
+                                                    ])
+                                              ]
+                                            |);
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_debug",
+                                                [],
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                                                ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.Ref, right |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ]
+                                                        ]
+                                                    ])
+                                              ]
                                             |)
                                           ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_debug",
-                                            [],
-                                            [
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
-                                            ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, left |) |)
-                                            |)
-                                          ]
-                                        |);
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_debug",
-                                            [],
-                                            [
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
-                                            ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, right |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
+                                      |)
+                                    |)
                                   |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 3 ]
+                                      [ Ty.path "core::fmt::rt::Argument" ]
+                                  ])
+                            ]
+                          |))
+                          (Ty.path "core::fmt::Arguments")
                       ]
                     |)))
               ]

@@ -113,8 +113,12 @@ Module base_convert.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Overflow" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Overflow" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -139,27 +143,33 @@ Module base_convert.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidBase" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidBase" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)));
               fun γ =>
@@ -191,38 +201,46 @@ Module base_convert.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidDigit" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                      |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidDigit" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_1 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)))
             ]
@@ -278,7 +296,11 @@ Module base_convert.
                   [],
                   [ Ty.path "ruint::base_convert::BaseConvertError" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "ruint::base_convert::BaseConvertError" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -288,7 +310,11 @@ Module base_convert.
                   [],
                   [ Ty.path "ruint::base_convert::BaseConvertError" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "ruint::base_convert::BaseConvertError" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -350,8 +376,18 @@ Module base_convert.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
                             ]
                           |)));
                       fun γ =>
@@ -405,8 +441,18 @@ Module base_convert.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
                               ]
                             |),
                             ltac:(M.monadic
@@ -422,8 +468,18 @@ Module base_convert.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, __self_1 |);
-                                  M.borrow (| Pointer.Kind.Ref, __arg1_1 |)
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __self_1 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]);
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, __arg1_1 |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
                                 ]
                               |)))
                           |)));
@@ -543,11 +599,15 @@ Module base_convert.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "the value is too large to fit the target type" |) |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "the value is too large to fit the target type" |) |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -572,69 +632,101 @@ Module base_convert.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [
+                                          mk_str (| "the requested number base " |);
+                                          mk_str (| " is less than two" |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (| "the requested number base " |);
-                                      mk_str (| " is less than two" |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      Value.Array
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, base |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                                            ]
+                                          |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, base |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)));
               fun γ =>
@@ -666,84 +758,123 @@ Module base_convert.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [
+                                          mk_str (| "digit " |);
+                                          mk_str (| " is out of range for base " |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (| "digit " |);
-                                      mk_str (| " is out of range for base " |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      Value.Array
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, digit |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                                            ]
+                                          |);
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, base |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ])
+                                            ]
+                                          |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, digit |) |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, base |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |)))
             ]
@@ -818,7 +949,11 @@ Module base_convert.
                         M.call_closure (|
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic", [], [] |),
-                          [ mk_str (| "assertion failed: base > 1" |) ]
+                          [
+                            M.value_with_ty
+                              (mk_str (| "assertion failed: base > 1" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
                         |)
                       |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -826,21 +961,21 @@ Module base_convert.
               |) in
             M.alloc (|
               Ty.apply (Ty.path "ruint::base_convert::SpigotLittle") [ LIMBS ] [],
-              Value.mkStructRecord
-                "ruint::base_convert::SpigotLittle"
-                [ LIMBS ]
-                []
-                [
-                  ("base", M.read (| base |));
-                  ("limbs",
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "ruint::Uint",
-                        "limbs"
-                      |)
-                    |))
-                ]
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "ruint::base_convert::SpigotLittle"
+                  [
+                    ("base", M.read (| base |));
+                    ("limbs",
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "ruint::Uint",
+                          "limbs"
+                        |)
+                      |))
+                  ])
+                (Ty.apply (Ty.path "ruint::base_convert::SpigotLittle") [ LIMBS ] [])
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -918,7 +1053,11 @@ Module base_convert.
                         M.call_closure (|
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic", [], [] |),
-                          [ mk_str (| "assertion failed: base > 1" |) ]
+                          [
+                            M.value_with_ty
+                              (mk_str (| "assertion failed: base > 1" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
                         |)
                       |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -926,48 +1065,55 @@ Module base_convert.
               |) in
             M.alloc (|
               Ty.path "ruint::base_convert::to_base_be::OwnedVecIterator",
-              Value.mkStructRecord
-                "ruint::base_convert::to_base_be::OwnedVecIterator"
-                []
-                []
-                [
-                  ("vec",
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "alloc::vec::Vec")
-                        []
-                        [ Ty.path "u64"; Ty.path "alloc::alloc::Global" ],
-                      M.get_trait_method (|
-                        "core::iter::traits::iterator::Iterator",
-                        Ty.associated_unknown,
-                        [],
-                        [],
-                        "collect",
-                        [],
-                        [
-                          Ty.apply
-                            (Ty.path "alloc::vec::Vec")
-                            []
-                            [ Ty.path "u64"; Ty.path "alloc::alloc::Global" ]
-                        ]
-                      |),
-                      [
-                        M.call_closure (|
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "ruint::base_convert::to_base_be::OwnedVecIterator"
+                  [
+                    ("vec",
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [ Ty.path "u64"; Ty.path "alloc::alloc::Global" ],
+                        M.get_trait_method (|
+                          "core::iter::traits::iterator::Iterator",
                           Ty.associated_unknown,
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                            "to_base_le",
-                            [],
-                            []
-                          |),
+                          [],
+                          [],
+                          "collect",
+                          [],
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            M.read (| base |)
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [ Ty.path "u64"; Ty.path "alloc::alloc::Global" ]
                           ]
-                        |)
-                      ]
-                    |))
-                ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.associated_unknown,
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                "to_base_le",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                                M.value_with_ty (M.read (| base |)) (Ty.path "u64")
+                              ]
+                            |))
+                            Ty.associated_unknown
+                        ]
+                      |))
+                  ])
+                (Ty.path "ruint::base_convert::to_base_be::OwnedVecIterator")
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1075,20 +1221,23 @@ Module base_convert.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                                    Ty.path "ruint::base_convert::BaseConvertError"
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::base_convert::BaseConvertError::InvalidBase"
-                                      []
-                                      []
-                                      [ M.read (| base |) ]
-                                  ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::base_convert::BaseConvertError::InvalidBase"
+                                          [ M.read (| base |) ])
+                                        (Ty.path "ruint::base_convert::BaseConvertError")
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                      Ty.path "ruint::base_convert::BaseConvertError"
+                                    ])
                               |)
                             |)
                           |)));
@@ -1146,7 +1295,7 @@ Module base_convert.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| digits |) ]
+                                            [ M.value_with_ty (M.read (| digits |)) I ]
                                           |)
                                         |),
                                         [
@@ -1192,15 +1341,27 @@ Module base_convert.
                                                               []
                                                             |),
                                                             [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.deref (|
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.MutRef,
-                                                                    iter
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.MutRef,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      iter
+                                                                    |)
                                                                   |)
-                                                                |)
-                                                              |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&mut")
+                                                                  []
+                                                                  [
+                                                                    Ty.associated_in_trait
+                                                                      "core::iter::traits::collect::IntoIterator"
+                                                                      []
+                                                                      []
+                                                                      I
+                                                                      "IntoIter"
+                                                                  ])
                                                             ]
                                                           |)
                                                         |),
@@ -1261,33 +1422,40 @@ Module base_convert.
                                                                           M.never_to_any (|
                                                                             M.read (|
                                                                               M.return_ (|
-                                                                                Value.StructTuple
-                                                                                  "core::result::Result::Err"
-                                                                                  []
-                                                                                  [
-                                                                                    Ty.apply
-                                                                                      (Ty.path
-                                                                                        "ruint::Uint")
-                                                                                      [ BITS; LIMBS
-                                                                                      ]
-                                                                                      [];
-                                                                                    Ty.path
-                                                                                      "ruint::base_convert::BaseConvertError"
-                                                                                  ]
-                                                                                  [
-                                                                                    Value.StructTuple
-                                                                                      "ruint::base_convert::BaseConvertError::InvalidDigit"
-                                                                                      []
-                                                                                      []
-                                                                                      [
-                                                                                        M.read (|
-                                                                                          digit
-                                                                                        |);
-                                                                                        M.read (|
-                                                                                          base
-                                                                                        |)
-                                                                                      ]
-                                                                                  ]
+                                                                                M.value_with_ty
+                                                                                  (Value.StructTuple
+                                                                                    "core::result::Result::Err"
+                                                                                    [
+                                                                                      M.value_with_ty
+                                                                                        (Value.StructTuple
+                                                                                          "ruint::base_convert::BaseConvertError::InvalidDigit"
+                                                                                          [
+                                                                                            M.read (|
+                                                                                              digit
+                                                                                            |);
+                                                                                            M.read (|
+                                                                                              base
+                                                                                            |)
+                                                                                          ])
+                                                                                        (Ty.path
+                                                                                          "ruint::base_convert::BaseConvertError")
+                                                                                    ])
+                                                                                  (Ty.apply
+                                                                                    (Ty.path
+                                                                                      "core::result::Result")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "ruint::Uint")
+                                                                                        [
+                                                                                          BITS;
+                                                                                          LIMBS
+                                                                                        ]
+                                                                                        [];
+                                                                                      Ty.path
+                                                                                        "ruint::base_convert::BaseConvertError"
+                                                                                    ])
                                                                               |)
                                                                             |)
                                                                           |)));
@@ -1332,26 +1500,33 @@ Module base_convert.
                                                                           M.never_to_any (|
                                                                             M.read (|
                                                                               M.return_ (|
-                                                                                Value.StructTuple
-                                                                                  "core::result::Result::Err"
-                                                                                  []
-                                                                                  [
-                                                                                    Ty.apply
-                                                                                      (Ty.path
-                                                                                        "ruint::Uint")
-                                                                                      [ BITS; LIMBS
-                                                                                      ]
-                                                                                      [];
-                                                                                    Ty.path
-                                                                                      "ruint::base_convert::BaseConvertError"
-                                                                                  ]
-                                                                                  [
-                                                                                    Value.StructTuple
-                                                                                      "ruint::base_convert::BaseConvertError::Overflow"
-                                                                                      []
-                                                                                      []
-                                                                                      []
-                                                                                  ]
+                                                                                M.value_with_ty
+                                                                                  (Value.StructTuple
+                                                                                    "core::result::Result::Err"
+                                                                                    [
+                                                                                      M.value_with_ty
+                                                                                        (Value.StructTuple
+                                                                                          "ruint::base_convert::BaseConvertError::Overflow"
+                                                                                          [])
+                                                                                        (Ty.path
+                                                                                          "ruint::base_convert::BaseConvertError")
+                                                                                    ])
+                                                                                  (Ty.apply
+                                                                                    (Ty.path
+                                                                                      "core::result::Result")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "ruint::Uint")
+                                                                                        [
+                                                                                          BITS;
+                                                                                          LIMBS
+                                                                                        ]
+                                                                                        [];
+                                                                                      Ty.path
+                                                                                        "ruint::base_convert::BaseConvertError"
+                                                                                    ])
                                                                               |)
                                                                             |)
                                                                           |)));
@@ -1372,22 +1547,25 @@ Module base_convert.
                                     |))
                                 |) in
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Ok"
-                                  []
-                                  [
-                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                                    Ty.path "ruint::base_convert::BaseConvertError"
-                                  ]
-                                  [
-                                    M.read (|
-                                      get_associated_constant (|
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        "ZERO",
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Ok"
+                                    [
+                                      M.read (|
+                                        get_associated_constant (|
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                          "ZERO",
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                        |)
                                       |)
-                                    |)
-                                  ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                      Ty.path "ruint::base_convert::BaseConvertError"
+                                    ])
                               |)
                             |)
                           |)));
@@ -1417,7 +1595,7 @@ Module base_convert.
                       [],
                       []
                     |),
-                    [ M.read (| digits |) ]
+                    [ M.value_with_ty (M.read (| digits |)) I ]
                   |) in
                 let~ result : Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] :=
                   M.read (|
@@ -1436,7 +1614,7 @@ Module base_convert.
                       [],
                       [ Ty.path "i32" ]
                     |),
-                    [ Value.Integer IntegerKind.I32 1 ]
+                    [ M.value_with_ty (Value.Integer IntegerKind.I32 1) (Ty.path "i32") ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.read (|
@@ -1489,8 +1667,50 @@ Module base_convert.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.associated_in_trait
+                                          "core::iter::traits::collect::IntoIterator"
+                                          []
+                                          []
+                                          I
+                                          "IntoIter"
+                                      ],
+                                    M.get_trait_method (|
+                                      "core::iter::traits::iterator::Iterator",
+                                      Ty.associated_in_trait
+                                        "core::iter::traits::collect::IntoIterator"
+                                        []
+                                        []
+                                        I
+                                        "IntoIter",
+                                      [],
+                                      [],
+                                      "by_ref",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.MutRef, iter |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.associated_in_trait
+                                              "core::iter::traits::collect::IntoIterator"
+                                              []
+                                              []
+                                              I
+                                              "IntoIter"
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.apply
                                     (Ty.path "&mut")
                                     []
                                     [
@@ -1500,23 +1720,7 @@ Module base_convert.
                                         []
                                         I
                                         "IntoIter"
-                                    ],
-                                  M.get_trait_method (|
-                                    "core::iter::traits::iterator::Iterator",
-                                    Ty.associated_in_trait
-                                      "core::iter::traits::collect::IntoIterator"
-                                      []
-                                      []
-                                      I
-                                      "IntoIter",
-                                    [],
-                                    [],
-                                    "by_ref",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.MutRef, iter |) ]
-                                |)
+                                    ])
                               ]
                             |)
                           |),
@@ -1573,12 +1777,29 @@ Module base_convert.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [
+                                                          Ty.associated_in_trait
+                                                            "core::iter::traits::collect::IntoIterator"
+                                                            []
+                                                            []
+                                                            I
+                                                            "IntoIter"
+                                                        ]
+                                                    ])
                                               ]
                                             |)
                                           |),
@@ -1629,27 +1850,32 @@ Module base_convert.
                                                             M.never_to_any (|
                                                               M.read (|
                                                                 M.return_ (|
-                                                                  Value.StructTuple
-                                                                    "core::result::Result::Err"
-                                                                    []
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path "ruint::Uint")
-                                                                        [ BITS; LIMBS ]
-                                                                        [];
-                                                                      Ty.path
-                                                                        "ruint::base_convert::BaseConvertError"
-                                                                    ]
-                                                                    [
-                                                                      Value.StructTuple
-                                                                        "ruint::base_convert::BaseConvertError::InvalidDigit"
-                                                                        []
-                                                                        []
-                                                                        [
-                                                                          M.read (| digit |);
-                                                                          M.read (| base |)
-                                                                        ]
-                                                                    ]
+                                                                  M.value_with_ty
+                                                                    (Value.StructTuple
+                                                                      "core::result::Result::Err"
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (Value.StructTuple
+                                                                            "ruint::base_convert::BaseConvertError::InvalidDigit"
+                                                                            [
+                                                                              M.read (| digit |);
+                                                                              M.read (| base |)
+                                                                            ])
+                                                                          (Ty.path
+                                                                            "ruint::base_convert::BaseConvertError")
+                                                                      ])
+                                                                    (Ty.apply
+                                                                      (Ty.path
+                                                                        "core::result::Result")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "ruint::Uint")
+                                                                          [ BITS; LIMBS ]
+                                                                          [];
+                                                                        Ty.path
+                                                                          "ruint::base_convert::BaseConvertError"
+                                                                      ])
                                                                 |)
                                                               |)
                                                             |)));
@@ -1665,8 +1891,54 @@ Module base_convert.
                                                         []
                                                       |),
                                                       [
-                                                        M.call_closure (|
-                                                          Ty.apply
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "slice")
+                                                                  []
+                                                                  [ Ty.path "u64" ]
+                                                              ],
+                                                            M.pointer_coercion
+                                                              M.PointerCoercion.Unsize
+                                                              (Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "array")
+                                                                    [ LIMBS ]
+                                                                    [ Ty.path "u64" ]
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [ Ty.path "u64" ]
+                                                                ]),
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                M.deref (|
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    M.SubPointer.get_struct_record_field (|
+                                                                      result,
+                                                                      "ruint::Uint",
+                                                                      "limbs"
+                                                                    |)
+                                                                  |)
+                                                                |)
+                                                              |)
+                                                            ]
+                                                          |))
+                                                          (Ty.apply
                                                             (Ty.path "&mut")
                                                             []
                                                             [
@@ -1674,45 +1946,84 @@ Module base_convert.
                                                                 (Ty.path "slice")
                                                                 []
                                                                 [ Ty.path "u64" ]
-                                                            ],
-                                                          M.pointer_coercion
-                                                            M.PointerCoercion.Unsize
-                                                            (Ty.apply
-                                                              (Ty.path "&mut")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "array")
-                                                                  [ LIMBS ]
-                                                                  [ Ty.path "u64" ]
-                                                              ])
-                                                            (Ty.apply
-                                                              (Ty.path "&mut")
+                                                            ]);
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "&")
                                                               []
                                                               [
                                                                 Ty.apply
                                                                   (Ty.path "slice")
                                                                   []
                                                                   [ Ty.path "u64" ]
-                                                              ]),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.MutRef,
-                                                              M.deref (|
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  M.SubPointer.get_struct_record_field (|
-                                                                    result,
-                                                                    "ruint::Uint",
-                                                                    "limbs"
+                                                              ],
+                                                            M.pointer_coercion
+                                                              M.PointerCoercion.Unsize
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "array")
+                                                                    [ LIMBS ]
+                                                                    [ Ty.path "u64" ]
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [ Ty.path "u64" ]
+                                                                ]),
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.call_closure (|
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "array")
+                                                                          [ LIMBS ]
+                                                                          [ Ty.path "u64" ]
+                                                                      ],
+                                                                    M.get_associated_function (|
+                                                                      Ty.apply
+                                                                        (Ty.path "ruint::Uint")
+                                                                        [ BITS; LIMBS ]
+                                                                        [],
+                                                                      "as_limbs",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          power
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "ruint::Uint")
+                                                                              [ BITS; LIMBS ]
+                                                                              []
+                                                                          ])
+                                                                    ]
                                                                   |)
                                                                 |)
                                                               |)
-                                                            |)
-                                                          ]
-                                                        |);
-                                                        M.call_closure (|
-                                                          Ty.apply
+                                                            ]
+                                                          |))
+                                                          (Ty.apply
                                                             (Ty.path "&")
                                                             []
                                                             [
@@ -1720,62 +2031,10 @@ Module base_convert.
                                                                 (Ty.path "slice")
                                                                 []
                                                                 [ Ty.path "u64" ]
-                                                            ],
-                                                          M.pointer_coercion
-                                                            M.PointerCoercion.Unsize
-                                                            (Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "array")
-                                                                  [ LIMBS ]
-                                                                  [ Ty.path "u64" ]
-                                                              ])
-                                                            (Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "slice")
-                                                                  []
-                                                                  [ Ty.path "u64" ]
-                                                              ]),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.call_closure (|
-                                                                  Ty.apply
-                                                                    (Ty.path "&")
-                                                                    []
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path "array")
-                                                                        [ LIMBS ]
-                                                                        [ Ty.path "u64" ]
-                                                                    ],
-                                                                  M.get_associated_function (|
-                                                                    Ty.apply
-                                                                      (Ty.path "ruint::Uint")
-                                                                      [ BITS; LIMBS ]
-                                                                      [],
-                                                                    "as_limbs",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      power
-                                                                    |)
-                                                                  ]
-                                                                |)
-                                                              |)
-                                                            |)
-                                                          ]
-                                                        |);
-                                                        M.read (| digit |)
+                                                            ]);
+                                                        M.value_with_ty
+                                                          (M.read (| digit |))
+                                                          (Ty.path "u64")
                                                       ]
                                                     |) in
                                                   let~ _ : Ty.tuple [] :=
@@ -1847,24 +2106,29 @@ Module base_convert.
                                                             M.never_to_any (|
                                                               M.read (|
                                                                 M.return_ (|
-                                                                  Value.StructTuple
-                                                                    "core::result::Result::Err"
-                                                                    []
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path "ruint::Uint")
-                                                                        [ BITS; LIMBS ]
-                                                                        [];
-                                                                      Ty.path
-                                                                        "ruint::base_convert::BaseConvertError"
-                                                                    ]
-                                                                    [
-                                                                      Value.StructTuple
-                                                                        "ruint::base_convert::BaseConvertError::Overflow"
-                                                                        []
-                                                                        []
-                                                                        []
-                                                                    ]
+                                                                  M.value_with_ty
+                                                                    (Value.StructTuple
+                                                                      "core::result::Result::Err"
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (Value.StructTuple
+                                                                            "ruint::base_convert::BaseConvertError::Overflow"
+                                                                            [])
+                                                                          (Ty.path
+                                                                            "ruint::base_convert::BaseConvertError")
+                                                                      ])
+                                                                    (Ty.apply
+                                                                      (Ty.path
+                                                                        "core::result::Result")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "ruint::Uint")
+                                                                          [ BITS; LIMBS ]
+                                                                          [];
+                                                                        Ty.path
+                                                                          "ruint::base_convert::BaseConvertError"
+                                                                      ])
                                                                 |)
                                                               |)
                                                             |)));
@@ -1880,28 +2144,9 @@ Module base_convert.
                                                         []
                                                       |),
                                                       [
-                                                        M.call_closure (|
-                                                          Ty.apply
-                                                            (Ty.path "&mut")
-                                                            []
-                                                            [
-                                                              Ty.apply
-                                                                (Ty.path "slice")
-                                                                []
-                                                                [ Ty.path "u64" ]
-                                                            ],
-                                                          M.pointer_coercion
-                                                            M.PointerCoercion.Unsize
-                                                            (Ty.apply
-                                                              (Ty.path "&mut")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path "array")
-                                                                  [ LIMBS ]
-                                                                  [ Ty.path "u64" ]
-                                                              ])
-                                                            (Ty.apply
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
+                                                            Ty.apply
                                                               (Ty.path "&mut")
                                                               []
                                                               [
@@ -1909,24 +2154,55 @@ Module base_convert.
                                                                   (Ty.path "slice")
                                                                   []
                                                                   [ Ty.path "u64" ]
-                                                              ]),
-                                                          [
-                                                            M.borrow (|
-                                                              Pointer.Kind.MutRef,
-                                                              M.deref (|
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  M.SubPointer.get_struct_record_field (|
-                                                                    power,
-                                                                    "ruint::Uint",
-                                                                    "limbs"
+                                                              ],
+                                                            M.pointer_coercion
+                                                              M.PointerCoercion.Unsize
+                                                              (Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "array")
+                                                                    [ LIMBS ]
+                                                                    [ Ty.path "u64" ]
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [ Ty.path "u64" ]
+                                                                ]),
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                M.deref (|
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    M.SubPointer.get_struct_record_field (|
+                                                                      power,
+                                                                      "ruint::Uint",
+                                                                      "limbs"
+                                                                    |)
                                                                   |)
                                                                 |)
                                                               |)
-                                                            |)
-                                                          ]
-                                                        |);
-                                                        M.read (| base |)
+                                                            ]
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "u64" ]
+                                                            ]);
+                                                        M.value_with_ty
+                                                          (M.read (| base |))
+                                                          (Ty.path "u64")
                                                       ]
                                                     |) in
                                                   M.alloc (|
@@ -2048,7 +2324,16 @@ Module base_convert.
                                 [],
                                 []
                               |),
-                              [ M.read (| iter |) ]
+                              [
+                                M.value_with_ty
+                                  (M.read (| iter |))
+                                  (Ty.associated_in_trait
+                                    "core::iter::traits::collect::IntoIterator"
+                                    []
+                                    []
+                                    I
+                                    "IntoIter")
+                              ]
                             |)
                           |),
                           [
@@ -2094,12 +2379,24 @@ Module base_convert.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.associated_in_trait
+                                                        "core::iter::traits::collect::IntoIterator"
+                                                        []
+                                                        []
+                                                        I
+                                                        "IntoIter"
+                                                    ])
                                               ]
                                             |)
                                           |),
@@ -2150,27 +2447,32 @@ Module base_convert.
                                                             M.never_to_any (|
                                                               M.read (|
                                                                 M.return_ (|
-                                                                  Value.StructTuple
-                                                                    "core::result::Result::Err"
-                                                                    []
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path "ruint::Uint")
-                                                                        [ BITS; LIMBS ]
-                                                                        [];
-                                                                      Ty.path
-                                                                        "ruint::base_convert::BaseConvertError"
-                                                                    ]
-                                                                    [
-                                                                      Value.StructTuple
-                                                                        "ruint::base_convert::BaseConvertError::InvalidDigit"
-                                                                        []
-                                                                        []
-                                                                        [
-                                                                          M.read (| digit |);
-                                                                          M.read (| base |)
-                                                                        ]
-                                                                    ]
+                                                                  M.value_with_ty
+                                                                    (Value.StructTuple
+                                                                      "core::result::Result::Err"
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (Value.StructTuple
+                                                                            "ruint::base_convert::BaseConvertError::InvalidDigit"
+                                                                            [
+                                                                              M.read (| digit |);
+                                                                              M.read (| base |)
+                                                                            ])
+                                                                          (Ty.path
+                                                                            "ruint::base_convert::BaseConvertError")
+                                                                      ])
+                                                                    (Ty.apply
+                                                                      (Ty.path
+                                                                        "core::result::Result")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "ruint::Uint")
+                                                                          [ BITS; LIMBS ]
+                                                                          [];
+                                                                        Ty.path
+                                                                          "ruint::base_convert::BaseConvertError"
+                                                                      ])
                                                                 |)
                                                               |)
                                                             |)));
@@ -2208,24 +2510,29 @@ Module base_convert.
                                                             M.never_to_any (|
                                                               M.read (|
                                                                 M.return_ (|
-                                                                  Value.StructTuple
-                                                                    "core::result::Result::Err"
-                                                                    []
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path "ruint::Uint")
-                                                                        [ BITS; LIMBS ]
-                                                                        [];
-                                                                      Ty.path
-                                                                        "ruint::base_convert::BaseConvertError"
-                                                                    ]
-                                                                    [
-                                                                      Value.StructTuple
-                                                                        "ruint::base_convert::BaseConvertError::Overflow"
-                                                                        []
-                                                                        []
-                                                                        []
-                                                                    ]
+                                                                  M.value_with_ty
+                                                                    (Value.StructTuple
+                                                                      "core::result::Result::Err"
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (Value.StructTuple
+                                                                            "ruint::base_convert::BaseConvertError::Overflow"
+                                                                            [])
+                                                                          (Ty.path
+                                                                            "ruint::base_convert::BaseConvertError")
+                                                                      ])
+                                                                    (Ty.apply
+                                                                      (Ty.path
+                                                                        "core::result::Result")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "ruint::Uint")
+                                                                          [ BITS; LIMBS ]
+                                                                          [];
+                                                                        Ty.path
+                                                                          "ruint::base_convert::BaseConvertError"
+                                                                      ])
                                                                 |)
                                                               |)
                                                             |)));
@@ -2251,14 +2558,15 @@ Module base_convert.
                       Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
                       Ty.path "ruint::base_convert::BaseConvertError"
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                      Ty.path "ruint::base_convert::BaseConvertError"
-                    ]
-                    [ M.read (| result |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ M.read (| result |) ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                        Ty.path "ruint::base_convert::BaseConvertError"
+                      ])
                 |)
               |)))
           |)))
@@ -2350,20 +2658,23 @@ Module base_convert.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::result::Result::Err"
-                                  []
-                                  [
-                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                                    Ty.path "ruint::base_convert::BaseConvertError"
-                                  ]
-                                  [
-                                    Value.StructTuple
-                                      "ruint::base_convert::BaseConvertError::InvalidBase"
-                                      []
-                                      []
-                                      [ M.read (| base |) ]
-                                  ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::result::Result::Err"
+                                    [
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "ruint::base_convert::BaseConvertError::InvalidBase"
+                                          [ M.read (| base |) ])
+                                        (Ty.path "ruint::base_convert::BaseConvertError")
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                                      Ty.path "ruint::base_convert::BaseConvertError"
+                                    ])
                               |)
                             |)
                           |)));
@@ -2408,7 +2719,7 @@ Module base_convert.
                                 [],
                                 []
                               |),
-                              [ M.read (| digits |) ]
+                              [ M.value_with_ty (M.read (| digits |)) I ]
                             |)
                           |),
                           [
@@ -2454,12 +2765,24 @@ Module base_convert.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.associated_in_trait
+                                                        "core::iter::traits::collect::IntoIterator"
+                                                        []
+                                                        []
+                                                        I
+                                                        "IntoIter"
+                                                    ])
                                               ]
                                             |)
                                           |),
@@ -2510,27 +2833,32 @@ Module base_convert.
                                                             M.never_to_any (|
                                                               M.read (|
                                                                 M.return_ (|
-                                                                  Value.StructTuple
-                                                                    "core::result::Result::Err"
-                                                                    []
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path "ruint::Uint")
-                                                                        [ BITS; LIMBS ]
-                                                                        [];
-                                                                      Ty.path
-                                                                        "ruint::base_convert::BaseConvertError"
-                                                                    ]
-                                                                    [
-                                                                      Value.StructTuple
-                                                                        "ruint::base_convert::BaseConvertError::InvalidDigit"
-                                                                        []
-                                                                        []
-                                                                        [
-                                                                          M.read (| digit |);
-                                                                          M.read (| base |)
-                                                                        ]
-                                                                    ]
+                                                                  M.value_with_ty
+                                                                    (Value.StructTuple
+                                                                      "core::result::Result::Err"
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (Value.StructTuple
+                                                                            "ruint::base_convert::BaseConvertError::InvalidDigit"
+                                                                            [
+                                                                              M.read (| digit |);
+                                                                              M.read (| base |)
+                                                                            ])
+                                                                          (Ty.path
+                                                                            "ruint::base_convert::BaseConvertError")
+                                                                      ])
+                                                                    (Ty.apply
+                                                                      (Ty.path
+                                                                        "core::result::Result")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "ruint::Uint")
+                                                                          [ BITS; LIMBS ]
+                                                                          [];
+                                                                        Ty.path
+                                                                          "ruint::base_convert::BaseConvertError"
+                                                                      ])
                                                                 |)
                                                               |)
                                                             |)));
@@ -2549,7 +2877,11 @@ Module base_convert.
                                                         [],
                                                         []
                                                       |),
-                                                      [ M.read (| digit |) ]
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| digit |))
+                                                          (Ty.path "u64")
+                                                      ]
                                                     |) in
                                                   let~ _ : Ty.tuple [] :=
                                                     M.read (|
@@ -2588,14 +2920,24 @@ Module base_convert.
                                                                   []
                                                                 |),
                                                                 [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.MutRef,
-                                                                    M.SubPointer.get_struct_record_field (|
-                                                                      result,
-                                                                      "ruint::Uint",
-                                                                      "limbs"
-                                                                    |)
-                                                                  |)
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      M.SubPointer.get_struct_record_field (|
+                                                                        result,
+                                                                        "ruint::Uint",
+                                                                        "limbs"
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "array")
+                                                                          [ LIMBS ]
+                                                                          [ Ty.path "u64" ]
+                                                                      ])
                                                                 ]
                                                               |)
                                                             |),
@@ -2658,15 +3000,30 @@ Module base_convert.
                                                                                   []
                                                                                 |),
                                                                                 [
-                                                                                  M.borrow (|
-                                                                                    Pointer.Kind.MutRef,
-                                                                                    M.deref (|
-                                                                                      M.borrow (|
-                                                                                        Pointer.Kind.MutRef,
-                                                                                        iter
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
+                                                                                      Pointer.Kind.MutRef,
+                                                                                      M.deref (|
+                                                                                        M.borrow (|
+                                                                                          Pointer.Kind.MutRef,
+                                                                                          iter
+                                                                                        |)
                                                                                       |)
-                                                                                    |)
-                                                                                  |)
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path
+                                                                                        "&mut")
+                                                                                      []
+                                                                                      [
+                                                                                        Ty.apply
+                                                                                          (Ty.path
+                                                                                            "core::slice::iter::IterMut")
+                                                                                          []
+                                                                                          [
+                                                                                            Ty.path
+                                                                                              "u64"
+                                                                                          ]
+                                                                                      ])
                                                                                 ]
                                                                               |)
                                                                             |),
@@ -2741,13 +3098,16 @@ Module base_convert.
                                                                                                     []
                                                                                                   |),
                                                                                                   [
-                                                                                                    M.read (|
-                                                                                                      M.deref (|
-                                                                                                        M.read (|
-                                                                                                          limb
+                                                                                                    M.value_with_ty
+                                                                                                      (M.read (|
+                                                                                                        M.deref (|
+                                                                                                          M.read (|
+                                                                                                            limb
+                                                                                                          |)
                                                                                                         |)
-                                                                                                      |)
-                                                                                                    |)
+                                                                                                      |))
+                                                                                                      (Ty.path
+                                                                                                        "u64")
                                                                                                   ]
                                                                                                 |);
                                                                                                 M.call_closure (|
@@ -2767,9 +3127,12 @@ Module base_convert.
                                                                                                     []
                                                                                                   |),
                                                                                                   [
-                                                                                                    M.read (|
-                                                                                                      base
-                                                                                                    |)
+                                                                                                    M.value_with_ty
+                                                                                                      (M.read (|
+                                                                                                        base
+                                                                                                      |))
+                                                                                                      (Ty.path
+                                                                                                        "u64")
                                                                                                   ]
                                                                                                 |)
                                                                                               ]
@@ -2914,24 +3277,29 @@ Module base_convert.
                                                             M.never_to_any (|
                                                               M.read (|
                                                                 M.return_ (|
-                                                                  Value.StructTuple
-                                                                    "core::result::Result::Err"
-                                                                    []
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path "ruint::Uint")
-                                                                        [ BITS; LIMBS ]
-                                                                        [];
-                                                                      Ty.path
-                                                                        "ruint::base_convert::BaseConvertError"
-                                                                    ]
-                                                                    [
-                                                                      Value.StructTuple
-                                                                        "ruint::base_convert::BaseConvertError::Overflow"
-                                                                        []
-                                                                        []
-                                                                        []
-                                                                    ]
+                                                                  M.value_with_ty
+                                                                    (Value.StructTuple
+                                                                      "core::result::Result::Err"
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (Value.StructTuple
+                                                                            "ruint::base_convert::BaseConvertError::Overflow"
+                                                                            [])
+                                                                          (Ty.path
+                                                                            "ruint::base_convert::BaseConvertError")
+                                                                      ])
+                                                                    (Ty.apply
+                                                                      (Ty.path
+                                                                        "core::result::Result")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "ruint::Uint")
+                                                                          [ BITS; LIMBS ]
+                                                                          [];
+                                                                        Ty.path
+                                                                          "ruint::base_convert::BaseConvertError"
+                                                                      ])
                                                                 |)
                                                               |)
                                                             |)));
@@ -2957,14 +3325,15 @@ Module base_convert.
                       Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
                       Ty.path "ruint::base_convert::BaseConvertError"
                     ],
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
-                      Ty.path "ruint::base_convert::BaseConvertError"
-                    ]
-                    [ M.read (| result |) ]
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Ok" [ M.read (| result |) ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                        Ty.path "ruint::base_convert::BaseConvertError"
+                      ])
                 |)
               |)))
           |)))
@@ -3062,8 +3431,89 @@ Module base_convert.
                             []
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::iter::adapters::rev::Rev")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::slice::iter::IterMut")
+                                      []
+                                      [ Ty.path "u64" ]
+                                  ],
+                                M.get_trait_method (|
+                                  "core::iter::traits::iterator::Iterator",
+                                  Ty.apply
+                                    (Ty.path "core::slice::iter::IterMut")
+                                    []
+                                    [ Ty.path "u64" ],
+                                  [],
+                                  [],
+                                  "rev",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "core::slice::iter::IterMut")
+                                        []
+                                        [ Ty.path "u64" ],
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ],
+                                        "iter_mut",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ],
+                                            M.pointer_coercion
+                                              M.PointerCoercion.Unsize
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ LIMBS ]
+                                                    [ Ty.path "u64" ]
+                                                ])
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ]
+                                                ]),
+                                            [
+                                              M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.SubPointer.get_struct_record_field (|
+                                                  M.deref (| M.read (| self |) |),
+                                                  "ruint::base_convert::SpigotLittle",
+                                                  "limbs"
+                                                |)
+                                              |)
+                                            ]
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ])
+                                      ]
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "core::slice::iter::IterMut")
+                                      []
+                                      [ Ty.path "u64" ])
+                                ]
+                              |))
+                              (Ty.apply
                                 (Ty.path "core::iter::adapters::rev::Rev")
                                 []
                                 [
@@ -3071,63 +3521,7 @@ Module base_convert.
                                     (Ty.path "core::slice::iter::IterMut")
                                     []
                                     [ Ty.path "u64" ]
-                                ],
-                              M.get_trait_method (|
-                                "core::iter::traits::iterator::Iterator",
-                                Ty.apply
-                                  (Ty.path "core::slice::iter::IterMut")
-                                  []
-                                  [ Ty.path "u64" ],
-                                [],
-                                [],
-                                "rev",
-                                [],
-                                []
-                              |),
-                              [
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::slice::iter::IterMut")
-                                    []
-                                    [ Ty.path "u64" ],
-                                  M.get_associated_function (|
-                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ],
-                                    "iter_mut",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&mut")
-                                        []
-                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ],
-                                      M.pointer_coercion
-                                        M.PointerCoercion.Unsize
-                                        (Ty.apply
-                                          (Ty.path "&mut")
-                                          []
-                                          [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ]
-                                          ])
-                                        (Ty.apply
-                                          (Ty.path "&mut")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ]),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "ruint::base_convert::SpigotLittle",
-                                            "limbs"
-                                          |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
-                                |)
-                              ]
-                            |)
+                                ])
                           ]
                         |)
                       |),
@@ -3180,10 +3574,27 @@ Module base_convert.
                                             []
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (|
+                                                  M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::iter::adapters::rev::Rev")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::slice::iter::IterMut")
+                                                        []
+                                                        [ Ty.path "u64" ]
+                                                    ]
+                                                ])
                                           ]
                                         |)
                                       |),
@@ -3250,9 +3661,11 @@ Module base_convert.
                                                           []
                                                         |),
                                                         [
-                                                          M.read (|
-                                                            M.deref (| M.read (| limb |) |)
-                                                          |)
+                                                          M.value_with_ty
+                                                            (M.read (|
+                                                              M.deref (| M.read (| limb |) |)
+                                                            |))
+                                                            (Ty.path "u64")
                                                         ]
                                                       |)
                                                     ]
@@ -3280,13 +3693,15 @@ Module base_convert.
                                                             []
                                                           |),
                                                           [
-                                                            M.read (|
-                                                              M.SubPointer.get_struct_record_field (|
-                                                                M.deref (| M.read (| self |) |),
-                                                                "ruint::base_convert::SpigotLittle",
-                                                                "base"
-                                                              |)
-                                                            |)
+                                                            M.value_with_ty
+                                                              (M.read (|
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  M.deref (| M.read (| self |) |),
+                                                                  "ruint::base_convert::SpigotLittle",
+                                                                  "base"
+                                                                |)
+                                                              |))
+                                                              (Ty.path "u64")
                                                           ]
                                                         |)
                                                       ]
@@ -3313,13 +3728,15 @@ Module base_convert.
                                                           []
                                                         |),
                                                         [
-                                                          M.read (|
-                                                            M.SubPointer.get_struct_record_field (|
-                                                              M.deref (| M.read (| self |) |),
-                                                              "ruint::base_convert::SpigotLittle",
-                                                              "base"
-                                                            |)
-                                                          |)
+                                                          M.value_with_ty
+                                                            (M.read (|
+                                                              M.SubPointer.get_struct_record_field (|
+                                                                M.deref (| M.read (| self |) |),
+                                                                "ruint::base_convert::SpigotLittle",
+                                                                "base"
+                                                              |)
+                                                            |))
+                                                            (Ty.path "u64")
                                                         ]
                                                       |)
                                                     ]
@@ -3355,14 +3772,16 @@ Module base_convert.
                             |)
                           |)) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                      Value.StructTuple "core::option::Option::None" [] [ Ty.path "u64" ] []));
+                      M.value_with_ty
+                        (Value.StructTuple "core::option::Option::None" [])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ])));
                   fun γ =>
                     ltac:(M.monadic
-                      (Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.path "u64" ]
-                        [ M.cast (Ty.path "u64") (M.read (| remainder |)) ]))
+                      (M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [ M.cast (Ty.path "u64") (M.read (| remainder |)) ])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "u64" ])))
                 ]
               |)
             |)

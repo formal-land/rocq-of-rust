@@ -39,39 +39,41 @@ Module iter.
                   [ Ty.path "i8"; Ty.function [ Ty.path "i8"; Ty.path "i8" ] (Ty.path "i8") ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I8 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i8",
-                              M.alloc (| Ty.path "i8", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i8", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i8",
-                                      M.alloc (| Ty.path "i8", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "i8", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "i8",
-                                              BinOp.Wrap.add,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I8 0) (Ty.path "i8");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i8",
+                                M.alloc (| Ty.path "i8", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i8", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i8",
+                                        M.alloc (| Ty.path "i8", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "i8", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "i8",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "i8"; Ty.path "i8" ] (Ty.path "i8"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -115,39 +117,41 @@ Module iter.
                   [ Ty.path "i8"; Ty.function [ Ty.path "i8"; Ty.path "i8" ] (Ty.path "i8") ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I8 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i8",
-                              M.alloc (| Ty.path "i8", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i8", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i8",
-                                      M.alloc (| Ty.path "i8", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "i8", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "i8",
-                                              BinOp.Wrap.mul,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I8 1) (Ty.path "i8");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i8",
+                                M.alloc (| Ty.path "i8", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i8", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i8",
+                                        M.alloc (| Ty.path "i8", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "i8", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "i8",
+                                                BinOp.Wrap.mul,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "i8"; Ty.path "i8" ] (Ty.path "i8"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -196,51 +200,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I8 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i8",
-                              M.alloc (| Ty.path "i8", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i8", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i8",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i8" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "i8" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "i8",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I8 0) (Ty.path "i8");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i8",
+                                M.alloc (| Ty.path "i8", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i8", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i8",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "i8" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "i8" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "i8",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "i8" ] ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.path "i8",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i8" ] ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "i8");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "i8"; Ty.apply (Ty.path "&") [] [ Ty.path "i8" ] ]
+                      (Ty.path "i8"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -289,51 +305,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I8 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i8",
-                              M.alloc (| Ty.path "i8", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i8", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i8",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i8" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "i8" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "i8",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I8 1) (Ty.path "i8");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i8",
+                                M.alloc (| Ty.path "i8", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i8", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i8",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "i8" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "i8" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "i8",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "i8" ] ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.path "i8",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i8" ] ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "i8");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "i8"; Ty.apply (Ty.path "&") [] [ Ty.path "i8" ] ]
+                      (Ty.path "i8"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -377,39 +405,41 @@ Module iter.
                   [ Ty.path "i16"; Ty.function [ Ty.path "i16"; Ty.path "i16" ] (Ty.path "i16") ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I16 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i16",
-                              M.alloc (| Ty.path "i16", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i16", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i16",
-                                      M.alloc (| Ty.path "i16", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "i16", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "i16",
-                                              BinOp.Wrap.add,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I16 0) (Ty.path "i16");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i16",
+                                M.alloc (| Ty.path "i16", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i16", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i16",
+                                        M.alloc (| Ty.path "i16", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "i16", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "i16",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "i16"; Ty.path "i16" ] (Ty.path "i16"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -453,39 +483,41 @@ Module iter.
                   [ Ty.path "i16"; Ty.function [ Ty.path "i16"; Ty.path "i16" ] (Ty.path "i16") ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I16 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i16",
-                              M.alloc (| Ty.path "i16", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i16", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i16",
-                                      M.alloc (| Ty.path "i16", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "i16", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "i16",
-                                              BinOp.Wrap.mul,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I16 1) (Ty.path "i16");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i16",
+                                M.alloc (| Ty.path "i16", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i16", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i16",
+                                        M.alloc (| Ty.path "i16", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "i16", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "i16",
+                                                BinOp.Wrap.mul,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "i16"; Ty.path "i16" ] (Ty.path "i16"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -534,51 +566,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I16 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i16",
-                              M.alloc (| Ty.path "i16", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i16", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i16",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i16" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "i16" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "i16",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I16 0) (Ty.path "i16");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i16",
+                                M.alloc (| Ty.path "i16", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i16", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i16",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "i16" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "i16" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "i16",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "i16" ] ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.path "i16",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i16" ] ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "i16");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "i16" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "i16"; Ty.apply (Ty.path "&") [] [ Ty.path "i16" ] ]
+                      (Ty.path "i16"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -627,51 +671,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I16 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i16",
-                              M.alloc (| Ty.path "i16", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i16", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i16",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i16" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "i16" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "i16",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I16 1) (Ty.path "i16");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i16",
+                                M.alloc (| Ty.path "i16", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i16", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i16",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "i16" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "i16" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "i16",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "i16" ] ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.path "i16",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i16" ] ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "i16");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "i16" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "i16"; Ty.apply (Ty.path "&") [] [ Ty.path "i16" ] ]
+                      (Ty.path "i16"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -715,39 +771,41 @@ Module iter.
                   [ Ty.path "i32"; Ty.function [ Ty.path "i32"; Ty.path "i32" ] (Ty.path "i32") ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I32 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i32",
-                              M.alloc (| Ty.path "i32", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i32", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i32",
-                                      M.alloc (| Ty.path "i32", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "i32", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "i32",
-                                              BinOp.Wrap.add,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I32 0) (Ty.path "i32");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i32",
+                                M.alloc (| Ty.path "i32", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i32", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i32",
+                                        M.alloc (| Ty.path "i32", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "i32", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "i32",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "i32"; Ty.path "i32" ] (Ty.path "i32"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -791,39 +849,41 @@ Module iter.
                   [ Ty.path "i32"; Ty.function [ Ty.path "i32"; Ty.path "i32" ] (Ty.path "i32") ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I32 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i32",
-                              M.alloc (| Ty.path "i32", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i32", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i32",
-                                      M.alloc (| Ty.path "i32", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "i32", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "i32",
-                                              BinOp.Wrap.mul,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I32 1) (Ty.path "i32");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i32",
+                                M.alloc (| Ty.path "i32", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i32", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i32",
+                                        M.alloc (| Ty.path "i32", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "i32", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "i32",
+                                                BinOp.Wrap.mul,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "i32"; Ty.path "i32" ] (Ty.path "i32"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -872,51 +932,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I32 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i32",
-                              M.alloc (| Ty.path "i32", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i32", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i32",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "i32" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "i32",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I32 0) (Ty.path "i32");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i32",
+                                M.alloc (| Ty.path "i32", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i32", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i32",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "i32" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "i32" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "i32",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.path "i32",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "i32");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "i32"; Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ]
+                      (Ty.path "i32"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -965,51 +1037,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I32 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i32",
-                              M.alloc (| Ty.path "i32", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i32", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i32",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i32" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "i32" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "i32",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I32 1) (Ty.path "i32");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i32",
+                                M.alloc (| Ty.path "i32", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i32", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i32",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "i32" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "i32" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "i32",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.path "i32",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "i32");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "i32"; Ty.apply (Ty.path "&") [] [ Ty.path "i32" ] ]
+                      (Ty.path "i32"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -1053,39 +1137,41 @@ Module iter.
                   [ Ty.path "i64"; Ty.function [ Ty.path "i64"; Ty.path "i64" ] (Ty.path "i64") ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I64 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i64",
-                              M.alloc (| Ty.path "i64", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i64", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i64",
-                                      M.alloc (| Ty.path "i64", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "i64", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "i64",
-                                              BinOp.Wrap.add,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I64 0) (Ty.path "i64");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i64",
+                                M.alloc (| Ty.path "i64", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i64", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i64",
+                                        M.alloc (| Ty.path "i64", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "i64", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "i64",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "i64"; Ty.path "i64" ] (Ty.path "i64"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -1129,39 +1215,41 @@ Module iter.
                   [ Ty.path "i64"; Ty.function [ Ty.path "i64"; Ty.path "i64" ] (Ty.path "i64") ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I64 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i64",
-                              M.alloc (| Ty.path "i64", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i64", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i64",
-                                      M.alloc (| Ty.path "i64", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "i64", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "i64",
-                                              BinOp.Wrap.mul,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I64 1) (Ty.path "i64");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i64",
+                                M.alloc (| Ty.path "i64", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i64", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i64",
+                                        M.alloc (| Ty.path "i64", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "i64", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "i64",
+                                                BinOp.Wrap.mul,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "i64"; Ty.path "i64" ] (Ty.path "i64"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -1210,51 +1298,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I64 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i64",
-                              M.alloc (| Ty.path "i64", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i64", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i64",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i64" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "i64" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "i64",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I64 0) (Ty.path "i64");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i64",
+                                M.alloc (| Ty.path "i64", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i64", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i64",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "i64" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "i64" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "i64",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "i64" ] ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.path "i64",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i64" ] ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "i64");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "i64"; Ty.apply (Ty.path "&") [] [ Ty.path "i64" ] ]
+                      (Ty.path "i64"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -1303,51 +1403,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I64 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i64",
-                              M.alloc (| Ty.path "i64", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i64", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i64",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "i64" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "i64" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "i64",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I64 1) (Ty.path "i64");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i64",
+                                M.alloc (| Ty.path "i64", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i64", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i64",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "i64" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "i64" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "i64",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "i64" ] ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.path "i64",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i64" ] ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "i64");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "i64"; Ty.apply (Ty.path "&") [] [ Ty.path "i64" ] ]
+                      (Ty.path "i64"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -1392,39 +1504,41 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I128 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i128",
-                              M.alloc (| Ty.path "i128", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i128", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i128",
-                                      M.alloc (| Ty.path "i128", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "i128", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "i128",
-                                              BinOp.Wrap.add,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I128 0) (Ty.path "i128");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i128",
+                                M.alloc (| Ty.path "i128", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i128", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i128",
+                                        M.alloc (| Ty.path "i128", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "i128", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "i128",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "i128"; Ty.path "i128" ] (Ty.path "i128"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -1469,39 +1583,41 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I128 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i128",
-                              M.alloc (| Ty.path "i128", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i128", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i128",
-                                      M.alloc (| Ty.path "i128", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "i128", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "i128",
-                                              BinOp.Wrap.mul,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I128 1) (Ty.path "i128");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i128",
+                                M.alloc (| Ty.path "i128", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i128", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i128",
+                                        M.alloc (| Ty.path "i128", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "i128", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "i128",
+                                                BinOp.Wrap.mul,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "i128"; Ty.path "i128" ] (Ty.path "i128"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -1550,54 +1666,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I128 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i128",
-                              M.alloc (| Ty.path "i128", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i128", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i128",
-                                      M.alloc (|
-                                        Ty.apply (Ty.path "&") [] [ Ty.path "i128" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "i128" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "i128",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I128 0) (Ty.path "i128");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i128",
+                                M.alloc (| Ty.path "i128", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i128", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i128",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "i128" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "i128" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "i128",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "i128" ] ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.path "i128",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i128" ] ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "i128");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "i128" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "i128"; Ty.apply (Ty.path "&") [] [ Ty.path "i128" ] ]
+                      (Ty.path "i128"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -1646,54 +1771,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.I128 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "i128",
-                              M.alloc (| Ty.path "i128", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "i128", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "i128",
-                                      M.alloc (|
-                                        Ty.apply (Ty.path "&") [] [ Ty.path "i128" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "i128" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "i128",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.I128 1) (Ty.path "i128");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "i128",
+                                M.alloc (| Ty.path "i128", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "i128", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "i128",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "i128" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "i128" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "i128",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "i128" ] ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.path "i128",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "i128" ] ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "i128");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "i128" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "i128"; Ty.apply (Ty.path "&") [] [ Ty.path "i128" ] ]
+                      (Ty.path "i128"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -1740,39 +1874,41 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.Isize 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "isize",
-                              M.alloc (| Ty.path "isize", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "isize", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "isize",
-                                      M.alloc (| Ty.path "isize", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "isize", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "isize",
-                                              BinOp.Wrap.add,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.Isize 0) (Ty.path "isize");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "isize",
+                                M.alloc (| Ty.path "isize", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "isize", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "isize",
+                                        M.alloc (| Ty.path "isize", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "isize", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "isize",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "isize"; Ty.path "isize" ] (Ty.path "isize"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -1819,39 +1955,41 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.Isize 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "isize",
-                              M.alloc (| Ty.path "isize", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "isize", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "isize",
-                                      M.alloc (| Ty.path "isize", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "isize", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "isize",
-                                              BinOp.Wrap.mul,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.Isize 1) (Ty.path "isize");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "isize",
+                                M.alloc (| Ty.path "isize", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "isize", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "isize",
+                                        M.alloc (| Ty.path "isize", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "isize", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "isize",
+                                                BinOp.Wrap.mul,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "isize"; Ty.path "isize" ] (Ty.path "isize"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -1900,54 +2038,65 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.Isize 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "isize",
-                              M.alloc (| Ty.path "isize", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "isize", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "isize",
-                                      M.alloc (|
-                                        Ty.apply (Ty.path "&") [] [ Ty.path "isize" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "isize" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "isize",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.Isize 0) (Ty.path "isize");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "isize",
+                                M.alloc (| Ty.path "isize", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "isize", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "isize",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "isize" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "isize" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "isize",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "isize" ] ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.path "isize",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "isize" ] ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.path "isize");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "isize"; Ty.apply (Ty.path "&") [] [ Ty.path "isize" ] ]
+                      (Ty.path "isize"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -1996,54 +2145,65 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.Isize 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "isize",
-                              M.alloc (| Ty.path "isize", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "isize", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "isize",
-                                      M.alloc (|
-                                        Ty.apply (Ty.path "&") [] [ Ty.path "isize" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "isize" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "isize",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.Isize 1) (Ty.path "isize");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "isize",
+                                M.alloc (| Ty.path "isize", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "isize", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "isize",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "isize" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "isize" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "isize",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "isize" ] ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.path "isize",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "isize" ] ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.path "isize");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "isize"; Ty.apply (Ty.path "&") [] [ Ty.path "isize" ] ]
+                      (Ty.path "isize"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -2087,39 +2247,41 @@ Module iter.
                   [ Ty.path "u8"; Ty.function [ Ty.path "u8"; Ty.path "u8" ] (Ty.path "u8") ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U8 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u8",
-                              M.alloc (| Ty.path "u8", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u8", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u8",
-                                      M.alloc (| Ty.path "u8", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "u8", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "u8",
-                                              BinOp.Wrap.add,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U8 0) (Ty.path "u8");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u8",
+                                M.alloc (| Ty.path "u8", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u8", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u8",
+                                        M.alloc (| Ty.path "u8", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "u8", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "u8",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "u8"; Ty.path "u8" ] (Ty.path "u8"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -2163,39 +2325,41 @@ Module iter.
                   [ Ty.path "u8"; Ty.function [ Ty.path "u8"; Ty.path "u8" ] (Ty.path "u8") ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U8 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u8",
-                              M.alloc (| Ty.path "u8", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u8", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u8",
-                                      M.alloc (| Ty.path "u8", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "u8", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "u8",
-                                              BinOp.Wrap.mul,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U8 1) (Ty.path "u8");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u8",
+                                M.alloc (| Ty.path "u8", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u8", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u8",
+                                        M.alloc (| Ty.path "u8", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "u8", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "u8",
+                                                BinOp.Wrap.mul,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "u8"; Ty.path "u8" ] (Ty.path "u8"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -2244,51 +2408,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U8 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u8",
-                              M.alloc (| Ty.path "u8", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u8", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u8",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "u8",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U8 0) (Ty.path "u8");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u8",
+                                M.alloc (| Ty.path "u8", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u8", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u8",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "u8",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.path "u8",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "u8");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "u8"; Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ]
+                      (Ty.path "u8"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -2337,51 +2513,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U8 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u8",
-                              M.alloc (| Ty.path "u8", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u8", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u8",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "u8",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U8 1) (Ty.path "u8");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u8",
+                                M.alloc (| Ty.path "u8", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u8", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u8",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "u8",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.path "u8",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "u8");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "u8"; Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ]
+                      (Ty.path "u8"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -2425,39 +2613,41 @@ Module iter.
                   [ Ty.path "u16"; Ty.function [ Ty.path "u16"; Ty.path "u16" ] (Ty.path "u16") ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U16 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u16",
-                              M.alloc (| Ty.path "u16", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u16", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u16",
-                                      M.alloc (| Ty.path "u16", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "u16", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "u16",
-                                              BinOp.Wrap.add,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u16",
+                                M.alloc (| Ty.path "u16", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u16", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u16",
+                                        M.alloc (| Ty.path "u16", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "u16", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "u16",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "u16"; Ty.path "u16" ] (Ty.path "u16"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -2501,39 +2691,41 @@ Module iter.
                   [ Ty.path "u16"; Ty.function [ Ty.path "u16"; Ty.path "u16" ] (Ty.path "u16") ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U16 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u16",
-                              M.alloc (| Ty.path "u16", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u16", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u16",
-                                      M.alloc (| Ty.path "u16", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "u16", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "u16",
-                                              BinOp.Wrap.mul,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U16 1) (Ty.path "u16");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u16",
+                                M.alloc (| Ty.path "u16", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u16", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u16",
+                                        M.alloc (| Ty.path "u16", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "u16", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "u16",
+                                                BinOp.Wrap.mul,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "u16"; Ty.path "u16" ] (Ty.path "u16"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -2582,51 +2774,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U16 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u16",
-                              M.alloc (| Ty.path "u16", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u16", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u16",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "u16",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U16 0) (Ty.path "u16");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u16",
+                                M.alloc (| Ty.path "u16", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u16", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u16",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "u16",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.path "u16",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "u16");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "u16"; Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ]
+                      (Ty.path "u16"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -2675,51 +2879,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U16 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u16",
-                              M.alloc (| Ty.path "u16", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u16", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u16",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u16" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "u16",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U16 1) (Ty.path "u16");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u16",
+                                M.alloc (| Ty.path "u16", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u16", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u16",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "u16" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "u16",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.path "u16",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "u16");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "u16"; Ty.apply (Ty.path "&") [] [ Ty.path "u16" ] ]
+                      (Ty.path "u16"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -2763,39 +2979,41 @@ Module iter.
                   [ Ty.path "u32"; Ty.function [ Ty.path "u32"; Ty.path "u32" ] (Ty.path "u32") ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U32 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u32",
-                              M.alloc (| Ty.path "u32", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u32", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u32",
-                                      M.alloc (| Ty.path "u32", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "u32", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "u32",
-                                              BinOp.Wrap.add,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U32 0) (Ty.path "u32");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u32",
+                                M.alloc (| Ty.path "u32", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u32", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u32",
+                                        M.alloc (| Ty.path "u32", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "u32", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "u32",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "u32"; Ty.path "u32" ] (Ty.path "u32"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -2839,39 +3057,41 @@ Module iter.
                   [ Ty.path "u32"; Ty.function [ Ty.path "u32"; Ty.path "u32" ] (Ty.path "u32") ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U32 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u32",
-                              M.alloc (| Ty.path "u32", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u32", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u32",
-                                      M.alloc (| Ty.path "u32", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "u32", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "u32",
-                                              BinOp.Wrap.mul,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U32 1) (Ty.path "u32");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u32",
+                                M.alloc (| Ty.path "u32", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u32", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u32",
+                                        M.alloc (| Ty.path "u32", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "u32", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "u32",
+                                                BinOp.Wrap.mul,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "u32"; Ty.path "u32" ] (Ty.path "u32"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -2920,51 +3140,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U32 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u32",
-                              M.alloc (| Ty.path "u32", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u32", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u32",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "u32",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U32 0) (Ty.path "u32");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u32",
+                                M.alloc (| Ty.path "u32", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u32", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u32",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "u32",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.path "u32",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "u32");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "u32"; Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ]
+                      (Ty.path "u32"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -3013,51 +3245,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U32 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u32",
-                              M.alloc (| Ty.path "u32", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u32", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u32",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "u32",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U32 1) (Ty.path "u32");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u32",
+                                M.alloc (| Ty.path "u32", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u32", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u32",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "u32" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "u32",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.path "u32",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "u32");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "u32"; Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ]
+                      (Ty.path "u32"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -3101,39 +3345,41 @@ Module iter.
                   [ Ty.path "u64"; Ty.function [ Ty.path "u64"; Ty.path "u64" ] (Ty.path "u64") ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U64 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u64",
-                              M.alloc (| Ty.path "u64", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u64", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u64",
-                                      M.alloc (| Ty.path "u64", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "u64", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              BinOp.Wrap.add,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U64 0) (Ty.path "u64");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u64",
+                                M.alloc (| Ty.path "u64", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u64", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u64",
+                                        M.alloc (| Ty.path "u64", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "u64", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "u64",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "u64"; Ty.path "u64" ] (Ty.path "u64"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -3177,39 +3423,41 @@ Module iter.
                   [ Ty.path "u64"; Ty.function [ Ty.path "u64"; Ty.path "u64" ] (Ty.path "u64") ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U64 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u64",
-                              M.alloc (| Ty.path "u64", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u64", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u64",
-                                      M.alloc (| Ty.path "u64", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "u64", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              BinOp.Wrap.mul,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u64",
+                                M.alloc (| Ty.path "u64", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u64", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u64",
+                                        M.alloc (| Ty.path "u64", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "u64", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "u64",
+                                                BinOp.Wrap.mul,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "u64"; Ty.path "u64" ] (Ty.path "u64"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -3258,51 +3506,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U64 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u64",
-                              M.alloc (| Ty.path "u64", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u64", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u64",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U64 0) (Ty.path "u64");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u64",
+                                M.alloc (| Ty.path "u64", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u64", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u64",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "u64",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.path "u64",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "u64");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "u64"; Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                      (Ty.path "u64"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -3351,51 +3611,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U64 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u64",
-                              M.alloc (| Ty.path "u64", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u64", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u64",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u64" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "u64",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u64",
+                                M.alloc (| Ty.path "u64", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u64", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u64",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "u64" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "u64",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.path "u64",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "u64");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "u64"; Ty.apply (Ty.path "&") [] [ Ty.path "u64" ] ]
+                      (Ty.path "u64"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -3440,39 +3712,41 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U128 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u128",
-                              M.alloc (| Ty.path "u128", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u128", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u128",
-                                      M.alloc (| Ty.path "u128", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "u128", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "u128",
-                                              BinOp.Wrap.add,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U128 0) (Ty.path "u128");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u128",
+                                M.alloc (| Ty.path "u128", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u128", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u128",
+                                        M.alloc (| Ty.path "u128", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "u128", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "u128",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "u128"; Ty.path "u128" ] (Ty.path "u128"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -3517,39 +3791,41 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U128 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u128",
-                              M.alloc (| Ty.path "u128", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u128", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u128",
-                                      M.alloc (| Ty.path "u128", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "u128", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "u128",
-                                              BinOp.Wrap.mul,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U128 1) (Ty.path "u128");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u128",
+                                M.alloc (| Ty.path "u128", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u128", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u128",
+                                        M.alloc (| Ty.path "u128", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "u128", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "u128",
+                                                BinOp.Wrap.mul,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "u128"; Ty.path "u128" ] (Ty.path "u128"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -3598,54 +3874,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U128 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u128",
-                              M.alloc (| Ty.path "u128", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u128", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u128",
-                                      M.alloc (|
-                                        Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "u128",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U128 0) (Ty.path "u128");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u128",
+                                M.alloc (| Ty.path "u128", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u128", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u128",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "u128",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.path "u128",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "u128");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u128" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "u128"; Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ]
+                      (Ty.path "u128"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -3694,54 +3979,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.U128 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "u128",
-                              M.alloc (| Ty.path "u128", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "u128", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "u128",
-                                      M.alloc (|
-                                        Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "u128",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.U128 1) (Ty.path "u128");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "u128",
+                                M.alloc (| Ty.path "u128", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "u128", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "u128",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "u128" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "u128",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.path "u128",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "u128");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u128" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "u128"; Ty.apply (Ty.path "&") [] [ Ty.path "u128" ] ]
+                      (Ty.path "u128"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -3788,39 +4082,41 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.Usize 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "usize",
-                              M.alloc (| Ty.path "usize", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "usize", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "usize",
-                                      M.alloc (| Ty.path "usize", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "usize", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              BinOp.Wrap.add,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "usize",
+                                M.alloc (| Ty.path "usize", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "usize", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "usize",
+                                        M.alloc (| Ty.path "usize", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "usize", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "usize"; Ty.path "usize" ] (Ty.path "usize"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -3867,39 +4163,41 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.Usize 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "usize",
-                              M.alloc (| Ty.path "usize", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "usize", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "usize",
-                                      M.alloc (| Ty.path "usize", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "usize", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              BinOp.Wrap.mul,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "usize",
+                                M.alloc (| Ty.path "usize", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "usize", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "usize",
+                                        M.alloc (| Ty.path "usize", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "usize", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                BinOp.Wrap.mul,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "usize"; Ty.path "usize" ] (Ty.path "usize"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -3948,54 +4246,65 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.Usize 0;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "usize",
-                              M.alloc (| Ty.path "usize", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "usize", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "usize",
-                                      M.alloc (|
-                                        Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "usize",
+                                M.alloc (| Ty.path "usize", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "usize", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "usize",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "usize",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.path "usize",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.path "usize");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "usize"; Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
+                      (Ty.path "usize"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -4044,54 +4353,65 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.Integer IntegerKind.Usize 1;
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "usize",
-                              M.alloc (| Ty.path "usize", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "usize", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "usize",
-                                      M.alloc (|
-                                        Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "usize",
+                                M.alloc (| Ty.path "usize", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "usize", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "usize",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "usize" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "usize",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.path "usize",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.path "usize");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "usize"; Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ]
+                      (Ty.path "usize"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -4144,94 +4464,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i8" ]
-                    [ Value.Integer IntegerKind.I8 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i8" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I8 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i8" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i8" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i8" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i8" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i8" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "i8" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i8" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "i8" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i8" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i8" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "i8" ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "i8" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i8" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i8" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i8" ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i8" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i8" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -4285,94 +4627,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i8" ]
-                    [ Value.Integer IntegerKind.I8 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i8" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I8 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i8" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i8" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i8" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i8" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i8" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "i8" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i8" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "i8" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i8" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i8" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "i8" ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "i8" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i8" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i8" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i8" ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i8" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i8" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -4429,87 +4793,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i8" ]
-                    [ Value.Integer IntegerKind.I8 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i8" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I8 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i8" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i8" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i8" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i8" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i8" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "i8" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "i8" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "i8" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i8" ],
-                                                [],
-                                                [
+                                                [ Ty.path "i8" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -4518,20 +4861,71 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "i8" ]
-                                                    ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i8" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i8" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i8" ]
+                                                      ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i8" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i8" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ] ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -4593,87 +4987,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i8" ]
-                    [ Value.Integer IntegerKind.I8 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i8" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I8 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i8" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i8" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i8" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i8" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i8" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "i8" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "i8" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "i8" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i8" ],
-                                                [],
-                                                [
+                                                [ Ty.path "i8" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -4682,20 +5055,71 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "i8" ]
-                                                    ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i8" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i8" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i8" ]
+                                                      ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i8" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i8" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ] ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i8" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -4754,94 +5178,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i16" ]
-                    [ Value.Integer IntegerKind.I16 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i16" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I16 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i16" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i16" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i16" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i16" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i16" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "i16" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i16" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "i16" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i16" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i16" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "i16" ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "i16" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i16" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i16" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i16" ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i16" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i16" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -4895,94 +5341,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i16" ]
-                    [ Value.Integer IntegerKind.I16 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i16" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I16 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i16" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i16" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i16" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i16" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i16" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "i16" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i16" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "i16" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i16" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i16" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "i16" ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "i16" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i16" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i16" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i16" ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i16" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i16" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -5040,87 +5508,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i16" ]
-                    [ Value.Integer IntegerKind.I16 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i16" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I16 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i16" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i16" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i16" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i16" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i16" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "i16" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "i16" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "i16" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i16" ],
-                                                [],
-                                                [
+                                                [ Ty.path "i16" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -5129,20 +5576,72 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "i16" ]
-                                                    ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i16" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i16" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i16" ]
+                                                      ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i16" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i16" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -5205,87 +5704,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i16" ]
-                    [ Value.Integer IntegerKind.I16 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i16" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I16 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i16" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i16" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i16" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i16" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i16" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "i16" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "i16" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "i16" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i16" ],
-                                                [],
-                                                [
+                                                [ Ty.path "i16" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -5294,20 +5772,72 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "i16" ]
-                                                    ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i16" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i16" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i16" ]
+                                                      ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i16" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i16" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i16" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -5366,94 +5896,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i32" ]
-                    [ Value.Integer IntegerKind.I32 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i32" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I32 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i32" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i32" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i32" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i32" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i32" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "i32" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i32" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "i32" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i32" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i32" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "i32" ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "i32" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i32" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i32" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i32" ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i32" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i32" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -5507,94 +6059,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i32" ]
-                    [ Value.Integer IntegerKind.I32 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i32" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I32 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i32" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i32" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i32" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i32" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i32" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "i32" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i32" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "i32" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i32" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i32" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "i32" ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "i32" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i32" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i32" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i32" ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i32" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i32" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -5652,87 +6226,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i32" ]
-                    [ Value.Integer IntegerKind.I32 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i32" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I32 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i32" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i32" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i32" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i32" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i32" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "i32" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "i32" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "i32" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i32" ],
-                                                [],
-                                                [
+                                                [ Ty.path "i32" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -5741,20 +6294,72 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "i32" ]
-                                                    ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i32" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i32" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i32" ]
+                                                      ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i32" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i32" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -5817,87 +6422,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i32" ]
-                    [ Value.Integer IntegerKind.I32 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i32" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I32 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i32" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i32" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i32" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i32" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i32" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "i32" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "i32" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "i32" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i32" ],
-                                                [],
-                                                [
+                                                [ Ty.path "i32" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -5906,20 +6490,72 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "i32" ]
-                                                    ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i32" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i32" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i32" ]
+                                                      ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i32" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i32" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i32" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -5978,94 +6614,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i64" ]
-                    [ Value.Integer IntegerKind.I64 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i64" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I64 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i64" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i64" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i64" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i64" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i64" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "i64" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i64" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "i64" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i64" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i64" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "i64" ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "i64" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i64" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i64" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i64" ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i64" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i64" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -6119,94 +6777,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i64" ]
-                    [ Value.Integer IntegerKind.I64 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i64" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I64 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i64" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i64" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i64" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i64" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i64" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "i64" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i64" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "i64" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i64" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i64" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "i64" ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "i64" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i64" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i64" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i64" ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i64" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i64" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -6264,87 +6944,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i64" ]
-                    [ Value.Integer IntegerKind.I64 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i64" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I64 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i64" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i64" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i64" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i64" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i64" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "i64" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "i64" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "i64" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i64" ],
-                                                [],
-                                                [
+                                                [ Ty.path "i64" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -6353,20 +7012,72 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "i64" ]
-                                                    ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i64" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i64" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i64" ]
+                                                      ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i64" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i64" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -6429,87 +7140,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i64" ]
-                    [ Value.Integer IntegerKind.I64 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i64" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I64 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i64" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i64" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i64" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i64" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i64" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "i64" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "i64" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "i64" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i64" ],
-                                                [],
-                                                [
+                                                [ Ty.path "i64" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -6518,20 +7208,72 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "i64" ]
-                                                    ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i64" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i64" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i64" ]
+                                                      ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i64" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i64" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i64" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -6590,94 +7332,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i128" ]
-                    [ Value.Integer IntegerKind.I128 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i128" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I128 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i128" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i128" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i128" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i128" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i128" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "i128" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i128" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "i128" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i128" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i128" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "i128" ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "i128" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i128" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i128" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i128" ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i128" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i128" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -6731,94 +7495,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i128" ]
-                    [ Value.Integer IntegerKind.I128 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i128" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I128 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i128" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i128" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i128" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i128" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i128" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "i128" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i128" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "i128" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i128" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i128" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "i128" ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "i128" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i128" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i128" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i128" ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i128" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i128" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -6876,87 +7662,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i128" ]
-                    [ Value.Integer IntegerKind.I128 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i128" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I128 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i128" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i128" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i128" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i128" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i128" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "i128" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "i128" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "i128" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i128" ],
-                                                [],
-                                                [
+                                                [ Ty.path "i128" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -6965,20 +7730,72 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "i128" ]
-                                                    ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i128" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i128" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i128" ]
+                                                      ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i128" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i128" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -7041,87 +7858,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "i128" ]
-                    [ Value.Integer IntegerKind.I128 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "i128" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.I128 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "i128" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "i128" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "i128" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "i128" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "i128" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "i128" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "i128" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "i128" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "i128" ],
-                                                [],
-                                                [
+                                                [ Ty.path "i128" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -7130,20 +7926,72 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "i128" ]
-                                                    ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "i128" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "i128" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i128" ]
+                                                      ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "i128" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "i128" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "i128" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -7202,94 +8050,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "isize" ]
-                    [ Value.Integer IntegerKind.Isize 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "isize" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.Isize 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "isize" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "isize" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "isize" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "isize" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "isize" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "isize" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "isize" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "isize" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "isize" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "isize" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "isize" ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "isize" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "isize" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "isize" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "isize" ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "isize" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "isize" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -7343,94 +8213,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "isize" ]
-                    [ Value.Integer IntegerKind.Isize 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "isize" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.Isize 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "isize" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "isize" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "isize" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "isize" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "isize" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "isize" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "isize" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "isize" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "isize" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "isize" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "isize" ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "isize" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "isize" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "isize" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "isize" ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "isize" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "isize" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -7492,87 +8384,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "isize" ]
-                    [ Value.Integer IntegerKind.Isize 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "isize" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.Isize 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "isize" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "isize" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "isize" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "isize" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "isize" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "isize" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "isize" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "isize" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "isize" ],
-                                                [],
-                                                [
+                                                [ Ty.path "isize" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -7581,20 +8452,76 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "isize" ]
-                                                    ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "isize" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "isize" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "isize" ]
+                                                      ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "isize" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "isize" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "isize" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -7661,87 +8588,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "isize" ]
-                    [ Value.Integer IntegerKind.Isize 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "isize" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.Isize 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "isize" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "isize" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "isize" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "isize" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "isize" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "isize" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "isize" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "isize" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "isize" ],
-                                                [],
-                                                [
+                                                [ Ty.path "isize" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -7750,20 +8656,76 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "isize" ]
-                                                    ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "isize" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "isize" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "isize" ]
+                                                      ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "isize" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "isize" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "isize" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "isize" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -7822,94 +8784,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u8" ]
-                    [ Value.Integer IntegerKind.U8 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u8" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U8 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u8" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u8" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u8" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u8" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u8" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "u8" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u8" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "u8" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u8" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u8" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "u8" ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "u8" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u8" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u8" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u8" ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u8" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u8" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -7963,94 +8947,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u8" ]
-                    [ Value.Integer IntegerKind.U8 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u8" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U8 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u8" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u8" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u8" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u8" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u8" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "u8" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u8" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "u8" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u8" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u8" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "u8" ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "u8" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u8" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u8" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u8" ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u8" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u8" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -8107,87 +9113,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u8" ]
-                    [ Value.Integer IntegerKind.U8 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u8" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U8 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u8" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u8" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u8" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u8" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u8" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "u8" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "u8" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "u8" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u8" ],
-                                                [],
-                                                [
+                                                [ Ty.path "u8" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -8196,20 +9181,71 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "u8" ]
-                                                    ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u8" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u8" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u8" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ] ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -8271,87 +9307,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u8" ]
-                    [ Value.Integer IntegerKind.U8 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u8" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U8 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u8" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u8" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u8" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u8" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u8" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "u8" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "u8" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "u8" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u8" ],
-                                                [],
-                                                [
+                                                [ Ty.path "u8" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -8360,20 +9375,71 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "u8" ]
-                                                    ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u8" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u8" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u8" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ] ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u8" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -8432,94 +9498,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u16" ]
-                    [ Value.Integer IntegerKind.U16 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u16" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U16 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u16" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u16" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u16" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u16" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u16" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "u16" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u16" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "u16" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u16" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u16" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "u16" ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "u16" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u16" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u16" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u16" ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u16" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u16" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -8573,94 +9661,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u16" ]
-                    [ Value.Integer IntegerKind.U16 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u16" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U16 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u16" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u16" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u16" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u16" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u16" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "u16" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u16" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "u16" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u16" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u16" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "u16" ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "u16" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u16" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u16" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u16" ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u16" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u16" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -8718,87 +9828,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u16" ]
-                    [ Value.Integer IntegerKind.U16 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u16" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U16 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u16" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u16" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u16" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u16" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u16" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "u16" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "u16" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "u16" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u16" ],
-                                                [],
-                                                [
+                                                [ Ty.path "u16" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -8807,20 +9896,72 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "u16" ]
-                                                    ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u16" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u16" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u16" ]
+                                                      ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u16" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u16" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -8883,87 +10024,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u16" ]
-                    [ Value.Integer IntegerKind.U16 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u16" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U16 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u16" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u16" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u16" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u16" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u16" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "u16" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "u16" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "u16" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u16" ],
-                                                [],
-                                                [
+                                                [ Ty.path "u16" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -8972,20 +10092,72 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "u16" ]
-                                                    ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u16" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u16" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u16" ]
+                                                      ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u16" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u16" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u16" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -9044,94 +10216,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u32" ]
-                    [ Value.Integer IntegerKind.U32 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u32" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U32 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u32" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u32" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u32" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u32" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u32" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "u32" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u32" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "u32" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u32" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u32" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "u32" ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "u32" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u32" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u32" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u32" ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u32" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u32" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -9185,94 +10379,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u32" ]
-                    [ Value.Integer IntegerKind.U32 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u32" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U32 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u32" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u32" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u32" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u32" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u32" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "u32" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u32" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "u32" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u32" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u32" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "u32" ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "u32" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u32" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u32" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u32" ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u32" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u32" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -9330,87 +10546,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u32" ]
-                    [ Value.Integer IntegerKind.U32 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u32" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U32 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u32" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u32" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u32" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u32" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u32" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "u32" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "u32" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "u32" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u32" ],
-                                                [],
-                                                [
+                                                [ Ty.path "u32" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -9419,20 +10614,72 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "u32" ]
-                                                    ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u32" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u32" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u32" ]
+                                                      ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u32" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u32" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -9495,87 +10742,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u32" ]
-                    [ Value.Integer IntegerKind.U32 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u32" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U32 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u32" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u32" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u32" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u32" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u32" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "u32" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "u32" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "u32" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u32" ],
-                                                [],
-                                                [
+                                                [ Ty.path "u32" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -9584,20 +10810,72 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "u32" ]
-                                                    ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u32" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u32" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u32" ]
+                                                      ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u32" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u32" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u32" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -9656,94 +10934,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u64" ]
-                    [ Value.Integer IntegerKind.U64 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u64" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U64 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u64" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u64" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u64" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u64" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u64" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "u64" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u64" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "u64" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u64" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u64" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "u64" ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "u64" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u64" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u64" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u64" ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u64" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u64" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -9797,94 +11097,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u64" ]
-                    [ Value.Integer IntegerKind.U64 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u64" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U64 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u64" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u64" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u64" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u64" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u64" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "u64" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u64" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "u64" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u64" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u64" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "u64" ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "u64" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u64" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u64" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u64" ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u64" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u64" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -9942,87 +11264,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u64" ]
-                    [ Value.Integer IntegerKind.U64 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u64" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U64 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u64" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u64" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u64" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u64" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u64" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "u64" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "u64" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "u64" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u64" ],
-                                                [],
-                                                [
+                                                [ Ty.path "u64" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -10031,20 +11332,72 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "u64" ]
-                                                    ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u64" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u64" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u64" ]
+                                                      ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u64" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u64" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -10107,87 +11460,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u64" ]
-                    [ Value.Integer IntegerKind.U64 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u64" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U64 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u64" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u64" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u64" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u64" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u64" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "u64" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "u64" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "u64" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u64" ],
-                                                [],
-                                                [
+                                                [ Ty.path "u64" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -10196,20 +11528,72 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "u64" ]
-                                                    ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u64" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u64" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u64" ]
+                                                      ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u64" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u64" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u64" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -10268,94 +11652,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u128" ]
-                    [ Value.Integer IntegerKind.U128 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u128" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U128 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u128" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u128" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u128" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u128" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u128" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "u128" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u128" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "u128" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u128" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u128" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "u128" ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "u128" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u128" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u128" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u128" ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u128" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u128" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -10409,94 +11815,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u128" ]
-                    [ Value.Integer IntegerKind.U128 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u128" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U128 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u128" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u128" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u128" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u128" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u128" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "u128" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u128" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "u128" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u128" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u128" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "u128" ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "u128" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u128" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u128" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u128" ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u128" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u128" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -10554,87 +11982,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u128" ]
-                    [ Value.Integer IntegerKind.U128 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u128" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U128 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u128" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u128" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u128" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u128" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u128" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "u128" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "u128" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "u128" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u128" ],
-                                                [],
-                                                [
+                                                [ Ty.path "u128" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -10643,20 +12050,72 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "u128" ]
-                                                    ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u128" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u128" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u128" ]
+                                                      ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u128" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u128" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -10719,87 +12178,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "u128" ]
-                    [ Value.Integer IntegerKind.U128 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "u128" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.U128 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "u128" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "u128" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "u128" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "u128" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "u128" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "u128" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "u128" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "u128" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "u128" ],
-                                                [],
-                                                [
+                                                [ Ty.path "u128" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -10808,20 +12246,72 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "u128" ]
-                                                    ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "u128" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "u128" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u128" ]
+                                                      ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "u128" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "u128" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "u128" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -10880,94 +12370,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "usize" ]
-                    [ Value.Integer IntegerKind.Usize 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "usize" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.Usize 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "usize" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "usize" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "usize" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "usize" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "usize" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "usize" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "usize" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "usize" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "usize" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "usize" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "usize" ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "usize" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "usize" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "usize" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "usize" ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "usize" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "usize" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -11021,94 +12533,116 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "usize" ]
-                    [ Value.Integer IntegerKind.Usize 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "usize" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.Usize 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "usize" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "usize" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "usize" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "usize" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "usize" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::num::wrapping::Wrapping")
-                                          []
-                                          [ Ty.path "usize" ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "usize" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::num::wrapping::Wrapping")
-                                                []
-                                                [ Ty.path "usize" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "usize" ],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "usize" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "core::num::wrapping::Wrapping")
                                                     []
-                                                    [ Ty.path "usize" ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    [ Ty.path "usize" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "usize" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "usize" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "usize" ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "usize" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "usize" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ];
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -11170,87 +12704,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "usize" ]
-                    [ Value.Integer IntegerKind.Usize 0 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "usize" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.Usize 0 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "usize" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "usize" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "usize" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "usize" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "usize" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "usize" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "usize" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "usize" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "usize" ],
-                                                [],
-                                                [
+                                                [ Ty.path "usize" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -11259,20 +12772,76 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "usize" ]
-                                                    ]
-                                                ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "usize" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "usize" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "usize" ]
+                                                      ]
+                                                  ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "usize" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "usize" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "usize" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -11339,87 +12908,66 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  Value.StructTuple
-                    "core::num::wrapping::Wrapping"
-                    []
-                    [ Ty.path "usize" ]
-                    [ Value.Integer IntegerKind.Usize 1 ];
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.apply
-                                (Ty.path "core::num::wrapping::Wrapping")
-                                []
-                                [ Ty.path "usize" ],
-                              M.alloc (|
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple
+                        "core::num::wrapping::Wrapping"
+                        [ Value.Integer IntegerKind.Usize 1 ])
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]))
+                    (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
                                 Ty.apply
                                   (Ty.path "core::num::wrapping::Wrapping")
                                   []
                                   [ Ty.path "usize" ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a :=
-                                      M.copy (|
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::num::wrapping::Wrapping")
+                                    []
+                                    [ Ty.path "usize" ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::num::wrapping::Wrapping")
+                                            []
+                                            [ Ty.path "usize" ],
+                                          γ
+                                        |) in
+                                      M.match_operator (|
                                         Ty.apply
                                           (Ty.path "core::num::wrapping::Wrapping")
                                           []
                                           [ Ty.path "usize" ],
-                                        γ
-                                      |) in
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "core::num::wrapping::Wrapping")
-                                        []
-                                        [ Ty.path "usize" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::num::wrapping::Wrapping")
-                                              []
-                                              [ Ty.path "usize" ]
-                                          ],
-                                        α1
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "core::num::wrapping::Wrapping")
-                                                      []
-                                                      [ Ty.path "usize" ]
-                                                  ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "core::num::wrapping::Wrapping")
                                                 []
-                                                [ Ty.path "usize" ],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
-                                                Ty.apply
-                                                  (Ty.path "core::num::wrapping::Wrapping")
-                                                  []
-                                                  [ Ty.path "usize" ],
-                                                [],
-                                                [
+                                                [ Ty.path "usize" ]
+                                            ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "&")
                                                     []
@@ -11428,20 +12976,76 @@ Module iter.
                                                         (Ty.path "core::num::wrapping::Wrapping")
                                                         []
                                                         [ Ty.path "usize" ]
-                                                    ]
-                                                ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                    ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::num::wrapping::Wrapping")
+                                                  []
+                                                  [ Ty.path "usize" ],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.apply
+                                                    (Ty.path "core::num::wrapping::Wrapping")
+                                                    []
+                                                    [ Ty.path "usize" ],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "usize" ]
+                                                      ]
+                                                  ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| a |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::num::wrapping::Wrapping")
+                                                      []
+                                                      [ Ty.path "usize" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::num::wrapping::Wrapping")
+                                                          []
+                                                          [ Ty.path "usize" ]
+                                                      ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ];
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::num::wrapping::Wrapping")
+                              []
+                              [ Ty.path "usize" ]
+                          ]
+                      ]
+                      (Ty.apply (Ty.path "core::num::wrapping::Wrapping") [] [ Ty.path "usize" ]))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -11491,39 +13095,41 @@ Module iter.
                   [ Ty.path "f32"; Ty.function [ Ty.path "f32"; Ty.path "f32" ] (Ty.path "f32") ]
                 |),
                 [
-                  M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "f32",
-                              M.alloc (| Ty.path "f32", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "f32", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "f32",
-                                      M.alloc (| Ty.path "f32", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "f32", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "f32",
-                                              BinOp.Wrap.add,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (M.read (| UnsupportedLiteral |)) (Ty.path "f32");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "f32",
+                                M.alloc (| Ty.path "f32", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "f32", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "f32",
+                                        M.alloc (| Ty.path "f32", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "f32", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "f32",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "f32"; Ty.path "f32" ] (Ty.path "f32"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -11567,39 +13173,41 @@ Module iter.
                   [ Ty.path "f32"; Ty.function [ Ty.path "f32"; Ty.path "f32" ] (Ty.path "f32") ]
                 |),
                 [
-                  M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "f32",
-                              M.alloc (| Ty.path "f32", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "f32", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "f32",
-                                      M.alloc (| Ty.path "f32", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "f32", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "f32",
-                                              BinOp.Wrap.mul,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (M.read (| UnsupportedLiteral |)) (Ty.path "f32");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "f32",
+                                M.alloc (| Ty.path "f32", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "f32", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "f32",
+                                        M.alloc (| Ty.path "f32", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "f32", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "f32",
+                                                BinOp.Wrap.mul,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "f32"; Ty.path "f32" ] (Ty.path "f32"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -11648,51 +13256,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "f32",
-                              M.alloc (| Ty.path "f32", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "f32", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "f32",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f32" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "f32" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "f32",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (M.read (| UnsupportedLiteral |)) (Ty.path "f32");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "f32",
+                                M.alloc (| Ty.path "f32", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "f32", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "f32",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "f32" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "f32" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "f32",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "f32" ] ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.path "f32",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "f32" ] ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "f32");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "f32" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "f32"; Ty.apply (Ty.path "&") [] [ Ty.path "f32" ] ]
+                      (Ty.path "f32"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -11741,51 +13361,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "f32",
-                              M.alloc (| Ty.path "f32", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "f32", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "f32",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f32" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "f32" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "f32",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (M.read (| UnsupportedLiteral |)) (Ty.path "f32");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "f32",
+                                M.alloc (| Ty.path "f32", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "f32", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "f32",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "f32" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "f32" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "f32",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "f32" ] ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.path "f32",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "f32" ] ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "f32");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "f32" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "f32"; Ty.apply (Ty.path "&") [] [ Ty.path "f32" ] ]
+                      (Ty.path "f32"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -11829,39 +13461,41 @@ Module iter.
                   [ Ty.path "f64"; Ty.function [ Ty.path "f64"; Ty.path "f64" ] (Ty.path "f64") ]
                 |),
                 [
-                  M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "f64",
-                              M.alloc (| Ty.path "f64", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "f64", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "f64",
-                                      M.alloc (| Ty.path "f64", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "f64", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "f64",
-                                              BinOp.Wrap.add,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (M.read (| UnsupportedLiteral |)) (Ty.path "f64");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "f64",
+                                M.alloc (| Ty.path "f64", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "f64", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "f64",
+                                        M.alloc (| Ty.path "f64", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "f64", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "f64",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "f64"; Ty.path "f64" ] (Ty.path "f64"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -11905,39 +13539,41 @@ Module iter.
                   [ Ty.path "f64"; Ty.function [ Ty.path "f64"; Ty.path "f64" ] (Ty.path "f64") ]
                 |),
                 [
-                  M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "f64",
-                              M.alloc (| Ty.path "f64", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "f64", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "f64",
-                                      M.alloc (| Ty.path "f64", α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b := M.copy (| Ty.path "f64", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "f64",
-                                              BinOp.Wrap.mul,
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (M.read (| UnsupportedLiteral |)) (Ty.path "f64");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "f64",
+                                M.alloc (| Ty.path "f64", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "f64", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "f64",
+                                        M.alloc (| Ty.path "f64", α1 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b := M.copy (| Ty.path "f64", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "f64",
+                                                BinOp.Wrap.mul,
+                                                [ M.read (| a |); M.read (| b |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "f64"; Ty.path "f64" ] (Ty.path "f64"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -11986,51 +13622,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "f64",
-                              M.alloc (| Ty.path "f64", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "f64", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "f64",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f64" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "f64" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "f64",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Add",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (M.read (| UnsupportedLiteral |)) (Ty.path "f64");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "f64",
+                                M.alloc (| Ty.path "f64", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "f64", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "f64",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "f64" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "f64" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "f64",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "f64" ] ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Add",
+                                                  Ty.path "f64",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "f64" ] ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "f64");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "f64" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "f64"; Ty.apply (Ty.path "&") [] [ Ty.path "f64" ] ]
+                      (Ty.path "f64"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -12079,51 +13727,63 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  M.read (| UnsupportedLiteral |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0; α1 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "f64",
-                              M.alloc (| Ty.path "f64", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let a := M.copy (| Ty.path "f64", γ |) in
-                                    M.match_operator (|
-                                      Ty.path "f64",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "f64" ], α1 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "f64" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "f64",
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Mul",
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty (M.read (| UnsupportedLiteral |)) (Ty.path "f64");
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0; α1 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "f64",
+                                M.alloc (| Ty.path "f64", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let a := M.copy (| Ty.path "f64", γ |) in
+                                      M.match_operator (|
+                                        Ty.path "f64",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "f64" ],
+                                          α1
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "f64" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
                                                 Ty.path "f64",
-                                                [],
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "f64" ] ],
-                                                "mul",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| a |); M.read (| b |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Mul",
+                                                  Ty.path "f64",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "f64" ] ],
+                                                  "mul",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty (M.read (| a |)) (Ty.path "f64");
+                                                  M.value_with_ty
+                                                    (M.read (| b |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "f64" ])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [ Ty.path "f64"; Ty.apply (Ty.path "&") [] [ Ty.path "f64" ] ]
+                      (Ty.path "f64"))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -12186,71 +13846,99 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              T,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "core::iter::adapters::GenericShunt")
-                                  []
-                                  [
-                                    I;
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
-                                      []
-                                      [ Ty.path "core::convert::Infallible"; E ]
-                                  ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let i :=
-                                      M.copy (|
-                                        Ty.apply
-                                          (Ty.path "core::iter::adapters::GenericShunt")
-                                          []
-                                          [
-                                            I;
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                T,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::iter::adapters::GenericShunt")
+                                    []
+                                    [
+                                      I;
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [ Ty.path "core::convert::Infallible"; E ]
+                                    ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let i :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::iter::adapters::GenericShunt")
+                                            []
+                                            [
+                                              I;
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [ Ty.path "core::convert::Infallible"; E ]
+                                            ],
+                                          γ
+                                        |) in
+                                      M.call_closure (|
+                                        T,
+                                        M.get_trait_method (|
+                                          "core::iter::traits::iterator::Iterator",
+                                          Ty.apply
+                                            (Ty.path "core::iter::adapters::GenericShunt")
+                                            []
+                                            [
+                                              I;
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [ Ty.path "core::convert::Infallible"; E ]
+                                            ],
+                                          [],
+                                          [],
+                                          "sum",
+                                          [],
+                                          [ T ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| i |))
+                                            (Ty.apply
+                                              (Ty.path "core::iter::adapters::GenericShunt")
                                               []
-                                              [ Ty.path "core::convert::Infallible"; E ]
-                                          ],
-                                        γ
-                                      |) in
-                                    M.call_closure (|
-                                      T,
-                                      M.get_trait_method (|
-                                        "core::iter::traits::iterator::Iterator",
-                                        Ty.apply
-                                          (Ty.path "core::iter::adapters::GenericShunt")
-                                          []
-                                          [
-                                            I;
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
-                                              []
-                                              [ Ty.path "core::convert::Infallible"; E ]
-                                          ],
-                                        [],
-                                        [],
-                                        "sum",
-                                        [],
-                                        [ T ]
-                                      |),
-                                      [ M.read (| i |) ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                              [
+                                                I;
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [ Ty.path "core::convert::Infallible"; E ]
+                                              ])
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::GenericShunt")
+                          []
+                          [
+                            I;
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.path "core::convert::Infallible"; E ]
+                          ]
+                      ]
+                      T)
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -12319,71 +14007,99 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              T,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "core::iter::adapters::GenericShunt")
-                                  []
-                                  [
-                                    I;
-                                    Ty.apply
-                                      (Ty.path "core::result::Result")
-                                      []
-                                      [ Ty.path "core::convert::Infallible"; E ]
-                                  ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let i :=
-                                      M.copy (|
-                                        Ty.apply
-                                          (Ty.path "core::iter::adapters::GenericShunt")
-                                          []
-                                          [
-                                            I;
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                T,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::iter::adapters::GenericShunt")
+                                    []
+                                    [
+                                      I;
+                                      Ty.apply
+                                        (Ty.path "core::result::Result")
+                                        []
+                                        [ Ty.path "core::convert::Infallible"; E ]
+                                    ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let i :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::iter::adapters::GenericShunt")
+                                            []
+                                            [
+                                              I;
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [ Ty.path "core::convert::Infallible"; E ]
+                                            ],
+                                          γ
+                                        |) in
+                                      M.call_closure (|
+                                        T,
+                                        M.get_trait_method (|
+                                          "core::iter::traits::iterator::Iterator",
+                                          Ty.apply
+                                            (Ty.path "core::iter::adapters::GenericShunt")
+                                            []
+                                            [
+                                              I;
+                                              Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [ Ty.path "core::convert::Infallible"; E ]
+                                            ],
+                                          [],
+                                          [],
+                                          "product",
+                                          [],
+                                          [ T ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| i |))
+                                            (Ty.apply
+                                              (Ty.path "core::iter::adapters::GenericShunt")
                                               []
-                                              [ Ty.path "core::convert::Infallible"; E ]
-                                          ],
-                                        γ
-                                      |) in
-                                    M.call_closure (|
-                                      T,
-                                      M.get_trait_method (|
-                                        "core::iter::traits::iterator::Iterator",
-                                        Ty.apply
-                                          (Ty.path "core::iter::adapters::GenericShunt")
-                                          []
-                                          [
-                                            I;
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
-                                              []
-                                              [ Ty.path "core::convert::Infallible"; E ]
-                                          ],
-                                        [],
-                                        [],
-                                        "product",
-                                        [],
-                                        [ T ]
-                                      |),
-                                      [ M.read (| i |) ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                              [
+                                                I;
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [ Ty.path "core::convert::Infallible"; E ]
+                                              ])
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::GenericShunt")
+                          []
+                          [
+                            I;
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [ Ty.path "core::convert::Infallible"; E ]
+                          ]
+                      ]
+                      T)
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -12446,71 +14162,99 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              T,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "core::iter::adapters::GenericShunt")
-                                  []
-                                  [
-                                    I;
-                                    Ty.apply
-                                      (Ty.path "core::option::Option")
-                                      []
-                                      [ Ty.path "core::convert::Infallible" ]
-                                  ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let i :=
-                                      M.copy (|
-                                        Ty.apply
-                                          (Ty.path "core::iter::adapters::GenericShunt")
-                                          []
-                                          [
-                                            I;
-                                            Ty.apply
-                                              (Ty.path "core::option::Option")
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                T,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::iter::adapters::GenericShunt")
+                                    []
+                                    [
+                                      I;
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ]
+                                    ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let i :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::iter::adapters::GenericShunt")
+                                            []
+                                            [
+                                              I;
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "core::convert::Infallible" ]
+                                            ],
+                                          γ
+                                        |) in
+                                      M.call_closure (|
+                                        T,
+                                        M.get_trait_method (|
+                                          "core::iter::traits::iterator::Iterator",
+                                          Ty.apply
+                                            (Ty.path "core::iter::adapters::GenericShunt")
+                                            []
+                                            [
+                                              I;
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "core::convert::Infallible" ]
+                                            ],
+                                          [],
+                                          [],
+                                          "sum",
+                                          [],
+                                          [ T ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| i |))
+                                            (Ty.apply
+                                              (Ty.path "core::iter::adapters::GenericShunt")
                                               []
-                                              [ Ty.path "core::convert::Infallible" ]
-                                          ],
-                                        γ
-                                      |) in
-                                    M.call_closure (|
-                                      T,
-                                      M.get_trait_method (|
-                                        "core::iter::traits::iterator::Iterator",
-                                        Ty.apply
-                                          (Ty.path "core::iter::adapters::GenericShunt")
-                                          []
-                                          [
-                                            I;
-                                            Ty.apply
-                                              (Ty.path "core::option::Option")
-                                              []
-                                              [ Ty.path "core::convert::Infallible" ]
-                                          ],
-                                        [],
-                                        [],
-                                        "sum",
-                                        [],
-                                        [ T ]
-                                      |),
-                                      [ M.read (| i |) ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                              [
+                                                I;
+                                                Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [ Ty.path "core::convert::Infallible" ]
+                                              ])
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::GenericShunt")
+                          []
+                          [
+                            I;
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.path "core::convert::Infallible" ]
+                          ]
+                      ]
+                      T)
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -12573,71 +14317,99 @@ Module iter.
                   ]
                 |),
                 [
-                  M.read (| iter |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              T,
-                              M.alloc (|
-                                Ty.apply
-                                  (Ty.path "core::iter::adapters::GenericShunt")
-                                  []
-                                  [
-                                    I;
-                                    Ty.apply
-                                      (Ty.path "core::option::Option")
-                                      []
-                                      [ Ty.path "core::convert::Infallible" ]
-                                  ],
-                                α0
-                              |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let i :=
-                                      M.copy (|
-                                        Ty.apply
-                                          (Ty.path "core::iter::adapters::GenericShunt")
-                                          []
-                                          [
-                                            I;
-                                            Ty.apply
-                                              (Ty.path "core::option::Option")
+                  M.value_with_ty (M.read (| iter |)) I;
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                T,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "core::iter::adapters::GenericShunt")
+                                    []
+                                    [
+                                      I;
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ]
+                                    ],
+                                  α0
+                                |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let i :=
+                                        M.copy (|
+                                          Ty.apply
+                                            (Ty.path "core::iter::adapters::GenericShunt")
+                                            []
+                                            [
+                                              I;
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "core::convert::Infallible" ]
+                                            ],
+                                          γ
+                                        |) in
+                                      M.call_closure (|
+                                        T,
+                                        M.get_trait_method (|
+                                          "core::iter::traits::iterator::Iterator",
+                                          Ty.apply
+                                            (Ty.path "core::iter::adapters::GenericShunt")
+                                            []
+                                            [
+                                              I;
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "core::convert::Infallible" ]
+                                            ],
+                                          [],
+                                          [],
+                                          "product",
+                                          [],
+                                          [ T ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| i |))
+                                            (Ty.apply
+                                              (Ty.path "core::iter::adapters::GenericShunt")
                                               []
-                                              [ Ty.path "core::convert::Infallible" ]
-                                          ],
-                                        γ
-                                      |) in
-                                    M.call_closure (|
-                                      T,
-                                      M.get_trait_method (|
-                                        "core::iter::traits::iterator::Iterator",
-                                        Ty.apply
-                                          (Ty.path "core::iter::adapters::GenericShunt")
-                                          []
-                                          [
-                                            I;
-                                            Ty.apply
-                                              (Ty.path "core::option::Option")
-                                              []
-                                              [ Ty.path "core::convert::Infallible" ]
-                                          ],
-                                        [],
-                                        [],
-                                        "product",
-                                        [],
-                                        [ T ]
-                                      |),
-                                      [ M.read (| i |) ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                                              [
+                                                I;
+                                                Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [ Ty.path "core::convert::Infallible" ]
+                                              ])
+                                        ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function
+                      [
+                        Ty.apply
+                          (Ty.path "core::iter::adapters::GenericShunt")
+                          []
+                          [
+                            I;
+                            Ty.apply
+                              (Ty.path "core::option::Option")
+                              []
+                              [ Ty.path "core::convert::Infallible" ]
+                          ]
+                      ]
+                      T)
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"

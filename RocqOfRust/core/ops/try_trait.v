@@ -33,7 +33,13 @@ Module ops.
               [],
               []
             |),
-            [ Value.StructTuple "core::ops::try_trait::Yeet" [] [ Y ] [ M.read (| yeeted |) ] ]
+            [
+              M.value_with_ty
+                (M.value_with_ty
+                  (Value.StructTuple "core::ops::try_trait::Yeet" [ M.read (| yeeted |) ])
+                  (Ty.apply (Ty.path "core::ops::try_trait::Yeet") [] [ Y ]))
+                (Ty.apply (Ty.path "core::ops::try_trait::Yeet") [] [ Y ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -92,28 +98,35 @@ Module ops.
                           fun γ =>
                             ltac:(M.monadic
                               (let a := M.copy (| A, γ |) in
-                              Value.StructTuple
-                                "core::ops::try_trait::NeverShortCircuit"
-                                []
-                                [ T ]
-                                [
-                                  M.call_closure (|
-                                    T,
-                                    M.get_trait_method (|
-                                      "core::ops::function::FnMut",
-                                      impl_FnMut_A__arrow_T,
-                                      [],
-                                      [ Ty.tuple [ A ] ],
-                                      "call_mut",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (| Pointer.Kind.MutRef, f |);
-                                      Value.Tuple [ M.read (| a |) ]
-                                    ]
-                                  |)
-                                ]))
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::ops::try_trait::NeverShortCircuit"
+                                  [
+                                    M.call_closure (|
+                                      T,
+                                      M.get_trait_method (|
+                                        "core::ops::function::FnMut",
+                                        impl_FnMut_A__arrow_T,
+                                        [],
+                                        [ Ty.tuple [ A ] ],
+                                        "call_mut",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.MutRef, f |))
+                                          (Ty.apply (Ty.path "&mut") [] [ impl_FnMut_A__arrow_T ]);
+                                        M.value_with_ty
+                                          (Value.Tuple [ M.read (| a |) ])
+                                          (Ty.tuple [ A ])
+                                      ]
+                                    |)
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::ops::try_trait::NeverShortCircuit")
+                                  []
+                                  [ T ])))
                         ]
                       |)))
                   | _ => M.impossible "wrong number of arguments"
@@ -161,28 +174,38 @@ Module ops.
                                   fun γ =>
                                     ltac:(M.monadic
                                       (let b := M.copy (| B, γ |) in
-                                      Value.StructTuple
-                                        "core::ops::try_trait::NeverShortCircuit"
-                                        []
-                                        [ T ]
-                                        [
-                                          M.call_closure (|
-                                            T,
-                                            M.get_trait_method (|
-                                              "core::ops::function::FnMut",
-                                              impl_FnMut_A__B__arrow_T,
-                                              [],
-                                              [ Ty.tuple [ A; B ] ],
-                                              "call_mut",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (| Pointer.Kind.MutRef, f |);
-                                              Value.Tuple [ M.read (| a |); M.read (| b |) ]
-                                            ]
-                                          |)
-                                        ]))
+                                      M.value_with_ty
+                                        (Value.StructTuple
+                                          "core::ops::try_trait::NeverShortCircuit"
+                                          [
+                                            M.call_closure (|
+                                              T,
+                                              M.get_trait_method (|
+                                                "core::ops::function::FnMut",
+                                                impl_FnMut_A__B__arrow_T,
+                                                [],
+                                                [ Ty.tuple [ A; B ] ],
+                                                "call_mut",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (| Pointer.Kind.MutRef, f |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [ impl_FnMut_A__B__arrow_T ]);
+                                                M.value_with_ty
+                                                  (Value.Tuple [ M.read (| a |); M.read (| b |) ])
+                                                  (Ty.tuple [ A; B ])
+                                              ]
+                                            |)
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "core::ops::try_trait::NeverShortCircuit")
+                                          []
+                                          [ T ])))
                                 ]
                               |)))
                         ]
@@ -235,19 +258,22 @@ Module ops.
                 Ty.apply (Ty.path "core::ops::try_trait::NeverShortCircuit") [] [ T ],
                 self
               |) in
-            Value.StructTuple
-              "core::ops::control_flow::ControlFlow::Continue"
-              []
-              [ Ty.path "core::ops::try_trait::NeverShortCircuitResidual"; T ]
-              [
-                M.read (|
-                  M.SubPointer.get_struct_tuple_field (|
-                    self,
-                    "core::ops::try_trait::NeverShortCircuit",
-                    0
+            M.value_with_ty
+              (Value.StructTuple
+                "core::ops::control_flow::ControlFlow::Continue"
+                [
+                  M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      self,
+                      "core::ops::try_trait::NeverShortCircuit",
+                      0
+                    |)
                   |)
-                |)
-              ]))
+                ])
+              (Ty.apply
+                (Ty.path "core::ops::control_flow::ControlFlow")
+                []
+                [ Ty.path "core::ops::try_trait::NeverShortCircuitResidual"; T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -262,11 +288,9 @@ Module ops.
         | [], [], [ x ] =>
           ltac:(M.monadic
             (let x := M.alloc (| T, x |) in
-            Value.StructTuple
-              "core::ops::try_trait::NeverShortCircuit"
-              []
-              [ T ]
-              [ M.read (| x |) ]))
+            M.value_with_ty
+              (Value.StructTuple "core::ops::try_trait::NeverShortCircuit" [ M.read (| x |) ])
+              (Ty.apply (Ty.path "core::ops::try_trait::NeverShortCircuit") [] [ T ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -386,36 +410,42 @@ Module ops.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Yeet" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ T ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_tuple_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::ops::try_trait::Yeet",
-                                0
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Yeet" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ T ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_tuple_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::ops::try_trait::Yeet",
+                                  0
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

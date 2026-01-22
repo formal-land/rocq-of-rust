@@ -78,7 +78,11 @@ Definition with_impls (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) :
               [],
               []
             |),
-            [ Value.Tuple [ M.read (| x |); M.read (| y |); M.read (| z |) ] ]
+            [
+              M.value_with_ty
+                (Value.Tuple [ M.read (| x |); M.read (| y |); M.read (| z |) ])
+                (Ty.tuple [ impl_Default; impl_Default'1; A ])
+            ]
           |) in
         M.alloc (| Ty.tuple [], Value.Tuple [] |)
       |)))

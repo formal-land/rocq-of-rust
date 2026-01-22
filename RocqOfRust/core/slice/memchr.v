@@ -10,7 +10,7 @@ Module slice.
           M.call_closure (|
             Ty.path "usize",
             M.get_associated_function (| Ty.path "usize", "repeat_u8", [], [] |),
-            [ Value.Integer IntegerKind.U8 1 ]
+            [ M.value_with_ty (Value.Integer IntegerKind.U8 1) (Ty.path "u8") ]
           |)
         |))).
     
@@ -26,7 +26,7 @@ Module slice.
           M.call_closure (|
             Ty.path "usize",
             M.get_associated_function (| Ty.path "usize", "repeat_u8", [], [] |),
-            [ Value.Integer IntegerKind.U8 128 ]
+            [ M.value_with_ty (Value.Integer IntegerKind.U8 128) (Ty.path "u8") ]
           |)
         |))).
     
@@ -77,10 +77,12 @@ Module slice.
                         Ty.path "usize",
                         M.get_associated_function (| Ty.path "usize", "wrapping_sub", [], [] |),
                         [
-                          M.read (| x |);
-                          M.read (|
-                            get_constant (| "core::slice::memchr::LO_USIZE", Ty.path "usize" |)
-                          |)
+                          M.value_with_ty (M.read (| x |)) (Ty.path "usize");
+                          M.value_with_ty
+                            (M.read (|
+                              get_constant (| "core::slice::memchr::LO_USIZE", Ty.path "usize" |)
+                            |))
+                            (Ty.path "usize")
                         ]
                       |);
                       M.call_closure (| Ty.path "usize", UnOp.not, [ M.read (| x |) ] |)
@@ -147,10 +149,15 @@ Module slice.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| text |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| text |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                       ]
                                     |);
                                     M.call_closure (|
@@ -178,8 +185,16 @@ Module slice.
                                   Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
                                   M.get_function (| "core::slice::memchr::memchr_naive", [], [] |),
                                   [
-                                    M.read (| x |);
-                                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| text |) |) |)
+                                    M.value_with_ty (M.read (| x |)) (Ty.path "u8");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| text |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                   ]
                                 |)
                               |)
@@ -194,8 +209,13 @@ Module slice.
                     Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
                     M.get_function (| "core::slice::memchr::memchr_aligned", [], [] |),
                     [
-                      M.read (| x |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| text |) |) |)
+                      M.value_with_ty (M.read (| x |)) (Ty.path "u8");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| text |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                     ]
                   |)
                 |)
@@ -270,10 +290,16 @@ Module slice.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| text |) |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| text |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                    ])
                                               ]
                                             |)
                                           ]
@@ -318,11 +344,14 @@ Module slice.
                                               M.never_to_any (|
                                                 M.read (|
                                                   M.return_ (|
-                                                    Value.StructTuple
-                                                      "core::option::Option::Some"
-                                                      []
-                                                      [ Ty.path "usize" ]
-                                                      [ M.read (| i |) ]
+                                                    M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "core::option::Option::Some"
+                                                        [ M.read (| i |) ])
+                                                      (Ty.apply
+                                                        (Ty.path "core::option::Option")
+                                                        []
+                                                        [ Ty.path "usize" ])
                                                   |)
                                                 |)
                                               |)));
@@ -357,7 +386,9 @@ Module slice.
                   |) in
                 M.alloc (|
                   Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                  Value.StructTuple "core::option::Option::None" [] [ Ty.path "usize" ] []
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                 |)
               |)))
           |)))
@@ -465,9 +496,29 @@ Module slice.
               ]
             |),
             [
-              Value.Tuple [ M.read (| x |); M.read (| text |) ];
-              M.get_function (| "core::slice::memchr::memchr_aligned.compiletime", [], [] |);
-              M.get_function (| "core::slice::memchr::memchr_aligned.runtime", [], [] |)
+              M.value_with_ty
+                (Value.Tuple [ M.read (| x |); M.read (| text |) ])
+                (Ty.tuple
+                  [
+                    Ty.path "u8";
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                  ]);
+              M.value_with_ty
+                (M.get_function (| "core::slice::memchr::memchr_aligned.compiletime", [], [] |))
+                (Ty.function
+                  [
+                    Ty.path "u8";
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                  ]
+                  (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]));
+              M.value_with_ty
+                (M.get_function (| "core::slice::memchr::memchr_aligned.runtime", [], [] |))
+                (Ty.function
+                  [
+                    Ty.path "u8";
+                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
+                  ]
+                  (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -553,7 +604,14 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| text |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| text |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                    ]
                   |) in
                 let~ ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
                   M.call_closure (|
@@ -564,7 +622,14 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| text |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| text |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                    ]
                   |) in
                 M.alloc (|
                   Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
@@ -622,7 +687,14 @@ Module slice.
                               [],
                               [ Ty.tuple [ Ty.path "usize"; Ty.path "usize" ] ]
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| text |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| text |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                            ]
                           |)
                         |),
                         [
@@ -658,10 +730,15 @@ Module slice.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| prefix |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| prefix |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                     ]
                                   |);
                                   M.call_closure (|
@@ -678,10 +755,15 @@ Module slice.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| suffix |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| suffix |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                         ]
                                       |)
                                     ]
@@ -734,117 +816,169 @@ Module slice.
                                               ]
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.alloc (|
-                                                  Ty.apply
-                                                    (Ty.path "core::slice::iter::Iter")
-                                                    []
-                                                    [ Ty.path "u8" ],
-                                                  M.call_closure (|
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.alloc (|
                                                     Ty.apply
                                                       (Ty.path "core::slice::iter::Iter")
                                                       []
                                                       [ Ty.path "u8" ],
-                                                    M.get_associated_function (|
+                                                    M.call_closure (|
                                                       Ty.apply
-                                                        (Ty.path "slice")
+                                                        (Ty.path "core::slice::iter::Iter")
                                                         []
                                                         [ Ty.path "u8" ],
-                                                      "iter",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.call_closure (|
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ],
+                                                        "iter",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (|
+                                                              M.call_closure (|
                                                                 Ty.apply
-                                                                  (Ty.path "slice")
+                                                                  (Ty.path "&")
                                                                   []
-                                                                  [ Ty.path "u8" ]
-                                                              ],
-                                                            M.get_trait_method (|
-                                                              "core::ops::index::Index",
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "slice")
+                                                                      []
+                                                                      [ Ty.path "u8" ]
+                                                                  ],
+                                                                M.get_trait_method (|
+                                                                  "core::ops::index::Index",
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [ Ty.path "u8" ],
+                                                                  [],
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "core::ops::range::RangeFrom")
+                                                                      []
+                                                                      [ Ty.path "usize" ]
+                                                                  ],
+                                                                  "index",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.deref (|
+                                                                        M.read (| text |)
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "slice")
+                                                                          []
+                                                                          [ Ty.path "u8" ]
+                                                                      ]);
+                                                                  M.value_with_ty
+                                                                    (M.value_with_ty
+                                                                      (Value.mkStructRecord
+                                                                        "core::ops::range::RangeFrom"
+                                                                        [
+                                                                          ("start",
+                                                                            M.read (| offset |))
+                                                                        ])
+                                                                      (Ty.apply
+                                                                        (Ty.path
+                                                                          "core::ops::range::RangeFrom")
+                                                                        []
+                                                                        [ Ty.path "usize" ]))
+                                                                    (Ty.apply
+                                                                      (Ty.path
+                                                                        "core::ops::range::RangeFrom")
+                                                                      []
+                                                                      [ Ty.path "usize" ])
+                                                                ]
+                                                              |)
+                                                            |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
                                                               Ty.apply
                                                                 (Ty.path "slice")
                                                                 []
+                                                                [ Ty.path "u8" ]
+                                                            ])
+                                                      ]
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::slice::iter::Iter")
+                                                      []
+                                                      [ Ty.path "u8" ]
+                                                  ]);
+                                              M.value_with_ty
+                                                (M.closure
+                                                  (fun γ =>
+                                                    ltac:(M.monadic
+                                                      match γ with
+                                                      | [ α0 ] =>
+                                                        ltac:(M.monadic
+                                                          (M.match_operator (|
+                                                            Ty.path "bool",
+                                                            M.alloc (|
+                                                              Ty.apply
+                                                                (Ty.path "&")
+                                                                []
                                                                 [ Ty.path "u8" ],
-                                                              [],
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path
-                                                                    "core::ops::range::RangeFrom")
-                                                                  []
-                                                                  [ Ty.path "usize" ]
-                                                              ],
-                                                              "index",
-                                                              [],
-                                                              []
+                                                              α0
                                                             |),
                                                             [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.deref (| M.read (| text |) |)
-                                                              |);
-                                                              Value.mkStructRecord
-                                                                "core::ops::range::RangeFrom"
-                                                                []
-                                                                [ Ty.path "usize" ]
-                                                                [ ("start", M.read (| offset |)) ]
+                                                              fun γ =>
+                                                                ltac:(M.monadic
+                                                                  (let elt :=
+                                                                    M.copy (|
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ Ty.path "u8" ],
+                                                                      γ
+                                                                    |) in
+                                                                  M.call_closure (|
+                                                                    Ty.path "bool",
+                                                                    BinOp.eq,
+                                                                    [
+                                                                      M.read (|
+                                                                        M.deref (|
+                                                                          M.read (| elt |)
+                                                                        |)
+                                                                      |);
+                                                                      M.read (| x |)
+                                                                    ]
+                                                                  |)))
                                                             ]
-                                                          |)
-                                                        |)
-                                                      |)
-                                                    ]
-                                                  |)
-                                                |)
-                                              |);
-                                              M.closure
-                                                (fun γ =>
-                                                  ltac:(M.monadic
-                                                    match γ with
-                                                    | [ α0 ] =>
-                                                      ltac:(M.monadic
-                                                        (M.match_operator (|
-                                                          Ty.path "bool",
-                                                          M.alloc (|
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [ Ty.path "u8" ],
-                                                            α0
-                                                          |),
-                                                          [
-                                                            fun γ =>
-                                                              ltac:(M.monadic
-                                                                (let elt :=
-                                                                  M.copy (|
-                                                                    Ty.apply
-                                                                      (Ty.path "&")
-                                                                      []
-                                                                      [ Ty.path "u8" ],
-                                                                    γ
-                                                                  |) in
-                                                                M.call_closure (|
-                                                                  Ty.path "bool",
-                                                                  BinOp.eq,
-                                                                  [
-                                                                    M.read (|
-                                                                      M.deref (| M.read (| elt |) |)
-                                                                    |);
-                                                                    M.read (| x |)
-                                                                  ]
-                                                                |)))
-                                                          ]
-                                                        |)))
-                                                    | _ => M.impossible "wrong number of arguments"
-                                                    end))
+                                                          |)))
+                                                      | _ =>
+                                                        M.impossible "wrong number of arguments"
+                                                      end)))
+                                                (Ty.function
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ]
+                                                  (Ty.path "bool"))
                                             ]
                                           |)
                                         |) in
@@ -858,17 +992,20 @@ Module slice.
                                       M.never_to_any (|
                                         M.read (|
                                           M.return_ (|
-                                            Value.StructTuple
-                                              "core::option::Option::Some"
-                                              []
-                                              [ Ty.path "usize" ]
-                                              [
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  BinOp.Wrap.add,
-                                                  [ M.read (| offset |); M.read (| index |) ]
-                                                |)
-                                              ]
+                                            M.value_with_ty
+                                              (Value.StructTuple
+                                                "core::option::Option::Some"
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.add,
+                                                    [ M.read (| offset |); M.read (| index |) ]
+                                                  |)
+                                                ])
+                                              (Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "usize" ])
                                           |)
                                         |)
                                       |)));
@@ -884,7 +1021,7 @@ Module slice.
                                   [],
                                   []
                                 |),
-                                [ M.read (| x |) ]
+                                [ M.value_with_ty (M.read (| x |)) (Ty.path "u8") ]
                               |) in
                             let~ chunk_bytes : Ty.path "usize" :=
                               M.call_closure (|
@@ -949,24 +1086,31 @@ Module slice.
                                                                 []
                                                               |),
                                                               [
-                                                                M.read (| ptr |);
-                                                                M.call_closure (|
-                                                                  Ty.path "usize",
-                                                                  BinOp.Wrap.sub,
-                                                                  [
-                                                                    M.read (| offset |);
-                                                                    M.call_closure (|
-                                                                      Ty.path "usize",
-                                                                      BinOp.Wrap.mul,
-                                                                      [
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          2;
-                                                                        M.read (| chunk_bytes |)
-                                                                      ]
-                                                                    |)
-                                                                  ]
-                                                                |)
+                                                                M.value_with_ty
+                                                                  (M.read (| ptr |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "*const")
+                                                                    []
+                                                                    [ Ty.path "u8" ]);
+                                                                M.value_with_ty
+                                                                  (M.call_closure (|
+                                                                    Ty.path "usize",
+                                                                    BinOp.Wrap.sub,
+                                                                    [
+                                                                      M.read (| offset |);
+                                                                      M.call_closure (|
+                                                                        Ty.path "usize",
+                                                                        BinOp.Wrap.mul,
+                                                                        [
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            2;
+                                                                          M.read (| chunk_bytes |)
+                                                                        ]
+                                                                      |)
+                                                                    ]
+                                                                  |))
+                                                                  (Ty.path "usize")
                                                               ]
                                                             |))
                                                         |)
@@ -994,15 +1138,22 @@ Module slice.
                                                                 []
                                                               |),
                                                               [
-                                                                M.read (| ptr |);
-                                                                M.call_closure (|
-                                                                  Ty.path "usize",
-                                                                  BinOp.Wrap.sub,
-                                                                  [
-                                                                    M.read (| offset |);
-                                                                    M.read (| chunk_bytes |)
-                                                                  ]
-                                                                |)
+                                                                M.value_with_ty
+                                                                  (M.read (| ptr |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "*const")
+                                                                    []
+                                                                    [ Ty.path "u8" ]);
+                                                                M.value_with_ty
+                                                                  (M.call_closure (|
+                                                                    Ty.path "usize",
+                                                                    BinOp.Wrap.sub,
+                                                                    [
+                                                                      M.read (| offset |);
+                                                                      M.read (| chunk_bytes |)
+                                                                    ]
+                                                                  |))
+                                                                  (Ty.path "usize")
                                                               ]
                                                             |))
                                                         |)
@@ -1016,14 +1167,16 @@ Module slice.
                                                           []
                                                         |),
                                                         [
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            BinOp.Wrap.bit_xor,
-                                                            [
-                                                              M.read (| u |);
-                                                              M.read (| repeated_x |)
-                                                            ]
-                                                          |)
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              Ty.path "usize",
+                                                              BinOp.Wrap.bit_xor,
+                                                              [
+                                                                M.read (| u |);
+                                                                M.read (| repeated_x |)
+                                                              ]
+                                                            |))
+                                                            (Ty.path "usize")
                                                         ]
                                                       |) in
                                                     let~ zv : Ty.path "bool" :=
@@ -1035,14 +1188,16 @@ Module slice.
                                                           []
                                                         |),
                                                         [
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            BinOp.Wrap.bit_xor,
-                                                            [
-                                                              M.read (| v |);
-                                                              M.read (| repeated_x |)
-                                                            ]
-                                                          |)
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              Ty.path "usize",
+                                                              BinOp.Wrap.bit_xor,
+                                                              [
+                                                                M.read (| v |);
+                                                                M.read (| repeated_x |)
+                                                              ]
+                                                            |))
+                                                            (Ty.path "usize")
                                                         ]
                                                       |) in
                                                     M.alloc (|
@@ -1132,98 +1287,147 @@ Module slice.
                                   ]
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "core::slice::iter::Iter")
-                                        []
-                                        [ Ty.path "u8" ],
-                                      M.call_closure (|
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.alloc (|
                                         Ty.apply
                                           (Ty.path "core::slice::iter::Iter")
                                           []
                                           [ Ty.path "u8" ],
-                                        M.get_associated_function (|
-                                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                          "iter",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
-                                                  ],
-                                                M.get_trait_method (|
-                                                  "core::ops::index::Index",
-                                                  Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                                  [],
-                                                  [
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::slice::iter::Iter")
+                                            []
+                                            [ Ty.path "u8" ],
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                            "iter",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (|
+                                                  M.call_closure (|
                                                     Ty.apply
-                                                      (Ty.path "core::ops::range::RangeTo")
+                                                      (Ty.path "&")
                                                       []
-                                                      [ Ty.path "usize" ]
-                                                  ],
-                                                  "index",
-                                                  [],
-                                                  []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ],
+                                                    M.get_trait_method (|
+                                                      "core::ops::index::Index",
+                                                      Ty.apply
+                                                        (Ty.path "slice")
+                                                        []
+                                                        [ Ty.path "u8" ],
+                                                      [],
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "core::ops::range::RangeTo")
+                                                          []
+                                                          [ Ty.path "usize" ]
+                                                      ],
+                                                      "index",
+                                                      [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| M.read (| text |) |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "slice")
+                                                              []
+                                                              [ Ty.path "u8" ]
+                                                          ]);
+                                                      M.value_with_ty
+                                                        (M.value_with_ty
+                                                          (Value.mkStructRecord
+                                                            "core::ops::range::RangeTo"
+                                                            [ ("end_", M.read (| offset |)) ])
+                                                          (Ty.apply
+                                                            (Ty.path "core::ops::range::RangeTo")
+                                                            []
+                                                            [ Ty.path "usize" ]))
+                                                        (Ty.apply
+                                                          (Ty.path "core::ops::range::RangeTo")
+                                                          []
+                                                          [ Ty.path "usize" ])
+                                                    ]
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                          ]
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::slice::iter::Iter")
+                                          []
+                                          [ Ty.path "u8" ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.closure
+                                      (fun γ =>
+                                        ltac:(M.monadic
+                                          match γ with
+                                          | [ α0 ] =>
+                                            ltac:(M.monadic
+                                              (M.match_operator (|
+                                                Ty.path "bool",
+                                                M.alloc (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                                  α0
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| text |) |)
-                                                  |);
-                                                  Value.mkStructRecord
-                                                    "core::ops::range::RangeTo"
-                                                    []
-                                                    [ Ty.path "usize" ]
-                                                    [ ("end_", M.read (| offset |)) ]
+                                                  fun γ =>
+                                                    ltac:(M.monadic
+                                                      (let elt :=
+                                                        M.copy (|
+                                                          Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "u8" ],
+                                                          γ
+                                                        |) in
+                                                      M.call_closure (|
+                                                        Ty.path "bool",
+                                                        BinOp.eq,
+                                                        [
+                                                          M.read (|
+                                                            M.deref (| M.read (| elt |) |)
+                                                          |);
+                                                          M.read (| x |)
+                                                        ]
+                                                      |)))
                                                 ]
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
-                                    |)
-                                  |);
-                                  M.closure
-                                    (fun γ =>
-                                      ltac:(M.monadic
-                                        match γ with
-                                        | [ α0 ] =>
-                                          ltac:(M.monadic
-                                            (M.match_operator (|
-                                              Ty.path "bool",
-                                              M.alloc (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                                                α0
-                                              |),
-                                              [
-                                                fun γ =>
-                                                  ltac:(M.monadic
-                                                    (let elt :=
-                                                      M.copy (|
-                                                        Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                                                        γ
-                                                      |) in
-                                                    M.call_closure (|
-                                                      Ty.path "bool",
-                                                      BinOp.eq,
-                                                      [
-                                                        M.read (| M.deref (| M.read (| elt |) |) |);
-                                                        M.read (| x |)
-                                                      ]
-                                                    |)))
-                                              ]
-                                            |)))
-                                        | _ => M.impossible "wrong number of arguments"
-                                        end))
+                                              |)))
+                                          | _ => M.impossible "wrong number of arguments"
+                                          end)))
+                                    (Ty.function
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ]
+                                      (Ty.path "bool"))
                                 ]
                               |)
                             |)

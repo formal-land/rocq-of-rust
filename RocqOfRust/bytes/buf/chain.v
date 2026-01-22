@@ -43,60 +43,72 @@ Module buf.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Chain" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "a" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ T ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "bytes::buf::chain::Chain",
-                            "a"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Chain" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "a" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ T ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "bytes::buf::chain::Chain",
+                              "a"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "b" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ U ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ U ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "bytes::buf::chain::Chain",
-                                "b"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "b" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ U ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ U ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "bytes::buf::chain::Chain",
+                                  "b"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -128,11 +140,11 @@ Module buf.
           ltac:(M.monadic
             (let a := M.alloc (| T, a |) in
             let b := M.alloc (| U, b |) in
-            Value.mkStructRecord
-              "bytes::buf::chain::Chain"
-              []
-              [ T; U ]
-              [ ("a", M.read (| a |)); ("b", M.read (| b |)) ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "bytes::buf::chain::Chain"
+                [ ("a", M.read (| a |)); ("b", M.read (| b |)) ])
+              (Ty.apply (Ty.path "bytes::buf::chain::Chain") [] [ T; U ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -374,50 +386,58 @@ Module buf.
               Ty.path "usize",
               M.get_associated_function (| Ty.path "usize", "saturating_add", [], [] |),
               [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_trait_method (|
-                    "bytes::buf::buf_impl::Buf",
-                    T,
-                    [],
-                    [],
-                    "remaining",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "bytes::buf::chain::Chain",
-                        "a"
-                      |)
-                    |)
-                  ]
-                |);
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_trait_method (|
-                    "bytes::buf::buf_impl::Buf",
-                    U,
-                    [],
-                    [],
-                    "remaining",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "bytes::buf::chain::Chain",
-                        "b"
-                      |)
-                    |)
-                  ]
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    M.get_trait_method (|
+                      "bytes::buf::buf_impl::Buf",
+                      T,
+                      [],
+                      [],
+                      "remaining",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "bytes::buf::chain::Chain",
+                            "a"
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ T ])
+                    ]
+                  |))
+                  (Ty.path "usize");
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    M.get_trait_method (|
+                      "bytes::buf::buf_impl::Buf",
+                      U,
+                      [],
+                      [],
+                      "remaining",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "bytes::buf::chain::Chain",
+                            "b"
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ U ])
+                    ]
+                  |))
+                  (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -467,14 +487,16 @@ Module buf.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "bytes::buf::chain::Chain",
-                                  "a"
-                                |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "bytes::buf::chain::Chain",
+                                    "a"
+                                  |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ T ])
                             ]
                           |)
                         |)) in
@@ -497,14 +519,16 @@ Module buf.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "bytes::buf::chain::Chain",
-                                "a"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "bytes::buf::chain::Chain",
+                                  "a"
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ T ])
                           ]
                         |)
                       |)
@@ -529,14 +553,16 @@ Module buf.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "bytes::buf::chain::Chain",
-                                "b"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "bytes::buf::chain::Chain",
+                                  "b"
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ U ])
                           ]
                         |)
                       |)
@@ -595,14 +621,16 @@ Module buf.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "bytes::buf::chain::Chain",
-                            "a"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "bytes::buf::chain::Chain",
+                              "a"
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ T ])
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -662,15 +690,19 @@ Module buf.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "bytes::buf::chain::Chain",
-                                                      "a"
-                                                    |)
-                                                  |);
-                                                  M.read (| cnt |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "bytes::buf::chain::Chain",
+                                                        "a"
+                                                      |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&mut") [] [ T ]);
+                                                  M.value_with_ty
+                                                    (M.read (| cnt |))
+                                                    (Ty.path "usize")
                                                 ]
                                               |) in
                                             M.return_ (| Value.Tuple [] |)
@@ -692,15 +724,17 @@ Module buf.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "bytes::buf::chain::Chain",
-                                        "a"
-                                      |)
-                                    |);
-                                    M.read (| a_rem |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "bytes::buf::chain::Chain",
+                                          "a"
+                                        |)
+                                      |))
+                                      (Ty.apply (Ty.path "&mut") [] [ T ]);
+                                    M.value_with_ty (M.read (| a_rem |)) (Ty.path "usize")
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
@@ -731,15 +765,17 @@ Module buf.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "bytes::buf::chain::Chain",
-                            "b"
-                          |)
-                        |);
-                        M.read (| cnt |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "bytes::buf::chain::Chain",
+                              "b"
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "&mut") [] [ U ]);
+                        M.value_with_ty (M.read (| cnt |)) (Ty.path "usize")
                       ]
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -795,15 +831,22 @@ Module buf.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "bytes::buf::chain::Chain",
-                        "a"
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| dst |) |) |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "bytes::buf::chain::Chain",
+                          "a"
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| dst |) |) |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "std::io::IoSlice" ] ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -827,56 +870,88 @@ Module buf.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "bytes::buf::chain::Chain",
-                              "b"
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&mut")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "std::io::IoSlice" ]
-                                      ],
-                                    M.get_trait_method (|
-                                      "core::ops::index::IndexMut",
-                                      Ty.apply (Ty.path "slice") [] [ Ty.path "std::io::IoSlice" ],
-                                      [],
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeFrom")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ],
-                                      "index_mut",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| dst |) |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeFrom"
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "bytes::buf::chain::Chain",
+                                "b"
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ U ]);
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&mut")
                                         []
-                                        [ Ty.path "usize" ]
-                                        [ ("start", M.read (| n |)) ]
-                                    ]
+                                        [
+                                          Ty.apply
+                                            (Ty.path "slice")
+                                            []
+                                            [ Ty.path "std::io::IoSlice" ]
+                                        ],
+                                      M.get_trait_method (|
+                                        "core::ops::index::IndexMut",
+                                        Ty.apply
+                                          (Ty.path "slice")
+                                          []
+                                          [ Ty.path "std::io::IoSlice" ],
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeFrom")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ],
+                                        "index_mut",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.read (| dst |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "slice")
+                                                []
+                                                [ Ty.path "std::io::IoSlice" ]
+                                            ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.mkStructRecord
+                                              "core::ops::range::RangeFrom"
+                                              [ ("start", M.read (| n |)) ])
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::RangeFrom")
+                                              []
+                                              [ Ty.path "usize" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::ops::range::RangeFrom")
+                                            []
+                                            [ Ty.path "usize" ])
+                                      ]
+                                    |)
                                   |)
                                 |)
                               |)
-                            |)
-                          |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "std::io::IoSlice" ] ])
                         ]
                       |)
                     ]
@@ -939,14 +1014,16 @@ Module buf.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "bytes::buf::chain::Chain",
-                        "a"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "bytes::buf::chain::Chain",
+                          "a"
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |) in
               M.alloc (|
@@ -980,15 +1057,17 @@ Module buf.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "bytes::buf::chain::Chain",
-                                "a"
-                              |)
-                            |);
-                            M.read (| len |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "bytes::buf::chain::Chain",
+                                  "a"
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "&mut") [] [ T ]);
+                            M.value_with_ty (M.read (| len |)) (Ty.path "usize")
                           ]
                         |)));
                     fun γ =>
@@ -1026,15 +1105,17 @@ Module buf.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "bytes::buf::chain::Chain",
-                                        "b"
-                                      |)
-                                    |);
-                                    M.read (| len |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "bytes::buf::chain::Chain",
+                                          "b"
+                                        |)
+                                      |))
+                                      (Ty.apply (Ty.path "&mut") [] [ U ]);
+                                    M.value_with_ty (M.read (| len |)) (Ty.path "usize")
                                   ]
                                 |)));
                             fun γ =>
@@ -1076,14 +1157,16 @@ Module buf.
                                                               []
                                                             |),
                                                             [
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "bytes::buf::chain::Chain",
-                                                                  "b"
-                                                                |)
-                                                              |)
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.SubPointer.get_struct_record_field (|
+                                                                    M.deref (| M.read (| self |) |),
+                                                                    "bytes::buf::chain::Chain",
+                                                                    "b"
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply (Ty.path "&") [] [ U ])
                                                             ]
                                                           |)
                                                         ]
@@ -1104,7 +1187,11 @@ Module buf.
                                                   [],
                                                   []
                                                 |),
-                                                [ mk_str (| "`len` greater than remaining" |) ]
+                                                [
+                                                  M.value_with_ty
+                                                    (mk_str (| "`len` greater than remaining" |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                                ]
                                               |)
                                             |)));
                                         fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -1119,7 +1206,7 @@ Module buf.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| len |) ]
+                                      [ M.value_with_ty (M.read (| len |)) (Ty.path "usize") ]
                                     |) in
                                   let~ _ : Ty.tuple [] :=
                                     M.call_closure (|
@@ -1134,15 +1221,22 @@ Module buf.
                                         [ Ty.apply (Ty.path "&mut") [] [ T ] ]
                                       |),
                                       [
-                                        M.borrow (| Pointer.Kind.MutRef, ret |);
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "bytes::buf::chain::Chain",
-                                            "a"
-                                          |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.MutRef, ret |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [ Ty.path "bytes::bytes_mut::BytesMut" ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "bytes::buf::chain::Chain",
+                                              "a"
+                                            |)
+                                          |))
+                                          (Ty.apply (Ty.path "&mut") [] [ T ])
                                       ]
                                     |) in
                                   let~ _ : Ty.tuple [] :=
@@ -1163,42 +1257,56 @@ Module buf.
                                         ]
                                       |),
                                       [
-                                        M.borrow (| Pointer.Kind.MutRef, ret |);
-                                        M.call_closure (|
-                                          Ty.apply
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.MutRef, ret |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [ Ty.path "bytes::bytes_mut::BytesMut" ]);
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "bytes::buf::take::Take")
+                                              []
+                                              [ Ty.apply (Ty.path "&mut") [] [ U ] ],
+                                            M.get_trait_method (|
+                                              "bytes::buf::buf_impl::Buf",
+                                              Ty.apply (Ty.path "&mut") [] [ U ],
+                                              [],
+                                              [],
+                                              "take",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "bytes::buf::chain::Chain",
+                                                        "b"
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply (Ty.path "&mut") [] [ U ]);
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.path "usize",
+                                                  BinOp.Wrap.sub,
+                                                  [ M.read (| len |); M.read (| a_rem |) ]
+                                                |))
+                                                (Ty.path "usize")
+                                            ]
+                                          |))
+                                          (Ty.apply
                                             (Ty.path "bytes::buf::take::Take")
                                             []
-                                            [ Ty.apply (Ty.path "&mut") [] [ U ] ],
-                                          M.get_trait_method (|
-                                            "bytes::buf::buf_impl::Buf",
-                                            Ty.apply (Ty.path "&mut") [] [ U ],
-                                            [],
-                                            [],
-                                            "take",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (|
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "bytes::buf::chain::Chain",
-                                                    "b"
-                                                  |)
-                                                |)
-                                              |)
-                                            |);
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              BinOp.Wrap.sub,
-                                              [ M.read (| len |); M.read (| a_rem |) ]
-                                            |)
-                                          ]
-                                        |)
+                                            [ Ty.apply (Ty.path "&mut") [] [ U ] ])
                                       ]
                                     |) in
                                   M.alloc (|
@@ -1211,7 +1319,11 @@ Module buf.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| ret |) ]
+                                      [
+                                        M.value_with_ty
+                                          (M.read (| ret |))
+                                          (Ty.path "bytes::bytes_mut::BytesMut")
+                                      ]
                                     |)
                                   |)
                                 |)))
@@ -1274,50 +1386,58 @@ Module buf.
               Ty.path "usize",
               M.get_associated_function (| Ty.path "usize", "saturating_add", [], [] |),
               [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_trait_method (|
-                    "bytes::buf::buf_mut::BufMut",
-                    T,
-                    [],
-                    [],
-                    "remaining_mut",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "bytes::buf::chain::Chain",
-                        "a"
-                      |)
-                    |)
-                  ]
-                |);
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_trait_method (|
-                    "bytes::buf::buf_mut::BufMut",
-                    U,
-                    [],
-                    [],
-                    "remaining_mut",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "bytes::buf::chain::Chain",
-                        "b"
-                      |)
-                    |)
-                  ]
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    M.get_trait_method (|
+                      "bytes::buf::buf_mut::BufMut",
+                      T,
+                      [],
+                      [],
+                      "remaining_mut",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "bytes::buf::chain::Chain",
+                            "a"
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ T ])
+                    ]
+                  |))
+                  (Ty.path "usize");
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    M.get_trait_method (|
+                      "bytes::buf::buf_mut::BufMut",
+                      U,
+                      [],
+                      [],
+                      "remaining_mut",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "bytes::buf::chain::Chain",
+                            "b"
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ U ])
+                    ]
+                  |))
+                  (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1376,14 +1496,16 @@ Module buf.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "bytes::buf::chain::Chain",
-                                          "a"
-                                        |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            M.deref (| M.read (| self |) |),
+                                            "bytes::buf::chain::Chain",
+                                            "a"
+                                          |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ T ])
                                     ]
                                   |)
                                 |)) in
@@ -1410,14 +1532,16 @@ Module buf.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| self |) |),
-                                            "bytes::buf::chain::Chain",
-                                            "a"
-                                          |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "bytes::buf::chain::Chain",
+                                              "a"
+                                            |)
+                                          |))
+                                          (Ty.apply (Ty.path "&mut") [] [ T ])
                                       ]
                                     |)
                                   |)
@@ -1444,14 +1568,16 @@ Module buf.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "bytes::buf::chain::Chain",
-                                        "b"
-                                      |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "bytes::buf::chain::Chain",
+                                          "b"
+                                        |)
+                                      |))
+                                      (Ty.apply (Ty.path "&mut") [] [ U ])
                                   ]
                                 |)
                               |)
@@ -1519,14 +1645,16 @@ Module buf.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "bytes::buf::chain::Chain",
-                            "a"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "bytes::buf::chain::Chain",
+                              "a"
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ T ])
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -1586,15 +1714,19 @@ Module buf.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "bytes::buf::chain::Chain",
-                                                      "a"
-                                                    |)
-                                                  |);
-                                                  M.read (| cnt |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        M.deref (| M.read (| self |) |),
+                                                        "bytes::buf::chain::Chain",
+                                                        "a"
+                                                      |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&mut") [] [ T ]);
+                                                  M.value_with_ty
+                                                    (M.read (| cnt |))
+                                                    (Ty.path "usize")
                                                 ]
                                               |) in
                                             M.return_ (| Value.Tuple [] |)
@@ -1616,15 +1748,17 @@ Module buf.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "bytes::buf::chain::Chain",
-                                        "a"
-                                      |)
-                                    |);
-                                    M.read (| a_rem |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "bytes::buf::chain::Chain",
+                                          "a"
+                                        |)
+                                      |))
+                                      (Ty.apply (Ty.path "&mut") [] [ T ]);
+                                    M.value_with_ty (M.read (| a_rem |)) (Ty.path "usize")
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
@@ -1655,15 +1789,17 @@ Module buf.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "bytes::buf::chain::Chain",
-                            "b"
-                          |)
-                        |);
-                        M.read (| cnt |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.MutRef,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "bytes::buf::chain::Chain",
+                              "b"
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "&mut") [] [ U ]);
+                        M.value_with_ty (M.read (| cnt |)) (Ty.path "usize")
                       ]
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1727,7 +1863,11 @@ Module buf.
                 [],
                 []
               |),
-              [ M.read (| self |) ]
+              [
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.apply (Ty.path "bytes::buf::chain::Chain") [] [ T; U ])
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.

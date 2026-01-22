@@ -31,9 +31,9 @@ Module CallValue.
     φ x :=
       match x with
       | Transfer x =>
-          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallValue::Transfer" [] [] [φ x]
+          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallValue::Transfer" [φ x]
       | Apparent x =>
-          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallValue::Apparent" [] [] [φ x]
+          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallValue::Apparent" [φ x]
       end
   }.
 
@@ -46,7 +46,7 @@ Module CallValue.
   Instance IsOfValueWith_Transfer
       (x' : Value.t) {H_x : OfValueWith.C (aliases.U256.t) x'}
       :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallValue::Transfer" [] [] [x']) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallValue::Transfer" [x']) :=
   {
     value := Transfer
       H_x.(OfValueWith.value)
@@ -57,7 +57,7 @@ Module CallValue.
   Instance IsOfValue_Transfer
       (x' : Value.t) {H_x : OfValueWith.C (aliases.U256.t) x'}
       :
-    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallValue::Transfer" [] [] [x']) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallValue::Transfer" [x']) :=
   {
     value := Transfer
       H_x.(OfValueWith.value)
@@ -68,7 +68,7 @@ Module CallValue.
   Instance IsOfValueWith_Apparent
       (x' : Value.t) {H_x : OfValueWith.C (aliases.U256.t) x'}
       :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallValue::Apparent" [] [] [x']) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallValue::Apparent" [x']) :=
   {
     value := Apparent
       H_x.(OfValueWith.value)
@@ -79,7 +79,7 @@ Module CallValue.
   Instance IsOfValue_Apparent
       (x' : Value.t) {H_x : OfValueWith.C (aliases.U256.t) x'}
       :
-    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallValue::Apparent" [] [] [x']) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallValue::Apparent" [x']) :=
   {
     value := Apparent
       H_x.(OfValueWith.value)
@@ -170,19 +170,19 @@ Module CallScheme.
     φ x :=
       match x with
       | Call =>
-          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::Call" [] [] []
+          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::Call" []
       | CallCode =>
-          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::CallCode" [] [] []
+          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::CallCode" []
       | DelegateCall =>
-          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::DelegateCall" [] [] []
+          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::DelegateCall" []
       | StaticCall =>
-          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::StaticCall" [] [] []
+          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::StaticCall" []
       | ExtCall =>
-          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtCall" [] [] []
+          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtCall" []
       | ExtStaticCall =>
-          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtStaticCall" [] [] []
+          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtStaticCall" []
       | ExtDelegateCall =>
-          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtDelegateCall" [] [] []
+          Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtDelegateCall" []
       end
   }.
 
@@ -193,98 +193,98 @@ Module CallScheme.
   }.
 
   Instance IsOfValueWith_Call :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::Call" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::Call" []) :=
   {
     value := Call;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Call :
-    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::Call" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::Call" []) :=
   {
     value := Call;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_CallCode :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::CallCode" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::CallCode" []) :=
   {
     value := CallCode;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_CallCode :
-    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::CallCode" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::CallCode" []) :=
   {
     value := CallCode;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_DelegateCall :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::DelegateCall" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::DelegateCall" []) :=
   {
     value := DelegateCall;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_DelegateCall :
-    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::DelegateCall" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::DelegateCall" []) :=
   {
     value := DelegateCall;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_StaticCall :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::StaticCall" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::StaticCall" []) :=
   {
     value := StaticCall;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_StaticCall :
-    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::StaticCall" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::StaticCall" []) :=
   {
     value := StaticCall;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_ExtCall :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtCall" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtCall" []) :=
   {
     value := ExtCall;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_ExtCall :
-    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtCall" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtCall" []) :=
   {
     value := ExtCall;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_ExtStaticCall :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtStaticCall" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtStaticCall" []) :=
   {
     value := ExtStaticCall;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_ExtStaticCall :
-    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtStaticCall" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtStaticCall" []) :=
   {
     value := ExtStaticCall;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_ExtDelegateCall :
-    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtDelegateCall" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtDelegateCall" []) :=
   {
     value := ExtDelegateCall;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_ExtDelegateCall :
-    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtDelegateCall" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_interpreter::interpreter_action::call_inputs::CallScheme::ExtDelegateCall" []) :=
   {
     value := ExtDelegateCall;
     eq := eq_refl;
@@ -326,7 +326,7 @@ Module CallInputs.
   Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::interpreter_action::call_inputs::CallInputs";
     φ x :=
-      Value.StructRecord "revm_interpreter::interpreter_action::call_inputs::CallInputs" [] [] [
+      Value.StructRecord "revm_interpreter::interpreter_action::call_inputs::CallInputs" [
         ("bytecode_address", φ x.(bytecode_address));
         ("caller", φ x.(caller));
         ("gas_limit", φ x.(gas_limit));
@@ -358,7 +358,7 @@ Module CallInputs.
       (target_address' : Value.t) {H_target_address : OfValueWith.C (Address.t) target_address'}
       (value' : Value.t) {H_value : OfValueWith.C (CallValue.t) value'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_interpreter::interpreter_action::call_inputs::CallInputs" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_interpreter::interpreter_action::call_inputs::CallInputs" [
       ("bytecode_address", bytecode_address');
       ("caller", caller');
       ("gas_limit", gas_limit');
@@ -398,7 +398,7 @@ Module CallInputs.
       (target_address' : Value.t) {H_target_address : OfValueWith.C (Address.t) target_address'}
       (value' : Value.t) {H_value : OfValueWith.C (CallValue.t) value'}
       :
-    OfValue.C (Value.StructRecord "revm_interpreter::interpreter_action::call_inputs::CallInputs" [] [] [
+    OfValue.C (Value.StructRecord "revm_interpreter::interpreter_action::call_inputs::CallInputs" [
       ("bytecode_address", bytecode_address');
       ("caller", caller');
       ("gas_limit", gas_limit');

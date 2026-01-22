@@ -63,7 +63,7 @@ Module FilteredAirBuilder.
   Global Instance IsLink (AB Expr : Set) `{Link AB} `{Link Expr} : Link (t AB Expr) := {
     Φ := Ty.apply (Ty.path "p3_air::air::FilteredAirBuilder") [] [Φ AB];
     φ x :=
-      Value.StructRecord "p3_air::air::FilteredAirBuilder" [] [Φ AB] [
+      Value.StructRecord "p3_air::air::FilteredAirBuilder" [
         ("inner", φ x.(inner));
         ("condition", φ x.(condition))
       ];

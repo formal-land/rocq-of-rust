@@ -86,7 +86,7 @@ Module Rent.
   Global Instance IsLink : Link t := {
     Φ := Ty.path "pinocchio::sysvars::rent::Rent";
     φ x :=
-      Value.StructRecord "pinocchio::sysvars::rent::Rent" [] [] [
+      Value.StructRecord "pinocchio::sysvars::rent::Rent" [
         ("lamports_per_byte_year", φ x.(lamports_per_byte_year));
         ("exemption_threshold", φ x.(exemption_threshold));
         ("burn_percent", φ x.(burn_percent))

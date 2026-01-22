@@ -88,60 +88,72 @@ Module num.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Fp" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "f" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::num::diy_float::Fp",
-                            "f"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Fp" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "f" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::num::diy_float::Fp",
+                              "f"
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "e" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "i16" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "i16" ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::num::diy_float::Fp",
-                                "e"
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "e" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "i16" ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "i16" ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::num::diy_float::Fp",
+                                  "e"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -392,11 +404,11 @@ Module num.
                 |) in
               M.alloc (|
                 Ty.path "core::num::diy_float::Fp",
-                Value.mkStructRecord
-                  "core::num::diy_float::Fp"
-                  []
-                  []
-                  [ ("f", M.read (| f |)); ("e", M.read (| e |)) ]
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::num::diy_float::Fp"
+                    [ ("f", M.read (| f |)); ("e", M.read (| e |)) ])
+                  (Ty.path "core::num::diy_float::Fp")
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -882,7 +894,11 @@ Module num.
                                       M.call_closure (|
                                         Ty.path "never",
                                         M.get_function (| "core::panicking::panic", [], [] |),
-                                        [ mk_str (| "assertion failed: f >= (1 << 63)" |) ]
+                                        [
+                                          M.value_with_ty
+                                            (mk_str (| "assertion failed: f >= (1 << 63)" |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                        ]
                                       |)
                                     |)));
                                 fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -895,11 +911,11 @@ Module num.
                 |) in
               M.alloc (|
                 Ty.path "core::num::diy_float::Fp",
-                Value.mkStructRecord
-                  "core::num::diy_float::Fp"
-                  []
-                  []
-                  [ ("f", M.read (| f |)); ("e", M.read (| e |)) ]
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::num::diy_float::Fp"
+                    [ ("f", M.read (| f |)); ("e", M.read (| e |)) ])
+                  (Ty.path "core::num::diy_float::Fp")
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -973,7 +989,11 @@ Module num.
                           M.call_closure (|
                             Ty.path "never",
                             M.get_function (| "core::panicking::panic", [], [] |),
-                            [ mk_str (| "assertion failed: edelta >= 0" |) ]
+                            [
+                              M.value_with_ty
+                                (mk_str (| "assertion failed: edelta >= 0" |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                            ]
                           |)
                         |)));
                     fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -1070,11 +1090,9 @@ Module num.
                                 M.never_to_any (|
                                   M.read (|
                                     let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                      Value.StructTuple
-                                        "core::panicking::AssertKind::Eq"
-                                        []
-                                        []
-                                        [] in
+                                      M.value_with_ty
+                                        (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                        (Ty.path "core::panicking::AssertKind") in
                                     M.alloc (|
                                       Ty.path "never",
                                       M.call_closure (|
@@ -1085,30 +1103,42 @@ Module num.
                                           [ Ty.path "u64"; Ty.path "u64" ]
                                         |),
                                         [
-                                          M.read (| kind |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| left_val |) |)
+                                          M.value_with_ty
+                                            (M.read (| kind |))
+                                            (Ty.path "core::panicking::AssertKind");
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| left_val |) |)
+                                                |)
                                               |)
-                                            |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| right_val |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| right_val |) |)
+                                                |)
                                               |)
-                                            |)
-                                          |);
-                                          Value.StructTuple
-                                            "core::option::Option::None"
-                                            []
-                                            [ Ty.path "core::fmt::Arguments" ]
-                                            []
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                          M.value_with_ty
+                                            (M.value_with_ty
+                                              (Value.StructTuple "core::option::Option::None" [])
+                                              (Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "core::fmt::Arguments" ]))
+                                            (Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "core::fmt::Arguments" ])
                                         ]
                                       |)
                                     |)
@@ -1121,28 +1151,28 @@ Module num.
                 |) in
               M.alloc (|
                 Ty.path "core::num::diy_float::Fp",
-                Value.mkStructRecord
-                  "core::num::diy_float::Fp"
-                  []
-                  []
-                  [
-                    ("f",
-                      M.call_closure (|
-                        Ty.path "u64",
-                        BinOp.Wrap.shl,
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::num::diy_float::Fp",
-                              "f"
-                            |)
-                          |);
-                          M.read (| edelta |)
-                        ]
-                      |));
-                    ("e", M.read (| e |))
-                  ]
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::num::diy_float::Fp"
+                    [
+                      ("f",
+                        M.call_closure (|
+                          Ty.path "u64",
+                          BinOp.Wrap.shl,
+                          [
+                            M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::num::diy_float::Fp",
+                                "f"
+                              |)
+                            |);
+                            M.read (| edelta |)
+                          ]
+                        |));
+                      ("e", M.read (| e |))
+                    ])
+                  (Ty.path "core::num::diy_float::Fp")
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

@@ -19,8 +19,8 @@ Module COption.
     Φ := Ty.apply (Ty.path "solana_program_option::COption") [] [Φ T];
     φ x :=
       match x with
-      | None => Value.StructTuple "solana_program_option::COption::None" [] [Φ T] []
-      | Some v => Value.StructTuple "solana_program_option::COption::Some" [] [Φ T] [φ v]
+      | None => Value.StructTuple "solana_program_option::COption::None" []
+      | Some v => Value.StructTuple "solana_program_option::COption::Some" [φ v]
       end
   }.
 
@@ -36,11 +36,11 @@ Module COption.
   Smpl Add apply of_ty : of_ty.
 
   Lemma of_value_with_None (T : Set) `{Link T} :
-    Value.StructTuple "solana_program_option::COption::None" [] [Φ T] [] = φ (@None T).
+    Value.StructTuple "solana_program_option::COption::None" [] = φ (@None T).
   Proof. reflexivity. Qed.
   Definition of_value_None T' :
     OfTy.t T' ->
-    OfValue.t (Value.StructTuple "solana_program_option::COption::None" [] [T'] []).
+    OfValue.t (Value.StructTuple "solana_program_option::COption::None" []).
   Proof.
     intros [T].
     eapply OfValue.Make with (A := t T) (value := None).
@@ -51,14 +51,14 @@ Module COption.
 
   Lemma of_value_with_Some (T : Set) `{Link T} (value : T) (value' : Value.t) :
     value' = φ value ->
-    Value.StructTuple "solana_program_option::COption::Some" [] [Φ T] [value'] = φ (Some value).
+    Value.StructTuple "solana_program_option::COption::Some" [value'] = φ (Some value).
   Proof. intros; subst; reflexivity. Qed.
   Smpl Add apply of_value_with_Some : of_value.
   Definition of_value_Some T' value'
      (H_T' : OfTy.t T')
      (value : OfTy.get_Set H_T') :
     value' = φ value ->
-    OfValue.t (Value.StructTuple "solana_program_option::COption::Some" [] [T'] [value']).
+    OfValue.t (Value.StructTuple "solana_program_option::COption::Some" [value']).
   Proof.
     intros.
     destruct H_T' as [T].

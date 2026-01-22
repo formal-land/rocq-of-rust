@@ -14,6 +14,7 @@ Require Import core.links.option.
 Require Import core.links.panicking.
 Require Import core.links.result.
 Require Import core.ops.links.range.
+Require Import core.num.links.error.
 Require Import core.num.links.mod.
 Require Import core.ptr.links.const_ptr.
 Require Import core.slice.links.index.
@@ -49,8 +50,6 @@ Instance run_keccak256
 Proof.
   constructor.
   destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
   destruct run_MemoryTrait_for_Memory.
   destruct run_Deref_for_Synthetic1.
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
@@ -76,11 +75,6 @@ Instance run_address
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_InputsTrait_for_Input.
-  destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
   run_symbolic.
 Defined.
 Global Opaque run_address.
@@ -102,11 +96,6 @@ Instance run_caller
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_InputsTrait_for_Input.
-  destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
   run_symbolic.
 Defined.
 Global Opaque run_caller.
@@ -128,10 +117,6 @@ Instance run_codesize
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_LegacyBytecode_for_Bytecode.
   run_symbolic.
 Defined.
 Global Opaque run_codesize.
@@ -155,9 +140,6 @@ Instance run_memory_resize
     (option usize).
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_LoopControl_for_Control.
-  destruct run_MemoryTrait_for_Memory.
   run_symbolic.
 Defined.
 Global Opaque run_memory_resize.
@@ -179,11 +161,6 @@ Instance run_codecopy
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE eqn:?.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_MemoryTrait_for_Memory.
-  destruct run_LegacyBytecode_for_Bytecode.
   destruct Impl_TryFrom_u64_for_usize.run.
   run_symbolic.
 Defined.
@@ -206,14 +183,9 @@ Instance run_calldataload
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_InputsTrait_for_Input.
   destruct Impl_TryFrom_u64_for_usize.run.
   destruct (Impl_DerefMut_for_FixedBytes_N.run {| Integer.value := 32 |}).
   destruct (Impl_Into_for_From_T.run Impl_From_FixedBytes_32_for_U256.run).
-  destruct Impl_Ord_for_usize.run.
   run_symbolic.
 Defined.
 Global Opaque run_calldataload.
@@ -235,10 +207,6 @@ Instance run_calldatasize
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_InputsTrait_for_Input.
   run_symbolic.
 Defined.
 Global Opaque run_calldatasize.
@@ -260,10 +228,6 @@ Instance run_callvalue
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_InputsTrait_for_Input.
   run_symbolic.
 Defined.
 Global Opaque run_callvalue.
@@ -285,11 +249,6 @@ Instance run_calldatacopy
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE eqn:?.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_MemoryTrait_for_Memory.
-  destruct run_InputsTrait_for_Input.
   destruct Impl_TryFrom_u64_for_usize.run.
   run_symbolic.
 Defined.
@@ -312,11 +271,6 @@ Instance run_returndatasize
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_ReturnData_for_ReturnData.
   run_symbolic.
 Defined.
 Global Opaque run_returndatasize.
@@ -338,17 +292,11 @@ Instance run_returndatacopy
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE eqn:?.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
-  destruct run_RuntimeFlag_for_RuntimeFlag.
-  destruct run_ReturnData_for_ReturnData.
-  destruct run_MemoryTrait_for_Memory.
   destruct Impl_TryFrom_u64_for_usize.run.
   run_symbolic.
 Defined.
 Global Opaque run_returndatacopy.
-(* TODO: fix, probably with better links inference
+
 (*
 pub fn returndataload<WIRE: InterpreterTypes, H: Host + ?Sized>(
     interpreter: &mut Interpreter<WIRE>,
@@ -399,7 +347,7 @@ Proof.
   run_symbolic.
 Defined.
 Global Opaque run_returndataload.
-*)
+
 (*
 pub fn gas<WIRE: InterpreterTypes, H: Host + ?Sized>(
     interpreter: &mut Interpreter<WIRE>,
@@ -417,9 +365,6 @@ Instance run_gas
     unit.
 Proof.
   constructor.
-  destruct run_InterpreterTypes_for_WIRE.
-  destruct run_StackTrait_for_Stack.
-  destruct run_LoopControl_for_Control.
   run_symbolic.
 Defined.
 Global Opaque run_gas.

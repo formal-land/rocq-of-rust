@@ -31,74 +31,100 @@ Module Impl_core_fmt_Display_for_converting_to_string_Circle.
           Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.path "core::fmt::Error" ],
           M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_fmt", [], [] |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.call_closure (|
-              Ty.path "core::fmt::Arguments",
-              M.get_associated_function (|
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.call_closure (|
                 Ty.path "core::fmt::Arguments",
-                "new_v1",
-                [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                []
-              |),
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
+                M.get_associated_function (|
+                  Ty.path "core::fmt::Arguments",
+                  "new_v1",
+                  [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
+                  []
+                |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
                       Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply
-                          (Ty.path "array")
-                          [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                        Value.Array [ mk_str (| "Circle of radius " |) ]
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                            Value.Array [ mk_str (| "Circle of radius " |) ]
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
                         Ty.apply
                           (Ty.path "array")
                           [ Value.Integer IntegerKind.Usize 1 ]
-                          [ Ty.path "core::fmt::rt::Argument" ],
-                        Value.Array
-                          [
-                            M.call_closure (|
-                              Ty.path "core::fmt::rt::Argument",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "new_display",
-                                [],
-                                [ Ty.path "i32" ]
-                              |),
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.path "core::fmt::rt::Argument" ],
+                            Value.Array
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_record_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "converting_to_string::Circle",
-                                        "radius"
-                                      |)
-                                    |)
-                                  |)
+                                M.call_closure (|
+                                  Ty.path "core::fmt::rt::Argument",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "new_display",
+                                    [],
+                                    [ Ty.path "i32" ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "converting_to_string::Circle",
+                                              "radius"
+                                            |)
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ])
+                                  ]
                                 |)
                               ]
-                            |)
-                          ]
+                          |)
+                        |)
                       |)
-                    |)
-                  |)
-                |)
-              ]
-            |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 1 ]
+                          [ Ty.path "core::fmt::rt::Argument" ]
+                      ])
+                ]
+              |))
+              (Ty.path "core::fmt::Arguments")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -125,11 +151,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     ltac:(M.monadic
       (M.read (|
         let~ circle : Ty.path "converting_to_string::Circle" :=
-          Value.mkStructRecord
-            "converting_to_string::Circle"
-            []
-            []
-            [ ("radius", Value.Integer IntegerKind.I32 6) ] in
+          M.value_with_ty
+            (Value.mkStructRecord
+              "converting_to_string::Circle"
+              [ ("radius", Value.Integer IntegerKind.I32 6) ])
+            (Ty.path "converting_to_string::Circle") in
         let~ _ : Ty.path "alloc::string::String" :=
           M.call_closure (|
             Ty.path "alloc::string::String",
@@ -142,7 +168,11 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, circle |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, circle |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "converting_to_string::Circle" ])
+            ]
           |) in
         M.alloc (| Ty.tuple [], Value.Tuple [] |)
       |)))

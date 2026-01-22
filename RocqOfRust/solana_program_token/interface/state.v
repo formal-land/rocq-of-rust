@@ -130,158 +130,182 @@ Module state.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Mint" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "mint_authority" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "solana_program_option::COption")
-                        []
-                        [ Ty.path "solana_address::Address" ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "spl_token_interface::state::Mint",
-                          "mint_authority"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Mint" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "mint_authority" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "solana_program_option::COption")
+                          []
+                          [ Ty.path "solana_address::Address" ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "spl_token_interface::state::Mint",
+                            "mint_authority"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "supply" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "spl_token_interface::state::Mint",
-                          "supply"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "supply" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "spl_token_interface::state::Mint",
+                            "supply"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "decimals" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "spl_token_interface::state::Mint",
-                          "decimals"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "decimals" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "spl_token_interface::state::Mint",
+                            "decimals"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "is_initialized" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "spl_token_interface::state::Mint",
-                          "is_initialized"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "is_initialized" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "spl_token_interface::state::Mint",
+                            "is_initialized"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "freeze_authority" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "solana_program_option::COption")
-                            []
-                            [ Ty.path "solana_address::Address" ]
-                        ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "solana_program_option::COption")
-                                []
-                                [ Ty.path "solana_address::Address" ]
-                            ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "spl_token_interface::state::Mint",
-                              "freeze_authority"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "freeze_authority" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "solana_program_option::COption")
+                              []
+                              [ Ty.path "solana_address::Address" ]
+                          ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "solana_program_option::COption")
+                                  []
+                                  [ Ty.path "solana_address::Address" ]
+                              ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "spl_token_interface::state::Mint",
+                                "freeze_authority"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -304,94 +328,94 @@ Module state.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "spl_token_interface::state::Mint"
-            []
-            []
-            [
-              ("mint_authority",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "solana_program_option::COption")
-                    []
-                    [ Ty.path "solana_address::Address" ],
-                  M.get_trait_method (|
-                    "core::default::Default",
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "spl_token_interface::state::Mint"
+              [
+                ("mint_authority",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "solana_program_option::COption")
                       []
                       [ Ty.path "solana_address::Address" ],
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.apply
+                        (Ty.path "solana_program_option::COption")
+                        []
+                        [ Ty.path "solana_address::Address" ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("supply",
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("supply",
+                  M.call_closure (|
                     Ty.path "u64",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "u64",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("decimals",
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("decimals",
+                  M.call_closure (|
                     Ty.path "u8",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "u8",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("is_initialized",
-                M.call_closure (|
-                  Ty.path "bool",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("is_initialized",
+                  M.call_closure (|
                     Ty.path "bool",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "bool",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("freeze_authority",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "solana_program_option::COption")
-                    []
-                    [ Ty.path "solana_address::Address" ],
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("freeze_authority",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "solana_program_option::COption")
                       []
                       [ Ty.path "solana_address::Address" ],
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.apply
+                        (Ty.path "solana_program_option::COption")
+                        []
+                        [ Ty.path "solana_address::Address" ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |))
-            ]))
+                  |))
+              ])
+            (Ty.path "spl_token_interface::state::Mint")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -458,22 +482,42 @@ Module state.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "spl_token_interface::state::Mint",
-                          "mint_authority"
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| other |) |),
-                          "spl_token_interface::state::Mint",
-                          "mint_authority"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "spl_token_interface::state::Mint",
+                            "mint_authority"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "solana_program_option::COption")
+                              []
+                              [ Ty.path "solana_address::Address" ]
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| other |) |),
+                            "spl_token_interface::state::Mint",
+                            "mint_authority"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "solana_program_option::COption")
+                              []
+                              [ Ty.path "solana_address::Address" ]
+                          ])
                     ]
                   |),
                   ltac:(M.monadic
@@ -563,22 +607,42 @@ Module state.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "spl_token_interface::state::Mint",
-                      "freeze_authority"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "spl_token_interface::state::Mint",
-                      "freeze_authority"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "spl_token_interface::state::Mint",
+                        "freeze_authority"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "solana_program_option::COption")
+                          []
+                          [ Ty.path "solana_address::Address" ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "spl_token_interface::state::Mint",
+                        "freeze_authority"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "solana_program_option::COption")
+                          []
+                          [ Ty.path "solana_address::Address" ]
+                      ])
                 ]
               |)))
           |)))
@@ -728,20 +792,34 @@ Module state.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |);
-                              Value.mkStructRecord
-                                "core::ops::range::Range"
-                                []
-                                [ Ty.path "usize" ]
-                                [
-                                  ("start", M.read (| offset |));
-                                  ("end_",
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      BinOp.Wrap.add,
-                                      [ M.read (| offset |); Value.Integer IntegerKind.Usize 82 ]
-                                    |))
-                                ]
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.mkStructRecord
+                                    "core::ops::range::Range"
+                                    [
+                                      ("start", M.read (| offset |));
+                                      ("end_",
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          BinOp.Wrap.add,
+                                          [ M.read (| offset |); Value.Integer IntegerKind.Usize 82
+                                          ]
+                                        |))
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "usize" ]))
+                                (Ty.apply
+                                  (Ty.path "core::ops::range::Range")
+                                  []
+                                  [ Ty.path "usize" ])
                             ]
                           |)
                         |)
@@ -767,7 +845,14 @@ Module state.
                               [ Ty.path "u8" ]
                           ],
                         M.get_associated_function (| Self, "as_array.unpack_from_slice", [], [] |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                        ]
                       |)
                     |)
                   |) in
@@ -897,7 +982,19 @@ Module state.
                               ]
                           ],
                         M.get_associated_function (| Self, "as_arrays.unpack_from_slice", [], [] |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 82 ]
+                                  [ Ty.path "u8" ]
+                              ])
+                        ]
                       |)
                     |),
                     [
@@ -1037,8 +1134,41 @@ Module state.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "solana_program_option::COption")
+                                                []
+                                                [ Ty.path "solana_address::Address" ];
+                                              Ty.path "solana_program_error::ProgramError"
+                                            ],
+                                          M.get_function (|
+                                            "spl_token_interface::state::unpack_coption_key",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| mint_authority |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 36 ]
+                                                    [ Ty.path "u8" ]
+                                                ])
+                                          ]
+                                        |))
+                                        (Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
                                           [
@@ -1047,19 +1177,7 @@ Module state.
                                               []
                                               [ Ty.path "solana_address::Address" ];
                                             Ty.path "solana_program_error::ProgramError"
-                                          ],
-                                        M.get_function (|
-                                          "spl_token_interface::state::unpack_coption_key",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| mint_authority |) |)
-                                          |)
-                                        ]
-                                      |)
+                                          ])
                                     ]
                                   |)
                                 |),
@@ -1117,7 +1235,17 @@ Module state.
                                                 [],
                                                 []
                                               |),
-                                              [ M.read (| residual |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| residual |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.path "core::convert::Infallible";
+                                                      Ty.path "solana_program_error::ProgramError"
+                                                    ])
+                                              ]
                                             |)
                                           |)
                                         |)
@@ -1150,7 +1278,14 @@ Module state.
                                   [],
                                   []
                                 |),
-                                [ M.read (| M.deref (| M.read (| supply |) |) |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| M.deref (| M.read (| supply |) |) |))
+                                    (Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 8 ]
+                                      [ Ty.path "u8" ])
+                                ]
                               |) in
                             let~ decimals : Ty.path "u8" :=
                               M.read (|
@@ -1189,20 +1324,23 @@ Module state.
                                       (M.never_to_any (|
                                         M.read (|
                                           M.return_ (|
-                                            Value.StructTuple
-                                              "core::result::Result::Err"
-                                              []
-                                              [
-                                                Ty.path "spl_token_interface::state::Mint";
-                                                Ty.path "solana_program_error::ProgramError"
-                                              ]
-                                              [
-                                                Value.StructTuple
-                                                  "solana_program_error::ProgramError::InvalidAccountData"
-                                                  []
-                                                  []
-                                                  []
-                                              ]
+                                            M.value_with_ty
+                                              (Value.StructTuple
+                                                "core::result::Result::Err"
+                                                [
+                                                  M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "solana_program_error::ProgramError::InvalidAccountData"
+                                                      [])
+                                                    (Ty.path "solana_program_error::ProgramError")
+                                                ])
+                                              (Ty.apply
+                                                (Ty.path "core::result::Result")
+                                                []
+                                                [
+                                                  Ty.path "spl_token_interface::state::Mint";
+                                                  Ty.path "solana_program_error::ProgramError"
+                                                ])
                                           |)
                                         |)
                                       |)))
@@ -1271,8 +1409,41 @@ Module state.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "solana_program_option::COption")
+                                                []
+                                                [ Ty.path "solana_address::Address" ];
+                                              Ty.path "solana_program_error::ProgramError"
+                                            ],
+                                          M.get_function (|
+                                            "spl_token_interface::state::unpack_coption_key",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| freeze_authority |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 36 ]
+                                                    [ Ty.path "u8" ]
+                                                ])
+                                          ]
+                                        |))
+                                        (Ty.apply
                                           (Ty.path "core::result::Result")
                                           []
                                           [
@@ -1281,19 +1452,7 @@ Module state.
                                               []
                                               [ Ty.path "solana_address::Address" ];
                                             Ty.path "solana_program_error::ProgramError"
-                                          ],
-                                        M.get_function (|
-                                          "spl_token_interface::state::unpack_coption_key",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| freeze_authority |) |)
-                                          |)
-                                        ]
-                                      |)
+                                          ])
                                     ]
                                   |)
                                 |),
@@ -1351,7 +1510,17 @@ Module state.
                                                 [],
                                                 []
                                               |),
-                                              [ M.read (| residual |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| residual |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.path "core::convert::Infallible";
+                                                      Ty.path "solana_program_error::ProgramError"
+                                                    ])
+                                              ]
                                             |)
                                           |)
                                         |)
@@ -1383,26 +1552,29 @@ Module state.
                                   Ty.path "spl_token_interface::state::Mint";
                                   Ty.path "solana_program_error::ProgramError"
                                 ],
-                              Value.StructTuple
-                                "core::result::Result::Ok"
-                                []
-                                [
-                                  Ty.path "spl_token_interface::state::Mint";
-                                  Ty.path "solana_program_error::ProgramError"
-                                ]
-                                [
-                                  Value.mkStructRecord
-                                    "spl_token_interface::state::Mint"
-                                    []
-                                    []
-                                    [
-                                      ("mint_authority", M.read (| mint_authority |));
-                                      ("supply", M.read (| supply |));
-                                      ("decimals", M.read (| decimals |));
-                                      ("is_initialized", M.read (| is_initialized |));
-                                      ("freeze_authority", M.read (| freeze_authority |))
-                                    ]
-                                ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Ok"
+                                  [
+                                    M.value_with_ty
+                                      (Value.mkStructRecord
+                                        "spl_token_interface::state::Mint"
+                                        [
+                                          ("mint_authority", M.read (| mint_authority |));
+                                          ("supply", M.read (| supply |));
+                                          ("decimals", M.read (| decimals |));
+                                          ("is_initialized", M.read (| is_initialized |));
+                                          ("freeze_authority", M.read (| freeze_authority |))
+                                        ])
+                                      (Ty.path "spl_token_interface::state::Mint")
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.path "spl_token_interface::state::Mint";
+                                    Ty.path "solana_program_error::ProgramError"
+                                  ])
                             |)
                           |)))
                     ]
@@ -1498,24 +1670,39 @@ Module state.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| dst |) |)
-                                  |);
-                                  Value.mkStructRecord
-                                    "core::ops::range::Range"
-                                    []
-                                    [ Ty.path "usize" ]
-                                    [
-                                      ("start", M.read (| offset |));
-                                      ("end_",
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.add,
-                                          [ M.read (| offset |); Value.Integer IntegerKind.Usize 82
-                                          ]
-                                        |))
-                                    ]
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| dst |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                  M.value_with_ty
+                                    (M.value_with_ty
+                                      (Value.mkStructRecord
+                                        "core::ops::range::Range"
+                                        [
+                                          ("start", M.read (| offset |));
+                                          ("end_",
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              BinOp.Wrap.add,
+                                              [
+                                                M.read (| offset |);
+                                                Value.Integer IntegerKind.Usize 82
+                                              ]
+                                            |))
+                                        ])
+                                      (Ty.apply
+                                        (Ty.path "core::ops::range::Range")
+                                        []
+                                        [ Ty.path "usize" ]))
+                                    (Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ])
                                 ]
                               |)
                             |)
@@ -1550,10 +1737,15 @@ Module state.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| slice |) |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| slice |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                 ]
                               |)
                             |)
@@ -1678,7 +1870,19 @@ Module state.
                           ]
                       ],
                     M.get_associated_function (| Self, "as_arrays.pack_into_slice", [], [] |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| input |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| input |) |) |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 82 ]
+                              [ Ty.path "u8" ]
+                          ])
+                    ]
                   |)
                 |),
                 [
@@ -1830,14 +2034,34 @@ Module state.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| mint_authority |) |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| mint_authority_dst |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| mint_authority |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "solana_program_option::COption")
+                                              []
+                                              [ Ty.path "solana_address::Address" ]
+                                          ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.read (| mint_authority_dst |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 36 ]
+                                              [ Ty.path "u8" ]
+                                          ])
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
@@ -1854,7 +2078,7 @@ Module state.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| supply |) ]
+                                      [ M.value_with_ty (M.read (| supply |)) (Ty.path "u64") ]
                                     |)
                                   |) in
                                 let~ _ : Ty.tuple [] :=
@@ -1882,14 +2106,34 @@ Module state.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| freeze_authority |) |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| freeze_authority_dst |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| freeze_authority |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "solana_program_option::COption")
+                                              []
+                                              [ Ty.path "solana_address::Address" ]
+                                          ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.read (| freeze_authority_dst |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 36 ]
+                                              [ Ty.path "u8" ]
+                                          ])
                                     ]
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2440,30 +2684,15 @@ Module state.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Account" |) |) |);
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "slice")
-                          []
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                      ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 8 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                        ])
-                      (Ty.apply
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Account" |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
                         (Ty.path "&")
                         []
                         [
@@ -2471,10 +2700,50 @@ Module state.
                             (Ty.path "slice")
                             []
                             [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                        ]),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| names |) |) |) ]
-                  |);
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| values |) |) |)
+                        ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 8 ]
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                          ]),
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| names |) |) |) ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "slice")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| values |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "slice")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]
+                          ]
+                      ])
                 ]
               |)
             |)
@@ -2499,136 +2768,136 @@ Module state.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "spl_token_interface::state::Account"
-            []
-            []
-            [
-              ("mint",
-                M.call_closure (|
-                  Ty.path "solana_address::Address",
-                  M.get_trait_method (|
-                    "core::default::Default",
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "spl_token_interface::state::Account"
+              [
+                ("mint",
+                  M.call_closure (|
                     Ty.path "solana_address::Address",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "solana_address::Address",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("owner",
-                M.call_closure (|
-                  Ty.path "solana_address::Address",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("owner",
+                  M.call_closure (|
                     Ty.path "solana_address::Address",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "solana_address::Address",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("amount",
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("amount",
+                  M.call_closure (|
                     Ty.path "u64",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "u64",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("delegate",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "solana_program_option::COption")
-                    []
-                    [ Ty.path "solana_address::Address" ],
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("delegate",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "solana_program_option::COption")
                       []
                       [ Ty.path "solana_address::Address" ],
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.apply
+                        (Ty.path "solana_program_option::COption")
+                        []
+                        [ Ty.path "solana_address::Address" ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("state",
-                M.call_closure (|
-                  Ty.path "spl_token_interface::state::AccountState",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("state",
+                  M.call_closure (|
                     Ty.path "spl_token_interface::state::AccountState",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "spl_token_interface::state::AccountState",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("is_native",
-                M.call_closure (|
-                  Ty.apply (Ty.path "solana_program_option::COption") [] [ Ty.path "u64" ],
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("is_native",
+                  M.call_closure (|
                     Ty.apply (Ty.path "solana_program_option::COption") [] [ Ty.path "u64" ],
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.apply (Ty.path "solana_program_option::COption") [] [ Ty.path "u64" ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("delegated_amount",
-                M.call_closure (|
-                  Ty.path "u64",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("delegated_amount",
+                  M.call_closure (|
                     Ty.path "u64",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "u64",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("close_authority",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "solana_program_option::COption")
-                    []
-                    [ Ty.path "solana_address::Address" ],
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("close_authority",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "solana_program_option::COption")
                       []
                       [ Ty.path "solana_address::Address" ],
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.apply
+                        (Ty.path "solana_program_option::COption")
+                        []
+                        [ Ty.path "solana_address::Address" ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |))
-            ]))
+                  |))
+              ])
+            (Ty.path "spl_token_interface::state::Account")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2690,22 +2959,26 @@ Module state.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "spl_token_interface::state::Account",
-                                "mint"
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| other |) |),
-                                "spl_token_interface::state::Account",
-                                "mint"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "spl_token_interface::state::Account",
+                                  "mint"
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| other |) |),
+                                  "spl_token_interface::state::Account",
+                                  "mint"
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ])
                           ]
                         |),
                         ltac:(M.monadic
@@ -2721,22 +2994,26 @@ Module state.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "spl_token_interface::state::Account",
-                                  "owner"
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| other |) |),
-                                  "spl_token_interface::state::Account",
-                                  "owner"
-                                |)
-                              |)
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "spl_token_interface::state::Account",
+                                    "owner"
+                                  |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| other |) |),
+                                    "spl_token_interface::state::Account",
+                                    "owner"
+                                  |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ])
                             ]
                           |)))
                       |),
@@ -2783,22 +3060,42 @@ Module state.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "spl_token_interface::state::Account",
-                              "delegate"
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| other |) |),
-                              "spl_token_interface::state::Account",
-                              "delegate"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "spl_token_interface::state::Account",
+                                "delegate"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "solana_program_option::COption")
+                                  []
+                                  [ Ty.path "solana_address::Address" ]
+                              ]);
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| other |) |),
+                                "spl_token_interface::state::Account",
+                                "delegate"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "solana_program_option::COption")
+                                  []
+                                  [ Ty.path "solana_address::Address" ]
+                              ])
                         ]
                       |)))
                   |),
@@ -2815,22 +3112,32 @@ Module state.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "spl_token_interface::state::Account",
-                            "state"
-                          |)
-                        |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| other |) |),
-                            "spl_token_interface::state::Account",
-                            "state"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "spl_token_interface::state::Account",
+                              "state"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.path "spl_token_interface::state::AccountState" ]);
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| other |) |),
+                              "spl_token_interface::state::Account",
+                              "state"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.path "spl_token_interface::state::AccountState" ])
                       ]
                     |)))
                 |),
@@ -2847,22 +3154,34 @@ Module state.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "spl_token_interface::state::Account",
-                          "is_native"
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| other |) |),
-                          "spl_token_interface::state::Account",
-                          "is_native"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "spl_token_interface::state::Account",
+                            "is_native"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "solana_program_option::COption") [] [ Ty.path "u64" ]
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| other |) |),
+                            "spl_token_interface::state::Account",
+                            "is_native"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "solana_program_option::COption") [] [ Ty.path "u64" ]
+                          ])
                     ]
                   |)))
               |),
@@ -2909,22 +3228,42 @@ Module state.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "spl_token_interface::state::Account",
-                      "close_authority"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "spl_token_interface::state::Account",
-                      "close_authority"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "spl_token_interface::state::Account",
+                        "close_authority"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "solana_program_option::COption")
+                          []
+                          [ Ty.path "solana_address::Address" ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "spl_token_interface::state::Account",
+                        "close_authority"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "solana_program_option::COption")
+                          []
+                          [ Ty.path "solana_address::Address" ]
+                      ])
                 ]
               |)))
           |)))
@@ -2969,21 +3308,27 @@ Module state.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "spl_token_interface::state::Account",
-                  "state"
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  Ty.path "spl_token_interface::state::AccountState",
-                  Value.StructTuple "spl_token_interface::state::AccountState::Frozen" [] [] []
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "spl_token_interface::state::Account",
+                    "state"
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "spl_token_interface::state::AccountState" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
+                    Ty.path "spl_token_interface::state::AccountState",
+                    M.value_with_ty
+                      (Value.StructTuple "spl_token_interface::state::AccountState::Frozen" [])
+                      (Ty.path "spl_token_interface::state::AccountState")
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "spl_token_interface::state::AccountState" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3017,14 +3362,19 @@ Module state.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "spl_token_interface::state::Account",
-                  "is_native"
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "spl_token_interface::state::Account",
+                    "is_native"
+                  |)
+                |))
+                (Ty.apply
+                  (Ty.path "&")
+                  []
+                  [ Ty.apply (Ty.path "solana_program_option::COption") [] [ Ty.path "u64" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3059,27 +3409,8 @@ Module state.
               Ty.path "bool",
               M.get_function (| "solana_sdk_ids::system_program::check_id", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "spl_token_interface::state::Account",
-                        "owner"
-                      |)
-                    |)
-                  |)
-                |)
-              ]
-            |),
-            ltac:(M.monadic
-              (M.call_closure (|
-                Ty.path "bool",
-                M.get_function (| "solana_sdk_ids::incinerator::check_id", [], [] |),
-                [
-                  M.borrow (|
+                M.value_with_ty
+                  (M.borrow (|
                     Pointer.Kind.Ref,
                     M.deref (|
                       M.borrow (|
@@ -3091,7 +3422,30 @@ Module state.
                         |)
                       |)
                     |)
-                  |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ])
+              ]
+            |),
+            ltac:(M.monadic
+              (M.call_closure (|
+                Ty.path "bool",
+                M.get_function (| "solana_sdk_ids::incinerator::check_id", [], [] |),
+                [
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "spl_token_interface::state::Account",
+                            "owner"
+                          |)
+                        |)
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ])
                 ]
               |)))
           |)))
@@ -3148,25 +3502,29 @@ Module state.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_record_field (|
-                  M.deref (| M.read (| self |) |),
-                  "spl_token_interface::state::Account",
-                  "state"
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.alloc (|
-                  Ty.path "spl_token_interface::state::AccountState",
-                  Value.StructTuple
-                    "spl_token_interface::state::AccountState::Uninitialized"
-                    []
-                    []
-                    []
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_record_field (|
+                    M.deref (| M.read (| self |) |),
+                    "spl_token_interface::state::Account",
+                    "state"
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "spl_token_interface::state::AccountState" ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.alloc (|
+                    Ty.path "spl_token_interface::state::AccountState",
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "spl_token_interface::state::AccountState::Uninitialized"
+                        [])
+                      (Ty.path "spl_token_interface::state::AccountState")
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "spl_token_interface::state::AccountState" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3262,20 +3620,34 @@ Module state.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |);
-                              Value.mkStructRecord
-                                "core::ops::range::Range"
-                                []
-                                [ Ty.path "usize" ]
-                                [
-                                  ("start", M.read (| offset |));
-                                  ("end_",
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      BinOp.Wrap.add,
-                                      [ M.read (| offset |); Value.Integer IntegerKind.Usize 165 ]
-                                    |))
-                                ]
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.mkStructRecord
+                                    "core::ops::range::Range"
+                                    [
+                                      ("start", M.read (| offset |));
+                                      ("end_",
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          BinOp.Wrap.add,
+                                          [ M.read (| offset |); Value.Integer IntegerKind.Usize 165
+                                          ]
+                                        |))
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "usize" ]))
+                                (Ty.apply
+                                  (Ty.path "core::ops::range::Range")
+                                  []
+                                  [ Ty.path "usize" ])
                             ]
                           |)
                         |)
@@ -3301,7 +3673,14 @@ Module state.
                               [ Ty.path "u8" ]
                           ],
                         M.get_associated_function (| Self, "as_array.unpack_from_slice", [], [] |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                        ]
                       |)
                     |)
                   |) in
@@ -3485,7 +3864,19 @@ Module state.
                               ]
                           ],
                         M.get_associated_function (| Self, "as_arrays.unpack_from_slice", [], [] |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 165 ]
+                                  [ Ty.path "u8" ]
+                              ])
+                        ]
                       |)
                     |),
                     [
@@ -3603,775 +3994,966 @@ Module state.
                                 ],
                               γ0_7
                             |) in
-                          Value.StructTuple
-                            "core::result::Result::Ok"
-                            []
-                            [
-                              Ty.path "spl_token_interface::state::Account";
-                              Ty.path "solana_program_error::ProgramError"
-                            ]
-                            [
-                              Value.mkStructRecord
-                                "spl_token_interface::state::Account"
-                                []
-                                []
-                                [
-                                  ("mint",
-                                    M.call_closure (|
-                                      Ty.path "solana_address::Address",
-                                      M.get_associated_function (|
-                                        Ty.path "solana_address::Address",
-                                        "new_from_array",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| M.deref (| M.read (| mint |) |) |) ]
-                                    |));
-                                  ("owner",
-                                    M.call_closure (|
-                                      Ty.path "solana_address::Address",
-                                      M.get_associated_function (|
-                                        Ty.path "solana_address::Address",
-                                        "new_from_array",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| M.deref (| M.read (| owner |) |) |) ]
-                                    |));
-                                  ("amount",
-                                    M.call_closure (|
-                                      Ty.path "u64",
-                                      M.get_associated_function (|
-                                        Ty.path "u64",
-                                        "from_le_bytes",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| M.deref (| M.read (| amount |) |) |) ]
-                                    |));
-                                  ("delegate",
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "solana_program_option::COption")
-                                        []
-                                        [ Ty.path "solana_address::Address" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::ops::control_flow::ControlFlow")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
-                                              []
-                                              [
-                                                Ty.path "core::convert::Infallible";
-                                                Ty.path "solana_program_error::ProgramError"
-                                              ];
-                                            Ty.apply
-                                              (Ty.path "solana_program_option::COption")
-                                              []
-                                              [ Ty.path "solana_address::Address" ]
-                                          ],
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::result::Result::Ok"
+                              [
+                                M.value_with_ty
+                                  (Value.mkStructRecord
+                                    "spl_token_interface::state::Account"
+                                    [
+                                      ("mint",
                                         M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::ops::control_flow::ControlFlow")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "core::result::Result")
-                                                []
-                                                [
-                                                  Ty.path "core::convert::Infallible";
-                                                  Ty.path "solana_program_error::ProgramError"
-                                                ];
-                                              Ty.apply
-                                                (Ty.path "solana_program_option::COption")
-                                                []
-                                                [ Ty.path "solana_address::Address" ]
-                                            ],
-                                          M.get_trait_method (|
-                                            "core::ops::try_trait::Try",
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "solana_program_option::COption")
-                                                  []
-                                                  [ Ty.path "solana_address::Address" ];
-                                                Ty.path "solana_program_error::ProgramError"
-                                              ],
-                                            [],
-                                            [],
-                                            "branch",
+                                          Ty.path "solana_address::Address",
+                                          M.get_associated_function (|
+                                            Ty.path "solana_address::Address",
+                                            "new_from_array",
                                             [],
                                             []
                                           |),
                                           [
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::result::Result")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "solana_program_option::COption")
-                                                    []
-                                                    [ Ty.path "solana_address::Address" ];
-                                                  Ty.path "solana_program_error::ProgramError"
-                                                ],
-                                              M.get_function (|
-                                                "spl_token_interface::state::unpack_coption_key",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| delegate |) |)
-                                                |)
-                                              ]
-                                            |)
+                                            M.value_with_ty
+                                              (M.read (| M.deref (| M.read (| mint |) |) |))
+                                              (Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 32 ]
+                                                [ Ty.path "u8" ])
                                           ]
-                                        |)
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let γ0_0 :=
-                                              M.SubPointer.get_struct_tuple_field (|
-                                                γ,
-                                                "core::ops::control_flow::ControlFlow::Break",
-                                                0
-                                              |) in
-                                            let residual :=
-                                              M.copy (|
+                                        |));
+                                      ("owner",
+                                        M.call_closure (|
+                                          Ty.path "solana_address::Address",
+                                          M.get_associated_function (|
+                                            Ty.path "solana_address::Address",
+                                            "new_from_array",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| M.deref (| M.read (| owner |) |) |))
+                                              (Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 32 ]
+                                                [ Ty.path "u8" ])
+                                          ]
+                                        |));
+                                      ("amount",
+                                        M.call_closure (|
+                                          Ty.path "u64",
+                                          M.get_associated_function (|
+                                            Ty.path "u64",
+                                            "from_le_bytes",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| M.deref (| M.read (| amount |) |) |))
+                                              (Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 8 ]
+                                                [ Ty.path "u8" ])
+                                          ]
+                                        |));
+                                      ("delegate",
+                                        M.match_operator (|
+                                          Ty.apply
+                                            (Ty.path "solana_program_option::COption")
+                                            []
+                                            [ Ty.path "solana_address::Address" ],
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "core::ops::control_flow::ControlFlow")
+                                              []
+                                              [
                                                 Ty.apply
                                                   (Ty.path "core::result::Result")
                                                   []
                                                   [
                                                     Ty.path "core::convert::Infallible";
                                                     Ty.path "solana_program_error::ProgramError"
+                                                  ];
+                                                Ty.apply
+                                                  (Ty.path "solana_program_option::COption")
+                                                  []
+                                                  [ Ty.path "solana_address::Address" ]
+                                              ],
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::ops::control_flow::ControlFlow")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.path "core::convert::Infallible";
+                                                      Ty.path "solana_program_error::ProgramError"
+                                                    ];
+                                                  Ty.apply
+                                                    (Ty.path "solana_program_option::COption")
+                                                    []
+                                                    [ Ty.path "solana_address::Address" ]
+                                                ],
+                                              M.get_trait_method (|
+                                                "core::ops::try_trait::Try",
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "solana_program_option::COption")
+                                                      []
+                                                      [ Ty.path "solana_address::Address" ];
+                                                    Ty.path "solana_program_error::ProgramError"
                                                   ],
-                                                γ0_0
-                                              |) in
-                                            M.never_to_any (|
-                                              M.read (|
-                                                M.return_ (|
-                                                  M.call_closure (|
+                                                [],
+                                                [],
+                                                "branch",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
                                                       [
-                                                        Ty.path
-                                                          "spl_token_interface::state::Account";
+                                                        Ty.apply
+                                                          (Ty.path "solana_program_option::COption")
+                                                          []
+                                                          [ Ty.path "solana_address::Address" ];
                                                         Ty.path "solana_program_error::ProgramError"
                                                       ],
-                                                    M.get_trait_method (|
-                                                      "core::ops::try_trait::FromResidual",
-                                                      Ty.apply
-                                                        (Ty.path "core::result::Result")
-                                                        []
-                                                        [
-                                                          Ty.path
-                                                            "spl_token_interface::state::Account";
-                                                          Ty.path
-                                                            "solana_program_error::ProgramError"
-                                                        ],
+                                                    M.get_function (|
+                                                      "spl_token_interface::state::unpack_coption_key",
                                                       [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| M.read (| delegate |) |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 36 ]
+                                                              [ Ty.path "u8" ]
+                                                          ])
+                                                    ]
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "solana_program_option::COption")
+                                                        []
+                                                        [ Ty.path "solana_address::Address" ];
+                                                      Ty.path "solana_program_error::ProgramError"
+                                                    ])
+                                              ]
+                                            |)
+                                          |),
+                                          [
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let γ0_0 :=
+                                                  M.SubPointer.get_struct_tuple_field (|
+                                                    γ,
+                                                    "core::ops::control_flow::ControlFlow::Break",
+                                                    0
+                                                  |) in
+                                                let residual :=
+                                                  M.copy (|
+                                                    Ty.apply
+                                                      (Ty.path "core::result::Result")
+                                                      []
                                                       [
+                                                        Ty.path "core::convert::Infallible";
+                                                        Ty.path "solana_program_error::ProgramError"
+                                                      ],
+                                                    γ0_0
+                                                  |) in
+                                                M.never_to_any (|
+                                                  M.read (|
+                                                    M.return_ (|
+                                                      M.call_closure (|
                                                         Ty.apply
                                                           (Ty.path "core::result::Result")
                                                           []
                                                           [
-                                                            Ty.path "core::convert::Infallible";
+                                                            Ty.path
+                                                              "spl_token_interface::state::Account";
                                                             Ty.path
                                                               "solana_program_error::ProgramError"
-                                                          ]
-                                                      ],
-                                                      "from_residual",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [ M.read (| residual |) ]
+                                                          ],
+                                                        M.get_trait_method (|
+                                                          "core::ops::try_trait::FromResidual",
+                                                          Ty.apply
+                                                            (Ty.path "core::result::Result")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "spl_token_interface::state::Account";
+                                                              Ty.path
+                                                                "solana_program_error::ProgramError"
+                                                            ],
+                                                          [],
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "core::result::Result")
+                                                              []
+                                                              [
+                                                                Ty.path "core::convert::Infallible";
+                                                                Ty.path
+                                                                  "solana_program_error::ProgramError"
+                                                              ]
+                                                          ],
+                                                          "from_residual",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.read (| residual |))
+                                                            (Ty.apply
+                                                              (Ty.path "core::result::Result")
+                                                              []
+                                                              [
+                                                                Ty.path "core::convert::Infallible";
+                                                                Ty.path
+                                                                  "solana_program_error::ProgramError"
+                                                              ])
+                                                        ]
+                                                      |)
+                                                    |)
                                                   |)
-                                                |)
-                                              |)
-                                            |)));
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let γ0_0 :=
-                                              M.SubPointer.get_struct_tuple_field (|
-                                                γ,
-                                                "core::ops::control_flow::ControlFlow::Continue",
-                                                0
-                                              |) in
-                                            let val :=
-                                              M.copy (|
+                                                |)));
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let γ0_0 :=
+                                                  M.SubPointer.get_struct_tuple_field (|
+                                                    γ,
+                                                    "core::ops::control_flow::ControlFlow::Continue",
+                                                    0
+                                                  |) in
+                                                let val :=
+                                                  M.copy (|
+                                                    Ty.apply
+                                                      (Ty.path "solana_program_option::COption")
+                                                      []
+                                                      [ Ty.path "solana_address::Address" ],
+                                                    γ0_0
+                                                  |) in
+                                                M.read (| val |)))
+                                          ]
+                                        |));
+                                      ("state",
+                                        M.match_operator (|
+                                          Ty.path "spl_token_interface::state::AccountState",
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "core::ops::control_flow::ControlFlow")
+                                              []
+                                              [
                                                 Ty.apply
-                                                  (Ty.path "solana_program_option::COption")
+                                                  (Ty.path "core::result::Result")
                                                   []
-                                                  [ Ty.path "solana_address::Address" ],
-                                                γ0_0
-                                              |) in
-                                            M.read (| val |)))
-                                      ]
-                                    |));
-                                  ("state",
-                                    M.match_operator (|
-                                      Ty.path "spl_token_interface::state::AccountState",
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::ops::control_flow::ControlFlow")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
-                                              []
-                                              [
-                                                Ty.path "core::convert::Infallible";
-                                                Ty.path "solana_program_error::ProgramError"
-                                              ];
-                                            Ty.path "spl_token_interface::state::AccountState"
-                                          ],
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::ops::control_flow::ControlFlow")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "core::result::Result")
-                                                []
-                                                [
-                                                  Ty.path "core::convert::Infallible";
-                                                  Ty.path "solana_program_error::ProgramError"
-                                                ];
-                                              Ty.path "spl_token_interface::state::AccountState"
-                                            ],
-                                          M.get_trait_method (|
-                                            "core::ops::try_trait::Try",
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
-                                              []
-                                              [
-                                                Ty.path "spl_token_interface::state::AccountState";
-                                                Ty.path "solana_program_error::ProgramError"
+                                                  [
+                                                    Ty.path "core::convert::Infallible";
+                                                    Ty.path "solana_program_error::ProgramError"
+                                                  ];
+                                                Ty.path "spl_token_interface::state::AccountState"
                                               ],
-                                            [],
-                                            [],
-                                            "branch",
-                                            [],
-                                            []
-                                          |),
-                                          [
                                             M.call_closure (|
                                               Ty.apply
-                                                (Ty.path "core::result::Result")
+                                                (Ty.path "core::ops::control_flow::ControlFlow")
                                                 []
                                                 [
-                                                  Ty.path
-                                                    "spl_token_interface::state::AccountState";
-                                                  Ty.path "solana_program_error::ProgramError"
+                                                  Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.path "core::convert::Infallible";
+                                                      Ty.path "solana_program_error::ProgramError"
+                                                    ];
+                                                  Ty.path "spl_token_interface::state::AccountState"
                                                 ],
-                                              M.get_associated_function (|
+                                              M.get_trait_method (|
+                                                "core::ops::try_trait::Try",
                                                 Ty.apply
                                                   (Ty.path "core::result::Result")
                                                   []
                                                   [
                                                     Ty.path
                                                       "spl_token_interface::state::AccountState";
+                                                    Ty.path "solana_program_error::ProgramError"
+                                                  ],
+                                                [],
+                                                [],
+                                                "branch",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
                                                     Ty.apply
-                                                      (Ty.path "num_enum::TryFromPrimitiveError")
+                                                      (Ty.path "core::result::Result")
                                                       []
                                                       [
                                                         Ty.path
-                                                          "spl_token_interface::state::AccountState"
+                                                          "spl_token_interface::state::AccountState";
+                                                        Ty.path "solana_program_error::ProgramError"
+                                                      ],
+                                                    M.get_associated_function (|
+                                                      Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "spl_token_interface::state::AccountState";
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "num_enum::TryFromPrimitiveError")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "spl_token_interface::state::AccountState"
+                                                            ]
+                                                        ],
+                                                      "or",
+                                                      [],
+                                                      [ Ty.path "solana_program_error::ProgramError"
                                                       ]
-                                                  ],
-                                                "or",
-                                                [],
-                                                [ Ty.path "solana_program_error::ProgramError" ]
-                                              |),
-                                              [
-                                                M.call_closure (|
-                                                  Ty.apply
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "core::result::Result")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "spl_token_interface::state::AccountState";
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "num_enum::TryFromPrimitiveError")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "spl_token_interface::state::AccountState"
+                                                                ]
+                                                            ],
+                                                          M.get_trait_method (|
+                                                            "num_enum::TryFromPrimitive",
+                                                            Ty.path
+                                                              "spl_token_interface::state::AccountState",
+                                                            [],
+                                                            [],
+                                                            "try_from_primitive",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (|
+                                                                M.SubPointer.get_array_field (|
+                                                                  M.deref (| M.read (| state |) |),
+                                                                  Value.Integer IntegerKind.Usize 0
+                                                                |)
+                                                              |))
+                                                              (Ty.path "u8")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "core::result::Result")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "spl_token_interface::state::AccountState";
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "num_enum::TryFromPrimitiveError")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "spl_token_interface::state::AccountState"
+                                                              ]
+                                                          ]);
+                                                      M.value_with_ty
+                                                        (M.value_with_ty
+                                                          (Value.StructTuple
+                                                            "core::result::Result::Err"
+                                                            [
+                                                              M.value_with_ty
+                                                                (Value.StructTuple
+                                                                  "solana_program_error::ProgramError::InvalidAccountData"
+                                                                  [])
+                                                                (Ty.path
+                                                                  "solana_program_error::ProgramError")
+                                                            ])
+                                                          (Ty.apply
+                                                            (Ty.path "core::result::Result")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "spl_token_interface::state::AccountState";
+                                                              Ty.path
+                                                                "solana_program_error::ProgramError"
+                                                            ]))
+                                                        (Ty.apply
+                                                          (Ty.path "core::result::Result")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "spl_token_interface::state::AccountState";
+                                                            Ty.path
+                                                              "solana_program_error::ProgramError"
+                                                          ])
+                                                    ]
+                                                  |))
+                                                  (Ty.apply
                                                     (Ty.path "core::result::Result")
                                                     []
                                                     [
                                                       Ty.path
                                                         "spl_token_interface::state::AccountState";
-                                                      Ty.apply
-                                                        (Ty.path "num_enum::TryFromPrimitiveError")
-                                                        []
+                                                      Ty.path "solana_program_error::ProgramError"
+                                                    ])
+                                              ]
+                                            |)
+                                          |),
+                                          [
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let γ0_0 :=
+                                                  M.SubPointer.get_struct_tuple_field (|
+                                                    γ,
+                                                    "core::ops::control_flow::ControlFlow::Break",
+                                                    0
+                                                  |) in
+                                                let residual :=
+                                                  M.copy (|
+                                                    Ty.apply
+                                                      (Ty.path "core::result::Result")
+                                                      []
+                                                      [
+                                                        Ty.path "core::convert::Infallible";
+                                                        Ty.path "solana_program_error::ProgramError"
+                                                      ],
+                                                    γ0_0
+                                                  |) in
+                                                M.never_to_any (|
+                                                  M.read (|
+                                                    M.return_ (|
+                                                      M.call_closure (|
+                                                        Ty.apply
+                                                          (Ty.path "core::result::Result")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "spl_token_interface::state::Account";
+                                                            Ty.path
+                                                              "solana_program_error::ProgramError"
+                                                          ],
+                                                        M.get_trait_method (|
+                                                          "core::ops::try_trait::FromResidual",
+                                                          Ty.apply
+                                                            (Ty.path "core::result::Result")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "spl_token_interface::state::Account";
+                                                              Ty.path
+                                                                "solana_program_error::ProgramError"
+                                                            ],
+                                                          [],
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "core::result::Result")
+                                                              []
+                                                              [
+                                                                Ty.path "core::convert::Infallible";
+                                                                Ty.path
+                                                                  "solana_program_error::ProgramError"
+                                                              ]
+                                                          ],
+                                                          "from_residual",
+                                                          [],
+                                                          []
+                                                        |),
                                                         [
-                                                          Ty.path
-                                                            "spl_token_interface::state::AccountState"
+                                                          M.value_with_ty
+                                                            (M.read (| residual |))
+                                                            (Ty.apply
+                                                              (Ty.path "core::result::Result")
+                                                              []
+                                                              [
+                                                                Ty.path "core::convert::Infallible";
+                                                                Ty.path
+                                                                  "solana_program_error::ProgramError"
+                                                              ])
                                                         ]
-                                                    ],
-                                                  M.get_trait_method (|
-                                                    "num_enum::TryFromPrimitive",
-                                                    Ty.path
-                                                      "spl_token_interface::state::AccountState",
-                                                    [],
-                                                    [],
-                                                    "try_from_primitive",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.read (|
-                                                      M.SubPointer.get_array_field (|
-                                                        M.deref (| M.read (| state |) |),
-                                                        Value.Integer IntegerKind.Usize 0
                                                       |)
                                                     |)
-                                                  ]
-                                                |);
-                                                Value.StructTuple
-                                                  "core::result::Result::Err"
-                                                  []
-                                                  [
+                                                  |)
+                                                |)));
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let γ0_0 :=
+                                                  M.SubPointer.get_struct_tuple_field (|
+                                                    γ,
+                                                    "core::ops::control_flow::ControlFlow::Continue",
+                                                    0
+                                                  |) in
+                                                let val :=
+                                                  M.copy (|
                                                     Ty.path
-                                                      "spl_token_interface::state::AccountState";
-                                                    Ty.path "solana_program_error::ProgramError"
-                                                  ]
-                                                  [
-                                                    Value.StructTuple
-                                                      "solana_program_error::ProgramError::InvalidAccountData"
-                                                      []
-                                                      []
-                                                      []
-                                                  ]
-                                              ]
-                                            |)
+                                                      "spl_token_interface::state::AccountState",
+                                                    γ0_0
+                                                  |) in
+                                                M.read (| val |)))
                                           ]
-                                        |)
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let γ0_0 :=
-                                              M.SubPointer.get_struct_tuple_field (|
-                                                γ,
-                                                "core::ops::control_flow::ControlFlow::Break",
-                                                0
-                                              |) in
-                                            let residual :=
-                                              M.copy (|
+                                        |));
+                                      ("is_native",
+                                        M.match_operator (|
+                                          Ty.apply
+                                            (Ty.path "solana_program_option::COption")
+                                            []
+                                            [ Ty.path "u64" ],
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "core::ops::control_flow::ControlFlow")
+                                              []
+                                              [
                                                 Ty.apply
                                                   (Ty.path "core::result::Result")
                                                   []
                                                   [
                                                     Ty.path "core::convert::Infallible";
                                                     Ty.path "solana_program_error::ProgramError"
-                                                  ],
-                                                γ0_0
-                                              |) in
-                                            M.never_to_any (|
-                                              M.read (|
-                                                M.return_ (|
-                                                  M.call_closure (|
-                                                    Ty.apply
-                                                      (Ty.path "core::result::Result")
-                                                      []
-                                                      [
-                                                        Ty.path
-                                                          "spl_token_interface::state::Account";
-                                                        Ty.path "solana_program_error::ProgramError"
-                                                      ],
-                                                    M.get_trait_method (|
-                                                      "core::ops::try_trait::FromResidual",
-                                                      Ty.apply
-                                                        (Ty.path "core::result::Result")
-                                                        []
-                                                        [
-                                                          Ty.path
-                                                            "spl_token_interface::state::Account";
-                                                          Ty.path
-                                                            "solana_program_error::ProgramError"
-                                                        ],
-                                                      [],
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "core::result::Result")
-                                                          []
-                                                          [
-                                                            Ty.path "core::convert::Infallible";
-                                                            Ty.path
-                                                              "solana_program_error::ProgramError"
-                                                          ]
-                                                      ],
-                                                      "from_residual",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [ M.read (| residual |) ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |)));
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let γ0_0 :=
-                                              M.SubPointer.get_struct_tuple_field (|
-                                                γ,
-                                                "core::ops::control_flow::ControlFlow::Continue",
-                                                0
-                                              |) in
-                                            let val :=
-                                              M.copy (|
-                                                Ty.path "spl_token_interface::state::AccountState",
-                                                γ0_0
-                                              |) in
-                                            M.read (| val |)))
-                                      ]
-                                    |));
-                                  ("is_native",
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "solana_program_option::COption")
-                                        []
-                                        [ Ty.path "u64" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::ops::control_flow::ControlFlow")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
-                                              []
-                                              [
-                                                Ty.path "core::convert::Infallible";
-                                                Ty.path "solana_program_error::ProgramError"
-                                              ];
-                                            Ty.apply
-                                              (Ty.path "solana_program_option::COption")
-                                              []
-                                              [ Ty.path "u64" ]
-                                          ],
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::ops::control_flow::ControlFlow")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "core::result::Result")
-                                                []
-                                                [
-                                                  Ty.path "core::convert::Infallible";
-                                                  Ty.path "solana_program_error::ProgramError"
-                                                ];
-                                              Ty.apply
-                                                (Ty.path "solana_program_option::COption")
-                                                []
-                                                [ Ty.path "u64" ]
-                                            ],
-                                          M.get_trait_method (|
-                                            "core::ops::try_trait::Try",
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
-                                              []
-                                              [
+                                                  ];
                                                 Ty.apply
                                                   (Ty.path "solana_program_option::COption")
                                                   []
-                                                  [ Ty.path "u64" ];
-                                                Ty.path "solana_program_error::ProgramError"
+                                                  [ Ty.path "u64" ]
                                               ],
-                                            [],
-                                            [],
-                                            "branch",
-                                            [],
-                                            []
-                                          |),
-                                          [
                                             M.call_closure (|
                                               Ty.apply
-                                                (Ty.path "core::result::Result")
+                                                (Ty.path "core::ops::control_flow::ControlFlow")
                                                 []
                                                 [
                                                   Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.path "core::convert::Infallible";
+                                                      Ty.path "solana_program_error::ProgramError"
+                                                    ];
+                                                  Ty.apply
                                                     (Ty.path "solana_program_option::COption")
                                                     []
-                                                    [ Ty.path "u64" ];
-                                                  Ty.path "solana_program_error::ProgramError"
+                                                    [ Ty.path "u64" ]
                                                 ],
-                                              M.get_function (|
-                                                "spl_token_interface::state::unpack_coption_u64",
+                                              M.get_trait_method (|
+                                                "core::ops::try_trait::Try",
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "solana_program_option::COption")
+                                                      []
+                                                      [ Ty.path "u64" ];
+                                                    Ty.path "solana_program_error::ProgramError"
+                                                  ],
+                                                [],
+                                                [],
+                                                "branch",
                                                 [],
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| is_native |) |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let γ0_0 :=
-                                              M.SubPointer.get_struct_tuple_field (|
-                                                γ,
-                                                "core::ops::control_flow::ControlFlow::Break",
-                                                0
-                                              |) in
-                                            let residual :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "core::result::Result")
-                                                  []
-                                                  [
-                                                    Ty.path "core::convert::Infallible";
-                                                    Ty.path "solana_program_error::ProgramError"
-                                                  ],
-                                                γ0_0
-                                              |) in
-                                            M.never_to_any (|
-                                              M.read (|
-                                                M.return_ (|
-                                                  M.call_closure (|
+                                                M.value_with_ty
+                                                  (M.call_closure (|
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
                                                       [
-                                                        Ty.path
-                                                          "spl_token_interface::state::Account";
+                                                        Ty.apply
+                                                          (Ty.path "solana_program_option::COption")
+                                                          []
+                                                          [ Ty.path "u64" ];
                                                         Ty.path "solana_program_error::ProgramError"
                                                       ],
-                                                    M.get_trait_method (|
-                                                      "core::ops::try_trait::FromResidual",
-                                                      Ty.apply
-                                                        (Ty.path "core::result::Result")
-                                                        []
-                                                        [
-                                                          Ty.path
-                                                            "spl_token_interface::state::Account";
-                                                          Ty.path
-                                                            "solana_program_error::ProgramError"
-                                                        ],
+                                                    M.get_function (|
+                                                      "spl_token_interface::state::unpack_coption_u64",
                                                       [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| M.read (| is_native |) |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 12 ]
+                                                              [ Ty.path "u8" ]
+                                                          ])
+                                                    ]
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "solana_program_option::COption")
+                                                        []
+                                                        [ Ty.path "u64" ];
+                                                      Ty.path "solana_program_error::ProgramError"
+                                                    ])
+                                              ]
+                                            |)
+                                          |),
+                                          [
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let γ0_0 :=
+                                                  M.SubPointer.get_struct_tuple_field (|
+                                                    γ,
+                                                    "core::ops::control_flow::ControlFlow::Break",
+                                                    0
+                                                  |) in
+                                                let residual :=
+                                                  M.copy (|
+                                                    Ty.apply
+                                                      (Ty.path "core::result::Result")
+                                                      []
                                                       [
+                                                        Ty.path "core::convert::Infallible";
+                                                        Ty.path "solana_program_error::ProgramError"
+                                                      ],
+                                                    γ0_0
+                                                  |) in
+                                                M.never_to_any (|
+                                                  M.read (|
+                                                    M.return_ (|
+                                                      M.call_closure (|
                                                         Ty.apply
                                                           (Ty.path "core::result::Result")
                                                           []
                                                           [
-                                                            Ty.path "core::convert::Infallible";
+                                                            Ty.path
+                                                              "spl_token_interface::state::Account";
                                                             Ty.path
                                                               "solana_program_error::ProgramError"
-                                                          ]
-                                                      ],
-                                                      "from_residual",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [ M.read (| residual |) ]
+                                                          ],
+                                                        M.get_trait_method (|
+                                                          "core::ops::try_trait::FromResidual",
+                                                          Ty.apply
+                                                            (Ty.path "core::result::Result")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "spl_token_interface::state::Account";
+                                                              Ty.path
+                                                                "solana_program_error::ProgramError"
+                                                            ],
+                                                          [],
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "core::result::Result")
+                                                              []
+                                                              [
+                                                                Ty.path "core::convert::Infallible";
+                                                                Ty.path
+                                                                  "solana_program_error::ProgramError"
+                                                              ]
+                                                          ],
+                                                          "from_residual",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.read (| residual |))
+                                                            (Ty.apply
+                                                              (Ty.path "core::result::Result")
+                                                              []
+                                                              [
+                                                                Ty.path "core::convert::Infallible";
+                                                                Ty.path
+                                                                  "solana_program_error::ProgramError"
+                                                              ])
+                                                        ]
+                                                      |)
+                                                    |)
                                                   |)
-                                                |)
-                                              |)
-                                            |)));
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let γ0_0 :=
-                                              M.SubPointer.get_struct_tuple_field (|
-                                                γ,
-                                                "core::ops::control_flow::ControlFlow::Continue",
-                                                0
-                                              |) in
-                                            let val :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "solana_program_option::COption")
-                                                  []
-                                                  [ Ty.path "u64" ],
-                                                γ0_0
-                                              |) in
-                                            M.read (| val |)))
-                                      ]
-                                    |));
-                                  ("delegated_amount",
-                                    M.call_closure (|
-                                      Ty.path "u64",
-                                      M.get_associated_function (|
-                                        Ty.path "u64",
-                                        "from_le_bytes",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| M.deref (| M.read (| delegated_amount |) |) |) ]
-                                    |));
-                                  ("close_authority",
-                                    M.match_operator (|
-                                      Ty.apply
-                                        (Ty.path "solana_program_option::COption")
-                                        []
-                                        [ Ty.path "solana_address::Address" ],
-                                      M.alloc (|
-                                        Ty.apply
-                                          (Ty.path "core::ops::control_flow::ControlFlow")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
-                                              []
-                                              [
-                                                Ty.path "core::convert::Infallible";
-                                                Ty.path "solana_program_error::ProgramError"
-                                              ];
-                                            Ty.apply
-                                              (Ty.path "solana_program_option::COption")
-                                              []
-                                              [ Ty.path "solana_address::Address" ]
-                                          ],
+                                                |)));
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let γ0_0 :=
+                                                  M.SubPointer.get_struct_tuple_field (|
+                                                    γ,
+                                                    "core::ops::control_flow::ControlFlow::Continue",
+                                                    0
+                                                  |) in
+                                                let val :=
+                                                  M.copy (|
+                                                    Ty.apply
+                                                      (Ty.path "solana_program_option::COption")
+                                                      []
+                                                      [ Ty.path "u64" ],
+                                                    γ0_0
+                                                  |) in
+                                                M.read (| val |)))
+                                          ]
+                                        |));
+                                      ("delegated_amount",
                                         M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::ops::control_flow::ControlFlow")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "core::result::Result")
-                                                []
-                                                [
-                                                  Ty.path "core::convert::Infallible";
-                                                  Ty.path "solana_program_error::ProgramError"
-                                                ];
-                                              Ty.apply
-                                                (Ty.path "solana_program_option::COption")
-                                                []
-                                                [ Ty.path "solana_address::Address" ]
-                                            ],
-                                          M.get_trait_method (|
-                                            "core::ops::try_trait::Try",
-                                            Ty.apply
-                                              (Ty.path "core::result::Result")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "solana_program_option::COption")
-                                                  []
-                                                  [ Ty.path "solana_address::Address" ];
-                                                Ty.path "solana_program_error::ProgramError"
-                                              ],
-                                            [],
-                                            [],
-                                            "branch",
+                                          Ty.path "u64",
+                                          M.get_associated_function (|
+                                            Ty.path "u64",
+                                            "from_le_bytes",
                                             [],
                                             []
                                           |),
                                           [
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "core::result::Result")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "solana_program_option::COption")
-                                                    []
-                                                    [ Ty.path "solana_address::Address" ];
-                                                  Ty.path "solana_program_error::ProgramError"
-                                                ],
-                                              M.get_function (|
-                                                "spl_token_interface::state::unpack_coption_key",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| close_authority |) |)
-                                                |)
-                                              ]
-                                            |)
+                                            M.value_with_ty
+                                              (M.read (|
+                                                M.deref (| M.read (| delegated_amount |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 8 ]
+                                                [ Ty.path "u8" ])
                                           ]
-                                        |)
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let γ0_0 :=
-                                              M.SubPointer.get_struct_tuple_field (|
-                                                γ,
-                                                "core::ops::control_flow::ControlFlow::Break",
-                                                0
-                                              |) in
-                                            let residual :=
-                                              M.copy (|
+                                        |));
+                                      ("close_authority",
+                                        M.match_operator (|
+                                          Ty.apply
+                                            (Ty.path "solana_program_option::COption")
+                                            []
+                                            [ Ty.path "solana_address::Address" ],
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "core::ops::control_flow::ControlFlow")
+                                              []
+                                              [
                                                 Ty.apply
                                                   (Ty.path "core::result::Result")
                                                   []
                                                   [
                                                     Ty.path "core::convert::Infallible";
                                                     Ty.path "solana_program_error::ProgramError"
+                                                  ];
+                                                Ty.apply
+                                                  (Ty.path "solana_program_option::COption")
+                                                  []
+                                                  [ Ty.path "solana_address::Address" ]
+                                              ],
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::ops::control_flow::ControlFlow")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.path "core::convert::Infallible";
+                                                      Ty.path "solana_program_error::ProgramError"
+                                                    ];
+                                                  Ty.apply
+                                                    (Ty.path "solana_program_option::COption")
+                                                    []
+                                                    [ Ty.path "solana_address::Address" ]
+                                                ],
+                                              M.get_trait_method (|
+                                                "core::ops::try_trait::Try",
+                                                Ty.apply
+                                                  (Ty.path "core::result::Result")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "solana_program_option::COption")
+                                                      []
+                                                      [ Ty.path "solana_address::Address" ];
+                                                    Ty.path "solana_program_error::ProgramError"
                                                   ],
-                                                γ0_0
-                                              |) in
-                                            M.never_to_any (|
-                                              M.read (|
-                                                M.return_ (|
-                                                  M.call_closure (|
+                                                [],
+                                                [],
+                                                "branch",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
                                                     Ty.apply
                                                       (Ty.path "core::result::Result")
                                                       []
                                                       [
-                                                        Ty.path
-                                                          "spl_token_interface::state::Account";
+                                                        Ty.apply
+                                                          (Ty.path "solana_program_option::COption")
+                                                          []
+                                                          [ Ty.path "solana_address::Address" ];
                                                         Ty.path "solana_program_error::ProgramError"
                                                       ],
-                                                    M.get_trait_method (|
-                                                      "core::ops::try_trait::FromResidual",
-                                                      Ty.apply
-                                                        (Ty.path "core::result::Result")
-                                                        []
-                                                        [
-                                                          Ty.path
-                                                            "spl_token_interface::state::Account";
-                                                          Ty.path
-                                                            "solana_program_error::ProgramError"
-                                                        ],
+                                                    M.get_function (|
+                                                      "spl_token_interface::state::unpack_coption_key",
                                                       [],
+                                                      []
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| M.read (| close_authority |) |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 36 ]
+                                                              [ Ty.path "u8" ]
+                                                          ])
+                                                    ]
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "core::result::Result")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "solana_program_option::COption")
+                                                        []
+                                                        [ Ty.path "solana_address::Address" ];
+                                                      Ty.path "solana_program_error::ProgramError"
+                                                    ])
+                                              ]
+                                            |)
+                                          |),
+                                          [
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let γ0_0 :=
+                                                  M.SubPointer.get_struct_tuple_field (|
+                                                    γ,
+                                                    "core::ops::control_flow::ControlFlow::Break",
+                                                    0
+                                                  |) in
+                                                let residual :=
+                                                  M.copy (|
+                                                    Ty.apply
+                                                      (Ty.path "core::result::Result")
+                                                      []
                                                       [
+                                                        Ty.path "core::convert::Infallible";
+                                                        Ty.path "solana_program_error::ProgramError"
+                                                      ],
+                                                    γ0_0
+                                                  |) in
+                                                M.never_to_any (|
+                                                  M.read (|
+                                                    M.return_ (|
+                                                      M.call_closure (|
                                                         Ty.apply
                                                           (Ty.path "core::result::Result")
                                                           []
                                                           [
-                                                            Ty.path "core::convert::Infallible";
+                                                            Ty.path
+                                                              "spl_token_interface::state::Account";
                                                             Ty.path
                                                               "solana_program_error::ProgramError"
-                                                          ]
-                                                      ],
-                                                      "from_residual",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [ M.read (| residual |) ]
+                                                          ],
+                                                        M.get_trait_method (|
+                                                          "core::ops::try_trait::FromResidual",
+                                                          Ty.apply
+                                                            (Ty.path "core::result::Result")
+                                                            []
+                                                            [
+                                                              Ty.path
+                                                                "spl_token_interface::state::Account";
+                                                              Ty.path
+                                                                "solana_program_error::ProgramError"
+                                                            ],
+                                                          [],
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "core::result::Result")
+                                                              []
+                                                              [
+                                                                Ty.path "core::convert::Infallible";
+                                                                Ty.path
+                                                                  "solana_program_error::ProgramError"
+                                                              ]
+                                                          ],
+                                                          "from_residual",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.read (| residual |))
+                                                            (Ty.apply
+                                                              (Ty.path "core::result::Result")
+                                                              []
+                                                              [
+                                                                Ty.path "core::convert::Infallible";
+                                                                Ty.path
+                                                                  "solana_program_error::ProgramError"
+                                                              ])
+                                                        ]
+                                                      |)
+                                                    |)
                                                   |)
-                                                |)
-                                              |)
-                                            |)));
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let γ0_0 :=
-                                              M.SubPointer.get_struct_tuple_field (|
-                                                γ,
-                                                "core::ops::control_flow::ControlFlow::Continue",
-                                                0
-                                              |) in
-                                            let val :=
-                                              M.copy (|
-                                                Ty.apply
-                                                  (Ty.path "solana_program_option::COption")
-                                                  []
-                                                  [ Ty.path "solana_address::Address" ],
-                                                γ0_0
-                                              |) in
-                                            M.read (| val |)))
-                                      ]
-                                    |))
-                                ]
-                            ]))
+                                                |)));
+                                            fun γ =>
+                                              ltac:(M.monadic
+                                                (let γ0_0 :=
+                                                  M.SubPointer.get_struct_tuple_field (|
+                                                    γ,
+                                                    "core::ops::control_flow::ControlFlow::Continue",
+                                                    0
+                                                  |) in
+                                                let val :=
+                                                  M.copy (|
+                                                    Ty.apply
+                                                      (Ty.path "solana_program_option::COption")
+                                                      []
+                                                      [ Ty.path "solana_address::Address" ],
+                                                    γ0_0
+                                                  |) in
+                                                M.read (| val |)))
+                                          ]
+                                        |))
+                                    ])
+                                  (Ty.path "spl_token_interface::state::Account")
+                              ])
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "spl_token_interface::state::Account";
+                                Ty.path "solana_program_error::ProgramError"
+                              ])))
                     ]
                   |)
                 |)
@@ -4474,24 +5056,39 @@ Module state.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| dst |) |)
-                                  |);
-                                  Value.mkStructRecord
-                                    "core::ops::range::Range"
-                                    []
-                                    [ Ty.path "usize" ]
-                                    [
-                                      ("start", M.read (| offset |));
-                                      ("end_",
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.add,
-                                          [ M.read (| offset |); Value.Integer IntegerKind.Usize 165
-                                          ]
-                                        |))
-                                    ]
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| dst |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                  M.value_with_ty
+                                    (M.value_with_ty
+                                      (Value.mkStructRecord
+                                        "core::ops::range::Range"
+                                        [
+                                          ("start", M.read (| offset |));
+                                          ("end_",
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              BinOp.Wrap.add,
+                                              [
+                                                M.read (| offset |);
+                                                Value.Integer IntegerKind.Usize 165
+                                              ]
+                                            |))
+                                        ])
+                                      (Ty.apply
+                                        (Ty.path "core::ops::range::Range")
+                                        []
+                                        [ Ty.path "usize" ]))
+                                    (Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ])
                                 ]
                               |)
                             |)
@@ -4526,10 +5123,15 @@ Module state.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| slice |) |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| slice |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                 ]
                               |)
                             |)
@@ -4708,7 +5310,19 @@ Module state.
                           ]
                       ],
                     M.get_associated_function (| Self, "as_arrays.pack_into_slice", [], [] |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| input |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| input |) |) |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 165 ]
+                              [ Ty.path "u8" ]
+                          ])
+                    ]
                   |)
                 |),
                 [
@@ -4948,59 +5562,74 @@ Module state.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                          M.pointer_coercion
+                                            M.PointerCoercion.Unsize
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                                  [ Ty.path "u8" ]
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.read (| mint_dst |) |)
+                                            |)
+                                          ]
+                                        |))
+                                        (Ty.apply
                                           (Ty.path "&mut")
                                           []
-                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                        M.pointer_coercion
-                                          M.PointerCoercion.Unsize
-                                          (Ty.apply
-                                            (Ty.path "&mut")
-                                            []
-                                            [
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.call_closure (|
                                               Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 32 ]
-                                                [ Ty.path "u8" ]
-                                            ])
-                                          (Ty.apply
-                                            (Ty.path "&mut")
-                                            []
-                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| mint_dst |) |)
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                              M.get_trait_method (|
+                                                "core::convert::AsRef",
+                                                Ty.path "solana_address::Address",
+                                                [],
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                                "as_ref",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| mint |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.path "solana_address::Address" ])
+                                              ]
+                                            |)
                                           |)
-                                        ]
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                            M.get_trait_method (|
-                                              "core::convert::AsRef",
-                                              Ty.path "solana_address::Address",
-                                              [],
-                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                              "as_ref",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| mint |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
@@ -5013,59 +5642,74 @@ Module state.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                          M.pointer_coercion
+                                            M.PointerCoercion.Unsize
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                                  [ Ty.path "u8" ]
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.read (| owner_dst |) |)
+                                            |)
+                                          ]
+                                        |))
+                                        (Ty.apply
                                           (Ty.path "&mut")
                                           []
-                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                        M.pointer_coercion
-                                          M.PointerCoercion.Unsize
-                                          (Ty.apply
-                                            (Ty.path "&mut")
-                                            []
-                                            [
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.call_closure (|
                                               Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 32 ]
-                                                [ Ty.path "u8" ]
-                                            ])
-                                          (Ty.apply
-                                            (Ty.path "&mut")
-                                            []
-                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| owner_dst |) |)
+                                                (Ty.path "&")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                              M.get_trait_method (|
+                                                "core::convert::AsRef",
+                                                Ty.path "solana_address::Address",
+                                                [],
+                                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                                "as_ref",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| owner |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.path "solana_address::Address" ])
+                                              ]
+                                            |)
                                           |)
-                                        ]
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                            M.get_trait_method (|
-                                              "core::convert::AsRef",
-                                              Ty.path "solana_address::Address",
-                                              [],
-                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                              "as_ref",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| owner |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        |)
-                                      |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
@@ -5082,7 +5726,7 @@ Module state.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| amount |) ]
+                                      [ M.value_with_ty (M.read (| amount |)) (Ty.path "u64") ]
                                     |)
                                   |) in
                                 let~ _ : Ty.tuple [] :=
@@ -5094,14 +5738,34 @@ Module state.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| delegate |) |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| delegate_dst |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| delegate |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "solana_program_option::COption")
+                                              []
+                                              [ Ty.path "solana_address::Address" ]
+                                          ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.read (| delegate_dst |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 36 ]
+                                              [ Ty.path "u8" ]
+                                          ])
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
@@ -5121,14 +5785,34 @@ Module state.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| is_native |) |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| is_native_dst |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| is_native |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "solana_program_option::COption")
+                                              []
+                                              [ Ty.path "u64" ]
+                                          ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.read (| is_native_dst |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 12 ]
+                                              [ Ty.path "u8" ]
+                                          ])
                                     ]
                                   |) in
                                 let~ _ : Ty.tuple [] :=
@@ -5145,7 +5829,11 @@ Module state.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| delegated_amount |) ]
+                                      [
+                                        M.value_with_ty
+                                          (M.read (| delegated_amount |))
+                                          (Ty.path "u64")
+                                      ]
                                     |)
                                   |) in
                                 let~ _ : Ty.tuple [] :=
@@ -5157,14 +5845,34 @@ Module state.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| close_authority |) |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.deref (| M.read (| close_authority_dst |) |)
-                                      |)
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| close_authority |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "solana_program_option::COption")
+                                              []
+                                              [ Ty.path "solana_address::Address" ]
+                                          ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (| M.read (| close_authority_dst |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 36 ]
+                                              [ Ty.path "u8" ]
+                                          ])
                                     ]
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -5282,40 +5990,47 @@ Module state.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::state::AccountState::Uninitialized"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Uninitialized" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::state::AccountState::Initialized"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Initialized" |) |) |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "spl_token_interface::state::AccountState::Frozen"
-                        |) in
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Frozen" |) |) |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::state::AccountState::Uninitialized"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "Uninitialized" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::state::AccountState::Initialized"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Initialized" |) |) |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "spl_token_interface::state::AccountState::Frozen"
+                          |) in
+                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Frozen" |) |) |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5338,7 +6053,9 @@ Module state.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.StructTuple "spl_token_interface::state::AccountState::Uninitialized" [] [] []))
+          (M.value_with_ty
+            (Value.StructTuple "spl_token_interface::state::AccountState::Uninitialized" [])
+            (Ty.path "spl_token_interface::state::AccountState")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -5390,7 +6107,14 @@ Module state.
                   [],
                   [ Ty.path "spl_token_interface::state::AccountState" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "spl_token_interface::state::AccountState" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "u8" :=
               M.call_closure (|
@@ -5400,7 +6124,14 @@ Module state.
                   [],
                   [ Ty.path "spl_token_interface::state::AccountState" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "spl_token_interface::state::AccountState" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -5477,23 +6208,26 @@ Module state.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 0
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::state::AccountState";
-                      Ty.apply
-                        (Ty.path "num_enum::TryFromPrimitiveError")
-                        []
-                        [ Ty.path "spl_token_interface::state::AccountState" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::state::AccountState::Uninitialized"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::state::AccountState::Uninitialized"
+                            [])
+                          (Ty.path "spl_token_interface::state::AccountState")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::state::AccountState";
+                        Ty.apply
+                          (Ty.path "num_enum::TryFromPrimitiveError")
+                          []
+                          [ Ty.path "spl_token_interface::state::AccountState" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5501,23 +6235,26 @@ Module state.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 1
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::state::AccountState";
-                      Ty.apply
-                        (Ty.path "num_enum::TryFromPrimitiveError")
-                        []
-                        [ Ty.path "spl_token_interface::state::AccountState" ]
-                    ]
-                    [
-                      Value.StructTuple
-                        "spl_token_interface::state::AccountState::Initialized"
-                        []
-                        []
-                        []
-                    ]));
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "spl_token_interface::state::AccountState::Initialized"
+                            [])
+                          (Ty.path "spl_token_interface::state::AccountState")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::state::AccountState";
+                        Ty.apply
+                          (Ty.path "num_enum::TryFromPrimitiveError")
+                          []
+                          [ Ty.path "spl_token_interface::state::AccountState" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let _ :=
@@ -5525,48 +6262,57 @@ Module state.
                       M.read (| γ |),
                       Value.Integer IntegerKind.U8 2
                     |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.path "spl_token_interface::state::AccountState";
-                      Ty.apply
-                        (Ty.path "num_enum::TryFromPrimitiveError")
-                        []
-                        [ Ty.path "spl_token_interface::state::AccountState" ]
-                    ]
-                    [ Value.StructTuple "spl_token_interface::state::AccountState::Frozen" [] [] []
-                    ]));
-              fun γ =>
-                ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [
-                      Ty.path "spl_token_interface::state::AccountState";
-                      Ty.apply
-                        (Ty.path "num_enum::TryFromPrimitiveError")
-                        []
-                        [ Ty.path "spl_token_interface::state::AccountState" ]
-                    ]
-                    [
-                      M.call_closure (|
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.value_with_ty
+                          (Value.StructTuple "spl_token_interface::state::AccountState::Frozen" [])
+                          (Ty.path "spl_token_interface::state::AccountState")
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::state::AccountState";
                         Ty.apply
                           (Ty.path "num_enum::TryFromPrimitiveError")
                           []
-                          [ Ty.path "spl_token_interface::state::AccountState" ],
-                        M.get_associated_function (|
+                          [ Ty.path "spl_token_interface::state::AccountState" ]
+                      ])));
+              fun γ =>
+                ltac:(M.monadic
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Err"
+                      [
+                        M.call_closure (|
                           Ty.apply
                             (Ty.path "num_enum::TryFromPrimitiveError")
                             []
                             [ Ty.path "spl_token_interface::state::AccountState" ],
-                          "new",
-                          [],
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "num_enum::TryFromPrimitiveError")
+                              []
+                              [ Ty.path "spl_token_interface::state::AccountState" ],
+                            "new",
+                            [],
+                            []
+                          |),
+                          [ M.value_with_ty (M.read (| number |)) (Ty.path "u8") ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.path "spl_token_interface::state::AccountState";
+                        Ty.apply
+                          (Ty.path "num_enum::TryFromPrimitiveError")
                           []
-                        |),
-                        [ M.read (| number |) ]
-                      |)
-                    ]))
+                          [ Ty.path "spl_token_interface::state::AccountState" ]
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5623,7 +6369,7 @@ Module state.
               [],
               []
             |),
-            [ M.read (| number |) ]
+            [ M.value_with_ty (M.read (| number |)) (Ty.path "u8") ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -5759,127 +6505,147 @@ Module state.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Multisig" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "m" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "spl_token_interface::state::Multisig",
-                          "m"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Multisig" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "m" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "spl_token_interface::state::Multisig",
+                            "m"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "n" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "spl_token_interface::state::Multisig",
-                          "n"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "n" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "spl_token_interface::state::Multisig",
+                            "n"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "is_initialized" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "spl_token_interface::state::Multisig",
-                          "is_initialized"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "is_initialized" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "bool" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "spl_token_interface::state::Multisig",
+                            "is_initialized"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "signers" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 11 ]
-                            [ Ty.path "solana_address::Address" ]
-                        ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 11 ]
-                                [ Ty.path "solana_address::Address" ]
-                            ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "spl_token_interface::state::Multisig",
-                              "signers"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "signers" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 11 ]
+                              [ Ty.path "solana_address::Address" ]
+                          ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 11 ]
+                                  [ Ty.path "solana_address::Address" ]
+                              ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "spl_token_interface::state::Multisig",
+                                "signers"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5902,74 +6668,74 @@ Module state.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "spl_token_interface::state::Multisig"
-            []
-            []
-            [
-              ("m",
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_trait_method (|
-                    "core::default::Default",
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "spl_token_interface::state::Multisig"
+              [
+                ("m",
+                  M.call_closure (|
                     Ty.path "u8",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "u8",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("n",
-                M.call_closure (|
-                  Ty.path "u8",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("n",
+                  M.call_closure (|
                     Ty.path "u8",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "u8",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("is_initialized",
-                M.call_closure (|
-                  Ty.path "bool",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("is_initialized",
+                  M.call_closure (|
                     Ty.path "bool",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "bool",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("signers",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "array")
-                    [ Value.Integer IntegerKind.Usize 11 ]
-                    [ Ty.path "solana_address::Address" ],
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("signers",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "array")
                       [ Value.Integer IntegerKind.Usize 11 ]
                       [ Ty.path "solana_address::Address" ],
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 11 ]
+                        [ Ty.path "solana_address::Address" ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |))
-            ]))
+                  |))
+              ])
+            (Ty.path "spl_token_interface::state::Multisig")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -6100,22 +6866,42 @@ Module state.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "spl_token_interface::state::Multisig",
-                      "signers"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "spl_token_interface::state::Multisig",
-                      "signers"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "spl_token_interface::state::Multisig",
+                        "signers"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 11 ]
+                          [ Ty.path "solana_address::Address" ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "spl_token_interface::state::Multisig",
+                        "signers"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 11 ]
+                          [ Ty.path "solana_address::Address" ]
+                      ])
                 ]
               |)))
           |)))
@@ -6263,20 +7049,34 @@ Module state.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |);
-                              Value.mkStructRecord
-                                "core::ops::range::Range"
-                                []
-                                [ Ty.path "usize" ]
-                                [
-                                  ("start", M.read (| offset |));
-                                  ("end_",
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      BinOp.Wrap.add,
-                                      [ M.read (| offset |); Value.Integer IntegerKind.Usize 355 ]
-                                    |))
-                                ]
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.mkStructRecord
+                                    "core::ops::range::Range"
+                                    [
+                                      ("start", M.read (| offset |));
+                                      ("end_",
+                                        M.call_closure (|
+                                          Ty.path "usize",
+                                          BinOp.Wrap.add,
+                                          [ M.read (| offset |); Value.Integer IntegerKind.Usize 355
+                                          ]
+                                        |))
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "usize" ]))
+                                (Ty.apply
+                                  (Ty.path "core::ops::range::Range")
+                                  []
+                                  [ Ty.path "usize" ])
                             ]
                           |)
                         |)
@@ -6302,7 +7102,14 @@ Module state.
                               [ Ty.path "u8" ]
                           ],
                         M.get_associated_function (| Self, "as_array.unpack_from_slice", [], [] |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| slice |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                        ]
                       |)
                     |)
                   |) in
@@ -6414,7 +7221,19 @@ Module state.
                               ]
                           ],
                         M.get_associated_function (| Self, "as_arrays.unpack_from_slice", [], [] |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 355 ]
+                                  [ Ty.path "u8" ]
+                              ])
+                        ]
                       |)
                     |),
                     [
@@ -6478,95 +7297,105 @@ Module state.
                             |) in
                           M.read (|
                             let~ result : Ty.path "spl_token_interface::state::Multisig" :=
-                              Value.mkStructRecord
-                                "spl_token_interface::state::Multisig"
-                                []
-                                []
-                                [
-                                  ("m",
-                                    M.read (|
-                                      M.SubPointer.get_array_field (|
-                                        M.deref (| M.read (| m |) |),
-                                        Value.Integer IntegerKind.Usize 0
-                                      |)
-                                    |));
-                                  ("n",
-                                    M.read (|
-                                      M.SubPointer.get_array_field (|
-                                        M.deref (| M.read (| n |) |),
-                                        Value.Integer IntegerKind.Usize 0
-                                      |)
-                                    |));
-                                  ("is_initialized",
-                                    M.match_operator (|
-                                      Ty.path "bool",
-                                      is_initialized,
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let γ := M.deref (| M.read (| γ |) |) in
-                                            let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
-                                            let _ :=
-                                              is_constant_or_break_match (|
-                                                M.read (| γ1_0 |),
-                                                Value.Integer IntegerKind.U8 0
-                                              |) in
-                                            Value.Bool false));
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let γ := M.deref (| M.read (| γ |) |) in
-                                            let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
-                                            let _ :=
-                                              is_constant_or_break_match (|
-                                                M.read (| γ1_0 |),
-                                                Value.Integer IntegerKind.U8 1
-                                              |) in
-                                            Value.Bool true));
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (M.never_to_any (|
-                                              M.read (|
-                                                M.return_ (|
-                                                  Value.StructTuple
-                                                    "core::result::Result::Err"
-                                                    []
-                                                    [
-                                                      Ty.path
-                                                        "spl_token_interface::state::Multisig";
-                                                      Ty.path "solana_program_error::ProgramError"
-                                                    ]
-                                                    [
-                                                      Value.StructTuple
-                                                        "solana_program_error::ProgramError::InvalidAccountData"
-                                                        []
-                                                        []
-                                                        []
-                                                    ]
-                                                |)
-                                              |)
-                                            |)))
-                                      ]
-                                    |));
-                                  ("signers",
-                                    lib.repeat (|
-                                      M.call_closure (|
-                                        Ty.path "solana_address::Address",
-                                        M.get_associated_function (|
-                                          Ty.path "solana_address::Address",
-                                          "new_from_array",
-                                          [],
-                                          []
-                                        |),
+                              M.value_with_ty
+                                (Value.mkStructRecord
+                                  "spl_token_interface::state::Multisig"
+                                  [
+                                    ("m",
+                                      M.read (|
+                                        M.SubPointer.get_array_field (|
+                                          M.deref (| M.read (| m |) |),
+                                          Value.Integer IntegerKind.Usize 0
+                                        |)
+                                      |));
+                                    ("n",
+                                      M.read (|
+                                        M.SubPointer.get_array_field (|
+                                          M.deref (| M.read (| n |) |),
+                                          Value.Integer IntegerKind.Usize 0
+                                        |)
+                                      |));
+                                    ("is_initialized",
+                                      M.match_operator (|
+                                        Ty.path "bool",
+                                        is_initialized,
                                         [
-                                          lib.repeat (|
-                                            Value.Integer IntegerKind.U8 0,
-                                            Value.Integer IntegerKind.Usize 32
-                                          |)
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ := M.deref (| M.read (| γ |) |) in
+                                              let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
+                                              let _ :=
+                                                is_constant_or_break_match (|
+                                                  M.read (| γ1_0 |),
+                                                  Value.Integer IntegerKind.U8 0
+                                                |) in
+                                              Value.Bool false));
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ := M.deref (| M.read (| γ |) |) in
+                                              let γ1_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
+                                              let _ :=
+                                                is_constant_or_break_match (|
+                                                  M.read (| γ1_0 |),
+                                                  Value.Integer IntegerKind.U8 1
+                                                |) in
+                                              Value.Bool true));
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (M.never_to_any (|
+                                                M.read (|
+                                                  M.return_ (|
+                                                    M.value_with_ty
+                                                      (Value.StructTuple
+                                                        "core::result::Result::Err"
+                                                        [
+                                                          M.value_with_ty
+                                                            (Value.StructTuple
+                                                              "solana_program_error::ProgramError::InvalidAccountData"
+                                                              [])
+                                                            (Ty.path
+                                                              "solana_program_error::ProgramError")
+                                                        ])
+                                                      (Ty.apply
+                                                        (Ty.path "core::result::Result")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "spl_token_interface::state::Multisig";
+                                                          Ty.path
+                                                            "solana_program_error::ProgramError"
+                                                        ])
+                                                  |)
+                                                |)
+                                              |)))
                                         ]
-                                      |),
-                                      Value.Integer IntegerKind.Usize 11
-                                    |))
-                                ] in
+                                      |));
+                                    ("signers",
+                                      lib.repeat (|
+                                        M.call_closure (|
+                                          Ty.path "solana_address::Address",
+                                          M.get_associated_function (|
+                                            Ty.path "solana_address::Address",
+                                            "new_from_array",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (lib.repeat (|
+                                                Value.Integer IntegerKind.U8 0,
+                                                Value.Integer IntegerKind.Usize 32
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 32 ]
+                                                [ Ty.path "u8" ])
+                                          ]
+                                        |),
+                                        Value.Integer IntegerKind.Usize 11
+                                      |))
+                                  ])
+                                (Ty.path "spl_token_interface::state::Multisig") in
                             let~ _ : Ty.tuple [] :=
                               M.read (|
                                 M.use
@@ -6624,8 +7453,207 @@ Module state.
                                             []
                                           |),
                                           [
-                                            M.call_closure (|
-                                              Ty.apply
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::iter::adapters::zip::Zip")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::slice::iter::Chunks")
+                                                      []
+                                                      [ Ty.path "u8" ];
+                                                    Ty.apply
+                                                      (Ty.path "core::slice::iter::IterMut")
+                                                      []
+                                                      [ Ty.path "solana_address::Address" ]
+                                                  ],
+                                                M.get_trait_method (|
+                                                  "core::iter::traits::iterator::Iterator",
+                                                  Ty.apply
+                                                    (Ty.path "core::slice::iter::Chunks")
+                                                    []
+                                                    [ Ty.path "u8" ],
+                                                  [],
+                                                  [],
+                                                  "zip",
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::slice::iter::IterMut")
+                                                      []
+                                                      [ Ty.path "solana_address::Address" ]
+                                                  ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "core::slice::iter::Chunks")
+                                                        []
+                                                        [ Ty.path "u8" ],
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "u8" ],
+                                                        "chunks",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "slice")
+                                                                  []
+                                                                  [ Ty.path "u8" ]
+                                                              ],
+                                                            M.pointer_coercion
+                                                              M.PointerCoercion.Unsize
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "array")
+                                                                    [
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        352
+                                                                    ]
+                                                                    [ Ty.path "u8" ]
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [ Ty.path "u8" ]
+                                                                ]),
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.read (| signers_flat |)
+                                                                |)
+                                                              |)
+                                                            ]
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "u8" ]
+                                                            ]);
+                                                        M.value_with_ty
+                                                          (Value.Integer IntegerKind.Usize 32)
+                                                          (Ty.path "usize")
+                                                      ]
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::slice::iter::Chunks")
+                                                      []
+                                                      [ Ty.path "u8" ]);
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "core::slice::iter::IterMut")
+                                                        []
+                                                        [ Ty.path "solana_address::Address" ],
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "solana_address::Address" ],
+                                                        "iter_mut",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "slice")
+                                                                  []
+                                                                  [
+                                                                    Ty.path
+                                                                      "solana_address::Address"
+                                                                  ]
+                                                              ],
+                                                            M.pointer_coercion
+                                                              M.PointerCoercion.Unsize
+                                                              (Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "array")
+                                                                    [
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        11
+                                                                    ]
+                                                                    [
+                                                                      Ty.path
+                                                                        "solana_address::Address"
+                                                                    ]
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [
+                                                                      Ty.path
+                                                                        "solana_address::Address"
+                                                                    ]
+                                                                ]),
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                M.SubPointer.get_struct_record_field (|
+                                                                  result,
+                                                                  "spl_token_interface::state::Multisig",
+                                                                  "signers"
+                                                                |)
+                                                              |)
+                                                            ]
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "slice")
+                                                                []
+                                                                [ Ty.path "solana_address::Address"
+                                                                ]
+                                                            ])
+                                                      ]
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "core::slice::iter::IterMut")
+                                                      []
+                                                      [ Ty.path "solana_address::Address" ])
+                                                ]
+                                              |))
+                                              (Ty.apply
                                                 (Ty.path "core::iter::adapters::zip::Zip")
                                                 []
                                                 [
@@ -6637,138 +7665,7 @@ Module state.
                                                     (Ty.path "core::slice::iter::IterMut")
                                                     []
                                                     [ Ty.path "solana_address::Address" ]
-                                                ],
-                                              M.get_trait_method (|
-                                                "core::iter::traits::iterator::Iterator",
-                                                Ty.apply
-                                                  (Ty.path "core::slice::iter::Chunks")
-                                                  []
-                                                  [ Ty.path "u8" ],
-                                                [],
-                                                [],
-                                                "zip",
-                                                [],
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::slice::iter::IterMut")
-                                                    []
-                                                    [ Ty.path "solana_address::Address" ]
-                                                ]
-                                              |),
-                                              [
-                                                M.call_closure (|
-                                                  Ty.apply
-                                                    (Ty.path "core::slice::iter::Chunks")
-                                                    []
-                                                    [ Ty.path "u8" ],
-                                                  M.get_associated_function (|
-                                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                                    "chunks",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "&")
-                                                        []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "slice")
-                                                            []
-                                                            [ Ty.path "u8" ]
-                                                        ],
-                                                      M.pointer_coercion
-                                                        M.PointerCoercion.Unsize
-                                                        (Ty.apply
-                                                          (Ty.path "&")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "array")
-                                                              [ Value.Integer IntegerKind.Usize 352
-                                                              ]
-                                                              [ Ty.path "u8" ]
-                                                          ])
-                                                        (Ty.apply
-                                                          (Ty.path "&")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "slice")
-                                                              []
-                                                              [ Ty.path "u8" ]
-                                                          ]),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.Ref,
-                                                          M.deref (| M.read (| signers_flat |) |)
-                                                        |)
-                                                      ]
-                                                    |);
-                                                    Value.Integer IntegerKind.Usize 32
-                                                  ]
-                                                |);
-                                                M.call_closure (|
-                                                  Ty.apply
-                                                    (Ty.path "core::slice::iter::IterMut")
-                                                    []
-                                                    [ Ty.path "solana_address::Address" ],
-                                                  M.get_associated_function (|
-                                                    Ty.apply
-                                                      (Ty.path "slice")
-                                                      []
-                                                      [ Ty.path "solana_address::Address" ],
-                                                    "iter_mut",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "&mut")
-                                                        []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "slice")
-                                                            []
-                                                            [ Ty.path "solana_address::Address" ]
-                                                        ],
-                                                      M.pointer_coercion
-                                                        M.PointerCoercion.Unsize
-                                                        (Ty.apply
-                                                          (Ty.path "&mut")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "array")
-                                                              [ Value.Integer IntegerKind.Usize 11 ]
-                                                              [ Ty.path "solana_address::Address" ]
-                                                          ])
-                                                        (Ty.apply
-                                                          (Ty.path "&mut")
-                                                          []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "slice")
-                                                              []
-                                                              [ Ty.path "solana_address::Address" ]
-                                                          ]),
-                                                      [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.SubPointer.get_struct_record_field (|
-                                                            result,
-                                                            "spl_token_interface::state::Multisig",
-                                                            "signers"
-                                                          |)
-                                                        |)
-                                                      ]
-                                                    |)
-                                                  ]
-                                                |)
-                                              ]
-                                            |)
+                                                ])
                                           ]
                                         |)
                                       |),
@@ -6875,15 +7772,40 @@ Module state.
                                                             []
                                                           |),
                                                           [
-                                                            M.borrow (|
-                                                              Pointer.Kind.MutRef,
-                                                              M.deref (|
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  iter
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                M.deref (|
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    iter
+                                                                  |)
                                                                 |)
-                                                              |)
-                                                            |)
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "core::iter::adapters::zip::Zip")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "core::slice::iter::Chunks")
+                                                                        []
+                                                                        [ Ty.path "u8" ];
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "core::slice::iter::IterMut")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "solana_address::Address"
+                                                                        ]
+                                                                    ]
+                                                                ])
                                                           ]
                                                         |)
                                                       |),
@@ -7004,18 +7926,8 @@ Module state.
                                                                           []
                                                                         |),
                                                                         [
-                                                                          M.call_closure (|
-                                                                            Ty.apply
-                                                                              (Ty.path
-                                                                                "core::result::Result")
-                                                                              []
-                                                                              [
-                                                                                Ty.path
-                                                                                  "solana_address::Address";
-                                                                                Ty.path
-                                                                                  "solana_program_error::ProgramError"
-                                                                              ],
-                                                                            M.get_associated_function (|
+                                                                          M.value_with_ty
+                                                                            (M.call_closure (|
                                                                               Ty.apply
                                                                                 (Ty.path
                                                                                   "core::result::Result")
@@ -7024,24 +7936,9 @@ Module state.
                                                                                   Ty.path
                                                                                     "solana_address::Address";
                                                                                   Ty.path
-                                                                                    "core::array::TryFromSliceError"
+                                                                                    "solana_program_error::ProgramError"
                                                                                 ],
-                                                                              "map_err",
-                                                                              [],
-                                                                              [
-                                                                                Ty.path
-                                                                                  "solana_program_error::ProgramError";
-                                                                                Ty.function
-                                                                                  [
-                                                                                    Ty.path
-                                                                                      "core::array::TryFromSliceError"
-                                                                                  ]
-                                                                                  (Ty.path
-                                                                                    "solana_program_error::ProgramError")
-                                                                              ]
-                                                                            |),
-                                                                            [
-                                                                              M.call_closure (|
+                                                                              M.get_associated_function (|
                                                                                 Ty.apply
                                                                                   (Ty.path
                                                                                     "core::result::Result")
@@ -7052,62 +7949,139 @@ Module state.
                                                                                     Ty.path
                                                                                       "core::array::TryFromSliceError"
                                                                                   ],
-                                                                                M.get_trait_method (|
-                                                                                  "core::convert::TryFrom",
+                                                                                "map_err",
+                                                                                [],
+                                                                                [
                                                                                   Ty.path
-                                                                                    "solana_address::Address",
-                                                                                  [],
-                                                                                  [
+                                                                                    "solana_program_error::ProgramError";
+                                                                                  Ty.function
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "core::array::TryFromSliceError"
+                                                                                    ]
+                                                                                    (Ty.path
+                                                                                      "solana_program_error::ProgramError")
+                                                                                ]
+                                                                              |),
+                                                                              [
+                                                                                M.value_with_ty
+                                                                                  (M.call_closure (|
                                                                                     Ty.apply
-                                                                                      (Ty.path "&")
+                                                                                      (Ty.path
+                                                                                        "core::result::Result")
                                                                                       []
+                                                                                      [
+                                                                                        Ty.path
+                                                                                          "solana_address::Address";
+                                                                                        Ty.path
+                                                                                          "core::array::TryFromSliceError"
+                                                                                      ],
+                                                                                    M.get_trait_method (|
+                                                                                      "core::convert::TryFrom",
+                                                                                      Ty.path
+                                                                                        "solana_address::Address",
+                                                                                      [],
                                                                                       [
                                                                                         Ty.apply
                                                                                           (Ty.path
-                                                                                            "slice")
+                                                                                            "&")
                                                                                           []
                                                                                           [
-                                                                                            Ty.path
-                                                                                              "u8"
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "slice")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "u8"
+                                                                                              ]
                                                                                           ]
-                                                                                      ]
-                                                                                  ],
-                                                                                  "try_from",
-                                                                                  [],
-                                                                                  []
-                                                                                |),
-                                                                                [ M.read (| src |) ]
-                                                                              |);
-                                                                              M.closure
-                                                                                (fun γ =>
-                                                                                  ltac:(M.monadic
-                                                                                    match γ with
-                                                                                    | [ α0 ] =>
-                                                                                      ltac:(M.monadic
-                                                                                        (M.match_operator (|
-                                                                                          Ty.path
-                                                                                            "solana_program_error::ProgramError",
-                                                                                          M.alloc (|
-                                                                                            Ty.path
-                                                                                              "core::array::TryFromSliceError",
-                                                                                            α0
-                                                                                          |),
+                                                                                      ],
+                                                                                      "try_from",
+                                                                                      [],
+                                                                                      []
+                                                                                    |),
+                                                                                    [
+                                                                                      M.value_with_ty
+                                                                                        (M.read (|
+                                                                                          src
+                                                                                        |))
+                                                                                        (Ty.apply
+                                                                                          (Ty.path
+                                                                                            "&")
+                                                                                          []
                                                                                           [
-                                                                                            fun γ =>
-                                                                                              ltac:(M.monadic
-                                                                                                (Value.StructTuple
-                                                                                                  "solana_program_error::ProgramError::InvalidAccountData"
-                                                                                                  []
-                                                                                                  []
-                                                                                                  []))
-                                                                                          ]
-                                                                                        |)))
-                                                                                    | _ =>
-                                                                                      M.impossible
-                                                                                        "wrong number of arguments"
-                                                                                    end))
-                                                                            ]
-                                                                          |)
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "slice")
+                                                                                              []
+                                                                                              [
+                                                                                                Ty.path
+                                                                                                  "u8"
+                                                                                              ]
+                                                                                          ])
+                                                                                    ]
+                                                                                  |))
+                                                                                  (Ty.apply
+                                                                                    (Ty.path
+                                                                                      "core::result::Result")
+                                                                                    []
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "solana_address::Address";
+                                                                                      Ty.path
+                                                                                        "core::array::TryFromSliceError"
+                                                                                    ]);
+                                                                                M.value_with_ty
+                                                                                  (M.closure
+                                                                                    (fun γ =>
+                                                                                      ltac:(M.monadic
+                                                                                        match γ with
+                                                                                        | [ α0 ] =>
+                                                                                          ltac:(M.monadic
+                                                                                            (M.match_operator (|
+                                                                                              Ty.path
+                                                                                                "solana_program_error::ProgramError",
+                                                                                              M.alloc (|
+                                                                                                Ty.path
+                                                                                                  "core::array::TryFromSliceError",
+                                                                                                α0
+                                                                                              |),
+                                                                                              [
+                                                                                                fun
+                                                                                                    γ =>
+                                                                                                  ltac:(M.monadic
+                                                                                                    (M.value_with_ty
+                                                                                                      (Value.StructTuple
+                                                                                                        "solana_program_error::ProgramError::InvalidAccountData"
+                                                                                                        [])
+                                                                                                      (Ty.path
+                                                                                                        "solana_program_error::ProgramError")))
+                                                                                              ]
+                                                                                            |)))
+                                                                                        | _ =>
+                                                                                          M.impossible
+                                                                                            "wrong number of arguments"
+                                                                                        end)))
+                                                                                  (Ty.function
+                                                                                    [
+                                                                                      Ty.path
+                                                                                        "core::array::TryFromSliceError"
+                                                                                    ]
+                                                                                    (Ty.path
+                                                                                      "solana_program_error::ProgramError"))
+                                                                              ]
+                                                                            |))
+                                                                            (Ty.apply
+                                                                              (Ty.path
+                                                                                "core::result::Result")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "solana_address::Address";
+                                                                                Ty.path
+                                                                                  "solana_program_error::ProgramError"
+                                                                              ])
                                                                         ]
                                                                       |)
                                                                     |),
@@ -7178,9 +8152,20 @@ Module state.
                                                                                     []
                                                                                   |),
                                                                                   [
-                                                                                    M.read (|
-                                                                                      residual
-                                                                                    |)
+                                                                                    M.value_with_ty
+                                                                                      (M.read (|
+                                                                                        residual
+                                                                                      |))
+                                                                                      (Ty.apply
+                                                                                        (Ty.path
+                                                                                          "core::result::Result")
+                                                                                        []
+                                                                                        [
+                                                                                          Ty.path
+                                                                                            "core::convert::Infallible";
+                                                                                          Ty.path
+                                                                                            "solana_program_error::ProgramError"
+                                                                                        ])
                                                                                   ]
                                                                                 |)
                                                                               |)
@@ -7226,14 +8211,17 @@ Module state.
                                   Ty.path "spl_token_interface::state::Multisig";
                                   Ty.path "solana_program_error::ProgramError"
                                 ],
-                              Value.StructTuple
-                                "core::result::Result::Ok"
-                                []
-                                [
-                                  Ty.path "spl_token_interface::state::Multisig";
-                                  Ty.path "solana_program_error::ProgramError"
-                                ]
-                                [ M.read (| result |) ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::result::Result::Ok"
+                                  [ M.read (| result |) ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.path "spl_token_interface::state::Multisig";
+                                    Ty.path "solana_program_error::ProgramError"
+                                  ])
                             |)
                           |)))
                     ]
@@ -7319,24 +8307,39 @@ Module state.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| dst |) |)
-                                  |);
-                                  Value.mkStructRecord
-                                    "core::ops::range::Range"
-                                    []
-                                    [ Ty.path "usize" ]
-                                    [
-                                      ("start", M.read (| offset |));
-                                      ("end_",
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          BinOp.Wrap.add,
-                                          [ M.read (| offset |); Value.Integer IntegerKind.Usize 355
-                                          ]
-                                        |))
-                                    ]
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| dst |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                  M.value_with_ty
+                                    (M.value_with_ty
+                                      (Value.mkStructRecord
+                                        "core::ops::range::Range"
+                                        [
+                                          ("start", M.read (| offset |));
+                                          ("end_",
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              BinOp.Wrap.add,
+                                              [
+                                                M.read (| offset |);
+                                                Value.Integer IntegerKind.Usize 355
+                                              ]
+                                            |))
+                                        ])
+                                      (Ty.apply
+                                        (Ty.path "core::ops::range::Range")
+                                        []
+                                        [ Ty.path "usize" ]))
+                                    (Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ])
                                 ]
                               |)
                             |)
@@ -7371,10 +8374,15 @@ Module state.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| slice |) |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| slice |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                 ]
                               |)
                             |)
@@ -7481,7 +8489,19 @@ Module state.
                           ]
                       ],
                     M.get_associated_function (| Self, "as_arrays.pack_into_slice", [], [] |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| input |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| input |) |) |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 355 ]
+                              [ Ty.path "u8" ]
+                          ])
+                    ]
                   |)
                 |),
                 [
@@ -7631,8 +8651,106 @@ Module state.
                                     []
                                   |),
                                   [
-                                    M.call_closure (|
-                                      Ty.apply
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::iter::adapters::enumerate::Enumerate")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::slice::iter::Iter")
+                                              []
+                                              [ Ty.path "solana_address::Address" ]
+                                          ],
+                                        M.get_trait_method (|
+                                          "core::iter::traits::iterator::Iterator",
+                                          Ty.apply
+                                            (Ty.path "core::slice::iter::Iter")
+                                            []
+                                            [ Ty.path "solana_address::Address" ],
+                                          [],
+                                          [],
+                                          "enumerate",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "core::slice::iter::Iter")
+                                                []
+                                                [ Ty.path "solana_address::Address" ],
+                                              M.get_associated_function (|
+                                                Ty.apply
+                                                  (Ty.path "slice")
+                                                  []
+                                                  [ Ty.path "solana_address::Address" ],
+                                                "iter",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [ Ty.path "solana_address::Address" ]
+                                                      ],
+                                                    M.pointer_coercion
+                                                      M.PointerCoercion.Unsize
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "array")
+                                                            [ Value.Integer IntegerKind.Usize 11 ]
+                                                            [ Ty.path "solana_address::Address" ]
+                                                        ])
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "slice")
+                                                            []
+                                                            [ Ty.path "solana_address::Address" ]
+                                                        ]),
+                                                    [
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.SubPointer.get_struct_record_field (|
+                                                          M.deref (| M.read (| self |) |),
+                                                          "spl_token_interface::state::Multisig",
+                                                          "signers"
+                                                        |)
+                                                      |)
+                                                    ]
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "slice")
+                                                        []
+                                                        [ Ty.path "solana_address::Address" ]
+                                                    ])
+                                              ]
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "core::slice::iter::Iter")
+                                              []
+                                              [ Ty.path "solana_address::Address" ])
+                                        ]
+                                      |))
+                                      (Ty.apply
                                         (Ty.path "core::iter::adapters::enumerate::Enumerate")
                                         []
                                         [
@@ -7640,80 +8758,7 @@ Module state.
                                             (Ty.path "core::slice::iter::Iter")
                                             []
                                             [ Ty.path "solana_address::Address" ]
-                                        ],
-                                      M.get_trait_method (|
-                                        "core::iter::traits::iterator::Iterator",
-                                        Ty.apply
-                                          (Ty.path "core::slice::iter::Iter")
-                                          []
-                                          [ Ty.path "solana_address::Address" ],
-                                        [],
-                                        [],
-                                        "enumerate",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::slice::iter::Iter")
-                                            []
-                                            [ Ty.path "solana_address::Address" ],
-                                          M.get_associated_function (|
-                                            Ty.apply
-                                              (Ty.path "slice")
-                                              []
-                                              [ Ty.path "solana_address::Address" ],
-                                            "iter",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "slice")
-                                                    []
-                                                    [ Ty.path "solana_address::Address" ]
-                                                ],
-                                              M.pointer_coercion
-                                                M.PointerCoercion.Unsize
-                                                (Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 11 ]
-                                                      [ Ty.path "solana_address::Address" ]
-                                                  ])
-                                                (Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "slice")
-                                                      []
-                                                      [ Ty.path "solana_address::Address" ]
-                                                  ]),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    M.deref (| M.read (| self |) |),
-                                                    "spl_token_interface::state::Multisig",
-                                                    "signers"
-                                                  |)
-                                                |)
-                                              ]
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
+                                        ])
                                   ]
                                 |)
                               |),
@@ -7785,12 +8830,29 @@ Module state.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (|
-                                                      Pointer.Kind.MutRef,
-                                                      M.deref (|
-                                                        M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                      |)
-                                                    |)
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.MutRef,
+                                                        M.deref (|
+                                                          M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                        |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "core::iter::adapters::enumerate::Enumerate")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "core::slice::iter::Iter")
+                                                                []
+                                                                [ Ty.path "solana_address::Address"
+                                                                ]
+                                                            ]
+                                                        ])
                                                   ]
                                                 |)
                                               |),
@@ -7902,37 +8964,64 @@ Module state.
                                                                             []
                                                                           |),
                                                                           [
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.MutRef,
-                                                                              M.deref (|
-                                                                                M.read (|
-                                                                                  signers_flat
-                                                                                |)
-                                                                              |)
-                                                                            |);
-                                                                            Value.mkStructRecord
-                                                                              "core::ops::range::Range"
-                                                                              []
-                                                                              [ Ty.path "usize" ]
-                                                                              [
-                                                                                ("start",
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.MutRef,
+                                                                                M.deref (|
                                                                                   M.read (|
-                                                                                    offset
-                                                                                  |));
-                                                                                ("end_",
-                                                                                  M.call_closure (|
-                                                                                    Ty.path "usize",
-                                                                                    BinOp.Wrap.add,
+                                                                                    signers_flat
+                                                                                  |)
+                                                                                |)
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&mut")
+                                                                                []
+                                                                                [
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "array")
                                                                                     [
-                                                                                      M.read (|
-                                                                                        offset
-                                                                                      |);
                                                                                       Value.Integer
                                                                                         IntegerKind.Usize
-                                                                                        32
+                                                                                        352
                                                                                     ]
-                                                                                  |))
-                                                                              ]
+                                                                                    [ Ty.path "u8" ]
+                                                                                ]);
+                                                                            M.value_with_ty
+                                                                              (M.value_with_ty
+                                                                                (Value.mkStructRecord
+                                                                                  "core::ops::range::Range"
+                                                                                  [
+                                                                                    ("start",
+                                                                                      M.read (|
+                                                                                        offset
+                                                                                      |));
+                                                                                    ("end_",
+                                                                                      M.call_closure (|
+                                                                                        Ty.path
+                                                                                          "usize",
+                                                                                        BinOp.Wrap.add,
+                                                                                        [
+                                                                                          M.read (|
+                                                                                            offset
+                                                                                          |);
+                                                                                          Value.Integer
+                                                                                            IntegerKind.Usize
+                                                                                            32
+                                                                                        ]
+                                                                                      |))
+                                                                                  ])
+                                                                                (Ty.apply
+                                                                                  (Ty.path
+                                                                                    "core::ops::range::Range")
+                                                                                  []
+                                                                                  [ Ty.path "usize"
+                                                                                  ]))
+                                                                              (Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::ops::range::Range")
+                                                                                []
+                                                                                [ Ty.path "usize" ])
                                                                           ]
                                                                         |)
                                                                       |)
@@ -7975,12 +9064,23 @@ Module state.
                                                                             []
                                                                           |),
                                                                           [
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.MutRef,
-                                                                              M.deref (|
-                                                                                M.read (| slice |)
-                                                                              |)
-                                                                            |)
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
+                                                                                Pointer.Kind.MutRef,
+                                                                                M.deref (|
+                                                                                  M.read (| slice |)
+                                                                                |)
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&mut")
+                                                                                []
+                                                                                [
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "slice")
+                                                                                    []
+                                                                                    [ Ty.path "u8" ]
+                                                                                ])
                                                                           ]
                                                                         |)
                                                                       |)
@@ -8004,32 +9104,9 @@ Module state.
                                                             []
                                                           |),
                                                           [
-                                                            M.call_closure (|
-                                                              Ty.apply
-                                                                (Ty.path "&mut")
-                                                                []
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path "slice")
-                                                                    []
-                                                                    [ Ty.path "u8" ]
-                                                                ],
-                                                              M.pointer_coercion
-                                                                M.PointerCoercion.Unsize
-                                                                (Ty.apply
-                                                                  (Ty.path "&mut")
-                                                                  []
-                                                                  [
-                                                                    Ty.apply
-                                                                      (Ty.path "array")
-                                                                      [
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          32
-                                                                      ]
-                                                                      [ Ty.path "u8" ]
-                                                                  ])
-                                                                (Ty.apply
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.apply
                                                                   (Ty.path "&mut")
                                                                   []
                                                                   [
@@ -8037,53 +9114,106 @@ Module state.
                                                                       (Ty.path "slice")
                                                                       []
                                                                       [ Ty.path "u8" ]
-                                                                  ]),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.MutRef,
-                                                                  M.deref (|
-                                                                    M.read (| dst_array |)
+                                                                  ],
+                                                                M.pointer_coercion
+                                                                  M.PointerCoercion.Unsize
+                                                                  (Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "array")
+                                                                        [
+                                                                          Value.Integer
+                                                                            IntegerKind.Usize
+                                                                            32
+                                                                        ]
+                                                                        [ Ty.path "u8" ]
+                                                                    ])
+                                                                  (Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "slice")
+                                                                        []
+                                                                        [ Ty.path "u8" ]
+                                                                    ]),
+                                                                [
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    M.deref (|
+                                                                      M.read (| dst_array |)
+                                                                    |)
+                                                                  |)
+                                                                ]
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [ Ty.path "u8" ]
+                                                                ]);
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.call_closure (|
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "slice")
+                                                                          []
+                                                                          [ Ty.path "u8" ]
+                                                                      ],
+                                                                    M.get_trait_method (|
+                                                                      "core::convert::AsRef",
+                                                                      Ty.path
+                                                                        "solana_address::Address",
+                                                                      [],
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "slice")
+                                                                          []
+                                                                          [ Ty.path "u8" ]
+                                                                      ],
+                                                                      "as_ref",
+                                                                      [],
+                                                                      []
+                                                                    |),
+                                                                    [
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.deref (|
+                                                                            M.read (| src |)
+                                                                          |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.path
+                                                                              "solana_address::Address"
+                                                                          ])
+                                                                    ]
                                                                   |)
                                                                 |)
-                                                              ]
-                                                            |);
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.call_closure (|
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
                                                                   Ty.apply
-                                                                    (Ty.path "&")
+                                                                    (Ty.path "slice")
                                                                     []
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path "slice")
-                                                                        []
-                                                                        [ Ty.path "u8" ]
-                                                                    ],
-                                                                  M.get_trait_method (|
-                                                                    "core::convert::AsRef",
-                                                                    Ty.path
-                                                                      "solana_address::Address",
-                                                                    [],
-                                                                    [
-                                                                      Ty.apply
-                                                                        (Ty.path "slice")
-                                                                        []
-                                                                        [ Ty.path "u8" ]
-                                                                    ],
-                                                                    "as_ref",
-                                                                    [],
-                                                                    []
-                                                                  |),
-                                                                  [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.deref (| M.read (| src |) |)
-                                                                    |)
-                                                                  ]
-                                                                |)
-                                                              |)
-                                                            |)
+                                                                    [ Ty.path "u8" ]
+                                                                ])
                                                           ]
                                                         |) in
                                                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -8212,7 +9342,19 @@ Module state.
                     ]
                 ],
               M.get_function (| "spl_token_interface::state::pack_coption_key.as_arrays", [], [] |),
-              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| input |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| input |) |) |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 36 ]
+                        [ Ty.path "u8" ]
+                    ])
+              ]
             |)
           |),
           [
@@ -8286,59 +9428,74 @@ Module state.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.Unsize
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 32 ]
+                                            [ Ty.path "u8" ]
+                                        ])
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| body |) |)
+                                      |)
+                                    ]
+                                  |))
+                                  (Ty.apply
                                     (Ty.path "&mut")
                                     []
-                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.Unsize
-                                    (Ty.apply
-                                      (Ty.path "&mut")
-                                      []
-                                      [
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "array")
-                                          [ Value.Integer IntegerKind.Usize 32 ]
-                                          [ Ty.path "u8" ]
-                                      ])
-                                    (Ty.apply
-                                      (Ty.path "&mut")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (| M.read (| body |) |)
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                        M.get_trait_method (|
+                                          "core::convert::AsRef",
+                                          Ty.path "solana_address::Address",
+                                          [],
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                          "as_ref",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| key |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "solana_address::Address" ])
+                                        ]
+                                      |)
                                     |)
-                                  ]
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                      M.get_trait_method (|
-                                        "core::convert::AsRef",
-                                        Ty.path "solana_address::Address",
-                                        [],
-                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                        "as_ref",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| key |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |)
-                                |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                               ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -8461,7 +9618,19 @@ Module state.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 36 ]
+                        [ Ty.path "u8" ]
+                    ])
+              ]
             |)
           |),
           [
@@ -8534,23 +9703,27 @@ Module state.
                             M.read (| γ0_3 |),
                             Value.Integer IntegerKind.U8 0
                           |) in
-                        Value.StructTuple
-                          "core::result::Result::Ok"
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "solana_program_option::COption")
-                              []
-                              [ Ty.path "solana_address::Address" ];
-                            Ty.path "solana_program_error::ProgramError"
-                          ]
-                          [
-                            Value.StructTuple
-                              "solana_program_option::COption::None"
-                              []
-                              [ Ty.path "solana_address::Address" ]
-                              []
-                          ]));
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "core::result::Result::Ok"
+                            [
+                              M.value_with_ty
+                                (Value.StructTuple "solana_program_option::COption::None" [])
+                                (Ty.apply
+                                  (Ty.path "solana_program_option::COption")
+                                  []
+                                  [ Ty.path "solana_address::Address" ])
+                            ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "solana_program_option::COption")
+                                []
+                                [ Ty.path "solana_address::Address" ];
+                              Ty.path "solana_program_error::ProgramError"
+                            ])));
                     fun γ =>
                       ltac:(M.monadic
                         (let γ0_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
@@ -8577,53 +9750,69 @@ Module state.
                             M.read (| γ0_3 |),
                             Value.Integer IntegerKind.U8 0
                           |) in
-                        Value.StructTuple
-                          "core::result::Result::Ok"
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "solana_program_option::COption")
-                              []
-                              [ Ty.path "solana_address::Address" ];
-                            Ty.path "solana_program_error::ProgramError"
-                          ]
-                          [
-                            Value.StructTuple
-                              "solana_program_option::COption::Some"
-                              []
-                              [ Ty.path "solana_address::Address" ]
-                              [
-                                M.call_closure (|
-                                  Ty.path "solana_address::Address",
-                                  M.get_associated_function (|
-                                    Ty.path "solana_address::Address",
-                                    "new_from_array",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| M.deref (| M.read (| body |) |) |) ]
-                                |)
-                              ]
-                          ]));
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "core::result::Result::Ok"
+                            [
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "solana_program_option::COption::Some"
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "solana_address::Address",
+                                      M.get_associated_function (|
+                                        Ty.path "solana_address::Address",
+                                        "new_from_array",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.read (| M.deref (| M.read (| body |) |) |))
+                                          (Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 32 ]
+                                            [ Ty.path "u8" ])
+                                      ]
+                                    |)
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "solana_program_option::COption")
+                                  []
+                                  [ Ty.path "solana_address::Address" ])
+                            ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "solana_program_option::COption")
+                                []
+                                [ Ty.path "solana_address::Address" ];
+                              Ty.path "solana_program_error::ProgramError"
+                            ])));
                     fun γ =>
                       ltac:(M.monadic
-                        (Value.StructTuple
-                          "core::result::Result::Err"
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "solana_program_option::COption")
-                              []
-                              [ Ty.path "solana_address::Address" ];
-                            Ty.path "solana_program_error::ProgramError"
-                          ]
-                          [
-                            Value.StructTuple
-                              "solana_program_error::ProgramError::InvalidAccountData"
-                              []
-                              []
-                              []
-                          ]))
+                        (M.value_with_ty
+                          (Value.StructTuple
+                            "core::result::Result::Err"
+                            [
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "solana_program_error::ProgramError::InvalidAccountData"
+                                  [])
+                                (Ty.path "solana_program_error::ProgramError")
+                            ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "solana_program_option::COption")
+                                []
+                                [ Ty.path "solana_address::Address" ];
+                              Ty.path "solana_program_error::ProgramError"
+                            ])))
                   ]
                 |)))
           ]
@@ -8725,7 +9914,19 @@ Module state.
                     ]
                 ],
               M.get_function (| "spl_token_interface::state::pack_coption_u64.as_arrays", [], [] |),
-              [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| input |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| input |) |) |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 12 ]
+                        [ Ty.path "u8" ]
+                    ])
+              ]
             |)
           |),
           [
@@ -8800,7 +10001,11 @@ Module state.
                                   [],
                                   []
                                 |),
-                                [ M.read (| M.deref (| M.read (| amount |) |) |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| M.deref (| M.read (| amount |) |) |))
+                                    (Ty.path "u64")
+                                ]
                               |)
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -8920,7 +10125,19 @@ Module state.
                 [],
                 []
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| input |) |) |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 12 ]
+                        [ Ty.path "u8" ]
+                    ])
+              ]
             |)
           |),
           [
@@ -8990,23 +10207,27 @@ Module state.
                             M.read (| γ0_3 |),
                             Value.Integer IntegerKind.U8 0
                           |) in
-                        Value.StructTuple
-                          "core::result::Result::Ok"
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "solana_program_option::COption")
-                              []
-                              [ Ty.path "u64" ];
-                            Ty.path "solana_program_error::ProgramError"
-                          ]
-                          [
-                            Value.StructTuple
-                              "solana_program_option::COption::None"
-                              []
-                              [ Ty.path "u64" ]
-                              []
-                          ]));
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "core::result::Result::Ok"
+                            [
+                              M.value_with_ty
+                                (Value.StructTuple "solana_program_option::COption::None" [])
+                                (Ty.apply
+                                  (Ty.path "solana_program_option::COption")
+                                  []
+                                  [ Ty.path "u64" ])
+                            ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "solana_program_option::COption")
+                                []
+                                [ Ty.path "u64" ];
+                              Ty.path "solana_program_error::ProgramError"
+                            ])));
                     fun γ =>
                       ltac:(M.monadic
                         (let γ0_0 := M.SubPointer.get_slice_index (| γ, 0 |) in
@@ -9033,53 +10254,69 @@ Module state.
                             M.read (| γ0_3 |),
                             Value.Integer IntegerKind.U8 0
                           |) in
-                        Value.StructTuple
-                          "core::result::Result::Ok"
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "solana_program_option::COption")
-                              []
-                              [ Ty.path "u64" ];
-                            Ty.path "solana_program_error::ProgramError"
-                          ]
-                          [
-                            Value.StructTuple
-                              "solana_program_option::COption::Some"
-                              []
-                              [ Ty.path "u64" ]
-                              [
-                                M.call_closure (|
-                                  Ty.path "u64",
-                                  M.get_associated_function (|
-                                    Ty.path "u64",
-                                    "from_le_bytes",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.read (| M.deref (| M.read (| body |) |) |) ]
-                                |)
-                              ]
-                          ]));
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "core::result::Result::Ok"
+                            [
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "solana_program_option::COption::Some"
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_associated_function (|
+                                        Ty.path "u64",
+                                        "from_le_bytes",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.read (| M.deref (| M.read (| body |) |) |))
+                                          (Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 8 ]
+                                            [ Ty.path "u8" ])
+                                      ]
+                                    |)
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "solana_program_option::COption")
+                                  []
+                                  [ Ty.path "u64" ])
+                            ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "solana_program_option::COption")
+                                []
+                                [ Ty.path "u64" ];
+                              Ty.path "solana_program_error::ProgramError"
+                            ])));
                     fun γ =>
                       ltac:(M.monadic
-                        (Value.StructTuple
-                          "core::result::Result::Err"
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "solana_program_option::COption")
-                              []
-                              [ Ty.path "u64" ];
-                            Ty.path "solana_program_error::ProgramError"
-                          ]
-                          [
-                            Value.StructTuple
-                              "solana_program_error::ProgramError::InvalidAccountData"
-                              []
-                              []
-                              []
-                          ]))
+                        (M.value_with_ty
+                          (Value.StructTuple
+                            "core::result::Result::Err"
+                            [
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "solana_program_error::ProgramError::InvalidAccountData"
+                                  [])
+                                (Ty.path "solana_program_error::ProgramError")
+                            ])
+                          (Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "solana_program_option::COption")
+                                []
+                                [ Ty.path "u64" ];
+                              Ty.path "solana_program_error::ProgramError"
+                            ])))
                   ]
                 |)))
           ]
@@ -9151,13 +10388,17 @@ Module state.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| account_data |) |) |);
-                  M.read (|
-                    get_constant (|
-                      "spl_token_interface::state::SPL_TOKEN_ACCOUNT_OWNER_OFFSET",
-                      Ty.path "usize"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| account_data |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                  M.value_with_ty
+                    (M.read (|
+                      get_constant (|
+                        "spl_token_interface::state::SPL_TOKEN_ACCOUNT_OWNER_OFFSET",
+                        Ty.path "usize"
+                      |)
+                    |))
+                    (Ty.path "usize")
                 ]
               |)
             |)
@@ -9199,13 +10440,17 @@ Module state.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| account_data |) |) |);
-                  M.read (|
-                    get_constant (|
-                      "spl_token_interface::state::SPL_TOKEN_ACCOUNT_MINT_OFFSET",
-                      Ty.path "usize"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| account_data |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                  M.value_with_ty
+                    (M.read (|
+                      get_constant (|
+                        "spl_token_interface::state::SPL_TOKEN_ACCOUNT_MINT_OFFSET",
+                        Ty.path "usize"
+                      |)
+                    |))
+                    (Ty.path "usize")
                 ]
               |)
             |)
@@ -9244,59 +10489,78 @@ Module state.
                   [ Ty.path "solana_address::Address" ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                            M.get_trait_method (|
-                              "core::ops::index::Index",
-                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                              [],
-                              [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]
-                              ],
-                              "index",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| M.read (| account_data |) |)
-                              |);
-                              Value.mkStructRecord
-                                "core::ops::range::Range"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
                                 []
-                                [ Ty.path "usize" ]
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                              M.get_trait_method (|
+                                "core::ops::index::Index",
+                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                [],
                                 [
-                                  ("start", M.read (| offset |));
-                                  ("end_",
-                                    M.call_closure (|
-                                      Ty.path "usize",
-                                      BinOp.Wrap.add,
+                                  Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "usize" ]
+                                ],
+                                "index",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| account_data |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.mkStructRecord
+                                      "core::ops::range::Range"
                                       [
-                                        M.read (| offset |);
-                                        M.read (|
-                                          get_constant (|
-                                            "solana_address::ADDRESS_BYTES",
-                                            Ty.path "usize"
-                                          |)
-                                        |)
-                                      ]
-                                    |))
-                                ]
-                            ]
+                                        ("start", M.read (| offset |));
+                                        ("end_",
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            BinOp.Wrap.add,
+                                            [
+                                              M.read (| offset |);
+                                              M.read (|
+                                                get_constant (|
+                                                  "solana_address::ADDRESS_BYTES",
+                                                  Ty.path "usize"
+                                                |)
+                                              |)
+                                            ]
+                                          |))
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ]))
+                                  (Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "usize" ])
+                              ]
+                            |)
                           |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                 ]
               |)
             |)
@@ -9347,47 +10611,65 @@ Module state.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| account_data |) |) |)
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.read (| account_data |) |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                           ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ] ]
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                            M.get_trait_method (|
-                              "spl_token_interface::state::GenericTokenAccount",
-                              Self,
-                              [],
-                              [],
-                              "unpack_account_owner_unchecked",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| M.read (| account_data |) |)
-                              |)
-                            ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
+                              M.get_trait_method (|
+                                "spl_token_interface::state::GenericTokenAccount",
+                                Self,
+                                [],
+                                [],
+                                "unpack_account_owner_unchecked",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| account_data |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                              ]
+                            |)
                           |)
                         |)
-                      |)
-                    ]));
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ] ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ] ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ] ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -9436,47 +10718,65 @@ Module state.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| account_data |) |) |)
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.read (| account_data |) |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                           ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ] ]
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
-                            M.get_trait_method (|
-                              "spl_token_interface::state::GenericTokenAccount",
-                              Self,
-                              [],
-                              [],
-                              "unpack_account_mint_unchecked",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (| M.read (| account_data |) |)
-                              |)
-                            ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ],
+                              M.get_trait_method (|
+                                "spl_token_interface::state::GenericTokenAccount",
+                                Self,
+                                [],
+                                [],
+                                "unpack_account_mint_unchecked",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| account_data |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                              ]
+                            |)
                           |)
                         |)
-                      |)
-                    ]));
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ] ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ] ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "solana_address::Address" ] ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -9538,39 +10838,56 @@ Module state.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                          "get",
+                          [],
+                          [ Ty.path "usize" ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.read (| account_data |) |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                          M.value_with_ty
+                            (M.read (|
+                              get_constant (|
+                                "spl_token_interface::state::ACCOUNT_INITIALIZED_INDEX",
+                                Ty.path "usize"
+                              |)
+                            |))
+                            (Ty.path "usize")
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "core::option::Option")
                         []
-                        [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                        "get",
-                        [],
-                        [ Ty.path "usize" ]
-                      |),
-                      [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| account_data |) |) |);
-                        M.read (|
-                          get_constant (|
-                            "spl_token_interface::state::ACCOUNT_INITIALIZED_INDEX",
-                            Ty.path "usize"
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.path "u8",
+                              M.cast (Ty.path "u8") (Value.Integer IntegerKind.U8 0)
+                            |)
                           |)
                         |)
-                      ]
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.path "u8",
-                            M.cast (Ty.path "u8") (Value.Integer IntegerKind.U8 0)
-                          |)
-                        |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
                   ]
                 |)
               |)
@@ -9616,7 +10933,11 @@ Module state.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| account_data |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| account_data |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                  ]
                 |);
                 M.read (| get_constant (| "solana_program_pack::Pack::LEN", Ty.path "usize" |) |)
               ]
@@ -9625,7 +10946,11 @@ Module state.
               (M.call_closure (|
                 Ty.path "bool",
                 M.get_function (| "spl_token_interface::state::is_initialized_account", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| account_data |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| account_data |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                ]
               |)))
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

@@ -55,7 +55,7 @@ Module log.
                           [],
                           []
                         |),
-                        [ M.read (| logs |) ]
+                        [ M.value_with_ty (M.read (| logs |)) impl_IntoIterator_Item____'a_Log_ ]
                       |)
                     |),
                     [
@@ -121,10 +121,22 @@ Module log.
                                           []
                                         |),
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                          |)
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.associated_in_trait
+                                                  "core::iter::traits::collect::IntoIterator"
+                                                  []
+                                                  []
+                                                  impl_IntoIterator_Item____'a_Log_
+                                                  "IntoIter"
+                                              ])
                                         ]
                                       |)
                                     |),
@@ -169,11 +181,30 @@ Module log.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (| Pointer.Kind.MutRef, bloom |);
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| log |) |)
-                                                  |)
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.MutRef, bloom |))
+                                                    (Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [
+                                                        Ty.path
+                                                          "alloy_primitives::bits::bloom::Bloom"
+                                                      ]);
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| log |) |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "alloy_primitives::log::Log")
+                                                          []
+                                                          [ Ty.path "alloy_primitives::log::LogData"
+                                                          ]
+                                                      ])
                                                 ]
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -232,25 +263,12 @@ Module log.
               Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::log::LogData" ],
               self
             |) in
-          Value.mkStructRecord
-            "alloy_primitives::log::LogData"
-            []
-            []
-            [
-              ("topics",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                        [ Value.Integer IntegerKind.Usize 32 ]
-                        [];
-                      Ty.path "alloc::alloc::Global"
-                    ],
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "alloy_primitives::log::LogData"
+              [
+                ("topics",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "alloc::vec::Vec")
                       []
@@ -261,57 +279,88 @@ Module log.
                           [];
                         Ty.path "alloc::alloc::Global"
                       ],
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            [];
+                          Ty.path "alloc::alloc::Global"
+                        ],
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloy_primitives::log::LogData",
-                            "topics"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloy_primitives::log::LogData",
+                                "topics"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("data",
-                M.call_closure (|
-                  Ty.path "alloy_primitives::bytes_::Bytes",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                  [];
+                                Ty.path "alloc::alloc::Global"
+                              ]
+                          ])
+                    ]
+                  |));
+                ("data",
+                  M.call_closure (|
                     Ty.path "alloy_primitives::bytes_::Bytes",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloy_primitives::log::LogData",
-                            "data"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloy_primitives::log::LogData",
+                                "data"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                    ]
+                  |))
+              ])
+            (Ty.path "alloy_primitives::log::LogData")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -351,77 +400,89 @@ Module log.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LogData" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "topics" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "alloc::vec::Vec")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                            [ Value.Integer IntegerKind.Usize 32 ]
-                            [];
-                          Ty.path "alloc::alloc::Global"
-                        ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloy_primitives::log::LogData",
-                          "topics"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LogData" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "topics" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              [];
+                            Ty.path "alloc::alloc::Global"
+                          ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloy_primitives::log::LogData",
+                            "topics"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "data" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloy_primitives::log::LogData",
-                              "data"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "data" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloy_primitives::log::LogData",
+                                "data"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -444,25 +505,12 @@ Module log.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "alloy_primitives::log::LogData"
-            []
-            []
-            [
-              ("topics",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                        [ Value.Integer IntegerKind.Usize 32 ]
-                        [];
-                      Ty.path "alloc::alloc::Global"
-                    ],
-                  M.get_trait_method (|
-                    "core::default::Default",
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "alloy_primitives::log::LogData"
+              [
+                ("topics",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "alloc::vec::Vec")
                       []
@@ -473,29 +521,42 @@ Module log.
                           [];
                         Ty.path "alloc::alloc::Global"
                       ],
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            [];
+                          Ty.path "alloc::alloc::Global"
+                        ],
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("data",
-                M.call_closure (|
-                  Ty.path "alloy_primitives::bytes_::Bytes",
-                  M.get_trait_method (|
-                    "core::default::Default",
+                  |));
+                ("data",
+                  M.call_closure (|
                     Ty.path "alloy_primitives::bytes_::Bytes",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |))
-            ]))
+                  |))
+              ])
+            (Ty.path "alloy_primitives::log::LogData")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -571,22 +632,54 @@ Module log.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "alloy_primitives::log::LogData",
-                    "topics"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "alloy_primitives::log::LogData",
-                    "topics"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "alloy_primitives::log::LogData",
+                      "topics"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            [];
+                          Ty.path "alloc::alloc::Global"
+                        ]
+                    ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "alloy_primitives::log::LogData",
+                      "topics"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            [];
+                          Ty.path "alloc::alloc::Global"
+                        ]
+                    ])
               ]
             |),
             ltac:(M.monadic
@@ -602,22 +695,26 @@ Module log.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloy_primitives::log::LogData",
-                      "data"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "alloy_primitives::log::LogData",
-                      "data"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloy_primitives::log::LogData",
+                        "data"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "alloy_primitives::log::LogData",
+                        "data"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
                 ]
               |)))
           |)))
@@ -713,20 +810,38 @@ Module log.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloy_primitives::log::LogData",
-                          "topics"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloy_primitives::log::LogData",
+                            "topics"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              [];
+                            Ty.path "alloc::alloc::Global"
+                          ]
+                      ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             M.alloc (|
@@ -743,20 +858,24 @@ Module log.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloy_primitives::log::LogData",
-                          "data"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloy_primitives::log::LogData",
+                            "data"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)
@@ -800,11 +919,11 @@ Module log.
               topics
             |) in
           let data := M.alloc (| Ty.path "alloy_primitives::bytes_::Bytes", data |) in
-          Value.mkStructRecord
-            "alloy_primitives::log::LogData"
-            []
-            []
-            [ ("topics", M.read (| topics |)); ("data", M.read (| data |)) ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "alloy_primitives::log::LogData"
+              [ ("topics", M.read (| topics |)); ("data", M.read (| data |)) ])
+            (Ty.path "alloy_primitives::log::LogData")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -848,7 +967,21 @@ Module log.
                   [],
                   []
                 |),
-                [ M.read (| topics |); M.read (| data |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| topics |))
+                    (Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                          [ Value.Integer IntegerKind.Usize 32 ]
+                          [];
+                        Ty.path "alloc::alloc::Global"
+                      ]);
+                  M.value_with_ty (M.read (| data |)) (Ty.path "alloy_primitives::bytes_::Bytes")
+                ]
               |) in
             M.alloc (|
               Ty.apply
@@ -867,17 +1000,23 @@ Module log.
                   [ Ty.path "alloy_primitives::log::LogData" ]
                 |),
                 [
-                  M.call_closure (|
-                    Ty.path "bool",
-                    M.get_associated_function (|
-                      Ty.path "alloy_primitives::log::LogData",
-                      "is_valid",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, this |) ]
-                  |);
-                  M.read (| this |)
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "bool",
+                      M.get_associated_function (|
+                        Ty.path "alloy_primitives::log::LogData",
+                        "is_valid",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, this |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::log::LogData" ])
+                      ]
+                    |))
+                    (Ty.path "bool");
+                  M.value_with_ty (M.read (| this |)) (Ty.path "alloy_primitives::log::LogData")
                 ]
               |)
             |)
@@ -898,24 +1037,12 @@ Module log.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "alloy_primitives::log::LogData"
-            []
-            []
-            [
-              ("topics",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "alloc::vec::Vec")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
-                        [ Value.Integer IntegerKind.Usize 32 ]
-                        [];
-                      Ty.path "alloc::alloc::Global"
-                    ],
-                  M.get_associated_function (|
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "alloy_primitives::log::LogData"
+              [
+                ("topics",
+                  M.call_closure (|
                     Ty.apply
                       (Ty.path "alloc::vec::Vec")
                       []
@@ -926,24 +1053,36 @@ Module log.
                           [];
                         Ty.path "alloc::alloc::Global"
                       ],
-                    "new",
-                    [],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            [];
+                          Ty.path "alloc::alloc::Global"
+                        ],
+                      "new",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("data",
-                M.call_closure (|
-                  Ty.path "alloy_primitives::bytes_::Bytes",
-                  M.get_associated_function (|
+                  |));
+                ("data",
+                  M.call_closure (|
                     Ty.path "alloy_primitives::bytes_::Bytes",
-                    "new",
-                    [],
+                    M.get_associated_function (|
+                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      "new",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |))
-            ]))
+                  |))
+              ])
+            (Ty.path "alloy_primitives::log::LogData")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -987,14 +1126,30 @@ Module log.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloy_primitives::log::LogData",
-                      "topics"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloy_primitives::log::LogData",
+                        "topics"
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              [];
+                            Ty.path "alloc::alloc::Global"
+                          ]
+                      ])
                 ]
               |);
               Value.Integer IntegerKind.Usize 4
@@ -1058,19 +1213,35 @@ Module log.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloy_primitives::log::LogData",
-                          "topics"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloy_primitives::log::LogData",
+                            "topics"
+                          |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              [];
+                            Ty.path "alloc::alloc::Global"
+                          ]
+                      ])
                 ]
               |)
             |)
@@ -1136,19 +1307,35 @@ Module log.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloy_primitives::log::LogData",
-                              "topics"
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloy_primitives::log::LogData",
+                                "topics"
+                              |)
                             |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                                  [ Value.Integer IntegerKind.Usize 32 ]
+                                  [];
+                                Ty.path "alloc::alloc::Global"
+                              ]
+                          ])
                     ]
                   |)
                 |)
@@ -1299,7 +1486,26 @@ Module log.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, topics |); Value.Integer IntegerKind.Usize 4 ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, topics |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              [];
+                            Ty.path "alloc::alloc::Global"
+                          ]
+                      ]);
+                  M.value_with_ty (Value.Integer IntegerKind.Usize 4) (Ty.path "usize")
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
@@ -1311,8 +1517,21 @@ Module log.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.read (| topics |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "alloy_primitives::log::LogData" ]);
+                  M.value_with_ty
+                    (M.read (| topics |))
+                    (Ty.apply
+                      (Ty.path "alloc::vec::Vec")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                          [ Value.Integer IntegerKind.Usize 32 ]
+                          [];
+                        Ty.path "alloc::alloc::Global"
+                      ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1391,7 +1610,11 @@ Module log.
               [],
               []
             |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::log::LogData" ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1448,60 +1671,67 @@ Module log.
                 [ Ty.apply (Ty.path "alloy_primitives::log::Log") [] [ T ] ],
               self
             |) in
-          Value.mkStructRecord
-            "alloy_primitives::log::Log"
-            []
-            [ T ]
-            [
-              ("address",
-                M.call_closure (|
-                  Ty.path "alloy_primitives::bits::address::Address",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "alloy_primitives::log::Log"
+              [
+                ("address",
+                  M.call_closure (|
                     Ty.path "alloy_primitives::bits::address::Address",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "alloy_primitives::bits::address::Address",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloy_primitives::log::Log",
-                            "address"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloy_primitives::log::Log",
+                                "address"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |));
-              ("data",
-                M.call_closure (|
-                  T,
-                  M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "alloy_primitives::bits::address::Address" ])
+                    ]
+                  |));
+                ("data",
+                  M.call_closure (|
+                    T,
+                    M.get_trait_method (| "core::clone::Clone", T, [], [], "clone", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloy_primitives::log::Log",
-                            "data"
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloy_primitives::log::Log",
+                                "data"
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ T ])
+                    ]
+                  |))
+              ])
+            (Ty.apply (Ty.path "alloy_primitives::log::Log") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1546,60 +1776,75 @@ Module log.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Log" |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "address" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bits::address::Address" ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloy_primitives::log::Log",
-                          "address"
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Log" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "address" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "alloy_primitives::bits::address::Address" ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloy_primitives::log::Log",
+                            "address"
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "data" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloy_primitives::log::Log",
-                              "data"
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "data" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ T ] ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloy_primitives::log::Log",
+                                "data"
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1624,32 +1869,32 @@ Module log.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "alloy_primitives::log::Log"
-            []
-            [ T ]
-            [
-              ("address",
-                M.call_closure (|
-                  Ty.path "alloy_primitives::bits::address::Address",
-                  M.get_trait_method (|
-                    "core::default::Default",
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "alloy_primitives::log::Log"
+              [
+                ("address",
+                  M.call_closure (|
                     Ty.path "alloy_primitives::bits::address::Address",
-                    [],
-                    [],
-                    "default",
-                    [],
+                    M.get_trait_method (|
+                      "core::default::Default",
+                      Ty.path "alloy_primitives::bits::address::Address",
+                      [],
+                      [],
+                      "default",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |));
-              ("data",
-                M.call_closure (|
-                  T,
-                  M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
-                  []
-                |))
-            ]))
+                  |));
+                ("data",
+                  M.call_closure (|
+                    T,
+                    M.get_trait_method (| "core::default::Default", T, [], [], "default", [], [] |),
+                    []
+                  |))
+              ])
+            (Ty.apply (Ty.path "alloy_primitives::log::Log") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1714,22 +1959,29 @@ Module log.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "alloy_primitives::log::Log",
-                    "address"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "alloy_primitives::log::Log",
-                    "address"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "alloy_primitives::log::Log",
+                      "address"
+                    |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.path "alloy_primitives::bits::address::Address" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "alloy_primitives::log::Log",
+                      "address"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bits::address::Address" ])
               ]
             |),
             ltac:(M.monadic
@@ -1737,22 +1989,26 @@ Module log.
                 Ty.path "bool",
                 M.get_trait_method (| "core::cmp::PartialEq", T, [], [ T ], "eq", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| self |) |),
-                      "alloy_primitives::log::Log",
-                      "data"
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_record_field (|
-                      M.deref (| M.read (| other |) |),
-                      "alloy_primitives::log::Log",
-                      "data"
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| self |) |),
+                        "alloy_primitives::log::Log",
+                        "data"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_record_field (|
+                        M.deref (| M.read (| other |) |),
+                        "alloy_primitives::log::Log",
+                        "data"
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ])
                 ]
               |)))
           |)))
@@ -1850,20 +2106,27 @@ Module log.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloy_primitives::log::Log",
-                          "address"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloy_primitives::log::Log",
+                            "address"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.path "alloy_primitives::bits::address::Address" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             M.alloc (|
@@ -1872,20 +2135,24 @@ Module log.
                 Ty.tuple [],
                 M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ __H ] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloy_primitives::log::Log",
-                          "data"
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloy_primitives::log::Log",
+                            "data"
+                          |)
                         |)
                       |)
-                    |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ T ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |)
             |)
@@ -2070,46 +2337,77 @@ Module log.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.path "alloy_primitives::log::LogData" ],
+                  M.get_associated_function (|
+                    Ty.path "alloy_primitives::log::LogData",
+                    "new",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (| topics |))
+                      (Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                            [ Value.Integer IntegerKind.Usize 32 ]
+                            [];
+                          Ty.path "alloc::alloc::Global"
+                        ]);
+                    M.value_with_ty (M.read (| data |)) (Ty.path "alloy_primitives::bytes_::Bytes")
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::option::Option")
                   []
-                  [ Ty.path "alloy_primitives::log::LogData" ],
-                M.get_associated_function (|
-                  Ty.path "alloy_primitives::log::LogData",
-                  "new",
-                  [],
-                  []
-                |),
-                [ M.read (| topics |); M.read (| data |) ]
-              |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.apply
-                            (Ty.path "alloy_primitives::log::Log")
-                            []
-                            [ Ty.path "alloy_primitives::log::LogData" ],
-                          M.alloc (| Ty.path "alloy_primitives::log::LogData", α0 |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let data :=
-                                  M.copy (| Ty.path "alloy_primitives::log::LogData", γ |) in
-                                Value.mkStructRecord
-                                  "alloy_primitives::log::Log"
-                                  []
-                                  [ Ty.path "alloy_primitives::log::LogData" ]
-                                  [ ("address", M.read (| address |)); ("data", M.read (| data |))
-                                  ]))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+                  [ Ty.path "alloy_primitives::log::LogData" ]);
+              M.value_with_ty
+                (M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.apply
+                              (Ty.path "alloy_primitives::log::Log")
+                              []
+                              [ Ty.path "alloy_primitives::log::LogData" ],
+                            M.alloc (| Ty.path "alloy_primitives::log::LogData", α0 |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let data :=
+                                    M.copy (| Ty.path "alloy_primitives::log::LogData", γ |) in
+                                  M.value_with_ty
+                                    (Value.mkStructRecord
+                                      "alloy_primitives::log::Log"
+                                      [
+                                        ("address", M.read (| address |));
+                                        ("data", M.read (| data |))
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "alloy_primitives::log::Log")
+                                      []
+                                      [ Ty.path "alloy_primitives::log::LogData" ])))
+                            ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end)))
+                (Ty.function
+                  [ Ty.path "alloy_primitives::log::LogData" ]
+                  (Ty.apply
+                    (Ty.path "alloy_primitives::log::Log")
+                    []
+                    [ Ty.path "alloy_primitives::log::LogData" ]))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2145,24 +2443,43 @@ Module log.
               topics
             |) in
           let data := M.alloc (| Ty.path "alloy_primitives::bytes_::Bytes", data |) in
-          Value.mkStructRecord
-            "alloy_primitives::log::Log"
-            []
-            [ Ty.path "alloy_primitives::log::LogData" ]
-            [
-              ("address", M.read (| address |));
-              ("data",
-                M.call_closure (|
-                  Ty.path "alloy_primitives::log::LogData",
-                  M.get_associated_function (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "alloy_primitives::log::Log"
+              [
+                ("address", M.read (| address |));
+                ("data",
+                  M.call_closure (|
                     Ty.path "alloy_primitives::log::LogData",
-                    "new_unchecked",
-                    [],
-                    []
-                  |),
-                  [ M.read (| topics |); M.read (| data |) ]
-                |))
-            ]))
+                    M.get_associated_function (|
+                      Ty.path "alloy_primitives::log::LogData",
+                      "new_unchecked",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| topics |))
+                        (Ty.apply
+                          (Ty.path "alloc::vec::Vec")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "alloy_primitives::bits::fixed::FixedBytes")
+                              [ Value.Integer IntegerKind.Usize 32 ]
+                              [];
+                            Ty.path "alloc::alloc::Global"
+                          ]);
+                      M.value_with_ty
+                        (M.read (| data |))
+                        (Ty.path "alloy_primitives::bytes_::Bytes")
+                    ]
+                  |))
+              ])
+            (Ty.apply
+              (Ty.path "alloy_primitives::log::Log")
+              []
+              [ Ty.path "alloy_primitives::log::LogData" ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2180,31 +2497,34 @@ Module log.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.mkStructRecord
-            "alloy_primitives::log::Log"
-            []
-            [ Ty.path "alloy_primitives::log::LogData" ]
-            [
-              ("address",
-                M.read (|
-                  get_associated_constant (|
-                    Ty.path "alloy_primitives::bits::address::Address",
-                    "ZERO",
-                    Ty.path "alloy_primitives::bits::address::Address"
-                  |)
-                |));
-              ("data",
-                M.call_closure (|
-                  Ty.path "alloy_primitives::log::LogData",
-                  M.get_associated_function (|
+          (M.value_with_ty
+            (Value.mkStructRecord
+              "alloy_primitives::log::Log"
+              [
+                ("address",
+                  M.read (|
+                    get_associated_constant (|
+                      Ty.path "alloy_primitives::bits::address::Address",
+                      "ZERO",
+                      Ty.path "alloy_primitives::bits::address::Address"
+                    |)
+                  |));
+                ("data",
+                  M.call_closure (|
                     Ty.path "alloy_primitives::log::LogData",
-                    "empty",
-                    [],
+                    M.get_associated_function (|
+                      Ty.path "alloy_primitives::log::LogData",
+                      "empty",
+                      [],
+                      []
+                    |),
                     []
-                  |),
-                  []
-                |))
-            ]))
+                  |))
+              ])
+            (Ty.apply
+              (Ty.path "alloy_primitives::log::Log")
+              []
+              [ Ty.path "alloy_primitives::log::LogData" ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2234,11 +2554,11 @@ Module log.
           (let address :=
             M.alloc (| Ty.path "alloy_primitives::bits::address::Address", address |) in
           let data := M.alloc (| T, data |) in
-          Value.mkStructRecord
-            "alloy_primitives::log::Log"
-            []
-            [ T ]
-            [ ("address", M.read (| address |)); ("data", M.read (| data |)) ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "alloy_primitives::log::Log"
+              [ ("address", M.read (| address |)); ("data", M.read (| data |)) ])
+            (Ty.apply (Ty.path "alloy_primitives::log::Log") [] [ T ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2277,7 +2597,12 @@ Module log.
                   [],
                   []
                 |),
-                [ M.read (| address |); M.read (| data |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| address |))
+                    (Ty.path "alloy_primitives::bits::address::Address");
+                  M.value_with_ty (M.read (| data |)) T
+                ]
               |) in
             M.alloc (|
               Ty.apply
@@ -2296,51 +2621,59 @@ Module log.
                   [ Ty.apply (Ty.path "alloy_primitives::log::Log") [] [ T ] ]
                 |),
                 [
-                  M.call_closure (|
-                    Ty.path "bool",
-                    M.get_associated_function (|
-                      Ty.path "alloy_primitives::log::LogData",
-                      "is_valid",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.path "alloy_primitives::log::LogData",
-                          M.call_closure (|
-                            Ty.path "alloy_primitives::log::LogData",
-                            M.get_trait_method (|
-                              "core::convert::Into",
-                              Ty.apply (Ty.path "&") [] [ T ],
-                              [],
-                              [ Ty.path "alloy_primitives::log::LogData" ],
-                              "into",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      this,
-                                      "alloy_primitives::log::Log",
-                                      "data"
-                                    |)
-                                  |)
-                                |)
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "bool",
+                      M.get_associated_function (|
+                        Ty.path "alloy_primitives::log::LogData",
+                        "is_valid",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.path "alloy_primitives::log::LogData",
+                              M.call_closure (|
+                                Ty.path "alloy_primitives::log::LogData",
+                                M.get_trait_method (|
+                                  "core::convert::Into",
+                                  Ty.apply (Ty.path "&") [] [ T ],
+                                  [],
+                                  [ Ty.path "alloy_primitives::log::LogData" ],
+                                  "into",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.SubPointer.get_struct_record_field (|
+                                            this,
+                                            "alloy_primitives::log::Log",
+                                            "data"
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ T ])
+                                ]
                               |)
-                            ]
-                          |)
-                        |)
-                      |)
-                    ]
-                  |);
-                  M.read (| this |)
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::log::LogData" ])
+                      ]
+                    |))
+                    (Ty.path "bool");
+                  M.value_with_ty
+                    (M.read (| this |))
+                    (Ty.apply (Ty.path "alloy_primitives::log::Log") [] [ T ])
                 ]
               |)
             |)
@@ -2372,48 +2705,53 @@ Module log.
                 [ Ty.apply (Ty.path "alloy_primitives::log::Log") [] [ T ] ],
               self
             |) in
-          Value.mkStructRecord
-            "alloy_primitives::log::Log"
-            []
-            [ Ty.path "alloy_primitives::log::LogData" ]
-            [
-              ("address",
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "alloy_primitives::log::Log",
-                    "address"
-                  |)
-                |));
-              ("data",
-                M.call_closure (|
-                  Ty.path "alloy_primitives::log::LogData",
-                  M.get_trait_method (|
-                    "core::convert::Into",
-                    Ty.apply (Ty.path "&") [] [ T ],
-                    [],
-                    [ Ty.path "alloy_primitives::log::LogData" ],
-                    "into",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloy_primitives::log::Log",
-                            "data"
-                          |)
-                        |)
-                      |)
+          M.value_with_ty
+            (Value.mkStructRecord
+              "alloy_primitives::log::Log"
+              [
+                ("address",
+                  M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "alloy_primitives::log::Log",
+                      "address"
                     |)
-                  ]
-                |))
-            ]))
+                  |));
+                ("data",
+                  M.call_closure (|
+                    Ty.path "alloy_primitives::log::LogData",
+                    M.get_trait_method (|
+                      "core::convert::Into",
+                      Ty.apply (Ty.path "&") [] [ T ],
+                      [],
+                      [ Ty.path "alloy_primitives::log::LogData" ],
+                      "into",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloy_primitives::log::Log",
+                                "data"
+                              |)
+                            |)
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ T ])
+                    ]
+                  |))
+              ])
+            (Ty.apply
+              (Ty.path "alloy_primitives::log::Log")
+              []
+              [ Ty.path "alloy_primitives::log::LogData" ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     

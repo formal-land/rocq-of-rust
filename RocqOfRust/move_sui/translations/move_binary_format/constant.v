@@ -53,17 +53,20 @@ Module constant.
                         γ,
                         "move_binary_format::file_format::SignatureToken::Signer"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ]
-                      [
-                        Value.StructTuple
-                          "move_core_types::runtime_value::MoveTypeLayout::Signer"
-                          []
-                          []
-                          []
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_core_types::runtime_value::MoveTypeLayout::Signer"
+                              [])
+                            (Ty.path "move_core_types::runtime_value::MoveTypeLayout")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -72,17 +75,20 @@ Module constant.
                         γ,
                         "move_binary_format::file_format::SignatureToken::Address"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ]
-                      [
-                        Value.StructTuple
-                          "move_core_types::runtime_value::MoveTypeLayout::Address"
-                          []
-                          []
-                          []
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_core_types::runtime_value::MoveTypeLayout::Address"
+                              [])
+                            (Ty.path "move_core_types::runtime_value::MoveTypeLayout")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -91,17 +97,20 @@ Module constant.
                         γ,
                         "move_binary_format::file_format::SignatureToken::Bool"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ]
-                      [
-                        Value.StructTuple
-                          "move_core_types::runtime_value::MoveTypeLayout::Bool"
-                          []
-                          []
-                          []
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_core_types::runtime_value::MoveTypeLayout::Bool"
+                              [])
+                            (Ty.path "move_core_types::runtime_value::MoveTypeLayout")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -110,17 +119,20 @@ Module constant.
                         γ,
                         "move_binary_format::file_format::SignatureToken::U8"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ]
-                      [
-                        Value.StructTuple
-                          "move_core_types::runtime_value::MoveTypeLayout::U8"
-                          []
-                          []
-                          []
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_core_types::runtime_value::MoveTypeLayout::U8"
+                              [])
+                            (Ty.path "move_core_types::runtime_value::MoveTypeLayout")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -129,17 +141,20 @@ Module constant.
                         γ,
                         "move_binary_format::file_format::SignatureToken::U16"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ]
-                      [
-                        Value.StructTuple
-                          "move_core_types::runtime_value::MoveTypeLayout::U16"
-                          []
-                          []
-                          []
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_core_types::runtime_value::MoveTypeLayout::U16"
+                              [])
+                            (Ty.path "move_core_types::runtime_value::MoveTypeLayout")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -148,17 +163,20 @@ Module constant.
                         γ,
                         "move_binary_format::file_format::SignatureToken::U32"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ]
-                      [
-                        Value.StructTuple
-                          "move_core_types::runtime_value::MoveTypeLayout::U32"
-                          []
-                          []
-                          []
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_core_types::runtime_value::MoveTypeLayout::U32"
+                              [])
+                            (Ty.path "move_core_types::runtime_value::MoveTypeLayout")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -167,17 +185,20 @@ Module constant.
                         γ,
                         "move_binary_format::file_format::SignatureToken::U64"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ]
-                      [
-                        Value.StructTuple
-                          "move_core_types::runtime_value::MoveTypeLayout::U64"
-                          []
-                          []
-                          []
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_core_types::runtime_value::MoveTypeLayout::U64"
+                              [])
+                            (Ty.path "move_core_types::runtime_value::MoveTypeLayout")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -186,17 +207,20 @@ Module constant.
                         γ,
                         "move_binary_format::file_format::SignatureToken::U128"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ]
-                      [
-                        Value.StructTuple
-                          "move_core_types::runtime_value::MoveTypeLayout::U128"
-                          []
-                          []
-                          []
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_core_types::runtime_value::MoveTypeLayout::U128"
+                              [])
+                            (Ty.path "move_core_types::runtime_value::MoveTypeLayout")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -205,17 +229,20 @@ Module constant.
                         γ,
                         "move_binary_format::file_format::SignatureToken::U256"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ]
-                      [
-                        Value.StructTuple
-                          "move_core_types::runtime_value::MoveTypeLayout::U256"
-                          []
-                          []
-                          []
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_core_types::runtime_value::MoveTypeLayout::U256"
+                              [])
+                            (Ty.path "move_core_types::runtime_value::MoveTypeLayout")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -241,163 +268,80 @@ Module constant.
                           ],
                         γ1_0
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ]
-                      [
-                        Value.StructTuple
-                          "move_core_types::runtime_value::MoveTypeLayout::Vector"
-                          []
-                          []
-                          [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "alloc::boxed::Box")
-                                []
-                                [
-                                  Ty.path "move_core_types::runtime_value::MoveTypeLayout";
-                                  Ty.path "alloc::alloc::Global"
-                                ],
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "alloc::boxed::Box")
-                                  []
-                                  [
-                                    Ty.path "move_core_types::runtime_value::MoveTypeLayout";
-                                    Ty.path "alloc::alloc::Global"
-                                  ],
-                                "new",
-                                [],
-                                []
-                              |),
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_core_types::runtime_value::MoveTypeLayout::Vector"
                               [
-                                M.match_operator (|
-                                  Ty.path "move_core_types::runtime_value::MoveTypeLayout",
-                                  M.alloc (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "alloc::boxed::Box")
+                                    []
+                                    [
+                                      Ty.path "move_core_types::runtime_value::MoveTypeLayout";
+                                      Ty.path "alloc::alloc::Global"
+                                    ],
+                                  M.get_associated_function (|
                                     Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
+                                      (Ty.path "alloc::boxed::Box")
                                       []
                                       [
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "core::convert::Infallible" ];
-                                        Ty.path "move_core_types::runtime_value::MoveTypeLayout"
+                                        Ty.path "move_core_types::runtime_value::MoveTypeLayout";
+                                        Ty.path "alloc::alloc::Global"
                                       ],
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "core::ops::control_flow::ControlFlow")
-                                        []
-                                        [
+                                    "new",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.match_operator (|
+                                        Ty.path "move_core_types::runtime_value::MoveTypeLayout",
+                                        M.alloc (|
                                           Ty.apply
-                                            (Ty.path "core::option::Option")
-                                            []
-                                            [ Ty.path "core::convert::Infallible" ];
-                                          Ty.path "move_core_types::runtime_value::MoveTypeLayout"
-                                        ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "move_core_types::runtime_value::MoveTypeLayout"
-                                          ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::option::Option")
+                                            (Ty.path "core::ops::control_flow::ControlFlow")
                                             []
                                             [
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "core::convert::Infallible" ];
                                               Ty.path
                                                 "move_core_types::runtime_value::MoveTypeLayout"
                                             ],
-                                          M.get_function (|
-                                            "move_binary_format::constant::sig_to_ty",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.call_closure (|
-                                                  Ty.apply
-                                                    (Ty.path "&")
-                                                    []
-                                                    [
-                                                      Ty.path
-                                                        "move_binary_format::file_format::SignatureToken"
-                                                    ],
-                                                  M.get_trait_method (|
-                                                    "core::convert::AsRef",
-                                                    Ty.apply
-                                                      (Ty.path "alloc::boxed::Box")
-                                                      []
-                                                      [
-                                                        Ty.path
-                                                          "move_binary_format::file_format::SignatureToken";
-                                                        Ty.path "alloc::alloc::Global"
-                                                      ],
-                                                    [],
-                                                    [
-                                                      Ty.path
-                                                        "move_binary_format::file_format::SignatureToken"
-                                                    ],
-                                                    "as_ref",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| v |) |)
-                                                    |)
-                                                  ]
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
+                                          M.call_closure (|
                                             Ty.apply
-                                              (Ty.path "core::option::Option")
+                                              (Ty.path "core::ops::control_flow::ControlFlow")
                                               []
-                                              [ Ty.path "core::convert::Infallible" ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
+                                              [
                                                 Ty.apply
                                                   (Ty.path "core::option::Option")
                                                   []
-                                                  [
-                                                    Ty.path
-                                                      "move_core_types::runtime_value::MoveTypeLayout"
-                                                  ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                  [ Ty.path "core::convert::Infallible" ];
+                                                Ty.path
+                                                  "move_core_types::runtime_value::MoveTypeLayout"
+                                              ],
+                                            M.get_trait_method (|
+                                              "core::ops::try_trait::Try",
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "move_core_types::runtime_value::MoveTypeLayout"
+                                                ],
+                                              [],
+                                              [],
+                                              "branch",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::option::Option")
                                                     []
@@ -405,43 +349,173 @@ Module constant.
                                                       Ty.path
                                                         "move_core_types::runtime_value::MoveTypeLayout"
                                                     ],
-                                                  [],
+                                                  M.get_function (|
+                                                    "move_binary_format::constant::sig_to_ty",
+                                                    [],
+                                                    []
+                                                  |),
                                                   [
-                                                    Ty.apply
-                                                      (Ty.path "core::option::Option")
-                                                      []
-                                                      [ Ty.path "core::convert::Infallible" ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "move_binary_format::file_format::SignatureToken"
+                                                              ],
+                                                            M.get_trait_method (|
+                                                              "core::convert::AsRef",
+                                                              Ty.apply
+                                                                (Ty.path "alloc::boxed::Box")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "move_binary_format::file_format::SignatureToken";
+                                                                  Ty.path "alloc::alloc::Global"
+                                                                ],
+                                                              [],
+                                                              [
+                                                                Ty.path
+                                                                  "move_binary_format::file_format::SignatureToken"
+                                                              ],
+                                                              "as_ref",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (| M.read (| v |) |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "alloc::boxed::Box")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "move_binary_format::file_format::SignatureToken";
+                                                                        Ty.path
+                                                                          "alloc::alloc::Global"
+                                                                      ]
+                                                                  ])
+                                                            ]
+                                                          |)
+                                                        |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_binary_format::file_format::SignatureToken"
+                                                        ])
+                                                  ]
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "core::option::Option")
                                                   []
-                                                |),
-                                                [ M.read (| residual |) ]
-                                              |)
-                                            |)
+                                                  [
+                                                    Ty.path
+                                                      "move_core_types::runtime_value::MoveTypeLayout"
+                                                  ])
+                                            ]
                                           |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val :=
-                                          M.copy (|
-                                            Ty.path
-                                              "move_core_types::runtime_value::MoveTypeLayout",
-                                            γ0_0
-                                          |) in
-                                        M.read (| val |)))
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ0_0 :=
+                                                M.SubPointer.get_struct_tuple_field (|
+                                                  γ,
+                                                  "core::ops::control_flow::ControlFlow::Break",
+                                                  0
+                                                |) in
+                                              let residual :=
+                                                M.copy (|
+                                                  Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [ Ty.path "core::convert::Infallible" ],
+                                                  γ0_0
+                                                |) in
+                                              M.never_to_any (|
+                                                M.read (|
+                                                  M.return_ (|
+                                                    M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "core::option::Option")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_core_types::runtime_value::MoveTypeLayout"
+                                                        ],
+                                                      M.get_trait_method (|
+                                                        "core::ops::try_trait::FromResidual",
+                                                        Ty.apply
+                                                          (Ty.path "core::option::Option")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "move_core_types::runtime_value::MoveTypeLayout"
+                                                          ],
+                                                        [],
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "core::option::Option")
+                                                            []
+                                                            [ Ty.path "core::convert::Infallible" ]
+                                                        ],
+                                                        "from_residual",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| residual |))
+                                                          (Ty.apply
+                                                            (Ty.path "core::option::Option")
+                                                            []
+                                                            [ Ty.path "core::convert::Infallible" ])
+                                                      ]
+                                                    |)
+                                                  |)
+                                                |)
+                                              |)));
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ0_0 :=
+                                                M.SubPointer.get_struct_tuple_field (|
+                                                  γ,
+                                                  "core::ops::control_flow::ControlFlow::Continue",
+                                                  0
+                                                |) in
+                                              let val :=
+                                                M.copy (|
+                                                  Ty.path
+                                                    "move_core_types::runtime_value::MoveTypeLayout",
+                                                  γ0_0
+                                                |) in
+                                              M.read (| val |)))
+                                        ]
+                                      |))
+                                      (Ty.path "move_core_types::runtime_value::MoveTypeLayout")
                                   ]
                                 |)
-                              ]
-                            |)
-                          ]
-                      ]));
+                              ])
+                            (Ty.path "move_core_types::runtime_value::MoveTypeLayout")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (M.find_or_pattern (Ty.tuple []) (|
@@ -503,11 +577,12 @@ Module constant.
                           match γ with
                           | [] =>
                             ltac:(M.monadic
-                              (Value.StructTuple
-                                "core::option::Option::None"
-                                []
-                                [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ]
-                                []))
+                              (M.value_with_ty
+                                (Value.StructTuple "core::option::Option::None" [])
+                                (Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ])))
                           | _ => M.impossible "wrong number of arguments"
                           end)
                     |)))
@@ -569,17 +644,20 @@ Module constant.
                         γ,
                         "move_core_types::runtime_value::MoveTypeLayout::Address"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_binary_format::file_format::SignatureToken" ]
-                      [
-                        Value.StructTuple
-                          "move_binary_format::file_format::SignatureToken::Address"
-                          []
-                          []
-                          []
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_binary_format::file_format::SignatureToken::Address"
+                              [])
+                            (Ty.path "move_binary_format::file_format::SignatureToken")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_binary_format::file_format::SignatureToken" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -588,17 +666,20 @@ Module constant.
                         γ,
                         "move_core_types::runtime_value::MoveTypeLayout::Signer"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_binary_format::file_format::SignatureToken" ]
-                      [
-                        Value.StructTuple
-                          "move_binary_format::file_format::SignatureToken::Signer"
-                          []
-                          []
-                          []
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_binary_format::file_format::SignatureToken::Signer"
+                              [])
+                            (Ty.path "move_binary_format::file_format::SignatureToken")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_binary_format::file_format::SignatureToken" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -607,17 +688,20 @@ Module constant.
                         γ,
                         "move_core_types::runtime_value::MoveTypeLayout::U8"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_binary_format::file_format::SignatureToken" ]
-                      [
-                        Value.StructTuple
-                          "move_binary_format::file_format::SignatureToken::U8"
-                          []
-                          []
-                          []
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_binary_format::file_format::SignatureToken::U8"
+                              [])
+                            (Ty.path "move_binary_format::file_format::SignatureToken")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_binary_format::file_format::SignatureToken" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -626,17 +710,20 @@ Module constant.
                         γ,
                         "move_core_types::runtime_value::MoveTypeLayout::U16"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_binary_format::file_format::SignatureToken" ]
-                      [
-                        Value.StructTuple
-                          "move_binary_format::file_format::SignatureToken::U16"
-                          []
-                          []
-                          []
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_binary_format::file_format::SignatureToken::U16"
+                              [])
+                            (Ty.path "move_binary_format::file_format::SignatureToken")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_binary_format::file_format::SignatureToken" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -645,17 +732,20 @@ Module constant.
                         γ,
                         "move_core_types::runtime_value::MoveTypeLayout::U32"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_binary_format::file_format::SignatureToken" ]
-                      [
-                        Value.StructTuple
-                          "move_binary_format::file_format::SignatureToken::U32"
-                          []
-                          []
-                          []
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_binary_format::file_format::SignatureToken::U32"
+                              [])
+                            (Ty.path "move_binary_format::file_format::SignatureToken")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_binary_format::file_format::SignatureToken" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -664,17 +754,20 @@ Module constant.
                         γ,
                         "move_core_types::runtime_value::MoveTypeLayout::U64"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_binary_format::file_format::SignatureToken" ]
-                      [
-                        Value.StructTuple
-                          "move_binary_format::file_format::SignatureToken::U64"
-                          []
-                          []
-                          []
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_binary_format::file_format::SignatureToken::U64"
+                              [])
+                            (Ty.path "move_binary_format::file_format::SignatureToken")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_binary_format::file_format::SignatureToken" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -683,17 +776,20 @@ Module constant.
                         γ,
                         "move_core_types::runtime_value::MoveTypeLayout::U128"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_binary_format::file_format::SignatureToken" ]
-                      [
-                        Value.StructTuple
-                          "move_binary_format::file_format::SignatureToken::U128"
-                          []
-                          []
-                          []
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_binary_format::file_format::SignatureToken::U128"
+                              [])
+                            (Ty.path "move_binary_format::file_format::SignatureToken")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_binary_format::file_format::SignatureToken" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -702,17 +798,20 @@ Module constant.
                         γ,
                         "move_core_types::runtime_value::MoveTypeLayout::U256"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_binary_format::file_format::SignatureToken" ]
-                      [
-                        Value.StructTuple
-                          "move_binary_format::file_format::SignatureToken::U256"
-                          []
-                          []
-                          []
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_binary_format::file_format::SignatureToken::U256"
+                              [])
+                            (Ty.path "move_binary_format::file_format::SignatureToken")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_binary_format::file_format::SignatureToken" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -738,165 +837,80 @@ Module constant.
                           ],
                         γ1_0
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_binary_format::file_format::SignatureToken" ]
-                      [
-                        Value.StructTuple
-                          "move_binary_format::file_format::SignatureToken::Vector"
-                          []
-                          []
-                          [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "alloc::boxed::Box")
-                                []
-                                [
-                                  Ty.path "move_binary_format::file_format::SignatureToken";
-                                  Ty.path "alloc::alloc::Global"
-                                ],
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "alloc::boxed::Box")
-                                  []
-                                  [
-                                    Ty.path "move_binary_format::file_format::SignatureToken";
-                                    Ty.path "alloc::alloc::Global"
-                                  ],
-                                "new",
-                                [],
-                                []
-                              |),
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_binary_format::file_format::SignatureToken::Vector"
                               [
-                                M.match_operator (|
-                                  Ty.path "move_binary_format::file_format::SignatureToken",
-                                  M.alloc (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "alloc::boxed::Box")
+                                    []
+                                    [
+                                      Ty.path "move_binary_format::file_format::SignatureToken";
+                                      Ty.path "alloc::alloc::Global"
+                                    ],
+                                  M.get_associated_function (|
                                     Ty.apply
-                                      (Ty.path "core::ops::control_flow::ControlFlow")
+                                      (Ty.path "alloc::boxed::Box")
                                       []
                                       [
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.path "core::convert::Infallible" ];
-                                        Ty.path "move_binary_format::file_format::SignatureToken"
+                                        Ty.path "move_binary_format::file_format::SignatureToken";
+                                        Ty.path "alloc::alloc::Global"
                                       ],
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "core::ops::control_flow::ControlFlow")
-                                        []
-                                        [
+                                    "new",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.match_operator (|
+                                        Ty.path "move_binary_format::file_format::SignatureToken",
+                                        M.alloc (|
                                           Ty.apply
-                                            (Ty.path "core::option::Option")
-                                            []
-                                            [ Ty.path "core::convert::Infallible" ];
-                                          Ty.path "move_binary_format::file_format::SignatureToken"
-                                        ],
-                                      M.get_trait_method (|
-                                        "core::ops::try_trait::Try",
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [
-                                            Ty.path
-                                              "move_binary_format::file_format::SignatureToken"
-                                          ],
-                                        [],
-                                        [],
-                                        "branch",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::option::Option")
+                                            (Ty.path "core::ops::control_flow::ControlFlow")
                                             []
                                             [
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "core::convert::Infallible" ];
                                               Ty.path
                                                 "move_binary_format::file_format::SignatureToken"
                                             ],
-                                          M.get_function (|
-                                            "move_binary_format::constant::ty_to_sig",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.call_closure (|
-                                                  Ty.apply
-                                                    (Ty.path "&")
-                                                    []
-                                                    [
-                                                      Ty.path
-                                                        "move_core_types::runtime_value::MoveTypeLayout"
-                                                    ],
-                                                  M.get_trait_method (|
-                                                    "core::convert::AsRef",
-                                                    Ty.apply
-                                                      (Ty.path "alloc::boxed::Box")
-                                                      []
-                                                      [
-                                                        Ty.path
-                                                          "move_core_types::runtime_value::MoveTypeLayout";
-                                                        Ty.path "alloc::alloc::Global"
-                                                      ],
-                                                    [],
-                                                    [
-                                                      Ty.path
-                                                        "move_core_types::runtime_value::MoveTypeLayout"
-                                                    ],
-                                                    "as_ref",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| v |) |)
-                                                    |)
-                                                  ]
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  [
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Break",
-                                            0
-                                          |) in
-                                        let residual :=
-                                          M.copy (|
+                                          M.call_closure (|
                                             Ty.apply
-                                              (Ty.path "core::option::Option")
+                                              (Ty.path "core::ops::control_flow::ControlFlow")
                                               []
-                                              [ Ty.path "core::convert::Infallible" ],
-                                            γ0_0
-                                          |) in
-                                        M.never_to_any (|
-                                          M.read (|
-                                            M.return_ (|
-                                              M.call_closure (|
+                                              [
                                                 Ty.apply
                                                   (Ty.path "core::option::Option")
                                                   []
-                                                  [
-                                                    Ty.path
-                                                      "move_binary_format::file_format::SignatureToken"
-                                                  ],
-                                                M.get_trait_method (|
-                                                  "core::ops::try_trait::FromResidual",
+                                                  [ Ty.path "core::convert::Infallible" ];
+                                                Ty.path
+                                                  "move_binary_format::file_format::SignatureToken"
+                                              ],
+                                            M.get_trait_method (|
+                                              "core::ops::try_trait::Try",
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "move_binary_format::file_format::SignatureToken"
+                                                ],
+                                              [],
+                                              [],
+                                              "branch",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.call_closure (|
                                                   Ty.apply
                                                     (Ty.path "core::option::Option")
                                                     []
@@ -904,43 +918,173 @@ Module constant.
                                                       Ty.path
                                                         "move_binary_format::file_format::SignatureToken"
                                                     ],
-                                                  [],
+                                                  M.get_function (|
+                                                    "move_binary_format::constant::ty_to_sig",
+                                                    [],
+                                                    []
+                                                  |),
                                                   [
-                                                    Ty.apply
-                                                      (Ty.path "core::option::Option")
-                                                      []
-                                                      [ Ty.path "core::convert::Infallible" ]
-                                                  ],
-                                                  "from_residual",
-                                                  [],
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "move_core_types::runtime_value::MoveTypeLayout"
+                                                              ],
+                                                            M.get_trait_method (|
+                                                              "core::convert::AsRef",
+                                                              Ty.apply
+                                                                (Ty.path "alloc::boxed::Box")
+                                                                []
+                                                                [
+                                                                  Ty.path
+                                                                    "move_core_types::runtime_value::MoveTypeLayout";
+                                                                  Ty.path "alloc::alloc::Global"
+                                                                ],
+                                                              [],
+                                                              [
+                                                                Ty.path
+                                                                  "move_core_types::runtime_value::MoveTypeLayout"
+                                                              ],
+                                                              "as_ref",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (| M.read (| v |) |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "alloc::boxed::Box")
+                                                                      []
+                                                                      [
+                                                                        Ty.path
+                                                                          "move_core_types::runtime_value::MoveTypeLayout";
+                                                                        Ty.path
+                                                                          "alloc::alloc::Global"
+                                                                      ]
+                                                                  ])
+                                                            ]
+                                                          |)
+                                                        |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_core_types::runtime_value::MoveTypeLayout"
+                                                        ])
+                                                  ]
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "core::option::Option")
                                                   []
-                                                |),
-                                                [ M.read (| residual |) ]
-                                              |)
-                                            |)
+                                                  [
+                                                    Ty.path
+                                                      "move_binary_format::file_format::SignatureToken"
+                                                  ])
+                                            ]
                                           |)
-                                        |)));
-                                    fun γ =>
-                                      ltac:(M.monadic
-                                        (let γ0_0 :=
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            γ,
-                                            "core::ops::control_flow::ControlFlow::Continue",
-                                            0
-                                          |) in
-                                        let val :=
-                                          M.copy (|
-                                            Ty.path
-                                              "move_binary_format::file_format::SignatureToken",
-                                            γ0_0
-                                          |) in
-                                        M.read (| val |)))
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ0_0 :=
+                                                M.SubPointer.get_struct_tuple_field (|
+                                                  γ,
+                                                  "core::ops::control_flow::ControlFlow::Break",
+                                                  0
+                                                |) in
+                                              let residual :=
+                                                M.copy (|
+                                                  Ty.apply
+                                                    (Ty.path "core::option::Option")
+                                                    []
+                                                    [ Ty.path "core::convert::Infallible" ],
+                                                  γ0_0
+                                                |) in
+                                              M.never_to_any (|
+                                                M.read (|
+                                                  M.return_ (|
+                                                    M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "core::option::Option")
+                                                        []
+                                                        [
+                                                          Ty.path
+                                                            "move_binary_format::file_format::SignatureToken"
+                                                        ],
+                                                      M.get_trait_method (|
+                                                        "core::ops::try_trait::FromResidual",
+                                                        Ty.apply
+                                                          (Ty.path "core::option::Option")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "move_binary_format::file_format::SignatureToken"
+                                                          ],
+                                                        [],
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "core::option::Option")
+                                                            []
+                                                            [ Ty.path "core::convert::Infallible" ]
+                                                        ],
+                                                        "from_residual",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| residual |))
+                                                          (Ty.apply
+                                                            (Ty.path "core::option::Option")
+                                                            []
+                                                            [ Ty.path "core::convert::Infallible" ])
+                                                      ]
+                                                    |)
+                                                  |)
+                                                |)
+                                              |)));
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let γ0_0 :=
+                                                M.SubPointer.get_struct_tuple_field (|
+                                                  γ,
+                                                  "core::ops::control_flow::ControlFlow::Continue",
+                                                  0
+                                                |) in
+                                              let val :=
+                                                M.copy (|
+                                                  Ty.path
+                                                    "move_binary_format::file_format::SignatureToken",
+                                                  γ0_0
+                                                |) in
+                                              M.read (| val |)))
+                                        ]
+                                      |))
+                                      (Ty.path "move_binary_format::file_format::SignatureToken")
                                   ]
                                 |)
-                              ]
-                            |)
-                          ]
-                      ]));
+                              ])
+                            (Ty.path "move_binary_format::file_format::SignatureToken")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_binary_format::file_format::SignatureToken" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -950,11 +1094,12 @@ Module constant.
                         "move_core_types::runtime_value::MoveTypeLayout::Struct",
                         0
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.path "move_binary_format::file_format::SignatureToken" ]
-                      []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_binary_format::file_format::SignatureToken" ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -963,17 +1108,20 @@ Module constant.
                         γ,
                         "move_core_types::runtime_value::MoveTypeLayout::Bool"
                       |) in
-                    Value.StructTuple
-                      "core::option::Option::Some"
-                      []
-                      [ Ty.path "move_binary_format::file_format::SignatureToken" ]
-                      [
-                        Value.StructTuple
-                          "move_binary_format::file_format::SignatureToken::Bool"
-                          []
-                          []
-                          []
-                      ]))
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::option::Option::Some"
+                        [
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "move_binary_format::file_format::SignatureToken::Bool"
+                              [])
+                            (Ty.path "move_binary_format::file_format::SignatureToken")
+                        ])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.path "move_binary_format::file_format::SignatureToken" ])))
               ]
             |)))
         |)))
@@ -1019,273 +1167,341 @@ Module constant.
               []
               [ Ty.path "move_binary_format::file_format::Constant" ]) (|
             ltac:(M.monadic
-              (Value.StructTuple
-                "core::option::Option::Some"
-                []
-                [ Ty.path "move_binary_format::file_format::Constant" ]
-                [
-                  Value.mkStructRecord
-                    "move_binary_format::file_format::Constant"
-                    []
-                    []
-                    [
-                      ("type_",
-                        M.match_operator (|
-                          Ty.path "move_binary_format::file_format::SignatureToken",
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "core::ops::control_flow::ControlFlow")
-                              []
-                              [
+              (M.value_with_ty
+                (Value.StructTuple
+                  "core::option::Option::Some"
+                  [
+                    M.value_with_ty
+                      (Value.mkStructRecord
+                        "move_binary_format::file_format::Constant"
+                        [
+                          ("type_",
+                            M.match_operator (|
+                              Ty.path "move_binary_format::file_format::SignatureToken",
+                              M.alloc (|
                                 Ty.apply
-                                  (Ty.path "core::option::Option")
+                                  (Ty.path "core::ops::control_flow::ControlFlow")
                                   []
-                                  [ Ty.path "core::convert::Infallible" ];
-                                Ty.path "move_binary_format::file_format::SignatureToken"
-                              ],
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "core::ops::control_flow::ControlFlow")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::option::Option")
-                                    []
-                                    [ Ty.path "core::convert::Infallible" ];
-                                  Ty.path "move_binary_format::file_format::SignatureToken"
-                                ],
-                              M.get_trait_method (|
-                                "core::ops::try_trait::Try",
-                                Ty.apply
-                                  (Ty.path "core::option::Option")
-                                  []
-                                  [ Ty.path "move_binary_format::file_format::SignatureToken" ],
-                                [],
-                                [],
-                                "branch",
-                                [],
-                                []
-                              |),
-                              [
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::option::Option")
-                                    []
-                                    [ Ty.path "move_binary_format::file_format::SignatureToken" ],
-                                  M.get_function (|
-                                    "move_binary_format::constant::ty_to_sig",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| ty |) |) |) ]
-                                |)
-                              ]
-                            |)
-                          |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let γ0_0 :=
-                                  M.SubPointer.get_struct_tuple_field (|
-                                    γ,
-                                    "core::ops::control_flow::ControlFlow::Break",
-                                    0
-                                  |) in
-                                let residual :=
-                                  M.copy (|
+                                  [
                                     Ty.apply
                                       (Ty.path "core::option::Option")
                                       []
-                                      [ Ty.path "core::convert::Infallible" ],
-                                    γ0_0
-                                  |) in
-                                M.never_to_any (|
-                                  M.read (|
-                                    M.return_ (|
-                                      M.call_closure (|
+                                      [ Ty.path "core::convert::Infallible" ];
+                                    Ty.path "move_binary_format::file_format::SignatureToken"
+                                  ],
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::ops::control_flow::ControlFlow")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ];
+                                      Ty.path "move_binary_format::file_format::SignatureToken"
+                                    ],
+                                  M.get_trait_method (|
+                                    "core::ops::try_trait::Try",
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "move_binary_format::file_format::SignatureToken" ],
+                                    [],
+                                    [],
+                                    "branch",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
                                         Ty.apply
                                           (Ty.path "core::option::Option")
                                           []
-                                          [ Ty.path "move_binary_format::file_format::Constant" ],
-                                        M.get_trait_method (|
-                                          "core::ops::try_trait::FromResidual",
-                                          Ty.apply
-                                            (Ty.path "core::option::Option")
-                                            []
-                                            [ Ty.path "move_binary_format::file_format::Constant" ],
-                                          [],
                                           [
-                                            Ty.apply
-                                              (Ty.path "core::option::Option")
-                                              []
-                                              [ Ty.path "core::convert::Infallible" ]
+                                            Ty.path
+                                              "move_binary_format::file_format::SignatureToken"
                                           ],
-                                          "from_residual",
+                                        M.get_function (|
+                                          "move_binary_format::constant::ty_to_sig",
                                           [],
                                           []
                                         |),
-                                        [ M.read (| residual |) ]
-                                      |)
-                                    |)
-                                  |)
-                                |)));
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let γ0_0 :=
-                                  M.SubPointer.get_struct_tuple_field (|
-                                    γ,
-                                    "core::ops::control_flow::ControlFlow::Continue",
-                                    0
-                                  |) in
-                                let val :=
-                                  M.copy (|
-                                    Ty.path "move_binary_format::file_format::SignatureToken",
-                                    γ0_0
-                                  |) in
-                                M.read (| val |)))
-                          ]
-                        |));
-                      ("data",
-                        M.match_operator (|
-                          Ty.apply
-                            (Ty.path "alloc::vec::Vec")
-                            []
-                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "core::ops::control_flow::ControlFlow")
-                              []
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| ty |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.path
+                                                  "move_core_types::runtime_value::MoveTypeLayout"
+                                              ])
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "move_binary_format::file_format::SignatureToken"
+                                        ])
+                                  ]
+                                |)
+                              |),
                               [
-                                Ty.apply
-                                  (Ty.path "core::option::Option")
-                                  []
-                                  [ Ty.path "core::convert::Infallible" ];
-                                Ty.apply
-                                  (Ty.path "alloc::vec::Vec")
-                                  []
-                                  [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
-                              ],
-                            M.call_closure (|
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let γ0_0 :=
+                                      M.SubPointer.get_struct_tuple_field (|
+                                        γ,
+                                        "core::ops::control_flow::ControlFlow::Break",
+                                        0
+                                      |) in
+                                    let residual :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::convert::Infallible" ],
+                                        γ0_0
+                                      |) in
+                                    M.never_to_any (|
+                                      M.read (|
+                                        M.return_ (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "move_binary_format::file_format::Constant"
+                                              ],
+                                            M.get_trait_method (|
+                                              "core::ops::try_trait::FromResidual",
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "move_binary_format::file_format::Constant"
+                                                ],
+                                              [],
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [ Ty.path "core::convert::Infallible" ]
+                                              ],
+                                              "from_residual",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| residual |))
+                                                (Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [ Ty.path "core::convert::Infallible" ])
+                                            ]
+                                          |)
+                                        |)
+                                      |)
+                                    |)));
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let γ0_0 :=
+                                      M.SubPointer.get_struct_tuple_field (|
+                                        γ,
+                                        "core::ops::control_flow::ControlFlow::Continue",
+                                        0
+                                      |) in
+                                    let val :=
+                                      M.copy (|
+                                        Ty.path "move_binary_format::file_format::SignatureToken",
+                                        γ0_0
+                                      |) in
+                                    M.read (| val |)))
+                              ]
+                            |));
+                          ("data",
+                            M.match_operator (|
                               Ty.apply
-                                (Ty.path "core::ops::control_flow::ControlFlow")
+                                (Ty.path "alloc::vec::Vec")
                                 []
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::option::Option")
-                                    []
-                                    [ Ty.path "core::convert::Infallible" ];
-                                  Ty.apply
-                                    (Ty.path "alloc::vec::Vec")
-                                    []
-                                    [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
-                                ],
-                              M.get_trait_method (|
-                                "core::ops::try_trait::Try",
+                                [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                              M.alloc (|
                                 Ty.apply
-                                  (Ty.path "core::option::Option")
+                                  (Ty.path "core::ops::control_flow::ControlFlow")
                                   []
                                   [
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.path "core::convert::Infallible" ];
                                     Ty.apply
                                       (Ty.path "alloc::vec::Vec")
                                       []
                                       [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
                                   ],
-                                [],
-                                [],
-                                "branch",
-                                [],
-                                []
-                              |),
-                              [
                                 M.call_closure (|
                                   Ty.apply
-                                    (Ty.path "core::option::Option")
+                                    (Ty.path "core::ops::control_flow::ControlFlow")
                                     []
                                     [
+                                      Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ];
                                       Ty.apply
                                         (Ty.path "alloc::vec::Vec")
                                         []
                                         [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
                                     ],
-                                  M.get_associated_function (|
-                                    Ty.path "move_core_types::runtime_value::MoveValue",
-                                    "simple_serialize",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |) ]
-                                |)
-                              ]
-                            |)
-                          |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let γ0_0 :=
-                                  M.SubPointer.get_struct_tuple_field (|
-                                    γ,
-                                    "core::ops::control_flow::ControlFlow::Break",
-                                    0
-                                  |) in
-                                let residual :=
-                                  M.copy (|
+                                  M.get_trait_method (|
+                                    "core::ops::try_trait::Try",
                                     Ty.apply
                                       (Ty.path "core::option::Option")
                                       []
-                                      [ Ty.path "core::convert::Infallible" ],
-                                    γ0_0
-                                  |) in
-                                M.never_to_any (|
-                                  M.read (|
-                                    M.return_ (|
-                                      M.call_closure (|
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                      ],
+                                    [],
+                                    [],
+                                    "branch",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
                                         Ty.apply
                                           (Ty.path "core::option::Option")
                                           []
-                                          [ Ty.path "move_binary_format::file_format::Constant" ],
-                                        M.get_trait_method (|
-                                          "core::ops::try_trait::FromResidual",
-                                          Ty.apply
-                                            (Ty.path "core::option::Option")
-                                            []
-                                            [ Ty.path "move_binary_format::file_format::Constant" ],
-                                          [],
                                           [
                                             Ty.apply
-                                              (Ty.path "core::option::Option")
+                                              (Ty.path "alloc::vec::Vec")
                                               []
-                                              [ Ty.path "core::convert::Infallible" ]
+                                              [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
                                           ],
-                                          "from_residual",
+                                        M.get_associated_function (|
+                                          Ty.path "move_core_types::runtime_value::MoveValue",
+                                          "simple_serialize",
                                           [],
                                           []
                                         |),
-                                        [ M.read (| residual |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| v |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.path "move_core_types::runtime_value::MoveValue"
+                                              ])
+                                        ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::vec::Vec")
+                                            []
+                                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                        ])
+                                  ]
+                                |)
+                              |),
+                              [
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let γ0_0 :=
+                                      M.SubPointer.get_struct_tuple_field (|
+                                        γ,
+                                        "core::ops::control_flow::ControlFlow::Break",
+                                        0
+                                      |) in
+                                    let residual :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::convert::Infallible" ],
+                                        γ0_0
+                                      |) in
+                                    M.never_to_any (|
+                                      M.read (|
+                                        M.return_ (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "move_binary_format::file_format::Constant"
+                                              ],
+                                            M.get_trait_method (|
+                                              "core::ops::try_trait::FromResidual",
+                                              Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [
+                                                  Ty.path
+                                                    "move_binary_format::file_format::Constant"
+                                                ],
+                                              [],
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [ Ty.path "core::convert::Infallible" ]
+                                              ],
+                                              "from_residual",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| residual |))
+                                                (Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [ Ty.path "core::convert::Infallible" ])
+                                            ]
+                                          |)
+                                        |)
                                       |)
-                                    |)
-                                  |)
-                                |)));
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let γ0_0 :=
-                                  M.SubPointer.get_struct_tuple_field (|
-                                    γ,
-                                    "core::ops::control_flow::ControlFlow::Continue",
-                                    0
-                                  |) in
-                                let val :=
-                                  M.copy (|
-                                    Ty.apply
-                                      (Ty.path "alloc::vec::Vec")
-                                      []
-                                      [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                                    γ0_0
-                                  |) in
-                                M.read (| val |)))
-                          ]
-                        |))
-                    ]
-                ]))
+                                    |)));
+                                fun γ =>
+                                  ltac:(M.monadic
+                                    (let γ0_0 :=
+                                      M.SubPointer.get_struct_tuple_field (|
+                                        γ,
+                                        "core::ops::control_flow::ControlFlow::Continue",
+                                        0
+                                      |) in
+                                    let val :=
+                                      M.copy (|
+                                        Ty.apply
+                                          (Ty.path "alloc::vec::Vec")
+                                          []
+                                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                                        γ0_0
+                                      |) in
+                                    M.read (| val |)))
+                              ]
+                            |))
+                        ])
+                      (Ty.path "move_binary_format::file_format::Constant")
+                  ])
+                (Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.path "move_binary_format::file_format::Constant" ])))
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1355,28 +1571,42 @@ Module constant.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ],
+                              M.get_function (|
+                                "move_binary_format::constant::sig_to_ty",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "move_binary_format::file_format::Constant",
+                                          "type_"
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.path "move_binary_format::file_format::SignatureToken" ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::option::Option")
                               []
-                              [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ],
-                            M.get_function (| "move_binary_format::constant::sig_to_ty", [], [] |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "move_binary_format::file_format::Constant",
-                                      "type_"
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                              [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ])
                         ]
                       |)
                     |),
@@ -1422,7 +1652,14 @@ Module constant.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -1466,65 +1703,93 @@ Module constant.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.path "move_core_types::runtime_value::MoveValue";
+                              Ty.path "anyhow::Error"
+                            ],
+                          M.get_associated_function (|
+                            Ty.path "move_core_types::runtime_value::MoveValue",
+                            "simple_deserialize",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                    M.get_trait_method (|
+                                      "core::ops::deref::Deref",
+                                      Ty.apply
+                                        (Ty.path "alloc::vec::Vec")
+                                        []
+                                        [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                                      [],
+                                      [],
+                                      "deref",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "move_binary_format::file_format::Constant",
+                                                "data"
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::Vec")
+                                              []
+                                              [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                                          ])
+                                    ]
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, ty |) |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "move_core_types::runtime_value::MoveTypeLayout" ])
+                          ]
+                        |))
+                        (Ty.apply
                           (Ty.path "core::result::Result")
                           []
                           [
                             Ty.path "move_core_types::runtime_value::MoveValue";
                             Ty.path "anyhow::Error"
-                          ],
-                        M.get_associated_function (|
-                          Ty.path "move_core_types::runtime_value::MoveValue",
-                          "simple_deserialize",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                M.get_trait_method (|
-                                  "core::ops::deref::Deref",
-                                  Ty.apply
-                                    (Ty.path "alloc::vec::Vec")
-                                    []
-                                    [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                                  [],
-                                  [],
-                                  "deref",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "move_binary_format::file_format::Constant",
-                                          "data"
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, ty |) |)
-                          |)
-                        ]
-                      |)
+                          ])
                     ]
                   |)
                 |)

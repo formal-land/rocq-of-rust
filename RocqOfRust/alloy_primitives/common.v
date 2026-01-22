@@ -105,8 +105,12 @@ Module common.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Create" |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Create" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)));
               fun γ =>
@@ -138,32 +142,38 @@ Module common.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Call" |) |) |);
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.path "alloy_primitives::bits::address::Address" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                          |)
-                        ]
-                      |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Call" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "alloy_primitives::bits::address::Address" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                     ]
                   |)))
             ]
@@ -187,7 +197,10 @@ Module common.
     Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
       match ε, τ, α with
       | [], [], [] =>
-        ltac:(M.monadic (Value.StructTuple "alloy_primitives::common::TxKind::Create" [] [] []))
+        ltac:(M.monadic
+          (M.value_with_ty
+            (Value.StructTuple "alloy_primitives::common::TxKind::Create" [])
+            (Ty.path "alloy_primitives::common::TxKind")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -239,7 +252,11 @@ Module common.
                   [],
                   [ Ty.path "alloy_primitives::common::TxKind" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::common::TxKind" ])
+                ]
               |) in
             let~ __arg1_discr : Ty.path "isize" :=
               M.call_closure (|
@@ -249,7 +266,11 @@ Module common.
                   [],
                   [ Ty.path "alloy_primitives::common::TxKind" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::common::TxKind" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -325,8 +346,28 @@ Module common.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                              M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "alloy_primitives::bits::address::Address" ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "alloy_primitives::bits::address::Address" ]
+                                  ])
                             ]
                           |)));
                       fun γ => ltac:(M.monadic (Value.Bool true))
@@ -405,7 +446,11 @@ Module common.
                   [],
                   [ Ty.path "alloy_primitives::common::TxKind" ]
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::common::TxKind" ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
@@ -420,11 +465,15 @@ Module common.
                   [ __H ]
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                  |);
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ __H ])
                 ]
               |) in
             M.alloc (|
@@ -462,8 +511,15 @@ Module common.
                           [ __H ]
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "alloy_primitives::bits::address::Address" ]);
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ __H ])
                         ]
                       |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -513,18 +569,20 @@ Module common.
               fun γ =>
                 ltac:(M.monadic
                   (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-                  Value.StructTuple "alloy_primitives::common::TxKind::Create" [] [] []));
+                  M.value_with_ty
+                    (Value.StructTuple "alloy_primitives::common::TxKind::Create" [])
+                    (Ty.path "alloy_primitives::common::TxKind")));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::option::Option::Some", 0 |) in
                   let addr :=
                     M.copy (| Ty.path "alloy_primitives::bits::address::Address", γ0_0 |) in
-                  Value.StructTuple
-                    "alloy_primitives::common::TxKind::Call"
-                    []
-                    []
-                    [ M.read (| addr |) ]))
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "alloy_primitives::common::TxKind::Call"
+                      [ M.read (| addr |) ])
+                    (Ty.path "alloy_primitives::common::TxKind")))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -558,7 +616,9 @@ Module common.
       | [], [], [ value ] =>
         ltac:(M.monadic
           (let value := M.alloc (| Ty.path "alloy_primitives::bits::address::Address", value |) in
-          Value.StructTuple "alloy_primitives::common::TxKind::Call" [] [] [ M.read (| value |) ]))
+          M.value_with_ty
+            (Value.StructTuple "alloy_primitives::common::TxKind::Call" [ M.read (| value |) ])
+            (Ty.path "alloy_primitives::common::TxKind")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -604,20 +664,34 @@ Module common.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [
+                      Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "alloy_primitives::bits::address::Address" ]
+                    ],
+                  M.get_associated_function (|
+                    Ty.path "alloy_primitives::common::TxKind",
+                    "to",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, value |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::common::TxKind" ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::option::Option")
                   []
                   [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bits::address::Address" ]
-                  ],
-                M.get_associated_function (|
-                  Ty.path "alloy_primitives::common::TxKind",
-                  "to",
-                  [],
-                  []
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, value |) ]
-              |)
+                  ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -663,16 +737,17 @@ Module common.
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
                   let _ := M.is_struct_tuple (| γ, "alloy_primitives::common::TxKind::Create" |) in
-                  Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.path "alloy_primitives::bits::address::Address" ]
-                    ]
-                    []));
+                  M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "alloy_primitives::bits::address::Address" ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ := M.deref (| M.read (| γ |) |) in
@@ -690,16 +765,19 @@ Module common.
                         [ Ty.path "alloy_primitives::bits::address::Address" ],
                       γ1_0
                     |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.path "alloy_primitives::bits::address::Address" ]
-                    ]
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| to |) |) |) ]))
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| to |) |) |) ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.path "alloy_primitives::bits::address::Address" ]
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

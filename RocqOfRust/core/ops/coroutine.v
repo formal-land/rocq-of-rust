@@ -59,17 +59,32 @@ Module ops.
                         0
                       |) in
                     let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Y ], γ1_0 |) in
-                    Value.StructTuple
-                      "core::ops::coroutine::CoroutineState::Yielded"
-                      []
-                      [ Y; R ]
-                      [
-                        M.call_closure (|
-                          Y,
-                          M.get_trait_method (| "core::clone::Clone", Y, [], [], "clone", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                        |)
-                      ]));
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::ops::coroutine::CoroutineState::Yielded"
+                        [
+                          M.call_closure (|
+                            Y,
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              Y,
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Y ])
+                            ]
+                          |)
+                        ])
+                      (Ty.apply (Ty.path "core::ops::coroutine::CoroutineState") [] [ Y; R ])));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
@@ -80,17 +95,32 @@ Module ops.
                         0
                       |) in
                     let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ R ], γ1_0 |) in
-                    Value.StructTuple
-                      "core::ops::coroutine::CoroutineState::Complete"
-                      []
-                      [ Y; R ]
-                      [
-                        M.call_closure (|
-                          R,
-                          M.get_trait_method (| "core::clone::Clone", R, [], [], "clone", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                        |)
-                      ]))
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "core::ops::coroutine::CoroutineState::Complete"
+                        [
+                          M.call_closure (|
+                            R,
+                            M.get_trait_method (|
+                              "core::clone::Clone",
+                              R,
+                              [],
+                              [],
+                              "clone",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| __self_0 |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ R ])
+                            ]
+                          |)
+                        ])
+                      (Ty.apply (Ty.path "core::ops::coroutine::CoroutineState") [] [ Y; R ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -169,7 +199,14 @@ Module ops.
                     [],
                     [ Ty.apply (Ty.path "core::ops::coroutine::CoroutineState") [] [ Y; R ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::ops::coroutine::CoroutineState") [] [ Y; R ] ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "isize" :=
                 M.call_closure (|
@@ -179,7 +216,14 @@ Module ops.
                     [],
                     [ Ty.apply (Ty.path "core::ops::coroutine::CoroutineState") [] [ Y; R ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::ops::coroutine::CoroutineState") [] [ Y; R ] ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "bool",
@@ -249,8 +293,12 @@ Module ops.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Y ] ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Y ] ])
                               ]
                             |)));
                         fun γ =>
@@ -285,8 +333,12 @@ Module ops.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                                M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ R ] ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ R ] ])
                               ]
                             |)));
                         fun γ =>
@@ -357,7 +409,14 @@ Module ops.
                     [],
                     [ Ty.apply (Ty.path "core::ops::coroutine::CoroutineState") [] [ Y; R ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::ops::coroutine::CoroutineState") [] [ Y; R ] ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "isize" :=
                 M.call_closure (|
@@ -367,7 +426,14 @@ Module ops.
                     [],
                     [ Ty.apply (Ty.path "core::ops::coroutine::CoroutineState") [] [ Y; R ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::ops::coroutine::CoroutineState") [] [ Y; R ] ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
@@ -423,8 +489,12 @@ Module ops.
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __arg1_0 |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Y ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __arg1_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Y ])
                           ]
                         |)));
                     fun γ =>
@@ -462,8 +532,12 @@ Module ops.
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __arg1_0 |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ R ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __arg1_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ R ])
                           ]
                         |)));
                     fun γ =>
@@ -483,14 +557,18 @@ Module ops.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                            |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ])
                           ]
                         |)))
                   ]
@@ -597,7 +675,14 @@ Module ops.
                     [],
                     [ Ty.apply (Ty.path "core::ops::coroutine::CoroutineState") [] [ Y; R ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::ops::coroutine::CoroutineState") [] [ Y; R ] ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "isize" :=
                 M.call_closure (|
@@ -607,7 +692,14 @@ Module ops.
                     [],
                     [ Ty.apply (Ty.path "core::ops::coroutine::CoroutineState") [] [ Y; R ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::ops::coroutine::CoroutineState") [] [ Y; R ] ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "core::cmp::Ordering",
@@ -627,14 +719,18 @@ Module ops.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                        |);
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ])
                       ]
                     |)
                   |),
@@ -703,14 +799,18 @@ Module ops.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| __self_0 |) |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| __arg1_0 |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| __self_0 |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Y ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| __arg1_0 |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Y ])
                                   ]
                                 |)));
                             fun γ =>
@@ -747,14 +847,18 @@ Module ops.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| __self_0 |) |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| __arg1_0 |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| __self_0 |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ R ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| __arg1_0 |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ R ])
                                   ]
                                 |)));
                             fun γ =>
@@ -838,24 +942,33 @@ Module ops.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Yielded" |) |) |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Y ] ])
-                            (Ty.apply
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Yielded" |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                            |)
-                          ]
-                        |)
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Y ] ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                              |)
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                       ]
                     |)));
                 fun γ =>
@@ -880,24 +993,33 @@ Module ops.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Complete" |) |) |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ R ] ])
-                            (Ty.apply
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Complete" |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                            |)
-                          ]
-                        |)
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ R ] ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                              |)
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                       ]
                     |)))
               ]
@@ -943,7 +1065,14 @@ Module ops.
                     [],
                     [ Ty.apply (Ty.path "core::ops::coroutine::CoroutineState") [] [ Y; R ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "core::ops::coroutine::CoroutineState") [] [ Y; R ] ])
+                  ]
                 |) in
               let~ _ : Ty.tuple [] :=
                 M.call_closure (|
@@ -958,11 +1087,15 @@ Module ops.
                     [ __H ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ __H ])
                   ]
                 |) in
               M.alloc (|
@@ -993,8 +1126,12 @@ Module ops.
                             [ __H ]
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Y ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ __H ])
                           ]
                         |)));
                     fun γ =>
@@ -1019,8 +1156,12 @@ Module ops.
                             [ __H ]
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ R ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ __H ])
                           ]
                         |)))
                   ]
@@ -1102,57 +1243,91 @@ Module ops.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ G ] ],
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ G ] ],
-                    "as_mut",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ G ] ],
+                      "as_mut",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.call_closure (|
                               Ty.apply
-                                (Ty.path "core::pin::Pin")
+                                (Ty.path "&mut")
                                 []
-                                [ Ty.apply (Ty.path "&mut") [] [ G ] ]
-                            ],
-                          M.get_trait_method (|
-                            "core::ops::deref::DerefMut",
-                            Ty.apply
-                              (Ty.path "core::pin::Pin")
-                              []
-                              [
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::pin::Pin")
+                                    []
+                                    [ Ty.apply (Ty.path "&mut") [] [ G ] ]
+                                ],
+                              M.get_trait_method (|
+                                "core::ops::deref::DerefMut",
                                 Ty.apply
-                                  (Ty.path "&mut")
+                                  (Ty.path "core::pin::Pin")
                                   []
                                   [
                                     Ty.apply
-                                      (Ty.path "core::pin::Pin")
+                                      (Ty.path "&mut")
                                       []
-                                      [ Ty.apply (Ty.path "&mut") [] [ G ] ]
-                                  ]
-                              ],
-                            [],
-                            [],
-                            "deref_mut",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.MutRef, self |) ]
-                        |)
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| arg |)
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::pin::Pin")
+                                          []
+                                          [ Ty.apply (Ty.path "&mut") [] [ G ] ]
+                                      ]
+                                  ],
+                                [],
+                                [],
+                                "deref_mut",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, self |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::pin::Pin")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::pin::Pin")
+                                                []
+                                                [ Ty.apply (Ty.path "&mut") [] [ G ] ]
+                                            ]
+                                        ]
+                                    ])
+                              ]
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::pin::Pin")
+                              []
+                              [ Ty.apply (Ty.path "&mut") [] [ G ] ]
+                          ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ G ] ]);
+                M.value_with_ty (M.read (| arg |)) R
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1221,56 +1396,77 @@ Module ops.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ G ] ],
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ G ] ],
-                    "new",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.read (|
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ G ] ],
+                      "new",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
                           M.deref (|
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
+                            M.read (|
                               M.deref (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [ Ty.apply (Ty.path "&mut") [] [ G ] ],
-                                  M.get_trait_method (|
-                                    "core::ops::deref::DerefMut",
-                                    Ty.apply
-                                      (Ty.path "core::pin::Pin")
-                                      []
-                                      [
+                                M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "&mut") [] [ G ] ],
+                                      M.get_trait_method (|
+                                        "core::ops::deref::DerefMut",
                                         Ty.apply
-                                          (Ty.path "&mut")
+                                          (Ty.path "core::pin::Pin")
                                           []
-                                          [ Ty.apply (Ty.path "&mut") [] [ G ] ]
-                                      ],
-                                    [],
-                                    [],
-                                    "deref_mut",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.MutRef, self |) ]
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.apply (Ty.path "&mut") [] [ G ] ]
+                                          ],
+                                        [],
+                                        [],
+                                        "deref_mut",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.MutRef, self |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::pin::Pin")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [ Ty.apply (Ty.path "&mut") [] [ G ] ]
+                                                ]
+                                            ])
+                                      ]
+                                    |)
+                                  |)
                                 |)
                               |)
                             |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |);
-                M.read (| arg |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ G ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::pin::Pin") [] [ Ty.apply (Ty.path "&mut") [] [ G ] ]);
+                M.value_with_ty (M.read (| arg |)) R
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

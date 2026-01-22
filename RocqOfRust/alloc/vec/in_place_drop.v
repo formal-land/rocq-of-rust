@@ -41,29 +41,33 @@ Module vec.
               Ty.path "usize",
               M.get_associated_function (| Ty.apply (Ty.path "*mut") [] [ T ], "sub_ptr", [], [] |),
               [
-                M.read (|
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "alloc::vec::in_place_drop::InPlaceDrop",
-                    "dst"
-                  |)
-                |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ T ],
-                  M.pointer_coercion
-                    M.PointerCoercion.MutToConstPointer
-                    (Ty.apply (Ty.path "*mut") [] [ T ])
-                    (Ty.apply (Ty.path "*const") [] [ T ]),
-                  [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "alloc::vec::in_place_drop::InPlaceDrop",
-                        "inner"
-                      |)
+                M.value_with_ty
+                  (M.read (|
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "alloc::vec::in_place_drop::InPlaceDrop",
+                      "dst"
                     |)
-                  ]
-                |)
+                  |))
+                  (Ty.apply (Ty.path "*mut") [] [ T ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ T ],
+                    M.pointer_coercion
+                      M.PointerCoercion.MutToConstPointer
+                      (Ty.apply (Ty.path "*mut") [] [ T ])
+                      (Ty.apply (Ty.path "*const") [] [ T ]),
+                    [
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "alloc::vec::in_place_drop::InPlaceDrop",
+                          "inner"
+                        |)
+                      |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -110,37 +114,58 @@ Module vec.
                     [ Ty.apply (Ty.path "slice") [] [ T ] ]
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutPointer,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                          M.get_function (| "core::slice::raw::from_raw_parts_mut", [], [ T ] |),
-                          [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::vec::in_place_drop::InPlaceDrop",
-                                "inner"
-                              |)
-                            |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "alloc::vec::in_place_drop::InPlaceDrop")
-                                  []
-                                  [ T ],
-                                "len",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                            |)
-                          ]
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutPointer,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                            M.get_function (| "core::slice::raw::from_raw_parts_mut", [], [ T ] |),
+                            [
+                              M.value_with_ty
+                                (M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::vec::in_place_drop::InPlaceDrop",
+                                    "inner"
+                                  |)
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ T ]);
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "alloc::vec::in_place_drop::InPlaceDrop")
+                                      []
+                                      [ T ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::vec::in_place_drop::InPlaceDrop")
+                                            []
+                                            [ T ]
+                                        ])
+                                  ]
+                                |))
+                                (Ty.path "usize")
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -226,32 +251,42 @@ Module vec.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Src ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Dest ],
-                            "cast",
-                            [],
-                            [ Src ]
-                          |),
-                          [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::vec::in_place_drop::InPlaceDstDataSrcBufDrop",
-                                "ptr"
-                              |)
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Src ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Dest ],
+                              "cast",
+                              [],
+                              [ Src ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::vec::in_place_drop::InPlaceDstDataSrcBufDrop",
+                                    "ptr"
+                                  |)
+                                |))
+                                (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Dest ])
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Src ]);
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::vec::in_place_drop::InPlaceDstDataSrcBufDrop",
+                              "src_cap"
                             |)
-                          ]
-                        |);
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::vec::in_place_drop::InPlaceDstDataSrcBufDrop",
-                            "src_cap"
-                          |)
-                        |);
-                        Value.StructTuple "alloc::alloc::Global" [] [] []
+                          |))
+                          (Ty.path "usize");
+                        M.value_with_ty
+                          (M.value_with_ty
+                            (Value.StructTuple "alloc::alloc::Global" [])
+                            (Ty.path "alloc::alloc::Global"))
+                          (Ty.path "alloc::alloc::Global")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -263,37 +298,52 @@ Module vec.
                         [ Ty.apply (Ty.path "slice") [] [ Dest ] ]
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ Dest ] ],
-                          M.get_function (| "core::ptr::slice_from_raw_parts_mut", [], [ Dest ] |),
-                          [
-                            M.call_closure (|
-                              Ty.apply (Ty.path "*mut") [] [ Dest ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Dest ],
-                                "as_ptr",
-                                [],
-                                []
-                              |),
-                              [
-                                M.read (|
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ Dest ] ],
+                            M.get_function (|
+                              "core::ptr::slice_from_raw_parts_mut",
+                              [],
+                              [ Dest ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply (Ty.path "*mut") [] [ Dest ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ Dest ],
+                                    "as_ptr",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (|
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::vec::in_place_drop::InPlaceDstDataSrcBufDrop",
+                                          "ptr"
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "core::ptr::non_null::NonNull")
+                                        []
+                                        [ Dest ])
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Dest ]);
+                              M.value_with_ty
+                                (M.read (|
                                   M.SubPointer.get_struct_record_field (|
                                     M.deref (| M.read (| self |) |),
                                     "alloc::vec::in_place_drop::InPlaceDstDataSrcBufDrop",
-                                    "ptr"
+                                    "len"
                                   |)
-                                |)
-                              ]
-                            |);
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::vec::in_place_drop::InPlaceDstDataSrcBufDrop",
-                                "len"
-                              |)
-                            |)
-                          ]
-                        |)
+                                |))
+                                (Ty.path "usize")
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "*mut") [] [ Ty.apply (Ty.path "slice") [] [ Dest ] ])
                       ]
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)

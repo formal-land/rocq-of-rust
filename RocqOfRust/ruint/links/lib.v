@@ -92,6 +92,7 @@ Module Impl_Uint.
     run_symbolic.
     constructor.
     eapply Run.Rewrite. {
+      with_strategy transparent [M.value_with_ty] unfold M.value_with_ty.
       change (Value.Integer IntegerKind.U64 0) with (φ (A := u64) {| Integer.value := 0 |}).
       rewrite array.repeat_nat_φ_eq.
       reflexivity.

@@ -17,7 +17,7 @@ Module BlobExcessGasAndPrice.
   Instance IsLink : Link t := {
     Φ := Ty.path "revm_context_interface::block::BlobExcessGasAndPrice";
     φ x :=
-      Value.StructRecord "revm_context_interface::block::BlobExcessGasAndPrice" [] [] [
+      Value.StructRecord "revm_context_interface::block::BlobExcessGasAndPrice" [
         ("blob_gasprice", φ x.(blob_gasprice));
         ("excess_blob_gas", φ x.(excess_blob_gas))
       ];
@@ -33,7 +33,7 @@ Module BlobExcessGasAndPrice.
       (blob_gasprice' : Value.t) {H_blob_gasprice : OfValueWith.C (u128) blob_gasprice'}
       (excess_blob_gas' : Value.t) {H_excess_blob_gas : OfValueWith.C (u64) excess_blob_gas'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_context_interface::block::BlobExcessGasAndPrice" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_context_interface::block::BlobExcessGasAndPrice" [
       ("blob_gasprice", blob_gasprice');
       ("excess_blob_gas", excess_blob_gas')
     ]) :=
@@ -49,7 +49,7 @@ Module BlobExcessGasAndPrice.
       (blob_gasprice' : Value.t) {H_blob_gasprice : OfValueWith.C (u128) blob_gasprice'}
       (excess_blob_gas' : Value.t) {H_excess_blob_gas : OfValueWith.C (u64) excess_blob_gas'}
       :
-    OfValue.C (Value.StructRecord "revm_context_interface::block::BlobExcessGasAndPrice" [] [] [
+    OfValue.C (Value.StructRecord "revm_context_interface::block::BlobExcessGasAndPrice" [
       ("blob_gasprice", blob_gasprice');
       ("excess_blob_gas", excess_blob_gas')
     ]) :=

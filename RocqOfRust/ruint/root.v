@@ -114,33 +114,46 @@ Module root.
                               Ty.path "never",
                               M.get_function (| "core::panicking::panic_fmt", [], [] |),
                               [
-                                M.call_closure (|
-                                  Ty.path "core::fmt::Arguments",
-                                  M.get_associated_function (|
+                                M.value_with_ty
+                                  (M.call_closure (|
                                     Ty.path "core::fmt::Arguments",
-                                    "new_const",
-                                    [ Value.Integer IntegerKind.Usize 1 ],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new_const",
+                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
                                           Pointer.Kind.Ref,
-                                          M.alloc (|
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                                Value.Array
+                                                  [ mk_str (| "degree must be greater than zero" |)
+                                                  ]
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
                                             Ty.apply
                                               (Ty.path "array")
                                               [ Value.Integer IntegerKind.Usize 1 ]
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                            Value.Array
-                                              [ mk_str (| "degree must be greater than zero" |) ]
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |)
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.path "core::fmt::Arguments")
                               ]
                             |)
                           |)));
@@ -170,15 +183,25 @@ Module root.
                                     []
                                   |),
                                   [
-                                    M.borrow (| Pointer.Kind.Ref, self |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      get_associated_constant (|
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        "ZERO",
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                      |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, self |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        get_associated_constant (|
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                          "ZERO",
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                   ]
                                 |)
                               |)) in
@@ -239,7 +262,11 @@ Module root.
                                     [],
                                     [ Ty.path "i32" ]
                                   |),
-                                  [ Value.Integer IntegerKind.I32 1 ]
+                                  [
+                                    M.value_with_ty
+                                      (Value.Integer IntegerKind.I32 1)
+                                      (Ty.path "i32")
+                                  ]
                                 |)
                               |)
                             |)
@@ -283,37 +310,48 @@ Module root.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::option::Option")
+                            []
+                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                            "approx_pow2",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "f64",
+                                BinOp.Wrap.div,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "f64",
+                                    M.get_associated_function (|
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                      "approx_log2",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| self |))
+                                        (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                                    ]
+                                  |);
+                                  M.cast (Ty.path "f64") (M.read (| degree |))
+                                ]
+                              |))
+                              (Ty.path "f64")
+                          ]
+                        |))
+                        (Ty.apply
                           (Ty.path "core::option::Option")
                           []
-                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                          "approx_pow2",
-                          [],
-                          []
-                        |),
-                        [
-                          M.call_closure (|
-                            Ty.path "f64",
-                            BinOp.Wrap.div,
-                            [
-                              M.call_closure (|
-                                Ty.path "f64",
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                  "approx_log2",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| self |) ]
-                              |);
-                              M.cast (Ty.path "f64") (M.read (| degree |))
-                            ]
-                          |)
-                        ]
-                      |)
+                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                     ]
                   |) in
                 let~ deg_m1 : Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] :=
@@ -326,11 +364,13 @@ Module root.
                       [ Ty.path "usize" ]
                     |),
                     [
-                      M.call_closure (|
-                        Ty.path "usize",
-                        BinOp.Wrap.sub,
-                        [ M.read (| degree |); Value.Integer IntegerKind.Usize 1 ]
-                      |)
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "usize",
+                          BinOp.Wrap.sub,
+                          [ M.read (| degree |); Value.Integer IntegerKind.Usize 1 ]
+                        |))
+                        (Ty.path "usize")
                     ]
                   |) in
                 let~ decreasing : Ty.path "bool" := Value.Bool false in
@@ -355,68 +395,105 @@ Module root.
                           ]
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                "checked_pow",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| result |))
+                                  (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                                M.value_with_ty
+                                  (M.read (| deg_m1 |))
+                                  (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::option::Option")
                               []
-                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                            M.get_associated_function (|
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                              "checked_pow",
-                              [],
-                              []
-                            |),
-                            [ M.read (| result |); M.read (| deg_m1 |) ]
-                          |);
-                          M.read (|
-                            get_associated_constant (|
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                              "ZERO",
-                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                            |)
-                          |);
-                          M.closure
-                            (fun γ =>
-                              ltac:(M.monadic
-                                match γ with
-                                | [ α0 ] =>
-                                  ltac:(M.monadic
-                                    (M.match_operator (|
-                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                      M.alloc (|
+                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                          M.value_with_ty
+                            (M.read (|
+                              get_associated_constant (|
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                "ZERO",
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                          M.value_with_ty
+                            (M.closure
+                              (fun γ =>
+                                ltac:(M.monadic
+                                  match γ with
+                                  | [ α0 ] =>
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
                                         Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        α0
-                                      |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let power :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                              M.get_trait_method (|
-                                                "core::ops::arith::Div",
-                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                                [],
-                                                [
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                          α0
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let power :=
+                                                M.copy (|
                                                   Ty.apply
                                                     (Ty.path "ruint::Uint")
                                                     [ BITS; LIMBS ]
-                                                    []
-                                                ],
-                                                "div",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| self |); M.read (| power |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                                | _ => M.impossible "wrong number of arguments"
-                                end))
+                                                    [],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                                M.get_trait_method (|
+                                                  "core::ops::arith::Div",
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    [],
+                                                  [],
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      []
+                                                  ],
+                                                  "div",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| self |))
+                                                    (Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      []);
+                                                  M.value_with_ty
+                                                    (M.read (| power |))
+                                                    (Ty.apply
+                                                      (Ty.path "ruint::Uint")
+                                                      [ BITS; LIMBS ]
+                                                      [])
+                                                ]
+                                              |)))
+                                        ]
+                                      |)))
+                                  | _ => M.impossible "wrong number of arguments"
+                                  end)))
+                            (Ty.function
+                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                              (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []))
                         ]
                       |) in
                     let~ iter : Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] :=
@@ -432,44 +509,59 @@ Module root.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                            M.get_trait_method (|
-                              "core::ops::arith::Add",
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                              [],
-                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                              "add",
-                              [],
-                              []
-                            |),
-                            [
-                              M.read (| division |);
-                              M.call_closure (|
+                              M.get_trait_method (|
+                                "core::ops::arith::Add",
                                 Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                M.get_trait_method (|
-                                  "core::ops::arith::Mul",
-                                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                  [],
-                                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                                  "mul",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| deg_m1 |); M.read (| result |) ]
-                              |)
-                            ]
-                          |);
-                          M.call_closure (|
-                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                            M.get_associated_function (|
+                                [],
+                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                                "add",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| division |))
+                                  (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                    M.get_trait_method (|
+                                      "core::ops::arith::Mul",
+                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                      [],
+                                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                                      "mul",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| deg_m1 |))
+                                        (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                                      M.value_with_ty
+                                        (M.read (| result |))
+                                        (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                                    ]
+                                  |))
+                                  (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                              "from",
-                              [],
-                              [ Ty.path "usize" ]
-                            |),
-                            [ M.read (| degree |) ]
-                          |)
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                "from",
+                                [],
+                                [ Ty.path "usize" ]
+                              |),
+                              [ M.value_with_ty (M.read (| degree |)) (Ty.path "usize") ]
+                            |))
+                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                         ]
                       |) in
                     M.alloc (|
@@ -493,11 +585,21 @@ Module root.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, iter |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.borrow (| Pointer.Kind.Ref, result |) |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, iter |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.borrow (| Pointer.Kind.Ref, result |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                 ]
                               |)
                             ]
@@ -564,17 +666,28 @@ Module root.
                                     [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
                                   |),
                                   [
-                                    M.read (| iter |);
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                      M.get_associated_function (|
+                                    M.value_with_ty
+                                      (M.read (| iter |))
+                                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                                    M.value_with_ty
+                                      (M.call_closure (|
                                         Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        "saturating_shl",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| result |); Value.Integer IntegerKind.Usize 1 ]
-                                    |)
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                          "saturating_shl",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| result |))
+                                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                                          M.value_with_ty
+                                            (Value.Integer IntegerKind.Usize 1)
+                                            (Ty.path "usize")
+                                        ]
+                                      |))
+                                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                                   ]
                                 |)
                               |)));

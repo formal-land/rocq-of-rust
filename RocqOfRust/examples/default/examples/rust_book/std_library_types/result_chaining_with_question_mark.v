@@ -59,49 +59,53 @@ Module checked.
               [ Ty.tuple []; Ty.path "core::fmt::Error" ],
             M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.match_operator (|
-                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                self,
-                [
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "result_chaining_with_question_mark::checked::MathError::DivisionByZero"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "DivisionByZero" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "result_chaining_with_question_mark::checked::MathError::NonPositiveLogarithm"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "NonPositiveLogarithm" |) |)
-                      |)));
-                  fun γ =>
-                    ltac:(M.monadic
-                      (let γ := M.deref (| M.read (| γ |) |) in
-                      let _ :=
-                        M.is_struct_tuple (|
-                          γ,
-                          "result_chaining_with_question_mark::checked::MathError::NegativeSquareRoot"
-                        |) in
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "NegativeSquareRoot" |) |)
-                      |)))
-                ]
-              |)
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.match_operator (|
+                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                  self,
+                  [
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "result_chaining_with_question_mark::checked::MathError::DivisionByZero"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "DivisionByZero" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "result_chaining_with_question_mark::checked::MathError::NonPositiveLogarithm"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "NonPositiveLogarithm" |) |)
+                        |)));
+                    fun γ =>
+                      ltac:(M.monadic
+                        (let γ := M.deref (| M.read (| γ |) |) in
+                        let _ :=
+                          M.is_struct_tuple (|
+                            γ,
+                            "result_chaining_with_question_mark::checked::MathError::NegativeSquareRoot"
+                          |) in
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (| mk_str (| "NegativeSquareRoot" |) |)
+                        |)))
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -158,32 +162,42 @@ Module checked.
                       |)
                     |)) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                Value.StructTuple
-                  "core::result::Result::Err"
-                  []
-                  [ Ty.path "f64"; Ty.path "result_chaining_with_question_mark::checked::MathError"
-                  ]
-                  [
-                    Value.StructTuple
-                      "result_chaining_with_question_mark::checked::MathError::DivisionByZero"
-                      []
-                      []
-                      []
-                  ]));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Err"
+                    [
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "result_chaining_with_question_mark::checked::MathError::DivisionByZero"
+                          [])
+                        (Ty.path "result_chaining_with_question_mark::checked::MathError")
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.path "f64";
+                      Ty.path "result_chaining_with_question_mark::checked::MathError"
+                    ])));
             fun γ =>
               ltac:(M.monadic
-                (Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.path "f64"; Ty.path "result_chaining_with_question_mark::checked::MathError"
-                  ]
-                  [
-                    M.call_closure (|
-                      Ty.path "f64",
-                      BinOp.Wrap.div,
-                      [ M.read (| x |); M.read (| y |) ]
-                    |)
-                  ]))
+                (M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Ok"
+                    [
+                      M.call_closure (|
+                        Ty.path "f64",
+                        BinOp.Wrap.div,
+                        [ M.read (| x |); M.read (| y |) ]
+                      |)
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.path "f64";
+                      Ty.path "result_chaining_with_question_mark::checked::MathError"
+                    ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -228,32 +242,42 @@ Module checked.
                       |)
                     |)) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                Value.StructTuple
-                  "core::result::Result::Err"
-                  []
-                  [ Ty.path "f64"; Ty.path "result_chaining_with_question_mark::checked::MathError"
-                  ]
-                  [
-                    Value.StructTuple
-                      "result_chaining_with_question_mark::checked::MathError::NegativeSquareRoot"
-                      []
-                      []
-                      []
-                  ]));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Err"
+                    [
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "result_chaining_with_question_mark::checked::MathError::NegativeSquareRoot"
+                          [])
+                        (Ty.path "result_chaining_with_question_mark::checked::MathError")
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.path "f64";
+                      Ty.path "result_chaining_with_question_mark::checked::MathError"
+                    ])));
             fun γ =>
               ltac:(M.monadic
-                (Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.path "f64"; Ty.path "result_chaining_with_question_mark::checked::MathError"
-                  ]
-                  [
-                    M.call_closure (|
-                      Ty.path "f64",
-                      M.get_associated_function (| Ty.path "f64", "sqrt", [], [] |),
-                      [ M.read (| x |) ]
-                    |)
-                  ]))
+                (M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Ok"
+                    [
+                      M.call_closure (|
+                        Ty.path "f64",
+                        M.get_associated_function (| Ty.path "f64", "sqrt", [], [] |),
+                        [ M.value_with_ty (M.read (| x |)) (Ty.path "f64") ]
+                      |)
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.path "f64";
+                      Ty.path "result_chaining_with_question_mark::checked::MathError"
+                    ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -298,32 +322,42 @@ Module checked.
                       |)
                     |)) in
                 let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                Value.StructTuple
-                  "core::result::Result::Err"
-                  []
-                  [ Ty.path "f64"; Ty.path "result_chaining_with_question_mark::checked::MathError"
-                  ]
-                  [
-                    Value.StructTuple
-                      "result_chaining_with_question_mark::checked::MathError::NonPositiveLogarithm"
-                      []
-                      []
-                      []
-                  ]));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Err"
+                    [
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "result_chaining_with_question_mark::checked::MathError::NonPositiveLogarithm"
+                          [])
+                        (Ty.path "result_chaining_with_question_mark::checked::MathError")
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.path "f64";
+                      Ty.path "result_chaining_with_question_mark::checked::MathError"
+                    ])));
             fun γ =>
               ltac:(M.monadic
-                (Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.path "f64"; Ty.path "result_chaining_with_question_mark::checked::MathError"
-                  ]
-                  [
-                    M.call_closure (|
-                      Ty.path "f64",
-                      M.get_associated_function (| Ty.path "f64", "ln", [], [] |),
-                      [ M.read (| x |) ]
-                    |)
-                  ]))
+                (M.value_with_ty
+                  (Value.StructTuple
+                    "core::result::Result::Ok"
+                    [
+                      M.call_closure (|
+                        Ty.path "f64",
+                        M.get_associated_function (| Ty.path "f64", "ln", [], [] |),
+                        [ M.value_with_ty (M.read (| x |)) (Ty.path "f64") ]
+                      |)
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.path "f64";
+                      Ty.path "result_chaining_with_question_mark::checked::MathError"
+                    ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -405,21 +439,32 @@ Module checked.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "f64";
+                                Ty.path "result_chaining_with_question_mark::checked::MathError"
+                              ],
+                            M.get_function (|
+                              "result_chaining_with_question_mark::checked::div",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty (M.read (| x |)) (Ty.path "f64");
+                              M.value_with_ty (M.read (| y |)) (Ty.path "f64")
+                            ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
                             [
                               Ty.path "f64";
                               Ty.path "result_chaining_with_question_mark::checked::MathError"
-                            ],
-                          M.get_function (|
-                            "result_chaining_with_question_mark::checked::div",
-                            [],
-                            []
-                          |),
-                          [ M.read (| x |); M.read (| y |) ]
-                        |)
+                            ])
                       ]
                     |)
                   |),
@@ -479,7 +524,18 @@ Module checked.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path
+                                          "result_chaining_with_question_mark::checked::MathError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -543,21 +599,29 @@ Module checked.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.path "f64";
+                                Ty.path "result_chaining_with_question_mark::checked::MathError"
+                              ],
+                            M.get_function (|
+                              "result_chaining_with_question_mark::checked::ln",
+                              [],
+                              []
+                            |),
+                            [ M.value_with_ty (M.read (| ratio |)) (Ty.path "f64") ]
+                          |))
+                          (Ty.apply
                             (Ty.path "core::result::Result")
                             []
                             [
                               Ty.path "f64";
                               Ty.path "result_chaining_with_question_mark::checked::MathError"
-                            ],
-                          M.get_function (|
-                            "result_chaining_with_question_mark::checked::ln",
-                            [],
-                            []
-                          |),
-                          [ M.read (| ratio |) ]
-                        |)
+                            ])
                       ]
                     |)
                   |),
@@ -617,7 +681,18 @@ Module checked.
                                   [],
                                   []
                                 |),
-                                [ M.read (| residual |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| residual |))
+                                    (Ty.apply
+                                      (Ty.path "core::result::Result")
+                                      []
+                                      [
+                                        Ty.path "core::convert::Infallible";
+                                        Ty.path
+                                          "result_chaining_with_question_mark::checked::MathError"
+                                      ])
+                                ]
                               |)
                             |)
                           |)
@@ -649,7 +724,7 @@ Module checked.
                       Ty.path "result_chaining_with_question_mark::checked::MathError"
                     ],
                   M.get_function (| "result_chaining_with_question_mark::checked::sqrt", [], [] |),
-                  [ M.read (| ln |) ]
+                  [ M.value_with_ty (M.read (| ln |)) (Ty.path "f64") ]
                 |)
               |)
             |)))
@@ -696,7 +771,10 @@ Module checked.
                 []
                 [ Ty.path "f64"; Ty.path "result_chaining_with_question_mark::checked::MathError" ],
               M.get_function (| "result_chaining_with_question_mark::checked::op_", [], [] |),
-              [ M.read (| x |); M.read (| y |) ]
+              [
+                M.value_with_ty (M.read (| x |)) (Ty.path "f64");
+                M.value_with_ty (M.read (| y |)) (Ty.path "f64")
+              ]
             |)
           |),
           [
@@ -718,53 +796,57 @@ Module checked.
                       [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.alloc (|
-                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                              M.match_operator (|
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
                                 Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                why,
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let _ :=
-                                        M.is_struct_tuple (|
-                                          γ,
-                                          "result_chaining_with_question_mark::checked::MathError::NonPositiveLogarithm"
-                                        |) in
-                                      mk_str (| "logarithm of non-positive number" |)));
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let _ :=
-                                        M.is_struct_tuple (|
-                                          γ,
-                                          "result_chaining_with_question_mark::checked::MathError::DivisionByZero"
-                                        |) in
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| mk_str (| "division by zero" |) |)
-                                      |)));
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let _ :=
-                                        M.is_struct_tuple (|
-                                          γ,
-                                          "result_chaining_with_question_mark::checked::MathError::NegativeSquareRoot"
-                                        |) in
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| mk_str (| "square root of negative number" |) |)
-                                      |)))
-                                ]
+                                M.match_operator (|
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                  why,
+                                  [
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let _ :=
+                                          M.is_struct_tuple (|
+                                            γ,
+                                            "result_chaining_with_question_mark::checked::MathError::NonPositiveLogarithm"
+                                          |) in
+                                        mk_str (| "logarithm of non-positive number" |)));
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let _ :=
+                                          M.is_struct_tuple (|
+                                            γ,
+                                            "result_chaining_with_question_mark::checked::MathError::DivisionByZero"
+                                          |) in
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| mk_str (| "division by zero" |) |)
+                                        |)));
+                                    fun γ =>
+                                      ltac:(M.monadic
+                                        (let _ :=
+                                          M.is_struct_tuple (|
+                                            γ,
+                                            "result_chaining_with_question_mark::checked::MathError::NegativeSquareRoot"
+                                          |) in
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            mk_str (| "square root of negative number" |)
+                                          |)
+                                        |)))
+                                  ]
+                                |)
                               |)
                             |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])
                     ]
                   |)
                 |)));
@@ -779,66 +861,92 @@ Module checked.
                       Ty.tuple [],
                       M.get_function (| "std::io::stdio::_print", [], [] |),
                       [
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.path "core::fmt::Arguments",
-                            "new_v1",
-                            [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
-                            ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new_v1",
+                              [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
+                              ],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 2 ]
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        Value.Array [ mk_str (| "" |); mk_str (| "
+" |) ]
+                                      |)
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 2 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array [ mk_str (| "" |); mk_str (| "
-" |) ]
-                                  |)
-                                |)
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                          [ Ty.path "core::fmt::rt::Argument" ],
+                                        Value.Array
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_display",
+                                                [],
+                                                [ Ty.path "f64" ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.Ref, value |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "f64" ])
+                                              ]
+                                            |)
+                                          ]
+                                      |)
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.path "core::fmt::rt::Argument" ],
-                                    Value.Array
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_display",
-                                            [],
-                                            [ Ty.path "f64" ]
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, value |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                                      [ Ty.path "core::fmt::rt::Argument" ]
+                                  ])
+                            ]
+                          |))
+                          (Ty.path "core::fmt::Arguments")
                       ]
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -868,7 +976,10 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           M.call_closure (|
             Ty.tuple [],
             M.get_function (| "result_chaining_with_question_mark::checked::op", [], [] |),
-            [ M.read (| UnsupportedLiteral |); M.read (| UnsupportedLiteral |) ]
+            [
+              M.value_with_ty (M.read (| UnsupportedLiteral |)) (Ty.path "f64");
+              M.value_with_ty (M.read (| UnsupportedLiteral |)) (Ty.path "f64")
+            ]
           |) in
         M.alloc (| Ty.tuple [], Value.Tuple [] |)
       |)))

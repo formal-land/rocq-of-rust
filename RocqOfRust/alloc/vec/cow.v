@@ -19,11 +19,11 @@ Module vec.
           ltac:(M.monadic
             (let s :=
               M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ], s |) in
-            Value.StructTuple
-              "alloc::borrow::Cow::Borrowed"
-              []
-              [ Ty.apply (Ty.path "slice") [] [ T ] ]
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "alloc::borrow::Cow::Borrowed"
+                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ])
+              (Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -63,31 +63,34 @@ Module vec.
                 Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ],
                 s
               |) in
-            Value.StructTuple
-              "alloc::borrow::Cow::Borrowed"
-              []
-              [ Ty.apply (Ty.path "slice") [] [ T ] ]
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.read (|
-                      M.use
-                        (M.alloc (|
-                          Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                          M.call_closure (|
+            M.value_with_ty
+              (Value.StructTuple
+                "alloc::borrow::Cow::Borrowed"
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.read (|
+                        M.use
+                          (M.alloc (|
                             Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "array") [ N ] [ T ] ])
-                              (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
-                          |)
-                        |))
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "array") [ N ] [ T ] ])
+                                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]),
+                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                            |)
+                          |))
+                      |)
                     |)
                   |)
-                |)
-              ]))
+                ])
+              (Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -121,11 +124,9 @@ Module vec.
                 Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; Ty.path "alloc::alloc::Global" ],
                 v
               |) in
-            Value.StructTuple
-              "alloc::borrow::Cow::Owned"
-              []
-              [ Ty.apply (Ty.path "slice") [] [ T ] ]
-              [ M.read (| v |) ]))
+            M.value_with_ty
+              (Value.StructTuple "alloc::borrow::Cow::Owned" [ M.read (| v |) ])
+              (Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -162,30 +163,42 @@ Module vec.
                   [ Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; Ty.path "alloc::alloc::Global" ] ],
                 v
               |) in
-            Value.StructTuple
-              "alloc::borrow::Cow::Borrowed"
-              []
-              [ Ty.apply (Ty.path "slice") [] [ T ] ]
-              [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
-                      M.get_associated_function (|
-                        Ty.apply
-                          (Ty.path "alloc::vec::Vec")
+            M.value_with_ty
+              (Value.StructTuple
+                "alloc::borrow::Cow::Borrowed"
+                [
+                  M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ],
+                        M.get_associated_function (|
+                          Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ],
+                          "as_slice",
+                          [],
                           []
-                          [ T; Ty.path "alloc::alloc::Global" ],
-                        "as_slice",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |) ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::vec::Vec")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ]
+                              ])
+                        ]
+                      |)
                     |)
                   |)
-                |)
-              ]))
+                ])
+              (Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -220,25 +233,25 @@ Module vec.
         | [], [ _ as I ], [ it ] =>
           ltac:(M.monadic
             (let it := M.alloc (| I, it |) in
-            Value.StructTuple
-              "alloc::borrow::Cow::Owned"
-              []
-              [ Ty.apply (Ty.path "slice") [] [ T ] ]
-              [
-                M.call_closure (|
-                  Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; Ty.path "alloc::alloc::Global" ],
-                  M.get_trait_method (|
-                    "core::iter::traits::collect::FromIterator",
+            M.value_with_ty
+              (Value.StructTuple
+                "alloc::borrow::Cow::Owned"
+                [
+                  M.call_closure (|
                     Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; Ty.path "alloc::alloc::Global" ],
-                    [],
-                    [ T ],
-                    "from_iter",
-                    [],
-                    [ I ]
-                  |),
-                  [ M.read (| it |) ]
-                |)
-              ]))
+                    M.get_trait_method (|
+                      "core::iter::traits::collect::FromIterator",
+                      Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; Ty.path "alloc::alloc::Global" ],
+                      [],
+                      [ T ],
+                      "from_iter",
+                      [],
+                      [ I ]
+                    |),
+                    [ M.value_with_ty (M.read (| it |)) I ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "alloc::borrow::Cow") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       

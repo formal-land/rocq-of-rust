@@ -38,36 +38,42 @@ Module num.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "TryFromIntError" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ Ty.tuple [] ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_tuple_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::num::error::TryFromIntError",
-                                0
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "TryFromIntError" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.tuple [] ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_tuple_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::num::error::TryFromIntError",
+                                  0
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -166,22 +172,26 @@ Module num.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::num::error::TryFromIntError",
-                    0
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| other |) |),
-                    "core::num::error::TryFromIntError",
-                    0
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::num::error::TryFromIntError",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.tuple [] ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| other |) |),
+                      "core::num::error::TryFromIntError",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.tuple [] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -258,25 +268,36 @@ Module num.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Display", Ty.path "str", [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                      M.get_trait_method (|
-                        "core::error::Error",
-                        Ty.path "core::num::error::TryFromIntError",
-                        [],
-                        [],
-                        "description",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                        M.get_trait_method (|
+                          "core::error::Error",
+                          Ty.path "core::num::error::TryFromIntError",
+                          [],
+                          [],
+                          "description",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "core::num::error::TryFromIntError" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| fmt |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -414,40 +435,51 @@ Module num.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ParseIntError" |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "kind" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::IntErrorKind" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::IntErrorKind" ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::num::error::ParseIntError",
-                                "kind"
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ParseIntError" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "kind" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::IntErrorKind" ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "core::num::error::IntErrorKind" ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::num::error::ParseIntError",
+                                  "kind"
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -475,40 +507,42 @@ Module num.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::ParseIntError" ],
                 self
               |) in
-            Value.mkStructRecord
-              "core::num::error::ParseIntError"
-              []
-              []
-              [
-                ("kind",
-                  M.call_closure (|
-                    Ty.path "core::num::error::IntErrorKind",
-                    M.get_trait_method (|
-                      "core::clone::Clone",
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::num::error::ParseIntError"
+                [
+                  ("kind",
+                    M.call_closure (|
                       Ty.path "core::num::error::IntErrorKind",
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_trait_method (|
+                        "core::clone::Clone",
+                        Ty.path "core::num::error::IntErrorKind",
+                        [],
+                        [],
+                        "clone",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::num::error::ParseIntError",
-                              "kind"
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::num::error::ParseIntError",
+                                  "kind"
+                                |)
+                              |)
                             |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |))
-              ]))
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::IntErrorKind" ])
+                      ]
+                    |))
+                ])
+              (Ty.path "core::num::error::ParseIntError")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -563,22 +597,26 @@ Module num.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| self |) |),
-                    "core::num::error::ParseIntError",
-                    "kind"
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_record_field (|
-                    M.deref (| M.read (| other |) |),
-                    "core::num::error::ParseIntError",
-                    "kind"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| self |) |),
+                      "core::num::error::ParseIntError",
+                      "kind"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::IntErrorKind" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_record_field (|
+                      M.deref (| M.read (| other |) |),
+                      "core::num::error::ParseIntError",
+                      "kind"
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::IntErrorKind" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -692,55 +730,65 @@ Module num.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.match_operator (|
-                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                  self,
-                  [
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::Empty" |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Empty" |) |) |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "core::num::error::IntErrorKind::InvalidDigit"
-                          |) in
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| mk_str (| "InvalidDigit" |) |)
-                        |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "core::num::error::IntErrorKind::PosOverflow"
-                          |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "PosOverflow" |) |) |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (|
-                            γ,
-                            "core::num::error::IntErrorKind::NegOverflow"
-                          |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "NegOverflow" |) |) |)));
-                    fun γ =>
-                      ltac:(M.monadic
-                        (let γ := M.deref (| M.read (| γ |) |) in
-                        let _ :=
-                          M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::Zero" |) in
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Zero" |) |) |)))
-                  ]
-                |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.match_operator (|
+                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                    self,
+                    [
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::Empty" |) in
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Empty" |) |) |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "core::num::error::IntErrorKind::InvalidDigit"
+                            |) in
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| mk_str (| "InvalidDigit" |) |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "core::num::error::IntErrorKind::PosOverflow"
+                            |) in
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| mk_str (| "PosOverflow" |) |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (|
+                              γ,
+                              "core::num::error::IntErrorKind::NegOverflow"
+                            |) in
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| mk_str (| "NegOverflow" |) |)
+                          |)));
+                      fun γ =>
+                        ltac:(M.monadic
+                          (let γ := M.deref (| M.read (| γ |) |) in
+                          let _ :=
+                            M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::Zero" |) in
+                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Zero" |) |) |)))
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -776,30 +824,40 @@ Module num.
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ := M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::Empty" |) in
-                    Value.StructTuple "core::num::error::IntErrorKind::Empty" [] [] []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::num::error::IntErrorKind::Empty" [])
+                      (Ty.path "core::num::error::IntErrorKind")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::InvalidDigit" |) in
-                    Value.StructTuple "core::num::error::IntErrorKind::InvalidDigit" [] [] []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::num::error::IntErrorKind::InvalidDigit" [])
+                      (Ty.path "core::num::error::IntErrorKind")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::PosOverflow" |) in
-                    Value.StructTuple "core::num::error::IntErrorKind::PosOverflow" [] [] []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::num::error::IntErrorKind::PosOverflow" [])
+                      (Ty.path "core::num::error::IntErrorKind")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ :=
                       M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::NegOverflow" |) in
-                    Value.StructTuple "core::num::error::IntErrorKind::NegOverflow" [] [] []));
+                    M.value_with_ty
+                      (Value.StructTuple "core::num::error::IntErrorKind::NegOverflow" [])
+                      (Ty.path "core::num::error::IntErrorKind")));
                 fun γ =>
                   ltac:(M.monadic
                     (let γ := M.deref (| M.read (| γ |) |) in
                     let _ := M.is_struct_tuple (| γ, "core::num::error::IntErrorKind::Zero" |) in
-                    Value.StructTuple "core::num::error::IntErrorKind::Zero" [] [] []))
+                    M.value_with_ty
+                      (Value.StructTuple "core::num::error::IntErrorKind::Zero" [])
+                      (Ty.path "core::num::error::IntErrorKind")))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -853,7 +911,11 @@ Module num.
                     [],
                     [ Ty.path "core::num::error::IntErrorKind" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::IntErrorKind" ])
+                  ]
                 |) in
               let~ __arg1_discr : Ty.path "isize" :=
                 M.call_closure (|
@@ -863,7 +925,11 @@ Module num.
                     [],
                     [ Ty.path "core::num::error::IntErrorKind" ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::IntErrorKind" ])
+                  ]
                 |) in
               M.alloc (|
                 Ty.path "bool",
@@ -982,25 +1048,36 @@ Module num.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_trait_method (| "core::fmt::Display", Ty.path "str", [], [], "fmt", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                      M.get_trait_method (|
-                        "core::error::Error",
-                        Ty.path "core::num::error::ParseIntError",
-                        [],
-                        [],
-                        "description",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                        M.get_trait_method (|
+                          "core::error::Error",
+                          Ty.path "core::num::error::ParseIntError",
+                          [],
+                          [],
+                          "description",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.path "core::num::error::ParseIntError" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

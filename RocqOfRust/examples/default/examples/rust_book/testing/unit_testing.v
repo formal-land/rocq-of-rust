@@ -68,7 +68,10 @@ Module tests.
                         M.call_closure (|
                           Ty.path "i32",
                           M.get_function (| "unit_testing::add", [], [] |),
-                          [ Value.Integer IntegerKind.I32 1; Value.Integer IntegerKind.I32 2 ]
+                          [
+                            M.value_with_ty (Value.Integer IntegerKind.I32 1) (Ty.path "i32");
+                            M.value_with_ty (Value.Integer IntegerKind.I32 2) (Ty.path "i32")
+                          ]
                         |)
                       |)
                     |);
@@ -117,7 +120,9 @@ Module tests.
                             M.never_to_any (|
                               M.read (|
                                 let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                  Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                  M.value_with_ty
+                                    (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                    (Ty.path "core::panicking::AssertKind") in
                                 M.alloc (|
                                   Ty.path "never",
                                   M.call_closure (|
@@ -128,30 +133,42 @@ Module tests.
                                       [ Ty.path "i32"; Ty.path "i32" ]
                                     |),
                                     [
-                                      M.read (| kind |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| left_val |) |)
+                                      M.value_with_ty
+                                        (M.read (| kind |))
+                                        (Ty.path "core::panicking::AssertKind");
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| left_val |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| right_val |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| right_val |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |);
-                                      Value.StructTuple
-                                        "core::option::Option::None"
-                                        []
-                                        [ Ty.path "core::fmt::Arguments" ]
-                                        []
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ]);
+                                      M.value_with_ty
+                                        (M.value_with_ty
+                                          (Value.StructTuple "core::option::Option::None" [])
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ]))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ])
                                     ]
                                   |)
                                 |)
@@ -202,7 +219,10 @@ Module tests.
                         M.call_closure (|
                           Ty.path "i32",
                           M.get_function (| "unit_testing::bad_add", [], [] |),
-                          [ Value.Integer IntegerKind.I32 1; Value.Integer IntegerKind.I32 2 ]
+                          [
+                            M.value_with_ty (Value.Integer IntegerKind.I32 1) (Ty.path "i32");
+                            M.value_with_ty (Value.Integer IntegerKind.I32 2) (Ty.path "i32")
+                          ]
                         |)
                       |)
                     |);
@@ -251,7 +271,9 @@ Module tests.
                             M.never_to_any (|
                               M.read (|
                                 let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                  Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                  M.value_with_ty
+                                    (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                    (Ty.path "core::panicking::AssertKind") in
                                 M.alloc (|
                                   Ty.path "never",
                                   M.call_closure (|
@@ -262,30 +284,42 @@ Module tests.
                                       [ Ty.path "i32"; Ty.path "i32" ]
                                     |),
                                     [
-                                      M.read (| kind |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| left_val |) |)
+                                      M.value_with_ty
+                                        (M.read (| kind |))
+                                        (Ty.path "core::panicking::AssertKind");
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| left_val |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| right_val |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| right_val |) |)
+                                            |)
                                           |)
-                                        |)
-                                      |);
-                                      Value.StructTuple
-                                        "core::option::Option::None"
-                                        []
-                                        [ Ty.path "core::fmt::Arguments" ]
-                                        []
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ]);
+                                      M.value_with_ty
+                                        (M.value_with_ty
+                                          (Value.StructTuple "core::option::Option::None" [])
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::fmt::Arguments" ]))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ])
                                     ]
                                   |)
                                 |)

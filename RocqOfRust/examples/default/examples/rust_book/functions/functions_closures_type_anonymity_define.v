@@ -50,7 +50,7 @@ Module main.
                 [],
                 []
               |),
-              [ M.read (| f |); Value.Tuple [] ]
+              [ M.value_with_ty (M.read (| f |)) F; M.value_with_ty (Value.Tuple []) (Ty.tuple []) ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
         |)))

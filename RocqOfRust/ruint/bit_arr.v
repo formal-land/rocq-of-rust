@@ -47,47 +47,53 @@ Module bit_arr.
               []
             |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Bits" |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_tuple_field (|
-                              M.deref (| M.read (| self |) |),
-                              "ruint::bit_arr::Bits",
-                              0
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Bits" |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "ruint::bit_arr::Bits",
+                                0
+                              |)
                             |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -173,25 +179,25 @@ Module bit_arr.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.StructTuple
-            "ruint::bit_arr::Bits"
-            [ BITS; LIMBS ]
-            []
-            [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_trait_method (|
-                  "core::default::Default",
+          (M.value_with_ty
+            (Value.StructTuple
+              "ruint::bit_arr::Bits"
+              [
+                M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |)
-            ]))
+                |)
+              ])
+            (Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] [])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -307,22 +313,26 @@ Module bit_arr.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| self |) |),
-                  "ruint::bit_arr::Bits",
-                  0
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.SubPointer.get_struct_tuple_field (|
-                  M.deref (| M.read (| other |) |),
-                  "ruint::bit_arr::Bits",
-                  0
-                |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| self |) |),
+                    "ruint::bit_arr::Bits",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.deref (| M.read (| other |) |),
+                    "ruint::bit_arr::Bits",
+                    0
+                  |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -375,20 +385,24 @@ Module bit_arr.
               [ __H ]
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
                     |)
                   |)
-                |)
-              |);
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ __H ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -424,7 +438,9 @@ Module bit_arr.
       | [], [], [ value ] =>
         ltac:(M.monadic
           (let value := M.alloc (| Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [], value |) in
-          Value.StructTuple "ruint::bit_arr::Bits" [ BITS; LIMBS ] [] [ M.read (| value |) ]))
+          M.value_with_ty
+            (Value.StructTuple "ruint::bit_arr::Bits" [ M.read (| value |) ])
+            (Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] [])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -529,23 +545,39 @@ Module bit_arr.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                      Ty.path "ruint::string::ParseError"
+                    ],
+                  M.get_associated_function (|
+                    Ty.path "str",
+                    "parse",
+                    [],
+                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::result::Result")
                   []
                   [
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
                     Ty.path "ruint::string::ParseError"
-                  ],
-                M.get_associated_function (|
-                  Ty.path "str",
-                  "parse",
-                  [],
+                  ]);
+              M.value_with_ty
+                (M.constructor_as_closure "ruint::bit_arr::Bits")
+                (Ty.function
                   [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |) ]
-              |);
-              M.constructor_as_closure "ruint::bit_arr::Bits" [ BITS; LIMBS ] []
+                  (Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] []))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -647,19 +679,19 @@ Module bit_arr.
       ltac:(M.monadic
         (M.alloc (|
           Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] [],
-          Value.StructTuple
-            "ruint::bit_arr::Bits"
-            [ BITS; LIMBS ]
-            []
-            [
-              M.read (|
-                get_associated_constant (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "ZERO",
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+          M.value_with_ty
+            (Value.StructTuple
+              "ruint::bit_arr::Bits"
+              [
+                M.read (|
+                  get_associated_constant (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "ZERO",
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                  |)
                 |)
-              |)
-            ]
+              ])
+            (Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] [])
         |))).
     
     Global Instance AssociatedConstant_value_ZERO :
@@ -818,20 +850,24 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "reverse_bits",
-                  [],
-                  []
-                |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |)
-                ]
-              |)
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "reverse_bits",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -889,33 +925,43 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "alloc::borrow::Cow")
+                    []
+                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "as_le_bytes",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "ruint::bit_arr::Bits",
+                              0
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "alloc::borrow::Cow")
                   []
-                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "as_le_bytes",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "ruint::bit_arr::Bits",
-                          0
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -973,33 +1019,43 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "alloc::vec::Vec")
+                    []
+                    [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "to_be_bytes_vec",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "ruint::bit_arr::Bits",
+                              0
+                            |)
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "alloc::vec::Vec")
                   []
-                  [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "to_be_bytes_vec",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "ruint::bit_arr::Bits",
-                          0
-                        |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                  [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1046,30 +1102,37 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "array") [ BYTES ] [ Ty.path "u8" ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "to_le_bytes",
-                  [ BYTES ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "array") [ BYTES ] [ Ty.path "u8" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "to_le_bytes",
+                    [ BYTES ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "ruint::bit_arr::Bits",
-                          0
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "ruint::bit_arr::Bits",
+                              0
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "array") [ BYTES ] [ Ty.path "u8" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1116,30 +1179,37 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "array") [ BYTES ] [ Ty.path "u8" ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "to_be_bytes",
-                  [ BYTES ],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "array") [ BYTES ] [ Ty.path "u8" ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "to_be_bytes",
+                    [ BYTES ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "ruint::bit_arr::Bits",
-                          0
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "ruint::bit_arr::Bits",
+                              0
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "array") [ BYTES ] [ Ty.path "u8" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1186,30 +1256,37 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.path "usize",
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "leading_zeros",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "usize",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "leading_zeros",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "ruint::bit_arr::Bits",
-                          0
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "ruint::bit_arr::Bits",
+                              0
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                  ]
+                |))
+                (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1256,30 +1333,37 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.path "usize",
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "leading_ones",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "usize",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "leading_ones",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "ruint::bit_arr::Bits",
-                          0
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "ruint::bit_arr::Bits",
+                              0
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                  ]
+                |))
+                (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1326,30 +1410,37 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.path "usize",
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "trailing_zeros",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "usize",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "trailing_zeros",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "ruint::bit_arr::Bits",
-                          0
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "ruint::bit_arr::Bits",
+                              0
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                  ]
+                |))
+                (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1396,30 +1487,37 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.path "usize",
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "trailing_ones",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "usize",
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "trailing_ones",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
                         Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "ruint::bit_arr::Bits",
-                          0
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_tuple_field (|
+                              M.deref (| M.read (| self |) |),
+                              "ruint::bit_arr::Bits",
+                              0
+                            |)
+                          |)
                         |)
-                      |)
-                    |)
-                  |)
-                ]
-              |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                  ]
+                |))
+                (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1480,38 +1578,48 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&mut")
-                          []
-                          [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                          "as_limbs_mut",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
-                              M.borrow (|
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                            "as_limbs_mut",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.MutRef,
-                                M.SubPointer.get_struct_tuple_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "ruint::bit_arr::Bits",
-                                  0
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.SubPointer.get_struct_tuple_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "ruint::bit_arr::Bits",
+                                      0
+                                    |)
+                                  |)
                                 |)
-                              |)
-                            |)
-                          |)
-                        ]
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ] ])
                 ]
               |)
             |)
@@ -1563,33 +1671,44 @@ Module bit_arr.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "checked_shl",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty (M.read (| rhs |)) (Ty.path "usize")
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::option::Option")
                   []
+                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+              M.value_with_ty
+                (M.get_trait_method (|
+                  "core::convert::From",
+                  Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] [],
+                  [],
                   [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "checked_shl",
+                  "from",
                   [],
                   []
-                |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (| rhs |)
-                ]
-              |);
-              M.get_trait_method (|
-                "core::convert::From",
-                Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] [],
-                [],
-                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                "from",
-                [],
-                []
-              |)
+                |))
+                (Ty.function
+                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                  (Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] []))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1639,33 +1758,44 @@ Module bit_arr.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "checked_shr",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty (M.read (| rhs |)) (Ty.path "usize")
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::option::Option")
                   []
+                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+              M.value_with_ty
+                (M.get_trait_method (|
+                  "core::convert::From",
+                  Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] [],
+                  [],
                   [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "checked_shr",
+                  "from",
                   [],
                   []
-                |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (| rhs |)
-                ]
-              |);
-              M.get_trait_method (|
-                "core::convert::From",
-                Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] [],
-                [],
-                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                "from",
-                [],
-                []
-              |)
+                |))
+                (Ty.function
+                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                  (Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] []))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1710,10 +1840,12 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (| rhs |)
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                    |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                  M.value_with_ty (M.read (| rhs |)) (Ty.path "usize")
                 ]
               |)
             |),
@@ -1738,7 +1870,11 @@ Module bit_arr.
                           [],
                           []
                         |),
-                        [ M.read (| value |) ]
+                        [
+                          M.value_with_ty
+                            (M.read (| value |))
+                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                        ]
                       |);
                       M.read (| flag |)
                     ]))
@@ -1786,10 +1922,12 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (| rhs |)
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                    |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                  M.value_with_ty (M.read (| rhs |)) (Ty.path "usize")
                 ]
               |)
             |),
@@ -1814,7 +1952,11 @@ Module bit_arr.
                           [],
                           []
                         |),
-                        [ M.read (| value |) ]
+                        [
+                          M.value_with_ty
+                            (M.read (| value |))
+                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                        ]
                       |);
                       M.read (| flag |)
                     ]))
@@ -1859,21 +2001,25 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "wrapping_shl",
-                  [],
-                  []
-                |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (| rhs |)
-                ]
-              |)
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "wrapping_shl",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty (M.read (| rhs |)) (Ty.path "usize")
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1915,21 +2061,25 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "wrapping_shr",
-                  [],
-                  []
-                |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (| rhs |)
-                ]
-              |)
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "wrapping_shr",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty (M.read (| rhs |)) (Ty.path "usize")
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1971,21 +2121,25 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "rotate_left",
-                  [],
-                  []
-                |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (| rhs |)
-                ]
-              |)
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "rotate_left",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty (M.read (| rhs |)) (Ty.path "usize")
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2027,21 +2181,25 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "rotate_right",
-                  [],
-                  []
-                |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (| rhs |)
-                ]
-              |)
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "rotate_right",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty (M.read (| rhs |)) (Ty.path "usize")
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2093,28 +2251,41 @@ Module bit_arr.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "try_from_be_slice",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytes |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::option::Option")
                   []
+                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+              M.value_with_ty
+                (M.get_trait_method (|
+                  "core::convert::From",
+                  Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] [],
+                  [],
                   [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "try_from_be_slice",
+                  "from",
                   [],
                   []
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytes |) |) |) ]
-              |);
-              M.get_trait_method (|
-                "core::convert::From",
-                Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] [],
-                [],
-                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                "from",
-                [],
-                []
-              |)
+                |))
+                (Ty.function
+                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                  (Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] []))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2166,28 +2337,41 @@ Module bit_arr.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "try_from_le_slice",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytes |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::option::Option")
                   []
+                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+              M.value_with_ty
+                (M.get_trait_method (|
+                  "core::convert::From",
+                  Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] [],
+                  [],
                   [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "try_from_le_slice",
+                  "from",
                   [],
                   []
-                |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytes |) |) |) ]
-              |);
-              M.get_trait_method (|
-                "core::convert::From",
-                Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] [],
-                [],
-                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                "from",
-                [],
-                []
-              |)
+                |))
+                (Ty.function
+                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                  (Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] []))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2242,34 +2426,48 @@ Module bit_arr.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [
+                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                      Ty.path "ruint::string::ParseError"
+                    ],
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "from_str_radix",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                    M.value_with_ty (M.read (| radix |)) (Ty.path "u64")
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::result::Result")
                   []
                   [
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
                     Ty.path "ruint::string::ParseError"
-                  ],
-                M.get_associated_function (|
-                  Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "from_str_radix",
+                  ]);
+              M.value_with_ty
+                (M.get_trait_method (|
+                  "core::convert::From",
+                  Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] [],
+                  [],
+                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                  "from",
                   [],
                   []
-                |),
-                [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| src |) |) |);
-                  M.read (| radix |)
-                ]
-              |);
-              M.get_trait_method (|
-                "core::convert::From",
-                Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] [],
-                [],
-                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                "from",
-                [],
-                []
-              |)
+                |))
+                (Ty.function
+                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                  (Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] []))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2310,16 +2508,22 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "from_be_bytes",
-                  [ BYTES ],
-                  []
-                |),
-                [ M.read (| bytes |) ]
-              |)
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "from_be_bytes",
+                    [ BYTES ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (| bytes |))
+                      (Ty.apply (Ty.path "array") [ BYTES ] [ Ty.path "u8" ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2360,16 +2564,22 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "from_le_bytes",
-                  [ BYTES ],
-                  []
-                |),
-                [ M.read (| bytes |) ]
-              |)
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "from_le_bytes",
+                    [ BYTES ],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (| bytes |))
+                      (Ty.apply (Ty.path "array") [ BYTES ] [ Ty.path "u8" ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2398,22 +2608,26 @@ Module bit_arr.
         ltac:(M.monadic
           (let limbs :=
             M.alloc (| Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ], limbs |) in
-          Value.StructTuple
-            "ruint::bit_arr::Bits"
-            [ BITS; LIMBS ]
-            []
-            [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_associated_function (|
+          M.value_with_ty
+            (Value.StructTuple
+              "ruint::bit_arr::Bits"
+              [
+                M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "from_limbs",
-                  [],
-                  []
-                |),
-                [ M.read (| limbs |) ]
-              |)
-            ]))
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "from_limbs",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (| limbs |))
+                      (Ty.apply (Ty.path "array") [ LIMBS ] [ Ty.path "u64" ])
+                  ]
+                |)
+              ])
+            (Ty.apply (Ty.path "ruint::bit_arr::Bits") [ BITS; LIMBS ] [])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2461,19 +2675,24 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
-                          "ruint::bit_arr::Bits",
-                          0
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_tuple_field (|
+                            M.deref (| M.read (| self |) |),
+                            "ruint::bit_arr::Bits",
+                            0
+                          |)
                         |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                 ]
               |)
             |)
@@ -2543,15 +2762,20 @@ Module bit_arr.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_tuple_field (|
-                                M.deref (| M.read (| self |) |),
-                                "ruint::bit_arr::Bits",
-                                0
-                              |)
-                            |);
-                            M.read (| index |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_tuple_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "ruint::bit_arr::Bits",
+                                  0
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                            M.value_with_ty (M.read (| index |)) (Ty.path "usize")
                           ]
                         |)
                       |)) in
@@ -2629,23 +2853,27 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_trait_method (|
-                  "core::ops::bit::Not",
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  [],
-                  [],
-                  "not",
-                  [],
-                  []
-                |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |)
-                ]
-              |)
+                  M.get_trait_method (|
+                    "core::ops::bit::Not",
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    [],
+                    [],
+                    "not",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2708,27 +2936,31 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_trait_method (|
-                  "core::ops::bit::Not",
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  [],
-                  [],
-                  "not",
-                  [],
-                  []
-                |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |)
-                ]
-              |)
+                  M.get_trait_method (|
+                    "core::ops::bit::Not",
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    [],
+                    [],
+                    "not",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "ruint::bit_arr::Bits",
+                          0
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2796,18 +3028,28 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (| rhs, "ruint::bit_arr::Bits", 0 |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (| rhs, "ruint::bit_arr::Bits", 0 |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2875,21 +3117,28 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| rhs |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| rhs |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2951,13 +3200,20 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (| rhs, "ruint::bit_arr::Bits", 0 |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_tuple_field (| rhs, "ruint::bit_arr::Bits", 0 |)
+                    |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                 ]
               |) in
             self
@@ -3028,17 +3284,24 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| rhs |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| rhs |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                 ]
               |) in
             self
@@ -3110,17 +3373,24 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (| rhs, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (| rhs, "ruint::bit_arr::Bits", 0 |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                 ]
               |) in
             rhs
@@ -3194,49 +3464,60 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_trait_method (|
-                  "core::ops::bit::BitOr",
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  [],
-                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                  "bitor",
-                  [],
-                  []
-                |),
-                [
-                  M.call_closure (|
+                  M.get_trait_method (|
+                    "core::ops::bit::BitOr",
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    M.get_trait_method (|
-                      "core::clone::Clone",
-                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
+                    [],
+                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                    "bitor",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                        M.get_trait_method (|
+                          "core::clone::Clone",
+                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                          [],
+                          [],
+                          "clone",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "ruint::bit_arr::Bits",
+                                0
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (|
                         M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
+                          M.deref (| M.read (| rhs |) |),
                           "ruint::bit_arr::Bits",
                           0
                         |)
-                      |)
-                    ]
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| rhs |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |)
-                ]
-              |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3306,18 +3587,28 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (| rhs, "ruint::bit_arr::Bits", 0 |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (| rhs, "ruint::bit_arr::Bits", 0 |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3385,21 +3676,28 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| rhs |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| rhs |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3461,13 +3759,20 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (| rhs, "ruint::bit_arr::Bits", 0 |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_tuple_field (| rhs, "ruint::bit_arr::Bits", 0 |)
+                    |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                 ]
               |) in
             self
@@ -3538,17 +3843,24 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| rhs |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| rhs |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                 ]
               |) in
             self
@@ -3620,17 +3932,24 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (| rhs, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (| rhs, "ruint::bit_arr::Bits", 0 |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                 ]
               |) in
             rhs
@@ -3704,49 +4023,60 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_trait_method (|
-                  "core::ops::bit::BitAnd",
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  [],
-                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                  "bitand",
-                  [],
-                  []
-                |),
-                [
-                  M.call_closure (|
+                  M.get_trait_method (|
+                    "core::ops::bit::BitAnd",
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    M.get_trait_method (|
-                      "core::clone::Clone",
-                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
+                    [],
+                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                    "bitand",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                        M.get_trait_method (|
+                          "core::clone::Clone",
+                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                          [],
+                          [],
+                          "clone",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "ruint::bit_arr::Bits",
+                                0
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (|
                         M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
+                          M.deref (| M.read (| rhs |) |),
                           "ruint::bit_arr::Bits",
                           0
                         |)
-                      |)
-                    ]
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| rhs |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |)
-                ]
-              |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3816,18 +4146,28 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.SubPointer.get_struct_tuple_field (| rhs, "ruint::bit_arr::Bits", 0 |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.SubPointer.get_struct_tuple_field (| rhs, "ruint::bit_arr::Bits", 0 |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3895,21 +4235,28 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| rhs |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| rhs |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3971,13 +4318,20 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (| rhs, "ruint::bit_arr::Bits", 0 |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_tuple_field (| rhs, "ruint::bit_arr::Bits", 0 |)
+                    |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                 ]
               |) in
             self
@@ -4048,17 +4402,24 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| rhs |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| rhs |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                 ]
               |) in
             self
@@ -4130,17 +4491,24 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (| rhs, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (| rhs, "ruint::bit_arr::Bits", 0 |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty
+                    (M.read (|
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                 ]
               |) in
             rhs
@@ -4214,49 +4582,60 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_trait_method (|
-                  "core::ops::bit::BitXor",
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  [],
-                  [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                  "bitxor",
-                  [],
-                  []
-                |),
-                [
-                  M.call_closure (|
+                  M.get_trait_method (|
+                    "core::ops::bit::BitXor",
                     Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                    M.get_trait_method (|
-                      "core::clone::Clone",
-                      Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                      [],
-                      [],
-                      "clone",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
+                    [],
+                    [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                    "bitxor",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                        M.get_trait_method (|
+                          "core::clone::Clone",
+                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                          [],
+                          [],
+                          "clone",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "ruint::bit_arr::Bits",
+                                0
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (|
                         M.SubPointer.get_struct_tuple_field (|
-                          M.deref (| M.read (| self |) |),
+                          M.deref (| M.read (| rhs |) |),
                           "ruint::bit_arr::Bits",
                           0
                         |)
-                      |)
-                    ]
-                  |);
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| rhs |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |)
-                ]
-              |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4320,15 +4699,20 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |);
-                  M.read (| rhs |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty (M.read (| rhs |)) (Ty.path "usize")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4388,15 +4772,20 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |);
-                  M.read (| rhs |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty (M.read (| rhs |)) (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4452,24 +4841,28 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_trait_method (|
-                  "core::ops::bit::Shl",
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  [],
-                  [ Ty.path "usize" ],
-                  "shl",
-                  [],
-                  []
-                |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (| rhs |)
-                ]
-              |)
+                  M.get_trait_method (|
+                    "core::ops::bit::Shl",
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    [],
+                    [ Ty.path "usize" ],
+                    "shl",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty (M.read (| rhs |)) (Ty.path "usize")
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4533,28 +4926,32 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_trait_method (|
-                  "core::ops::bit::Shl",
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  [],
-                  [ Ty.path "usize" ],
-                  "shl",
-                  [],
-                  []
-                |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |);
-                  M.read (| rhs |)
-                ]
-              |)
+                  M.get_trait_method (|
+                    "core::ops::bit::Shl",
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    [],
+                    [ Ty.path "usize" ],
+                    "shl",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "ruint::bit_arr::Bits",
+                          0
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty (M.read (| rhs |)) (Ty.path "usize")
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4612,24 +5009,30 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_trait_method (|
-                  "core::ops::bit::Shl",
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  [],
-                  [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
-                  "shl",
-                  [],
-                  []
-                |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (| rhs |)
-                ]
-              |)
+                  M.get_trait_method (|
+                    "core::ops::bit::Shl",
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    [],
+                    [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
+                    "shl",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (| rhs |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4693,28 +5096,34 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_trait_method (|
-                  "core::ops::bit::Shl",
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  [],
-                  [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
-                  "shl",
-                  [],
-                  []
-                |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |);
-                  M.read (| rhs |)
-                ]
-              |)
+                  M.get_trait_method (|
+                    "core::ops::bit::Shl",
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    [],
+                    [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
+                    "shl",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "ruint::bit_arr::Bits",
+                          0
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (| rhs |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4776,15 +5185,20 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |);
-                  M.read (| rhs |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty (M.read (| rhs |)) (Ty.path "usize")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4844,15 +5258,20 @@ Module bit_arr.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |);
-                  M.read (| rhs |)
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.SubPointer.get_struct_tuple_field (|
+                        M.deref (| M.read (| self |) |),
+                        "ruint::bit_arr::Bits",
+                        0
+                      |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                  M.value_with_ty (M.read (| rhs |)) (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4908,24 +5327,28 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_trait_method (|
-                  "core::ops::bit::Shr",
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  [],
-                  [ Ty.path "usize" ],
-                  "shr",
-                  [],
-                  []
-                |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (| rhs |)
-                ]
-              |)
+                  M.get_trait_method (|
+                    "core::ops::bit::Shr",
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    [],
+                    [ Ty.path "usize" ],
+                    "shr",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty (M.read (| rhs |)) (Ty.path "usize")
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -4989,28 +5412,32 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_trait_method (|
-                  "core::ops::bit::Shr",
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  [],
-                  [ Ty.path "usize" ],
-                  "shr",
-                  [],
-                  []
-                |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |);
-                  M.read (| rhs |)
-                ]
-              |)
+                  M.get_trait_method (|
+                    "core::ops::bit::Shr",
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    [],
+                    [ Ty.path "usize" ],
+                    "shr",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "ruint::bit_arr::Bits",
+                          0
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty (M.read (| rhs |)) (Ty.path "usize")
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5068,24 +5495,30 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_trait_method (|
-                  "core::ops::bit::Shr",
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  [],
-                  [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
-                  "shr",
-                  [],
-                  []
-                |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
-                  |);
-                  M.read (| rhs |)
-                ]
-              |)
+                  M.get_trait_method (|
+                    "core::ops::bit::Shr",
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    [],
+                    [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
+                    "shr",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (| self, "ruint::bit_arr::Bits", 0 |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (| rhs |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5149,28 +5582,34 @@ Module bit_arr.
               []
             |),
             [
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_trait_method (|
-                  "core::ops::bit::Shr",
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  [],
-                  [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
-                  "shr",
-                  [],
-                  []
-                |),
-                [
-                  M.read (|
-                    M.SubPointer.get_struct_tuple_field (|
-                      M.deref (| M.read (| self |) |),
-                      "ruint::bit_arr::Bits",
-                      0
-                    |)
-                  |);
-                  M.read (| rhs |)
-                ]
-              |)
+                  M.get_trait_method (|
+                    "core::ops::bit::Shr",
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    [],
+                    [ Ty.apply (Ty.path "&") [] [ Ty.path "usize" ] ],
+                    "shr",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "ruint::bit_arr::Bits",
+                          0
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                    M.value_with_ty
+                      (M.read (| rhs |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                  ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

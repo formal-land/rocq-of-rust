@@ -93,40 +93,47 @@ Module Impl_core_fmt_Debug_for_move_bytecode_verifier_meter_Scope.
           Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.path "core::fmt::Error" ],
           M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.match_operator (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-              self,
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ :=
-                      M.is_struct_tuple (|
-                        γ,
-                        "move_bytecode_verifier_meter::Scope::Transaction"
-                      |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Transaction" |) |) |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ :=
-                      M.is_struct_tuple (| γ, "move_bytecode_verifier_meter::Scope::Package" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Package" |) |) |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ :=
-                      M.is_struct_tuple (| γ, "move_bytecode_verifier_meter::Scope::Module" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Module" |) |) |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ :=
-                      M.is_struct_tuple (| γ, "move_bytecode_verifier_meter::Scope::Function" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Function" |) |) |)))
-              ]
-            |)
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.match_operator (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                self,
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "move_bytecode_verifier_meter::Scope::Transaction"
+                        |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Transaction" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (| γ, "move_bytecode_verifier_meter::Scope::Package" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Package" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (| γ, "move_bytecode_verifier_meter::Scope::Module" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Module" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (|
+                          γ,
+                          "move_bytecode_verifier_meter::Scope::Function"
+                        |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Function" |) |) |)))
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -180,7 +187,11 @@ Module Impl_core_cmp_PartialEq_move_bytecode_verifier_meter_Scope_for_move_bytec
                 [],
                 [ Ty.path "move_bytecode_verifier_meter::Scope" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "move_bytecode_verifier_meter::Scope" ])
+              ]
             |) in
           let~ __arg1_discr : Ty.path "isize" :=
             M.call_closure (|
@@ -190,7 +201,11 @@ Module Impl_core_cmp_PartialEq_move_bytecode_verifier_meter_Scope_for_move_bytec
                 [],
                 [ Ty.path "move_bytecode_verifier_meter::Scope" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "move_bytecode_verifier_meter::Scope" ])
+              ]
             |) in
           M.alloc (|
             Ty.path "bool",
@@ -271,7 +286,11 @@ Module Impl_core_cmp_PartialOrd_move_bytecode_verifier_meter_Scope_for_move_byte
                 [],
                 [ Ty.path "move_bytecode_verifier_meter::Scope" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "move_bytecode_verifier_meter::Scope" ])
+              ]
             |) in
           let~ __arg1_discr : Ty.path "isize" :=
             M.call_closure (|
@@ -281,7 +300,11 @@ Module Impl_core_cmp_PartialOrd_move_bytecode_verifier_meter_Scope_for_move_byte
                 [],
                 [ Ty.path "move_bytecode_verifier_meter::Scope" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "move_bytecode_verifier_meter::Scope" ])
+              ]
             |) in
           M.alloc (|
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ],
@@ -297,14 +320,18 @@ Module Impl_core_cmp_PartialOrd_move_bytecode_verifier_meter_Scope_for_move_byte
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ])
               ]
             |)
           |)
@@ -348,7 +375,11 @@ Module Impl_core_cmp_Ord_for_move_bytecode_verifier_meter_Scope.
                 [],
                 [ Ty.path "move_bytecode_verifier_meter::Scope" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "move_bytecode_verifier_meter::Scope" ])
+              ]
             |) in
           let~ __arg1_discr : Ty.path "isize" :=
             M.call_closure (|
@@ -358,7 +389,11 @@ Module Impl_core_cmp_Ord_for_move_bytecode_verifier_meter_Scope.
                 [],
                 [ Ty.path "move_bytecode_verifier_meter::Scope" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "move_bytecode_verifier_meter::Scope" ])
+              ]
             |) in
           M.alloc (|
             Ty.path "core::cmp::Ordering",
@@ -366,14 +401,18 @@ Module Impl_core_cmp_Ord_for_move_bytecode_verifier_meter_Scope.
               Ty.path "core::cmp::Ordering",
               M.get_trait_method (| "core::cmp::Ord", Ty.path "isize", [], [], "cmp", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, __self_discr |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.borrow (| Pointer.Kind.Ref, __arg1_discr |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ])
               ]
             |)
           |)
@@ -428,12 +467,15 @@ Module Meter.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Ok"
-                                []
-                                [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError"
-                                ]
-                                [ Value.Tuple [] ]
+                              M.value_with_ty
+                                (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.tuple [];
+                                    Ty.path "move_binary_format::errors::PartialVMError"
+                                  ])
                             |)
                           |)
                         |)));
@@ -460,13 +502,24 @@ Module Meter.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.read (| scope |);
-                    M.call_closure (|
-                      Ty.path "u128",
-                      M.get_associated_function (| Ty.path "u128", "saturating_mul", [], [] |),
-                      [ M.read (| units_per_item |); M.cast (Ty.path "u128") (M.read (| items |)) ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Self ]);
+                    M.value_with_ty
+                      (M.read (| scope |))
+                      (Ty.path "move_bytecode_verifier_meter::Scope");
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "u128",
+                        M.get_associated_function (| Ty.path "u128", "saturating_mul", [], [] |),
+                        [
+                          M.value_with_ty (M.read (| units_per_item |)) (Ty.path "u128");
+                          M.value_with_ty
+                            (M.cast (Ty.path "u128") (M.read (| items |)))
+                            (Ty.path "u128")
+                        ]
+                      |))
+                      (Ty.path "u128")
                   ]
                 |)
               |)
@@ -519,12 +572,15 @@ Module Meter.
                         M.never_to_any (|
                           M.read (|
                             M.return_ (|
-                              Value.StructTuple
-                                "core::result::Result::Ok"
-                                []
-                                [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError"
-                                ]
-                                [ Value.Tuple [] ]
+                              M.value_with_ty
+                                (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.tuple [];
+                                    Ty.path "move_binary_format::errors::PartialVMError"
+                                  ])
                             |)
                           |)
                         |)));
@@ -552,14 +608,22 @@ Module Meter.
                               []
                             |),
                             [
-                              Value.mkStructRecord
-                                "core::ops::range::Range"
-                                []
-                                [ Ty.path "usize" ]
-                                [
-                                  ("start", Value.Integer IntegerKind.Usize 0);
-                                  ("end_", M.read (| items |))
-                                ]
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.mkStructRecord
+                                    "core::ops::range::Range"
+                                    [
+                                      ("start", Value.Integer IntegerKind.Usize 0);
+                                      ("end_", M.read (| items |))
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "usize" ]))
+                                (Ty.apply
+                                  (Ty.path "core::ops::range::Range")
+                                  []
+                                  [ Ty.path "usize" ])
                             ]
                           |)
                         |),
@@ -602,12 +666,22 @@ Module Meter.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (|
-                                                  M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ops::range::Range")
+                                                      []
+                                                      [ Ty.path "usize" ]
+                                                  ])
                                             ]
                                           |)
                                         |),
@@ -681,33 +755,52 @@ Module Meter.
                                                           []
                                                         |),
                                                         [
-                                                          M.call_closure (|
-                                                            Ty.apply
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              Ty.apply
+                                                                (Ty.path "core::result::Result")
+                                                                []
+                                                                [
+                                                                  Ty.tuple [];
+                                                                  Ty.path
+                                                                    "move_binary_format::errors::PartialVMError"
+                                                                ],
+                                                              M.get_trait_method (|
+                                                                "move_bytecode_verifier_meter::Meter",
+                                                                Self,
+                                                                [],
+                                                                [],
+                                                                "add",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    M.deref (| M.read (| self |) |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [ Self ]);
+                                                                M.value_with_ty
+                                                                  (M.read (| scope |))
+                                                                  (Ty.path
+                                                                    "move_bytecode_verifier_meter::Scope");
+                                                                M.value_with_ty
+                                                                  (M.read (| units_per_item |))
+                                                                  (Ty.path "u128")
+                                                              ]
+                                                            |))
+                                                            (Ty.apply
                                                               (Ty.path "core::result::Result")
                                                               []
                                                               [
                                                                 Ty.tuple [];
                                                                 Ty.path
                                                                   "move_binary_format::errors::PartialVMError"
-                                                              ],
-                                                            M.get_trait_method (|
-                                                              "move_bytecode_verifier_meter::Meter",
-                                                              Self,
-                                                              [],
-                                                              [],
-                                                              "add",
-                                                              [],
-                                                              []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.deref (| M.read (| self |) |)
-                                                              |);
-                                                              M.read (| scope |);
-                                                              M.read (| units_per_item |)
-                                                            ]
-                                                          |)
+                                                              ])
                                                         ]
                                                       |)
                                                     |),
@@ -773,7 +866,20 @@ Module Meter.
                                                                     [],
                                                                     []
                                                                   |),
-                                                                  [ M.read (| residual |) ]
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.read (| residual |))
+                                                                      (Ty.apply
+                                                                        (Ty.path
+                                                                          "core::result::Result")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "core::convert::Infallible";
+                                                                          Ty.path
+                                                                            "move_binary_format::errors::PartialVMError"
+                                                                        ])
+                                                                  ]
                                                                 |)
                                                               |)
                                                             |)
@@ -808,10 +914,14 @@ Module Meter.
                                                           []
                                                         |),
                                                         [
-                                                          M.read (| growth_factor |);
-                                                          M.cast
+                                                          M.value_with_ty
+                                                            (M.read (| growth_factor |))
+                                                            (Ty.path "f32");
+                                                          M.value_with_ty
+                                                            (M.cast
+                                                              (Ty.path "f32")
+                                                              (M.read (| units_per_item |)))
                                                             (Ty.path "f32")
-                                                            (M.read (| units_per_item |))
                                                         ]
                                                       |))
                                                   |) in
@@ -831,11 +941,12 @@ Module Meter.
                   (Ty.path "core::result::Result")
                   []
                   [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ],
-                Value.StructTuple
-                  "core::result::Result::Ok"
-                  []
-                  [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ]
-                  [ Value.Tuple [] ]
+                M.value_with_ty
+                  (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                  (Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.tuple []; Ty.path "move_binary_format::errors::PartialVMError" ])
               |)
             |)))
         |)))
@@ -889,12 +1000,19 @@ Module Impl_move_bytecode_verifier_meter_Meter_for_ref_mut_Dyn_move_bytecode_ver
             []
           |),
           [
-            M.borrow (|
-              Pointer.Kind.MutRef,
-              M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-            |);
-            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| name |) |) |);
-            M.read (| scope |)
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.MutRef,
+                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+              |))
+              (Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.dyn [ ("move_bytecode_verifier_meter::Meter::Trait", []) ] ]);
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| name |) |) |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+            M.value_with_ty (M.read (| scope |)) (Ty.path "move_bytecode_verifier_meter::Scope")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -940,13 +1058,18 @@ Module Impl_move_bytecode_verifier_meter_Meter_for_ref_mut_Dyn_move_bytecode_ver
             []
           |),
           [
-            M.borrow (|
-              Pointer.Kind.MutRef,
-              M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-            |);
-            M.read (| from |);
-            M.read (| to |);
-            M.read (| factor |)
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.MutRef,
+                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+              |))
+              (Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.dyn [ ("move_bytecode_verifier_meter::Meter::Trait", []) ] ]);
+            M.value_with_ty (M.read (| from |)) (Ty.path "move_bytecode_verifier_meter::Scope");
+            M.value_with_ty (M.read (| to |)) (Ty.path "move_bytecode_verifier_meter::Scope");
+            M.value_with_ty (M.read (| factor |)) (Ty.path "f32")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -991,12 +1114,17 @@ Module Impl_move_bytecode_verifier_meter_Meter_for_ref_mut_Dyn_move_bytecode_ver
             []
           |),
           [
-            M.borrow (|
-              Pointer.Kind.MutRef,
-              M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-            |);
-            M.read (| scope |);
-            M.read (| units |)
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.MutRef,
+                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+              |))
+              (Ty.apply
+                (Ty.path "&mut")
+                []
+                [ Ty.dyn [ ("move_bytecode_verifier_meter::Meter::Trait", []) ] ]);
+            M.value_with_ty (M.read (| scope |)) (Ty.path "move_bytecode_verifier_meter::Scope");
+            M.value_with_ty (M.read (| units |)) (Ty.path "u128")
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"

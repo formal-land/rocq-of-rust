@@ -27,37 +27,46 @@ Module unit_.
               [ Ty.function [ Ty.tuple [] ] (Ty.tuple []) ]
             |),
             [
-              M.call_closure (|
-                Ty.associated_in_trait
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.associated_in_trait
+                    "core::iter::traits::collect::IntoIterator"
+                    []
+                    []
+                    I
+                    "IntoIter",
+                  M.get_trait_method (|
+                    "core::iter::traits::collect::IntoIterator",
+                    I,
+                    [],
+                    [],
+                    "into_iter",
+                    [],
+                    []
+                  |),
+                  [ M.value_with_ty (M.read (| iter |)) I ]
+                |))
+                (Ty.associated_in_trait
                   "core::iter::traits::collect::IntoIterator"
                   []
                   []
                   I
-                  "IntoIter",
-                M.get_trait_method (|
-                  "core::iter::traits::collect::IntoIterator",
-                  I,
-                  [],
-                  [],
-                  "into_iter",
-                  [],
-                  []
-                |),
-                [ M.read (| iter |) ]
-              |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.tuple [],
-                          M.alloc (| Ty.tuple [], α0 |),
-                          [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+                  "IntoIter");
+              M.value_with_ty
+                (M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.tuple [],
+                            M.alloc (| Ty.tuple [], α0 |),
+                            [ fun γ => ltac:(M.monadic (Value.Tuple [])) ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end)))
+                (Ty.function [ Ty.tuple [] ] (Ty.tuple []))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

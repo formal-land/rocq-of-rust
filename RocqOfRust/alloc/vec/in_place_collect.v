@@ -155,7 +155,14 @@ Module vec.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| step_merge |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| step_merge |))
+                                        (Ty.apply
+                                          (Ty.path "core::num::nonzero::NonZero")
+                                          []
+                                          [ Ty.path "usize" ])
+                                    ]
                                   |)
                                 ]
                               |);
@@ -179,7 +186,14 @@ Module vec.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| step_expand |) ]
+                                    [
+                                      M.value_with_ty
+                                        (M.read (| step_expand |))
+                                        (Ty.apply
+                                          (Ty.path "core::num::nonzero::NonZero")
+                                          []
+                                          [ Ty.path "usize" ])
+                                    ]
                                   |)
                                 ]
                               |)
@@ -251,34 +265,49 @@ Module vec.
                               Ty.path "never",
                               M.get_function (| "core::panicking::panic_fmt", [], [] |),
                               [
-                                M.call_closure (|
-                                  Ty.path "core::fmt::Arguments",
-                                  M.get_associated_function (|
+                                M.value_with_ty
+                                  (M.call_closure (|
                                     Ty.path "core::fmt::Arguments",
-                                    "new_const",
-                                    [ Value.Integer IntegerKind.Usize 1 ],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::Arguments",
+                                      "new_const",
+                                      [ Value.Integer IntegerKind.Usize 1 ],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
                                           Pointer.Kind.Ref,
-                                          M.alloc (|
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.alloc (|
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                                Value.Array
+                                                  [
+                                                    mk_str (|
+                                                      "in_place_collectible() prevents this"
+                                                    |)
+                                                  ]
+                                              |)
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
                                             Ty.apply
                                               (Ty.path "array")
                                               [ Value.Integer IntegerKind.Usize 1 ]
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                            Value.Array
-                                              [ mk_str (| "in_place_collectible() prevents this" |)
-                                              ]
-                                          |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |)
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.path "core::fmt::Arguments")
                               ]
                             |)
                           |)));
@@ -431,7 +460,7 @@ Module vec.
                 M.call_closure (|
                   Ty.apply (Ty.path "alloc::vec::Vec") [] [ T; Ty.path "alloc::alloc::Global" ],
                   M.read (| fun_ |),
-                  [ M.read (| iterator |) ]
+                  [ M.value_with_ty (M.read (| iterator |)) I ]
                 |)
               |)
             |)))
@@ -599,34 +628,44 @@ Module vec.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&mut")
-                          []
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [
+                              Ty.associated_in_trait
+                                "core::iter::adapters::SourceIter"
+                                []
+                                []
+                                I
+                                "Source"
+                            ],
+                          M.get_trait_method (|
+                            "core::iter::adapters::SourceIter",
+                            I,
+                            [],
+                            [],
+                            "as_inner",
+                            [],
+                            []
+                          |),
                           [
-                            Ty.associated_in_trait
-                              "core::iter::adapters::SourceIter"
-                              []
-                              []
-                              I
-                              "Source"
-                          ],
-                        M.get_trait_method (|
-                          "core::iter::adapters::SourceIter",
-                          I,
-                          [],
-                          [],
-                          "as_inner",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.MutRef, iterator |) ]
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, iterator |))
+                              (Ty.apply (Ty.path "&mut") [] [ I ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.associated_in_trait "core::iter::adapters::SourceIter" [] [] I "Source"
+                      ])
                 ]
               |) in
             M.alloc (|
@@ -706,13 +745,30 @@ Module vec.
                       [ T ]
                     |),
                     [
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| inner |) |),
-                          "alloc::vec::into_iter::IntoIter",
-                          "buf"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| inner |) |),
+                            "alloc::vec::into_iter::IntoIter",
+                            "buf"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "core::ptr::non_null::NonNull")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "alloc::vec::in_place_collect::AsVecIntoIter"
+                              []
+                              []
+                              (Ty.associated_in_trait
+                                "core::iter::adapters::SourceIter"
+                                []
+                                []
+                                I
+                                "Source")
+                              "Item"
+                          ])
                     ]
                   |);
                   M.cast
@@ -732,29 +788,33 @@ Module vec.
                         Ty.path "usize",
                         M.get_associated_function (| Ty.path "usize", "unchecked_mul", [], [] |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| inner |) |),
-                              "alloc::vec::into_iter::IntoIter",
-                              "cap"
-                            |)
-                          |);
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_function (|
-                              "core::mem::size_of",
-                              [],
-                              [
-                                Ty.associated_in_trait
-                                  "alloc::vec::in_place_collect::InPlaceCollect"
-                                  []
-                                  []
-                                  I
-                                  "Src"
-                              ]
-                            |),
-                            []
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| inner |) |),
+                                "alloc::vec::into_iter::IntoIter",
+                                "cap"
+                              |)
+                            |))
+                            (Ty.path "usize");
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              M.get_function (|
+                                "core::mem::size_of",
+                                [],
+                                [
+                                  Ty.associated_in_trait
+                                    "alloc::vec::in_place_collect::InPlaceCollect"
+                                    []
+                                    []
+                                    I
+                                    "Src"
+                                ]
+                              |),
+                              []
+                            |))
+                            (Ty.path "usize")
                         ]
                       |);
                       M.call_closure (|
@@ -834,23 +894,33 @@ Module vec.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (| M.borrow (| Pointer.Kind.MutRef, iterator |) |)
-                          |);
-                          M.cast
-                            (Ty.apply (Ty.path "*mut") [] [ T ])
-                            (M.call_closure (|
-                              Ty.apply (Ty.path "*mut") [] [ T ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
-                                "as_ptr",
-                                [],
-                                []
-                              |),
-                              [ M.read (| dst_buf |) ]
-                            |));
-                          M.read (| dst_end |)
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (| M.borrow (| Pointer.Kind.MutRef, iterator |) |)
+                            |))
+                            (Ty.apply (Ty.path "&mut") [] [ I ]);
+                          M.value_with_ty
+                            (M.cast
+                              (Ty.apply (Ty.path "*mut") [] [ T ])
+                              (M.call_closure (|
+                                Ty.apply (Ty.path "*mut") [] [ T ],
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ],
+                                  "as_ptr",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| dst_buf |))
+                                    (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
+                                ]
+                              |)))
+                            (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty
+                            (M.read (| dst_end |))
+                            (Ty.apply (Ty.path "*const") [] [ T ])
                         ]
                       |) in
                     let~ src :
@@ -917,34 +987,50 @@ Module vec.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&mut")
-                                      []
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.associated_in_trait
+                                            "core::iter::adapters::SourceIter"
+                                            []
+                                            []
+                                            I
+                                            "Source"
+                                        ],
+                                      M.get_trait_method (|
+                                        "core::iter::adapters::SourceIter",
+                                        I,
+                                        [],
+                                        [],
+                                        "as_inner",
+                                        [],
+                                        []
+                                      |),
                                       [
-                                        Ty.associated_in_trait
-                                          "core::iter::adapters::SourceIter"
-                                          []
-                                          []
-                                          I
-                                          "Source"
-                                      ],
-                                    M.get_trait_method (|
-                                      "core::iter::adapters::SourceIter",
-                                      I,
-                                      [],
-                                      [],
-                                      "as_inner",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.MutRef, iterator |) ]
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.MutRef, iterator |))
+                                          (Ty.apply (Ty.path "&mut") [] [ I ])
+                                      ]
+                                    |)
                                   |)
-                                |)
-                              |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::iter::adapters::SourceIter"
+                                      []
+                                      []
+                                      I
+                                      "Source"
+                                  ])
                             ]
                           |)
                         |)
@@ -1137,18 +1223,64 @@ Module vec.
                                                                 []
                                                               |),
                                                               [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.read (| left_val |)
-                                                                  |)
-                                                                |);
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.read (| right_val |)
-                                                                  |)
-                                                                |)
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (|
+                                                                      M.read (| left_val |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "core::ptr::non_null::NonNull")
+                                                                        []
+                                                                        [
+                                                                          Ty.associated_in_trait
+                                                                            "alloc::vec::in_place_collect::AsVecIntoIter"
+                                                                            []
+                                                                            []
+                                                                            (Ty.associated_in_trait
+                                                                              "core::iter::adapters::SourceIter"
+                                                                              []
+                                                                              []
+                                                                              I
+                                                                              "Source")
+                                                                            "Item"
+                                                                        ]
+                                                                    ]);
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (|
+                                                                      M.read (| right_val |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "core::ptr::non_null::NonNull")
+                                                                        []
+                                                                        [
+                                                                          Ty.associated_in_trait
+                                                                            "alloc::vec::in_place_collect::AsVecIntoIter"
+                                                                            []
+                                                                            []
+                                                                            (Ty.associated_in_trait
+                                                                              "core::iter::adapters::SourceIter"
+                                                                              []
+                                                                              []
+                                                                              I
+                                                                              "Source")
+                                                                            "Item"
+                                                                        ]
+                                                                    ])
                                                               ]
                                                             |)
                                                           ]
@@ -1163,11 +1295,11 @@ Module vec.
                                                     M.read (|
                                                       let~ kind :
                                                           Ty.path "core::panicking::AssertKind" :=
-                                                        Value.StructTuple
-                                                          "core::panicking::AssertKind::Eq"
-                                                          []
-                                                          []
-                                                          [] in
+                                                        M.value_with_ty
+                                                          (Value.StructTuple
+                                                            "core::panicking::AssertKind::Eq"
+                                                            [])
+                                                          (Ty.path "core::panicking::AssertKind") in
                                                       M.alloc (|
                                                         Ty.path "never",
                                                         M.call_closure (|
@@ -1213,34 +1345,92 @@ Module vec.
                                                             ]
                                                           |),
                                                           [
-                                                            M.read (| kind |);
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.read (| left_val |)
+                                                            M.value_with_ty
+                                                              (M.read (| kind |))
+                                                              (Ty.path
+                                                                "core::panicking::AssertKind");
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (|
+                                                                      M.read (| left_val |)
+                                                                    |)
                                                                   |)
                                                                 |)
-                                                              |)
-                                                            |);
-                                                            M.borrow (|
-                                                              Pointer.Kind.Ref,
-                                                              M.deref (|
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.read (| right_val |)
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "core::ptr::non_null::NonNull")
+                                                                    []
+                                                                    [
+                                                                      Ty.associated_in_trait
+                                                                        "alloc::vec::in_place_collect::AsVecIntoIter"
+                                                                        []
+                                                                        []
+                                                                        (Ty.associated_in_trait
+                                                                          "core::iter::adapters::SourceIter"
+                                                                          []
+                                                                          []
+                                                                          I
+                                                                          "Source")
+                                                                        "Item"
+                                                                    ]
+                                                                ]);
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.Ref,
+                                                                M.deref (|
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (|
+                                                                      M.read (| right_val |)
+                                                                    |)
                                                                   |)
                                                                 |)
-                                                              |)
-                                                            |);
-                                                            Value.StructTuple
-                                                              "core::option::Option::None"
-                                                              []
-                                                              [ Ty.path "core::fmt::Arguments" ]
-                                                              []
+                                                              |))
+                                                              (Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "core::ptr::non_null::NonNull")
+                                                                    []
+                                                                    [
+                                                                      Ty.associated_in_trait
+                                                                        "alloc::vec::in_place_collect::AsVecIntoIter"
+                                                                        []
+                                                                        []
+                                                                        (Ty.associated_in_trait
+                                                                          "core::iter::adapters::SourceIter"
+                                                                          []
+                                                                          []
+                                                                          I
+                                                                          "Source")
+                                                                        "Item"
+                                                                    ]
+                                                                ]);
+                                                            M.value_with_ty
+                                                              (M.value_with_ty
+                                                                (Value.StructTuple
+                                                                  "core::option::Option::None"
+                                                                  [])
+                                                                (Ty.apply
+                                                                  (Ty.path "core::option::Option")
+                                                                  []
+                                                                  [ Ty.path "core::fmt::Arguments"
+                                                                  ]))
+                                                              (Ty.apply
+                                                                (Ty.path "core::option::Option")
+                                                                []
+                                                                [ Ty.path "core::fmt::Arguments" ])
                                                           ]
                                                         |)
                                                       |)
@@ -1311,15 +1501,59 @@ Module vec.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_record_field (|
-                                            M.deref (| M.read (| src |) |),
-                                            "alloc::vec::into_iter::IntoIter",
-                                            "ptr"
-                                          |)
-                                        |);
-                                        M.borrow (| Pointer.Kind.Ref, src_ptr |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| src |) |),
+                                              "alloc::vec::into_iter::IntoIter",
+                                              "ptr"
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ptr::non_null::NonNull")
+                                                []
+                                                [
+                                                  Ty.associated_in_trait
+                                                    "alloc::vec::in_place_collect::AsVecIntoIter"
+                                                    []
+                                                    []
+                                                    (Ty.associated_in_trait
+                                                      "core::iter::adapters::SourceIter"
+                                                      []
+                                                      []
+                                                      I
+                                                      "Source")
+                                                    "Item"
+                                                ]
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, src_ptr |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ptr::non_null::NonNull")
+                                                []
+                                                [
+                                                  Ty.associated_in_trait
+                                                    "alloc::vec::in_place_collect::AsVecIntoIter"
+                                                    []
+                                                    []
+                                                    (Ty.associated_in_trait
+                                                      "core::iter::adapters::SourceIter"
+                                                      []
+                                                      []
+                                                      I
+                                                      "Source")
+                                                    "Item"
+                                                ]
+                                            ])
                                       ]
                                     |)
                                   |)) in
@@ -1402,27 +1636,10 @@ Module vec.
                                                                     []
                                                                   |),
                                                                   [
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.alloc (|
-                                                                        Ty.apply
-                                                                          (Ty.path
-                                                                            "core::ptr::non_null::NonNull")
-                                                                          []
-                                                                          [
-                                                                            Ty.associated_in_trait
-                                                                              "alloc::vec::in_place_collect::AsVecIntoIter"
-                                                                              []
-                                                                              []
-                                                                              (Ty.associated_in_trait
-                                                                                "core::iter::adapters::SourceIter"
-                                                                                []
-                                                                                []
-                                                                                I
-                                                                                "Source")
-                                                                              "Item"
-                                                                          ],
-                                                                        M.call_closure (|
+                                                                    M.value_with_ty
+                                                                      (M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.alloc (|
                                                                           Ty.apply
                                                                             (Ty.path
                                                                               "core::ptr::non_null::NonNull")
@@ -1440,14 +1657,99 @@ Module vec.
                                                                                   "Source")
                                                                                 "Item"
                                                                             ],
-                                                                          M.get_associated_function (|
+                                                                          M.call_closure (|
                                                                             Ty.apply
                                                                               (Ty.path
                                                                                 "core::ptr::non_null::NonNull")
                                                                               []
-                                                                              [ T ],
-                                                                            "cast",
-                                                                            [],
+                                                                              [
+                                                                                Ty.associated_in_trait
+                                                                                  "alloc::vec::in_place_collect::AsVecIntoIter"
+                                                                                  []
+                                                                                  []
+                                                                                  (Ty.associated_in_trait
+                                                                                    "core::iter::adapters::SourceIter"
+                                                                                    []
+                                                                                    []
+                                                                                    I
+                                                                                    "Source")
+                                                                                  "Item"
+                                                                              ],
+                                                                            M.get_associated_function (|
+                                                                              Ty.apply
+                                                                                (Ty.path
+                                                                                  "core::ptr::non_null::NonNull")
+                                                                                []
+                                                                                [ T ],
+                                                                              "cast",
+                                                                              [],
+                                                                              [
+                                                                                Ty.associated_in_trait
+                                                                                  "alloc::vec::in_place_collect::AsVecIntoIter"
+                                                                                  []
+                                                                                  []
+                                                                                  (Ty.associated_in_trait
+                                                                                    "core::iter::adapters::SourceIter"
+                                                                                    []
+                                                                                    []
+                                                                                    I
+                                                                                    "Source")
+                                                                                  "Item"
+                                                                              ]
+                                                                            |),
+                                                                            [
+                                                                              M.value_with_ty
+                                                                                (M.call_closure (|
+                                                                                  Ty.apply
+                                                                                    (Ty.path
+                                                                                      "core::ptr::non_null::NonNull")
+                                                                                    []
+                                                                                    [ T ],
+                                                                                  M.get_associated_function (|
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "core::ptr::non_null::NonNull")
+                                                                                      []
+                                                                                      [ T ],
+                                                                                    "add",
+                                                                                    [],
+                                                                                    []
+                                                                                  |),
+                                                                                  [
+                                                                                    M.value_with_ty
+                                                                                      (M.read (|
+                                                                                        dst_buf
+                                                                                      |))
+                                                                                      (Ty.apply
+                                                                                        (Ty.path
+                                                                                          "core::ptr::non_null::NonNull")
+                                                                                        []
+                                                                                        [ T ]);
+                                                                                    M.value_with_ty
+                                                                                      (M.read (|
+                                                                                        len
+                                                                                      |))
+                                                                                      (Ty.path
+                                                                                        "usize")
+                                                                                  ]
+                                                                                |))
+                                                                                (Ty.apply
+                                                                                  (Ty.path
+                                                                                    "core::ptr::non_null::NonNull")
+                                                                                  []
+                                                                                  [ T ])
+                                                                            ]
+                                                                          |)
+                                                                        |)
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "core::ptr::non_null::NonNull")
+                                                                            []
                                                                             [
                                                                               Ty.associated_in_trait
                                                                                 "alloc::vec::in_place_collect::AsVecIntoIter"
@@ -1461,45 +1763,40 @@ Module vec.
                                                                                   "Source")
                                                                                 "Item"
                                                                             ]
+                                                                        ]);
+                                                                    M.value_with_ty
+                                                                      (M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.SubPointer.get_struct_record_field (|
+                                                                          M.deref (|
+                                                                            M.read (| src |)
                                                                           |),
-                                                                          [
-                                                                            M.call_closure (|
-                                                                              Ty.apply
-                                                                                (Ty.path
-                                                                                  "core::ptr::non_null::NonNull")
-                                                                                []
-                                                                                [ T ],
-                                                                              M.get_associated_function (|
-                                                                                Ty.apply
-                                                                                  (Ty.path
-                                                                                    "core::ptr::non_null::NonNull")
-                                                                                  []
-                                                                                  [ T ],
-                                                                                "add",
-                                                                                [],
-                                                                                []
-                                                                              |),
-                                                                              [
-                                                                                M.read (|
-                                                                                  dst_buf
-                                                                                |);
-                                                                                M.read (| len |)
-                                                                              ]
-                                                                            |)
-                                                                          ]
+                                                                          "alloc::vec::into_iter::IntoIter",
+                                                                          "ptr"
                                                                         |)
-                                                                      |)
-                                                                    |);
-                                                                    M.borrow (|
-                                                                      Pointer.Kind.Ref,
-                                                                      M.SubPointer.get_struct_record_field (|
-                                                                        M.deref (|
-                                                                          M.read (| src |)
-                                                                        |),
-                                                                        "alloc::vec::into_iter::IntoIter",
-                                                                        "ptr"
-                                                                      |)
-                                                                    |)
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [
+                                                                          Ty.apply
+                                                                            (Ty.path
+                                                                              "core::ptr::non_null::NonNull")
+                                                                            []
+                                                                            [
+                                                                              Ty.associated_in_trait
+                                                                                "alloc::vec::in_place_collect::AsVecIntoIter"
+                                                                                []
+                                                                                []
+                                                                                (Ty.associated_in_trait
+                                                                                  "core::iter::adapters::SourceIter"
+                                                                                  []
+                                                                                  []
+                                                                                  I
+                                                                                  "Source")
+                                                                                "Item"
+                                                                            ]
+                                                                        ])
                                                                   ]
                                                                 |)
                                                               ]
@@ -1519,22 +1816,54 @@ Module vec.
                                                             []
                                                           |),
                                                           [
-                                                            M.call_closure (|
-                                                              Ty.path "core::fmt::Arguments",
-                                                              M.get_associated_function (|
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
                                                                 Ty.path "core::fmt::Arguments",
-                                                                "new_const",
-                                                                [ Value.Integer IntegerKind.Usize 1
-                                                                ],
-                                                                []
-                                                              |),
-                                                              [
-                                                                M.borrow (|
-                                                                  Pointer.Kind.Ref,
-                                                                  M.deref (|
-                                                                    M.borrow (|
+                                                                M.get_associated_function (|
+                                                                  Ty.path "core::fmt::Arguments",
+                                                                  "new_const",
+                                                                  [
+                                                                    Value.Integer
+                                                                      IntegerKind.Usize
+                                                                      1
+                                                                  ],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
                                                                       Pointer.Kind.Ref,
-                                                                      M.alloc (|
+                                                                      M.deref (|
+                                                                        M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          M.alloc (|
+                                                                            Ty.apply
+                                                                              (Ty.path "array")
+                                                                              [
+                                                                                Value.Integer
+                                                                                  IntegerKind.Usize
+                                                                                  1
+                                                                              ]
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path "&")
+                                                                                  []
+                                                                                  [ Ty.path "str" ]
+                                                                              ],
+                                                                            Value.Array
+                                                                              [
+                                                                                mk_str (|
+                                                                                  "InPlaceIterable contract violation, write pointer advanced beyond read pointer"
+                                                                                |)
+                                                                              ]
+                                                                          |)
+                                                                        |)
+                                                                      |)
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
                                                                         Ty.apply
                                                                           (Ty.path "array")
                                                                           [
@@ -1547,19 +1876,11 @@ Module vec.
                                                                               (Ty.path "&")
                                                                               []
                                                                               [ Ty.path "str" ]
-                                                                          ],
-                                                                        Value.Array
-                                                                          [
-                                                                            mk_str (|
-                                                                              "InPlaceIterable contract violation, write pointer advanced beyond read pointer"
-                                                                            |)
                                                                           ]
-                                                                      |)
-                                                                    |)
-                                                                  |)
-                                                                |)
-                                                              ]
-                                                            |)
+                                                                      ])
+                                                                ]
+                                                              |))
+                                                              (Ty.path "core::fmt::Arguments")
                                                           ]
                                                         |)
                                                       |)));
@@ -1589,36 +1910,40 @@ Module vec.
                               "Src";
                             T
                           ] :=
-                      Value.mkStructRecord
-                        "alloc::vec::in_place_drop::InPlaceDstDataSrcBufDrop"
-                        []
-                        [
-                          Ty.associated_in_trait
-                            "alloc::vec::in_place_collect::InPlaceCollect"
-                            []
-                            []
-                            I
-                            "Src";
-                          T
-                        ]
-                        [
-                          ("ptr", M.read (| dst_buf |));
-                          ("len", M.read (| len |));
-                          ("src_cap", M.read (| src_cap |));
-                          ("src",
-                            Value.StructTuple
-                              "core::marker::PhantomData"
+                      M.value_with_ty
+                        (Value.mkStructRecord
+                          "alloc::vec::in_place_drop::InPlaceDstDataSrcBufDrop"
+                          [
+                            ("ptr", M.read (| dst_buf |));
+                            ("len", M.read (| len |));
+                            ("src_cap", M.read (| src_cap |));
+                            ("src",
+                              M.value_with_ty
+                                (Value.StructTuple "core::marker::PhantomData" [])
+                                (Ty.apply
+                                  (Ty.path "core::marker::PhantomData")
+                                  []
+                                  [
+                                    Ty.associated_in_trait
+                                      "alloc::vec::in_place_collect::InPlaceCollect"
+                                      []
+                                      []
+                                      I
+                                      "Src"
+                                  ]))
+                          ])
+                        (Ty.apply
+                          (Ty.path "alloc::vec::in_place_drop::InPlaceDstDataSrcBufDrop")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "alloc::vec::in_place_collect::InPlaceCollect"
                               []
-                              [
-                                Ty.associated_in_trait
-                                  "alloc::vec::in_place_collect::InPlaceCollect"
-                                  []
-                                  []
-                                  I
-                                  "Src"
-                              ]
-                              [])
-                        ] in
+                              []
+                              I
+                              "Src";
+                            T
+                          ]) in
                     let~ _ : Ty.tuple [] :=
                       M.call_closure (|
                         Ty.tuple [],
@@ -1644,7 +1969,32 @@ Module vec.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| src |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| src |) |) |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::vec::into_iter::IntoIter")
+                                  []
+                                  [
+                                    Ty.associated_in_trait
+                                      "alloc::vec::in_place_collect::AsVecIntoIter"
+                                      []
+                                      []
+                                      (Ty.associated_in_trait
+                                        "core::iter::adapters::SourceIter"
+                                        []
+                                        []
+                                        I
+                                        "Source")
+                                      "Item";
+                                    Ty.path "alloc::alloc::Global"
+                                  ]
+                              ])
+                        ]
                       |) in
                     let~ _ : Ty.tuple [] :=
                       M.match_operator (|
@@ -1672,14 +2022,19 @@ Module vec.
                                           T
                                         ]
                                       |),
-                                      [ M.read (| src_cap |); M.read (| dst_cap |) ]
+                                      [
+                                        M.value_with_ty (M.read (| src_cap |)) (Ty.path "usize");
+                                        M.value_with_ty (M.read (| dst_cap |)) (Ty.path "usize")
+                                      ]
                                     |)
                                   |)) in
                               let _ :=
                                 is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
                               M.read (|
                                 let~ alloc : Ty.path "alloc::alloc::Global" :=
-                                  Value.StructTuple "alloc::alloc::Global" [] [] [] in
+                                  M.value_with_ty
+                                    (Value.StructTuple "alloc::alloc::Global" [])
+                                    (Ty.path "alloc::alloc::Global") in
                                 let~ _ : Ty.tuple [] :=
                                   M.match_operator (|
                                     Ty.tuple [],
@@ -1776,11 +2131,12 @@ Module vec.
                                                                   let~ kind :
                                                                       Ty.path
                                                                         "core::panicking::AssertKind" :=
-                                                                    Value.StructTuple
-                                                                      "core::panicking::AssertKind::Ne"
-                                                                      []
-                                                                      []
-                                                                      [] in
+                                                                    M.value_with_ty
+                                                                      (Value.StructTuple
+                                                                        "core::panicking::AssertKind::Ne"
+                                                                        [])
+                                                                      (Ty.path
+                                                                        "core::panicking::AssertKind") in
                                                                   M.alloc (|
                                                                     Ty.path "never",
                                                                     M.call_closure (|
@@ -1794,41 +2150,67 @@ Module vec.
                                                                         ]
                                                                       |),
                                                                       [
-                                                                        M.read (| kind |);
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.deref (|
-                                                                                M.read (|
-                                                                                  left_val
+                                                                        M.value_with_ty
+                                                                          (M.read (| kind |))
+                                                                          (Ty.path
+                                                                            "core::panicking::AssertKind");
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.deref (|
+                                                                                  M.read (|
+                                                                                    left_val
+                                                                                  |)
                                                                                 |)
                                                                               |)
                                                                             |)
-                                                                          |)
-                                                                        |);
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.deref (|
-                                                                                M.read (|
-                                                                                  right_val
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [ Ty.path "usize" ]);
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.deref (|
+                                                                                  M.read (|
+                                                                                    right_val
+                                                                                  |)
                                                                                 |)
                                                                               |)
                                                                             |)
-                                                                          |)
-                                                                        |);
-                                                                        Value.StructTuple
-                                                                          "core::option::Option::None"
-                                                                          []
-                                                                          [
-                                                                            Ty.path
-                                                                              "core::fmt::Arguments"
-                                                                          ]
-                                                                          []
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [ Ty.path "usize" ]);
+                                                                        M.value_with_ty
+                                                                          (M.value_with_ty
+                                                                            (Value.StructTuple
+                                                                              "core::option::Option::None"
+                                                                              [])
+                                                                            (Ty.apply
+                                                                              (Ty.path
+                                                                                "core::option::Option")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "core::fmt::Arguments"
+                                                                              ]))
+                                                                          (Ty.apply
+                                                                            (Ty.path
+                                                                              "core::option::Option")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "core::fmt::Arguments"
+                                                                            ])
                                                                       ]
                                                                     |)
                                                                   |)
@@ -1940,11 +2322,12 @@ Module vec.
                                                                   let~ kind :
                                                                       Ty.path
                                                                         "core::panicking::AssertKind" :=
-                                                                    Value.StructTuple
-                                                                      "core::panicking::AssertKind::Ne"
-                                                                      []
-                                                                      []
-                                                                      [] in
+                                                                    M.value_with_ty
+                                                                      (Value.StructTuple
+                                                                        "core::panicking::AssertKind::Ne"
+                                                                        [])
+                                                                      (Ty.path
+                                                                        "core::panicking::AssertKind") in
                                                                   M.alloc (|
                                                                     Ty.path "never",
                                                                     M.call_closure (|
@@ -1958,41 +2341,67 @@ Module vec.
                                                                         ]
                                                                       |),
                                                                       [
-                                                                        M.read (| kind |);
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.deref (|
-                                                                                M.read (|
-                                                                                  left_val
+                                                                        M.value_with_ty
+                                                                          (M.read (| kind |))
+                                                                          (Ty.path
+                                                                            "core::panicking::AssertKind");
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.deref (|
+                                                                                  M.read (|
+                                                                                    left_val
+                                                                                  |)
                                                                                 |)
                                                                               |)
                                                                             |)
-                                                                          |)
-                                                                        |);
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.deref (|
-                                                                                M.read (|
-                                                                                  right_val
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [ Ty.path "usize" ]);
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.deref (|
+                                                                                  M.read (|
+                                                                                    right_val
+                                                                                  |)
                                                                                 |)
                                                                               |)
                                                                             |)
-                                                                          |)
-                                                                        |);
-                                                                        Value.StructTuple
-                                                                          "core::option::Option::None"
-                                                                          []
-                                                                          [
-                                                                            Ty.path
-                                                                              "core::fmt::Arguments"
-                                                                          ]
-                                                                          []
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [ Ty.path "usize" ]);
+                                                                        M.value_with_ty
+                                                                          (M.value_with_ty
+                                                                            (Value.StructTuple
+                                                                              "core::option::Option::None"
+                                                                              [])
+                                                                            (Ty.apply
+                                                                              (Ty.path
+                                                                                "core::option::Option")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "core::fmt::Arguments"
+                                                                              ]))
+                                                                          (Ty.apply
+                                                                            (Ty.path
+                                                                              "core::option::Option")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "core::fmt::Arguments"
+                                                                            ])
                                                                       ]
                                                                     |)
                                                                   |)
@@ -2035,23 +2444,25 @@ Module vec.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_function (|
-                                          "core::mem::size_of",
-                                          [],
-                                          [
-                                            Ty.associated_in_trait
-                                              "alloc::vec::in_place_collect::InPlaceCollect"
-                                              []
-                                              []
-                                              I
-                                              "Src"
-                                          ]
-                                        |),
-                                        []
-                                      |);
-                                      M.read (| src_cap |)
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_function (|
+                                            "core::mem::size_of",
+                                            [],
+                                            [
+                                              Ty.associated_in_trait
+                                                "alloc::vec::in_place_collect::InPlaceCollect"
+                                                []
+                                                []
+                                                I
+                                                "Src"
+                                            ]
+                                          |),
+                                          []
+                                        |))
+                                        (Ty.path "usize");
+                                      M.value_with_ty (M.read (| src_cap |)) (Ty.path "usize")
                                     ]
                                   |) in
                                 let~ old_layout : Ty.path "core::alloc::layout::Layout" :=
@@ -2063,7 +2474,10 @@ Module vec.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| src_size |); M.read (| src_align |) ]
+                                    [
+                                      M.value_with_ty (M.read (| src_size |)) (Ty.path "usize");
+                                      M.value_with_ty (M.read (| src_align |)) (Ty.path "usize")
+                                    ]
                                   |) in
                                 let~ dst_align : Ty.path "usize" :=
                                   M.call_closure (|
@@ -2081,12 +2495,14 @@ Module vec.
                                       []
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        M.get_function (| "core::mem::size_of", [], [ T ] |),
-                                        []
-                                      |);
-                                      M.read (| dst_cap |)
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.path "usize",
+                                          M.get_function (| "core::mem::size_of", [], [ T ] |),
+                                          []
+                                        |))
+                                        (Ty.path "usize");
+                                      M.value_with_ty (M.read (| dst_cap |)) (Ty.path "usize")
                                     ]
                                   |) in
                                 let~ new_layout : Ty.path "core::alloc::layout::Layout" :=
@@ -2098,7 +2514,10 @@ Module vec.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| dst_size |); M.read (| dst_align |) ]
+                                    [
+                                      M.value_with_ty (M.read (| dst_size |)) (Ty.path "usize");
+                                      M.value_with_ty (M.read (| dst_align |)) (Ty.path "usize")
+                                    ]
                                   |) in
                                 let~ result :
                                     Ty.apply
@@ -2132,25 +2551,46 @@ Module vec.
                                       []
                                     |),
                                     [
-                                      M.borrow (| Pointer.Kind.Ref, alloc |);
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::ptr::non_null::NonNull")
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.Ref, alloc |))
+                                        (Ty.apply
+                                          (Ty.path "&")
                                           []
-                                          [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                          [ Ty.path "alloc::alloc::Global" ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply
                                             (Ty.path "core::ptr::non_null::NonNull")
                                             []
-                                            [ T ],
-                                          "cast",
-                                          [],
-                                          [ Ty.path "u8" ]
-                                        |),
-                                        [ M.read (| dst_buf |) ]
-                                      |);
-                                      M.read (| old_layout |);
-                                      M.read (| new_layout |)
+                                            [ Ty.path "u8" ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "core::ptr::non_null::NonNull")
+                                              []
+                                              [ T ],
+                                            "cast",
+                                            [],
+                                            [ Ty.path "u8" ]
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| dst_buf |))
+                                              (Ty.apply
+                                                (Ty.path "core::ptr::non_null::NonNull")
+                                                []
+                                                [ T ])
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "core::ptr::non_null::NonNull")
+                                          []
+                                          [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (M.read (| old_layout |))
+                                        (Ty.path "core::alloc::layout::Layout");
+                                      M.value_with_ty
+                                        (M.read (| new_layout |))
+                                        (Ty.path "core::alloc::layout::Layout")
                                     ]
                                   |) in
                                 M.alloc (|
@@ -2198,7 +2638,19 @@ Module vec.
                                                     [],
                                                     [ T ]
                                                   |),
-                                                  [ M.read (| reallocated |) ]
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.read (| reallocated |))
+                                                      (Ty.apply
+                                                        (Ty.path "core::ptr::non_null::NonNull")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "slice")
+                                                            []
+                                                            [ Ty.path "u8" ]
+                                                        ])
+                                                  ]
                                                 |)
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2212,7 +2664,11 @@ Module vec.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| new_layout |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| new_layout |))
+                                                (Ty.path "core::alloc::layout::Layout")
+                                            ]
                                           |)))
                                     ]
                                   |)
@@ -2370,11 +2826,12 @@ Module vec.
                                                                   let~ kind :
                                                                       Ty.path
                                                                         "core::panicking::AssertKind" :=
-                                                                    Value.StructTuple
-                                                                      "core::panicking::AssertKind::Eq"
-                                                                      []
-                                                                      []
-                                                                      [] in
+                                                                    M.value_with_ty
+                                                                      (Value.StructTuple
+                                                                        "core::panicking::AssertKind::Eq"
+                                                                        [])
+                                                                      (Ty.path
+                                                                        "core::panicking::AssertKind") in
                                                                   M.alloc (|
                                                                     Ty.path "never",
                                                                     M.call_closure (|
@@ -2388,41 +2845,67 @@ Module vec.
                                                                         ]
                                                                       |),
                                                                       [
-                                                                        M.read (| kind |);
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.deref (|
-                                                                                M.read (|
-                                                                                  left_val
+                                                                        M.value_with_ty
+                                                                          (M.read (| kind |))
+                                                                          (Ty.path
+                                                                            "core::panicking::AssertKind");
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.deref (|
+                                                                                  M.read (|
+                                                                                    left_val
+                                                                                  |)
                                                                                 |)
                                                                               |)
                                                                             |)
-                                                                          |)
-                                                                        |);
-                                                                        M.borrow (|
-                                                                          Pointer.Kind.Ref,
-                                                                          M.deref (|
-                                                                            M.borrow (|
-                                                                              Pointer.Kind.Ref,
-                                                                              M.deref (|
-                                                                                M.read (|
-                                                                                  right_val
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [ Ty.path "usize" ]);
+                                                                        M.value_with_ty
+                                                                          (M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.borrow (|
+                                                                                Pointer.Kind.Ref,
+                                                                                M.deref (|
+                                                                                  M.read (|
+                                                                                    right_val
+                                                                                  |)
                                                                                 |)
                                                                               |)
                                                                             |)
-                                                                          |)
-                                                                        |);
-                                                                        Value.StructTuple
-                                                                          "core::option::Option::None"
-                                                                          []
-                                                                          [
-                                                                            Ty.path
-                                                                              "core::fmt::Arguments"
-                                                                          ]
-                                                                          []
+                                                                          |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "&")
+                                                                            []
+                                                                            [ Ty.path "usize" ]);
+                                                                        M.value_with_ty
+                                                                          (M.value_with_ty
+                                                                            (Value.StructTuple
+                                                                              "core::option::Option::None"
+                                                                              [])
+                                                                            (Ty.apply
+                                                                              (Ty.path
+                                                                                "core::option::Option")
+                                                                              []
+                                                                              [
+                                                                                Ty.path
+                                                                                  "core::fmt::Arguments"
+                                                                              ]))
+                                                                          (Ty.apply
+                                                                            (Ty.path
+                                                                              "core::option::Option")
+                                                                            []
+                                                                            [
+                                                                              Ty.path
+                                                                                "core::fmt::Arguments"
+                                                                            ])
                                                                       ]
                                                                     |)
                                                                   |)
@@ -2463,7 +2946,22 @@ Module vec.
                               ]
                           ]
                         |),
-                        [ M.read (| dst_guard |) ]
+                        [
+                          M.value_with_ty
+                            (M.read (| dst_guard |))
+                            (Ty.apply
+                              (Ty.path "alloc::vec::in_place_drop::InPlaceDstDataSrcBufDrop")
+                              []
+                              [
+                                Ty.associated_in_trait
+                                  "alloc::vec::in_place_collect::InPlaceCollect"
+                                  []
+                                  []
+                                  I
+                                  "Src";
+                                T
+                              ])
+                        ]
                       |) in
                     let~ vec :
                         Ty.apply
@@ -2484,7 +2982,13 @@ Module vec.
                           [],
                           []
                         |),
-                        [ M.read (| dst_buf |); M.read (| len |); M.read (| dst_cap |) ]
+                        [
+                          M.value_with_ty
+                            (M.read (| dst_buf |))
+                            (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ]);
+                          M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                          M.value_with_ty (M.read (| dst_cap |)) (Ty.path "usize")
+                        ]
                       |) in
                     vec
                   |)))
@@ -2659,27 +3163,61 @@ Module vec.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.call_closure (|
-                                                                        Ty.path
-                                                                          "core::fmt::Arguments",
-                                                                        M.get_associated_function (|
+                                                                      M.value_with_ty
+                                                                        (M.call_closure (|
                                                                           Ty.path
                                                                             "core::fmt::Arguments",
-                                                                          "new_const",
+                                                                          M.get_associated_function (|
+                                                                            Ty.path
+                                                                              "core::fmt::Arguments",
+                                                                            "new_const",
+                                                                            [
+                                                                              Value.Integer
+                                                                                IntegerKind.Usize
+                                                                                1
+                                                                            ],
+                                                                            []
+                                                                          |),
                                                                           [
-                                                                            Value.Integer
-                                                                              IntegerKind.Usize
-                                                                              1
-                                                                          ],
-                                                                          []
-                                                                        |),
-                                                                        [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.Ref,
-                                                                            M.deref (|
-                                                                              M.borrow (|
+                                                                            M.value_with_ty
+                                                                              (M.borrow (|
                                                                                 Pointer.Kind.Ref,
-                                                                                M.alloc (|
+                                                                                M.deref (|
+                                                                                  M.borrow (|
+                                                                                    Pointer.Kind.Ref,
+                                                                                    M.alloc (|
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "array")
+                                                                                        [
+                                                                                          Value.Integer
+                                                                                            IntegerKind.Usize
+                                                                                            1
+                                                                                        ]
+                                                                                        [
+                                                                                          Ty.apply
+                                                                                            (Ty.path
+                                                                                              "&")
+                                                                                            []
+                                                                                            [
+                                                                                              Ty.path
+                                                                                                "str"
+                                                                                            ]
+                                                                                        ],
+                                                                                      Value.Array
+                                                                                        [
+                                                                                          mk_str (|
+                                                                                            "InPlaceIterable contract violation"
+                                                                                          |)
+                                                                                        ]
+                                                                                    |)
+                                                                                  |)
+                                                                                |)
+                                                                              |))
+                                                                              (Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [
                                                                                   Ty.apply
                                                                                     (Ty.path
                                                                                       "array")
@@ -2697,19 +3235,12 @@ Module vec.
                                                                                           Ty.path
                                                                                             "str"
                                                                                         ]
-                                                                                    ],
-                                                                                  Value.Array
-                                                                                    [
-                                                                                      mk_str (|
-                                                                                        "InPlaceIterable contract violation"
-                                                                                      |)
                                                                                     ]
-                                                                                |)
-                                                                              |)
-                                                                            |)
-                                                                          |)
-                                                                        ]
-                                                                      |)
+                                                                                ])
+                                                                          ]
+                                                                        |))
+                                                                        (Ty.path
+                                                                          "core::fmt::Arguments")
                                                                     ]
                                                                   |)
                                                                 |)));
@@ -2727,14 +3258,16 @@ Module vec.
                                               Ty.tuple [],
                                               M.get_function (| "core::ptr::write", [], [ T ] |),
                                               [
-                                                M.read (|
-                                                  M.SubPointer.get_struct_record_field (|
-                                                    sink,
-                                                    "alloc::vec::in_place_drop::InPlaceDrop",
-                                                    "dst"
-                                                  |)
-                                                |);
-                                                M.read (| item |)
+                                                M.value_with_ty
+                                                  (M.read (|
+                                                    M.SubPointer.get_struct_record_field (|
+                                                      sink,
+                                                      "alloc::vec::in_place_drop::InPlaceDrop",
+                                                      "dst"
+                                                    |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                                M.value_with_ty (M.read (| item |)) T
                                               ]
                                             |) in
                                           let~ _ : Ty.tuple [] :=
@@ -2753,14 +3286,18 @@ Module vec.
                                                   []
                                                 |),
                                                 [
-                                                  M.read (|
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      sink,
-                                                      "alloc::vec::in_place_drop::InPlaceDrop",
-                                                      "dst"
-                                                    |)
-                                                  |);
-                                                  Value.Integer IntegerKind.Usize 1
+                                                  M.value_with_ty
+                                                    (M.read (|
+                                                      M.SubPointer.get_struct_record_field (|
+                                                        sink,
+                                                        "alloc::vec::in_place_drop::InPlaceDrop",
+                                                        "dst"
+                                                      |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                                  M.value_with_ty
+                                                    (Value.Integer IntegerKind.Usize 1)
+                                                    (Ty.path "usize")
                                                 ]
                                               |)
                                             |) in
@@ -2777,17 +3314,20 @@ Module vec.
                                               [ T ];
                                             Ty.path "never"
                                           ],
-                                        Value.StructTuple
-                                          "core::result::Result::Ok"
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "alloc::vec::in_place_drop::InPlaceDrop")
-                                              []
-                                              [ T ];
-                                            Ty.path "never"
-                                          ]
-                                          [ M.read (| sink |) ]
+                                        M.value_with_ty
+                                          (Value.StructTuple
+                                            "core::result::Result::Ok"
+                                            [ M.read (| sink |) ])
+                                          (Ty.apply
+                                            (Ty.path "core::result::Result")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::vec::in_place_drop::InPlaceDrop")
+                                                []
+                                                [ T ];
+                                              Ty.path "never"
+                                            ])
                                       |)
                                     |)))
                               ]
@@ -2840,11 +3380,11 @@ Module vec.
             let end_ := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], end_ |) in
             M.read (|
               let~ sink : Ty.apply (Ty.path "alloc::vec::in_place_drop::InPlaceDrop") [] [ T ] :=
-                Value.mkStructRecord
-                  "alloc::vec::in_place_drop::InPlaceDrop"
-                  []
-                  [ T ]
-                  [ ("inner", M.read (| dst_buf |)); ("dst", M.read (| dst_buf |)) ] in
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "alloc::vec::in_place_drop::InPlaceDrop"
+                    [ ("inner", M.read (| dst_buf |)); ("dst", M.read (| dst_buf |)) ])
+                  (Ty.apply (Ty.path "alloc::vec::in_place_drop::InPlaceDrop") [] [ T ]) in
               let~ sink : Ty.apply (Ty.path "alloc::vec::in_place_drop::InPlaceDrop") [] [ T ] :=
                 M.call_closure (|
                   Ty.apply (Ty.path "alloc::vec::in_place_drop::InPlaceDrop") [] [ T ],
@@ -2861,47 +3401,68 @@ Module vec.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.apply (Ty.path "alloc::vec::in_place_drop::InPlaceDrop") [] [ T ];
+                            Ty.path "never"
+                          ],
+                        M.get_trait_method (|
+                          "core::iter::traits::iterator::Iterator",
+                          I,
+                          [],
+                          [],
+                          "try_fold",
+                          [],
+                          [
+                            Ty.apply (Ty.path "alloc::vec::in_place_drop::InPlaceDrop") [] [ T ];
+                            Ty.associated_unknown;
+                            Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::vec::in_place_drop::InPlaceDrop")
+                                  []
+                                  [ T ];
+                                Ty.path "never"
+                              ]
+                          ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ I ]);
+                          M.value_with_ty
+                            (M.read (| sink |))
+                            (Ty.apply (Ty.path "alloc::vec::in_place_drop::InPlaceDrop") [] [ T ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.associated_unknown,
+                              M.get_function (|
+                                "alloc::vec::in_place_collect::write_in_place_with_drop",
+                                [],
+                                [ T ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| end_ |))
+                                  (Ty.apply (Ty.path "*const") [] [ T ])
+                              ]
+                            |))
+                            Ty.associated_unknown
+                        ]
+                      |))
+                      (Ty.apply
                         (Ty.path "core::result::Result")
                         []
                         [
                           Ty.apply (Ty.path "alloc::vec::in_place_drop::InPlaceDrop") [] [ T ];
                           Ty.path "never"
-                        ],
-                      M.get_trait_method (|
-                        "core::iter::traits::iterator::Iterator",
-                        I,
-                        [],
-                        [],
-                        "try_fold",
-                        [],
-                        [
-                          Ty.apply (Ty.path "alloc::vec::in_place_drop::InPlaceDrop") [] [ T ];
-                          Ty.associated_unknown;
-                          Ty.apply
-                            (Ty.path "core::result::Result")
-                            []
-                            [
-                              Ty.apply (Ty.path "alloc::vec::in_place_drop::InPlaceDrop") [] [ T ];
-                              Ty.path "never"
-                            ]
-                        ]
-                      |),
-                      [
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                        M.read (| sink |);
-                        M.call_closure (|
-                          Ty.associated_unknown,
-                          M.get_function (|
-                            "alloc::vec::in_place_collect::write_in_place_with_drop",
-                            [],
-                            [ T ]
-                          |),
-                          [ M.read (| end_ |) ]
-                        |)
-                      ]
-                    |)
+                        ])
                   ]
                 |) in
               M.alloc (|
@@ -2915,19 +3476,13 @@ Module vec.
                     []
                   |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "alloc::vec::in_place_drop::InPlaceDrop") [] [ T ]
-                              ],
-                            M.get_trait_method (|
-                              "core::ops::deref::Deref",
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (|
+                            M.call_closure (|
                               Ty.apply
-                                (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                (Ty.path "&")
                                 []
                                 [
                                   Ty.apply
@@ -2935,36 +3490,28 @@ Module vec.
                                     []
                                     [ T ]
                                 ],
-                              [],
-                              [],
-                              "deref",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "core::mem::manually_drop::ManuallyDrop")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "alloc::vec::in_place_drop::InPlaceDrop")
-                                        []
-                                        [ T ]
-                                    ],
-                                  M.call_closure (|
+                              M.get_trait_method (|
+                                "core::ops::deref::Deref",
+                                Ty.apply
+                                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                  []
+                                  [
                                     Ty.apply
-                                      (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                      (Ty.path "alloc::vec::in_place_drop::InPlaceDrop")
                                       []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "alloc::vec::in_place_drop::InPlaceDrop")
-                                          []
-                                          [ T ]
-                                      ],
-                                    M.get_associated_function (|
+                                      [ T ]
+                                  ],
+                                [],
+                                [],
+                                "deref",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
                                       Ty.apply
                                         (Ty.path "core::mem::manually_drop::ManuallyDrop")
                                         []
@@ -2974,29 +3521,73 @@ Module vec.
                                             []
                                             [ T ]
                                         ],
-                                      "new",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| sink |) ]
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
-                        |),
-                        "alloc::vec::in_place_drop::InPlaceDrop",
-                        "dst"
-                      |)
-                    |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "*const") [] [ T ],
-                      M.pointer_coercion
-                        M.PointerCoercion.MutToConstPointer
-                        (Ty.apply (Ty.path "*mut") [] [ T ])
-                        (Ty.apply (Ty.path "*const") [] [ T ]),
-                      [ M.read (| dst_buf |) ]
-                    |)
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::in_place_drop::InPlaceDrop")
+                                              []
+                                              [ T ]
+                                          ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::vec::in_place_drop::InPlaceDrop")
+                                                []
+                                                [ T ]
+                                            ],
+                                          "new",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| sink |))
+                                            (Ty.apply
+                                              (Ty.path "alloc::vec::in_place_drop::InPlaceDrop")
+                                              []
+                                              [ T ])
+                                        ]
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "alloc::vec::in_place_drop::InPlaceDrop")
+                                            []
+                                            [ T ]
+                                        ]
+                                    ])
+                              ]
+                            |)
+                          |),
+                          "alloc::vec::in_place_drop::InPlaceDrop",
+                          "dst"
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "*mut") [] [ T ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "*const") [] [ T ],
+                        M.pointer_coercion
+                          M.PointerCoercion.MutToConstPointer
+                          (Ty.apply (Ty.path "*mut") [] [ T ])
+                          (Ty.apply (Ty.path "*const") [] [ T ]),
+                        [ M.read (| dst_buf |) ]
+                      |))
+                      (Ty.apply (Ty.path "*const") [] [ T ])
                   ]
                 |)
               |)
@@ -3064,15 +3655,19 @@ Module vec.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ I ])
+                  ]
                 |) in
               let~ drop_guard :
                   Ty.apply (Ty.path "alloc::vec::in_place_drop::InPlaceDrop") [] [ T ] :=
-                Value.mkStructRecord
-                  "alloc::vec::in_place_drop::InPlaceDrop"
-                  []
-                  [ T ]
-                  [ ("inner", M.read (| dst_buf |)); ("dst", M.read (| dst_buf |)) ] in
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "alloc::vec::in_place_drop::InPlaceDrop"
+                    [ ("inner", M.read (| dst_buf |)); ("dst", M.read (| dst_buf |)) ])
+                  (Ty.apply (Ty.path "alloc::vec::in_place_drop::InPlaceDrop") [] [ T ]) in
               let~ _ : Ty.tuple [] :=
                 M.read (|
                   M.use
@@ -3094,14 +3689,22 @@ Module vec.
                               []
                             |),
                             [
-                              Value.mkStructRecord
-                                "core::ops::range::Range"
-                                []
-                                [ Ty.path "usize" ]
-                                [
-                                  ("start", Value.Integer IntegerKind.Usize 0);
-                                  ("end_", M.read (| len |))
-                                ]
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.mkStructRecord
+                                    "core::ops::range::Range"
+                                    [
+                                      ("start", Value.Integer IntegerKind.Usize 0);
+                                      ("end_", M.read (| len |))
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "usize" ]))
+                                (Ty.apply
+                                  (Ty.path "core::ops::range::Range")
+                                  []
+                                  [ Ty.path "usize" ])
                             ]
                           |)
                         |),
@@ -3144,12 +3747,22 @@ Module vec.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (|
-                                                  M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "core::ops::range::Range")
+                                                      []
+                                                      [ Ty.path "usize" ]
+                                                  ])
                                             ]
                                           |)
                                         |),
@@ -3181,7 +3794,14 @@ Module vec.
                                                       [],
                                                       []
                                                     |),
-                                                    [ M.read (| dst_buf |); M.read (| i |) ]
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (| dst_buf |))
+                                                        (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                                      M.value_with_ty
+                                                        (M.read (| i |))
+                                                        (Ty.path "usize")
+                                                    ]
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
                                                   M.match_operator (|
@@ -3276,27 +3896,61 @@ Module vec.
                                                                             []
                                                                           |),
                                                                           [
-                                                                            M.call_closure (|
-                                                                              Ty.path
-                                                                                "core::fmt::Arguments",
-                                                                              M.get_associated_function (|
+                                                                            M.value_with_ty
+                                                                              (M.call_closure (|
                                                                                 Ty.path
                                                                                   "core::fmt::Arguments",
-                                                                                "new_const",
+                                                                                M.get_associated_function (|
+                                                                                  Ty.path
+                                                                                    "core::fmt::Arguments",
+                                                                                  "new_const",
+                                                                                  [
+                                                                                    Value.Integer
+                                                                                      IntegerKind.Usize
+                                                                                      1
+                                                                                  ],
+                                                                                  []
+                                                                                |),
                                                                                 [
-                                                                                  Value.Integer
-                                                                                    IntegerKind.Usize
-                                                                                    1
-                                                                                ],
-                                                                                []
-                                                                              |),
-                                                                              [
-                                                                                M.borrow (|
-                                                                                  Pointer.Kind.Ref,
-                                                                                  M.deref (|
-                                                                                    M.borrow (|
+                                                                                  M.value_with_ty
+                                                                                    (M.borrow (|
                                                                                       Pointer.Kind.Ref,
-                                                                                      M.alloc (|
+                                                                                      M.deref (|
+                                                                                        M.borrow (|
+                                                                                          Pointer.Kind.Ref,
+                                                                                          M.alloc (|
+                                                                                            Ty.apply
+                                                                                              (Ty.path
+                                                                                                "array")
+                                                                                              [
+                                                                                                Value.Integer
+                                                                                                  IntegerKind.Usize
+                                                                                                  1
+                                                                                              ]
+                                                                                              [
+                                                                                                Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "&")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    Ty.path
+                                                                                                      "str"
+                                                                                                  ]
+                                                                                              ],
+                                                                                            Value.Array
+                                                                                              [
+                                                                                                mk_str (|
+                                                                                                  "InPlaceIterable contract violation"
+                                                                                                |)
+                                                                                              ]
+                                                                                          |)
+                                                                                        |)
+                                                                                      |)
+                                                                                    |))
+                                                                                    (Ty.apply
+                                                                                      (Ty.path "&")
+                                                                                      []
+                                                                                      [
                                                                                         Ty.apply
                                                                                           (Ty.path
                                                                                             "array")
@@ -3314,19 +3968,12 @@ Module vec.
                                                                                                 Ty.path
                                                                                                   "str"
                                                                                               ]
-                                                                                          ],
-                                                                                        Value.Array
-                                                                                          [
-                                                                                            mk_str (|
-                                                                                              "InPlaceIterable contract violation"
-                                                                                            |)
                                                                                           ]
-                                                                                      |)
-                                                                                    |)
-                                                                                  |)
-                                                                                |)
-                                                                              ]
-                                                                            |)
+                                                                                      ])
+                                                                                ]
+                                                                              |))
+                                                                              (Ty.path
+                                                                                "core::fmt::Arguments")
                                                                           ]
                                                                         |)
                                                                       |)));
@@ -3352,26 +3999,34 @@ Module vec.
                                                       [ T ]
                                                     |),
                                                     [
-                                                      M.read (| dst |);
-                                                      M.call_closure (|
-                                                        T,
-                                                        M.get_trait_method (|
-                                                          "core::iter::traits::iterator::Iterator",
-                                                          I,
-                                                          [],
-                                                          [],
-                                                          "__iterator_get_unchecked",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            M.deref (| M.read (| self |) |)
-                                                          |);
-                                                          M.read (| i |)
-                                                        ]
-                                                      |)
+                                                      M.value_with_ty
+                                                        (M.read (| dst |))
+                                                        (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
+                                                          T,
+                                                          M.get_trait_method (|
+                                                            "core::iter::traits::iterator::Iterator",
+                                                            I,
+                                                            [],
+                                                            [],
+                                                            "__iterator_get_unchecked",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                M.deref (| M.read (| self |) |)
+                                                              |))
+                                                              (Ty.apply (Ty.path "&mut") [] [ I ]);
+                                                            M.value_with_ty
+                                                              (M.read (| i |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        T
                                                     ]
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
@@ -3390,8 +4045,12 @@ Module vec.
                                                         []
                                                       |),
                                                       [
-                                                        M.read (| dst |);
-                                                        Value.Integer IntegerKind.Usize 1
+                                                        M.value_with_ty
+                                                          (M.read (| dst |))
+                                                          (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                                        M.value_with_ty
+                                                          (Value.Integer IntegerKind.Usize 1)
+                                                          (Ty.path "usize")
                                                       ]
                                                     |)
                                                   |) in
@@ -3414,7 +4073,11 @@ Module vec.
                     [],
                     [ Ty.apply (Ty.path "alloc::vec::in_place_drop::InPlaceDrop") [] [ T ] ]
                   |),
-                  [ M.read (| drop_guard |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| drop_guard |))
+                      (Ty.apply (Ty.path "alloc::vec::in_place_drop::InPlaceDrop") [] [ T ])
+                  ]
                 |) in
               len
             |)))

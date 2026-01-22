@@ -34,9 +34,17 @@ Module num.
               ]
             |),
             [
-              Value.Tuple [ M.read (| radix |) ];
-              M.get_function (| "core::num::from_str_radix_panic::do_panic.compiletime", [], [] |);
-              M.get_function (| "core::num::from_str_radix_panic::do_panic.runtime", [], [] |)
+              M.value_with_ty (Value.Tuple [ M.read (| radix |) ]) (Ty.tuple [ Ty.path "u32" ]);
+              M.value_with_ty
+                (M.get_function (|
+                  "core::num::from_str_radix_panic::do_panic.compiletime",
+                  [],
+                  []
+                |))
+                (Ty.function [ Ty.path "u32" ] (Ty.path "never"));
+              M.value_with_ty
+                (M.get_function (| "core::num::from_str_radix_panic::do_panic.runtime", [], [] |))
+                (Ty.function [ Ty.path "u32" ] (Ty.path "never"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -913,17 +921,27 @@ Module char.
                 ]
               |),
               [
-                Value.Tuple [ M.read (| code |); M.read (| len |); M.read (| dst_len |) ];
-                M.get_function (|
-                  "core::char::methods::encode_utf8_raw::do_panic.compiletime",
-                  [],
-                  []
-                |);
-                M.get_function (|
-                  "core::char::methods::encode_utf8_raw::do_panic.runtime",
-                  [],
-                  []
-                |)
+                M.value_with_ty
+                  (Value.Tuple [ M.read (| code |); M.read (| len |); M.read (| dst_len |) ])
+                  (Ty.tuple [ Ty.path "u32"; Ty.path "usize"; Ty.path "usize" ]);
+                M.value_with_ty
+                  (M.get_function (|
+                    "core::char::methods::encode_utf8_raw::do_panic.compiletime",
+                    [],
+                    []
+                  |))
+                  (Ty.function
+                    [ Ty.path "u32"; Ty.path "usize"; Ty.path "usize" ]
+                    (Ty.path "never"));
+                M.value_with_ty
+                  (M.get_function (|
+                    "core::char::methods::encode_utf8_raw::do_panic.runtime",
+                    [],
+                    []
+                  |))
+                  (Ty.function
+                    [ Ty.path "u32"; Ty.path "usize"; Ty.path "usize" ]
+                    (Ty.path "never"))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -969,17 +987,27 @@ Module char.
                 ]
               |),
               [
-                Value.Tuple [ M.read (| code |); M.read (| len |); M.read (| dst_len |) ];
-                M.get_function (|
-                  "core::char::methods::encode_utf16_raw::do_panic.compiletime",
-                  [],
-                  []
-                |);
-                M.get_function (|
-                  "core::char::methods::encode_utf16_raw::do_panic.runtime",
-                  [],
-                  []
-                |)
+                M.value_with_ty
+                  (Value.Tuple [ M.read (| code |); M.read (| len |); M.read (| dst_len |) ])
+                  (Ty.tuple [ Ty.path "u32"; Ty.path "usize"; Ty.path "usize" ]);
+                M.value_with_ty
+                  (M.get_function (|
+                    "core::char::methods::encode_utf16_raw::do_panic.compiletime",
+                    [],
+                    []
+                  |))
+                  (Ty.function
+                    [ Ty.path "u32"; Ty.path "usize"; Ty.path "usize" ]
+                    (Ty.path "never"));
+                M.value_with_ty
+                  (M.get_function (|
+                    "core::char::methods::encode_utf16_raw::do_panic.runtime",
+                    [],
+                    []
+                  |))
+                  (Ty.function
+                    [ Ty.path "u32"; Ty.path "usize"; Ty.path "usize" ]
+                    (Ty.path "never"))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1015,7 +1043,7 @@ Module panic.
             [],
             []
           |),
-          [ M.read (| f |); Value.Tuple [] ]
+          [ M.value_with_ty (M.read (| f |)) F; M.value_with_ty (Value.Tuple []) (Ty.tuple []) ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -1032,11 +1060,12 @@ Module panic.
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&mut") [] [ Self ], self |) in
-          Value.StructTuple
-            "core::option::Option::None"
-            []
-            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-            []))
+          M.value_with_ty
+            (Value.StructTuple "core::option::Option::None" [])
+            (Ty.apply
+              (Ty.path "core::option::Option")
+              []
+              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1079,17 +1108,23 @@ Module slice.
                 ]
               |),
               [
-                Value.Tuple [ M.read (| index |); M.read (| len |) ];
-                M.get_function (|
-                  "core::slice::index::slice_start_index_len_fail::do_panic.compiletime",
-                  [],
-                  []
-                |);
-                M.get_function (|
-                  "core::slice::index::slice_start_index_len_fail::do_panic.runtime",
-                  [],
-                  []
-                |)
+                M.value_with_ty
+                  (Value.Tuple [ M.read (| index |); M.read (| len |) ])
+                  (Ty.tuple [ Ty.path "usize"; Ty.path "usize" ]);
+                M.value_with_ty
+                  (M.get_function (|
+                    "core::slice::index::slice_start_index_len_fail::do_panic.compiletime",
+                    [],
+                    []
+                  |))
+                  (Ty.function [ Ty.path "usize"; Ty.path "usize" ] (Ty.path "never"));
+                M.value_with_ty
+                  (M.get_function (|
+                    "core::slice::index::slice_start_index_len_fail::do_panic.runtime",
+                    [],
+                    []
+                  |))
+                  (Ty.function [ Ty.path "usize"; Ty.path "usize" ] (Ty.path "never"))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1134,17 +1169,23 @@ Module slice.
                 ]
               |),
               [
-                Value.Tuple [ M.read (| index |); M.read (| len |) ];
-                M.get_function (|
-                  "core::slice::index::slice_end_index_len_fail::do_panic.compiletime",
-                  [],
-                  []
-                |);
-                M.get_function (|
-                  "core::slice::index::slice_end_index_len_fail::do_panic.runtime",
-                  [],
-                  []
-                |)
+                M.value_with_ty
+                  (Value.Tuple [ M.read (| index |); M.read (| len |) ])
+                  (Ty.tuple [ Ty.path "usize"; Ty.path "usize" ]);
+                M.value_with_ty
+                  (M.get_function (|
+                    "core::slice::index::slice_end_index_len_fail::do_panic.compiletime",
+                    [],
+                    []
+                  |))
+                  (Ty.function [ Ty.path "usize"; Ty.path "usize" ] (Ty.path "never"));
+                M.value_with_ty
+                  (M.get_function (|
+                    "core::slice::index::slice_end_index_len_fail::do_panic.runtime",
+                    [],
+                    []
+                  |))
+                  (Ty.function [ Ty.path "usize"; Ty.path "usize" ] (Ty.path "never"))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1189,17 +1230,23 @@ Module slice.
                 ]
               |),
               [
-                Value.Tuple [ M.read (| index |); M.read (| end_ |) ];
-                M.get_function (|
-                  "core::slice::index::slice_index_order_fail::do_panic.compiletime",
-                  [],
-                  []
-                |);
-                M.get_function (|
-                  "core::slice::index::slice_index_order_fail::do_panic.runtime",
-                  [],
-                  []
-                |)
+                M.value_with_ty
+                  (Value.Tuple [ M.read (| index |); M.read (| end_ |) ])
+                  (Ty.tuple [ Ty.path "usize"; Ty.path "usize" ]);
+                M.value_with_ty
+                  (M.get_function (|
+                    "core::slice::index::slice_index_order_fail::do_panic.compiletime",
+                    [],
+                    []
+                  |))
+                  (Ty.function [ Ty.path "usize"; Ty.path "usize" ] (Ty.path "never"));
+                M.value_with_ty
+                  (M.get_function (|
+                    "core::slice::index::slice_index_order_fail::do_panic.runtime",
+                    [],
+                    []
+                  |))
+                  (Ty.function [ Ty.path "usize"; Ty.path "usize" ] (Ty.path "never"))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

@@ -119,7 +119,14 @@ Module slice.
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                              ]
                             |) in
                           let~ _ : Ty.tuple [] :=
                             M.match_operator (|
@@ -173,18 +180,41 @@ Module slice.
                                               [ F ]
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (| M.read (| v |) |)
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (| M.read (| scratch |) |)
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (| M.read (| is_less |) |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| v |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| scratch |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "slice")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| is_less |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&mut") [] [ F ])
                                             ]
                                           |) in
                                         M.return_ (| Value.Tuple [] |)
@@ -226,19 +256,42 @@ Module slice.
                                               [ T; F ]
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (| M.read (| v |) |)
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (| M.read (| scratch |) |)
-                                              |);
-                                              Value.Bool true;
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (| M.read (| is_less |) |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| v |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| scratch |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "slice")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ]);
+                                              M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| is_less |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&mut") [] [ F ])
                                             ]
                                           |) in
                                         M.return_ (| Value.Tuple [] |)
@@ -266,11 +319,18 @@ Module slice.
                                 [ T; F ]
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |);
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (| M.read (| is_less |) |)
-                                |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| is_less |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&mut") [] [ F ])
                               ]
                             |) in
                           let~ _ : Ty.tuple [] :=
@@ -280,28 +340,35 @@ Module slice.
                                   Ty.tuple [],
                                   M.get_function (| "core::intrinsics::assume", [], [] |),
                                   [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.lt,
-                                      [
-                                        M.read (| pivot_pos |);
-                                        M.call_closure (|
-                                          Ty.path "usize",
-                                          M.get_associated_function (|
-                                            Ty.apply (Ty.path "slice") [] [ T ],
-                                            "len",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| v |) |)
-                                            |)
-                                          ]
-                                        |)
-                                      ]
-                                    |)
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "bool",
+                                        BinOp.lt,
+                                        [
+                                          M.read (| pivot_pos |);
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "slice") [] [ T ],
+                                              "len",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| v |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                            ]
+                                          |)
+                                        ]
+                                      |))
+                                      (Ty.path "bool")
                                   ]
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -323,24 +390,28 @@ Module slice.
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  T,
-                                  M.get_function (| "core::ptr::read", [], [ T ] |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.ConstPointer,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_array_field (|
-                                            M.deref (| M.read (| v |) |),
-                                            M.read (| pivot_pos |)
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    T,
+                                    M.get_function (| "core::ptr::read", [], [ T ] |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.ConstPointer,
+                                          M.deref (|
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.SubPointer.get_array_field (|
+                                                M.deref (| M.read (| v |) |),
+                                                M.read (| pivot_pos |)
+                                              |)
+                                            |)
                                           |)
-                                        |)
-                                      |)
-                                    |)
-                                  ]
-                                |)
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ T ])
+                                    ]
+                                  |))
+                                  T
                               ]
                             |) in
                           let~ pivot_ref :
@@ -360,42 +431,58 @@ Module slice.
                                 [ Ty.apply (Ty.path "&") [] [ T ] ]
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.path "bool",
-                                  UnOp.not,
-                                  [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_function (|
-                                        "core::slice::sort::stable::quicksort::has_direct_interior_mutability",
-                                        [],
-                                        [ T ]
-                                      |),
-                                      []
-                                    |)
-                                  ]
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "&") [] [ T ],
-                                      M.get_trait_method (|
-                                        "core::ops::deref::Deref",
-                                        Ty.apply
-                                          (Ty.path "core::mem::manually_drop::ManuallyDrop")
-                                          []
-                                          [ T ],
-                                        [],
-                                        [],
-                                        "deref",
-                                        [],
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "bool",
+                                    UnOp.not,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        M.get_function (|
+                                          "core::slice::sort::stable::quicksort::has_direct_interior_mutability",
+                                          [],
+                                          [ T ]
+                                        |),
                                         []
-                                      |),
-                                      [ M.borrow (| Pointer.Kind.Ref, pivot_copy |) ]
+                                      |)
+                                    ]
+                                  |))
+                                  (Ty.path "bool");
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "&") [] [ T ],
+                                        M.get_trait_method (|
+                                          "core::ops::deref::Deref",
+                                          Ty.apply
+                                            (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                            []
+                                            [ T ],
+                                          [],
+                                          [],
+                                          "deref",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.Ref, pivot_copy |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::mem::manually_drop::ManuallyDrop")
+                                                  []
+                                                  [ T ]
+                                              ])
+                                        ]
+                                      |)
                                     |)
-                                  |)
-                                |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ T ])
                               ]
                             |) in
                           let~ perform_equal_partition : Ty.path "bool" := Value.Bool false in
@@ -441,29 +528,37 @@ Module slice.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.deref (| M.read (| is_less |) |)
-                                                  |);
-                                                  Value.Tuple
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| la_pivot |) |)
-                                                      |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (|
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.SubPointer.get_array_field (|
-                                                              M.deref (| M.read (| v |) |),
-                                                              M.read (| pivot_pos |)
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.deref (| M.read (| is_less |) |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                  M.value_with_ty
+                                                    (Value.Tuple
+                                                      [
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| M.read (| la_pivot |) |)
+                                                        |);
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              M.SubPointer.get_array_field (|
+                                                                M.deref (| M.read (| v |) |),
+                                                                M.read (| pivot_pos |)
+                                                              |)
                                                             |)
                                                           |)
                                                         |)
-                                                      |)
-                                                    ]
+                                                      ])
+                                                    (Ty.tuple
+                                                      [
+                                                        Ty.apply (Ty.path "&") [] [ T ];
+                                                        Ty.apply (Ty.path "&") [] [ T ]
+                                                      ])
                                                 ]
                                               |)
                                             ]
@@ -510,20 +605,45 @@ Module slice.
                                               [ T; F ]
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (| M.read (| v |) |)
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (| M.read (| scratch |) |)
-                                              |);
-                                              M.read (| pivot_pos |);
-                                              Value.Bool false;
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (| M.read (| is_less |) |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| v |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| scratch |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "slice")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ]);
+                                              M.value_with_ty
+                                                (M.read (| pivot_pos |))
+                                                (Ty.path "usize");
+                                              M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| is_less |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&mut") [] [ F ])
                                             ]
                                           |)
                                         |) in
@@ -576,147 +696,213 @@ Module slice.
                                               ]
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (| M.read (| v |) |)
-                                              |);
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (| M.read (| scratch |) |)
-                                              |);
-                                              M.read (| pivot_pos |);
-                                              Value.Bool true;
-                                              M.borrow (|
-                                                Pointer.Kind.MutRef,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.MutRef,
-                                                    M.alloc (|
-                                                      Ty.function
-                                                        [
-                                                          Ty.apply (Ty.path "&") [] [ T ];
-                                                          Ty.apply (Ty.path "&") [] [ T ]
-                                                        ]
-                                                        (Ty.path "bool"),
-                                                      M.closure
-                                                        (fun γ =>
-                                                          ltac:(M.monadic
-                                                            match γ with
-                                                            | [ α0; α1 ] =>
-                                                              ltac:(M.monadic
-                                                                (M.match_operator (|
-                                                                  Ty.path "bool",
-                                                                  M.alloc (|
-                                                                    Ty.apply (Ty.path "&") [] [ T ],
-                                                                    α0
-                                                                  |),
-                                                                  [
-                                                                    fun γ =>
-                                                                      ltac:(M.monadic
-                                                                        (let a :=
-                                                                          M.copy (|
-                                                                            Ty.apply
-                                                                              (Ty.path "&")
-                                                                              []
-                                                                              [ T ],
-                                                                            γ
-                                                                          |) in
-                                                                        M.match_operator (|
-                                                                          Ty.path "bool",
-                                                                          M.alloc (|
-                                                                            Ty.apply
-                                                                              (Ty.path "&")
-                                                                              []
-                                                                              [ T ],
-                                                                            α1
-                                                                          |),
-                                                                          [
-                                                                            fun γ =>
-                                                                              ltac:(M.monadic
-                                                                                (let b :=
-                                                                                  M.copy (|
-                                                                                    Ty.apply
-                                                                                      (Ty.path "&")
-                                                                                      []
-                                                                                      [ T ],
-                                                                                    γ
-                                                                                  |) in
-                                                                                M.call_closure (|
-                                                                                  Ty.path "bool",
-                                                                                  UnOp.not,
-                                                                                  [
-                                                                                    M.call_closure (|
-                                                                                      Ty.path
-                                                                                        "bool",
-                                                                                      M.get_trait_method (|
-                                                                                        "core::ops::function::FnMut",
-                                                                                        F,
-                                                                                        [],
-                                                                                        [
-                                                                                          Ty.tuple
-                                                                                            [
-                                                                                              Ty.apply
-                                                                                                (Ty.path
-                                                                                                  "&")
-                                                                                                []
-                                                                                                [ T
-                                                                                                ];
-                                                                                              Ty.apply
-                                                                                                (Ty.path
-                                                                                                  "&")
-                                                                                                []
-                                                                                                [ T
-                                                                                                ]
-                                                                                            ]
-                                                                                        ],
-                                                                                        "call_mut",
-                                                                                        [],
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| v |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (| M.read (| scratch |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "slice")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          []
+                                                          [ T ]
+                                                      ]
+                                                  ]);
+                                              M.value_with_ty
+                                                (M.read (| pivot_pos |))
+                                                (Ty.path "usize");
+                                              M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.MutRef,
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.MutRef,
+                                                      M.alloc (|
+                                                        Ty.function
+                                                          [
+                                                            Ty.apply (Ty.path "&") [] [ T ];
+                                                            Ty.apply (Ty.path "&") [] [ T ]
+                                                          ]
+                                                          (Ty.path "bool"),
+                                                        M.closure
+                                                          (fun γ =>
+                                                            ltac:(M.monadic
+                                                              match γ with
+                                                              | [ α0; α1 ] =>
+                                                                ltac:(M.monadic
+                                                                  (M.match_operator (|
+                                                                    Ty.path "bool",
+                                                                    M.alloc (|
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ T ],
+                                                                      α0
+                                                                    |),
+                                                                    [
+                                                                      fun γ =>
+                                                                        ltac:(M.monadic
+                                                                          (let a :=
+                                                                            M.copy (|
+                                                                              Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [ T ],
+                                                                              γ
+                                                                            |) in
+                                                                          M.match_operator (|
+                                                                            Ty.path "bool",
+                                                                            M.alloc (|
+                                                                              Ty.apply
+                                                                                (Ty.path "&")
+                                                                                []
+                                                                                [ T ],
+                                                                              α1
+                                                                            |),
+                                                                            [
+                                                                              fun γ =>
+                                                                                ltac:(M.monadic
+                                                                                  (let b :=
+                                                                                    M.copy (|
+                                                                                      Ty.apply
+                                                                                        (Ty.path
+                                                                                          "&")
                                                                                         []
-                                                                                      |),
-                                                                                      [
-                                                                                        M.borrow (|
-                                                                                          Pointer.Kind.MutRef,
-                                                                                          M.deref (|
-                                                                                            M.read (|
-                                                                                              is_less
-                                                                                            |)
-                                                                                          |)
-                                                                                        |);
-                                                                                        Value.Tuple
+                                                                                        [ T ],
+                                                                                      γ
+                                                                                    |) in
+                                                                                  M.call_closure (|
+                                                                                    Ty.path "bool",
+                                                                                    UnOp.not,
+                                                                                    [
+                                                                                      M.call_closure (|
+                                                                                        Ty.path
+                                                                                          "bool",
+                                                                                        M.get_trait_method (|
+                                                                                          "core::ops::function::FnMut",
+                                                                                          F,
+                                                                                          [],
                                                                                           [
-                                                                                            M.borrow (|
-                                                                                              Pointer.Kind.Ref,
+                                                                                            Ty.tuple
+                                                                                              [
+                                                                                                Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "&")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    T
+                                                                                                  ];
+                                                                                                Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "&")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    T
+                                                                                                  ]
+                                                                                              ]
+                                                                                          ],
+                                                                                          "call_mut",
+                                                                                          [],
+                                                                                          []
+                                                                                        |),
+                                                                                        [
+                                                                                          M.value_with_ty
+                                                                                            (M.borrow (|
+                                                                                              Pointer.Kind.MutRef,
                                                                                               M.deref (|
                                                                                                 M.read (|
-                                                                                                  b
+                                                                                                  is_less
                                                                                                 |)
                                                                                               |)
-                                                                                            |);
-                                                                                            M.borrow (|
-                                                                                              Pointer.Kind.Ref,
-                                                                                              M.deref (|
-                                                                                                M.read (|
-                                                                                                  a
+                                                                                            |))
+                                                                                            (Ty.apply
+                                                                                              (Ty.path
+                                                                                                "&mut")
+                                                                                              []
+                                                                                              [ F
+                                                                                              ]);
+                                                                                          M.value_with_ty
+                                                                                            (Value.Tuple
+                                                                                              [
+                                                                                                M.borrow (|
+                                                                                                  Pointer.Kind.Ref,
+                                                                                                  M.deref (|
+                                                                                                    M.read (|
+                                                                                                      b
+                                                                                                    |)
+                                                                                                  |)
+                                                                                                |);
+                                                                                                M.borrow (|
+                                                                                                  Pointer.Kind.Ref,
+                                                                                                  M.deref (|
+                                                                                                    M.read (|
+                                                                                                      a
+                                                                                                    |)
+                                                                                                  |)
                                                                                                 |)
-                                                                                              |)
-                                                                                            |)
-                                                                                          ]
-                                                                                      ]
-                                                                                    |)
-                                                                                  ]
-                                                                                |)))
-                                                                          ]
-                                                                        |)))
-                                                                  ]
-                                                                |)))
-                                                            | _ =>
-                                                              M.impossible
-                                                                "wrong number of arguments"
-                                                            end))
+                                                                                              ])
+                                                                                            (Ty.tuple
+                                                                                              [
+                                                                                                Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "&")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    T
+                                                                                                  ];
+                                                                                                Ty.apply
+                                                                                                  (Ty.path
+                                                                                                    "&")
+                                                                                                  []
+                                                                                                  [
+                                                                                                    T
+                                                                                                  ]
+                                                                                              ])
+                                                                                        ]
+                                                                                      |)
+                                                                                    ]
+                                                                                  |)))
+                                                                            ]
+                                                                          |)))
+                                                                    ]
+                                                                  |)))
+                                                              | _ =>
+                                                                M.impossible
+                                                                  "wrong number of arguments"
+                                                              end))
+                                                      |)
                                                     |)
                                                   |)
-                                                |)
-                                              |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&mut")
+                                                  []
+                                                  [
+                                                    Ty.function
+                                                      [
+                                                        Ty.apply (Ty.path "&") [] [ T ];
+                                                        Ty.apply (Ty.path "&") [] [ T ]
+                                                      ]
+                                                      (Ty.path "bool")
+                                                  ])
                                             ]
                                           |) in
                                         let~ _ : Ty.tuple [] :=
@@ -748,15 +934,30 @@ Module slice.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.deref (| M.read (| v |) |)
-                                                        |);
-                                                        Value.mkStructRecord
-                                                          "core::ops::range::RangeFrom"
-                                                          []
-                                                          [ Ty.path "usize" ]
-                                                          [ ("start", M.read (| mid_eq |)) ]
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.deref (| M.read (| v |) |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [ Ty.apply (Ty.path "slice") [] [ T ]
+                                                            ]);
+                                                        M.value_with_ty
+                                                          (M.value_with_ty
+                                                            (Value.mkStructRecord
+                                                              "core::ops::range::RangeFrom"
+                                                              [ ("start", M.read (| mid_eq |)) ])
+                                                            (Ty.apply
+                                                              (Ty.path
+                                                                "core::ops::range::RangeFrom")
+                                                              []
+                                                              [ Ty.path "usize" ]))
+                                                          (Ty.apply
+                                                            (Ty.path "core::ops::range::RangeFrom")
+                                                            []
+                                                            [ Ty.path "usize" ])
                                                       ]
                                                     |)
                                                   |)
@@ -767,11 +968,12 @@ Module slice.
                                         let~ _ : Ty.tuple [] :=
                                           M.write (|
                                             left_ancestor_pivot,
-                                            Value.StructTuple
-                                              "core::option::Option::None"
-                                              []
-                                              [ Ty.apply (Ty.path "&") [] [ T ] ]
-                                              []
+                                            M.value_with_ty
+                                              (Value.StructTuple "core::option::Option::None" [])
+                                              (Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.apply (Ty.path "&") [] [ T ] ])
                                           |) in
                                         M.continue (||)
                                       |)
@@ -814,11 +1016,18 @@ Module slice.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (| M.read (| v |) |)
-                                    |);
-                                    M.read (| left_partition_len |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| v |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                    M.value_with_ty
+                                      (M.read (| left_partition_len |))
+                                      (Ty.path "usize")
                                   ]
                                 |)
                               |),
@@ -853,20 +1062,48 @@ Module slice.
                                             [ T; F ]
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| right |) |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| scratch |) |)
-                                            |);
-                                            M.read (| limit |);
-                                            M.read (| pivot_ref |);
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| is_less |) |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| right |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| scratch |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "slice")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::mem::maybe_uninit::MaybeUninit")
+                                                        []
+                                                        [ T ]
+                                                    ]
+                                                ]);
+                                            M.value_with_ty (M.read (| limit |)) (Ty.path "u32");
+                                            M.value_with_ty
+                                              (M.read (| pivot_ref |))
+                                              (Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.apply (Ty.path "&") [] [ T ] ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| is_less |) |)
+                                              |))
+                                              (Ty.apply (Ty.path "&mut") [] [ F ])
                                           ]
                                         |) in
                                       let~ _ : Ty.tuple [] :=
@@ -1025,7 +1262,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -1042,44 +1283,63 @@ Module slice.
                                   Ty.path "bool",
                                   M.get_function (| "core::intrinsics::unlikely", [], [] |),
                                   [
-                                    LogicalOp.or (|
-                                      M.call_closure (|
-                                        Ty.path "bool",
-                                        BinOp.lt,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "slice")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                    []
-                                                    [ T ]
-                                                ],
-                                              "len",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| scratch |) |)
-                                              |)
-                                            ]
-                                          |);
-                                          M.read (| len |)
-                                        ]
-                                      |),
-                                      ltac:(M.monadic
-                                        (M.call_closure (|
+                                    M.value_with_ty
+                                      (LogicalOp.or (|
+                                        M.call_closure (|
                                           Ty.path "bool",
-                                          BinOp.ge,
-                                          [ M.read (| pivot_pos |); M.read (| len |) ]
-                                        |)))
-                                    |)
+                                          BinOp.lt,
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "usize",
+                                              M.get_associated_function (|
+                                                Ty.apply
+                                                  (Ty.path "slice")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "core::mem::maybe_uninit::MaybeUninit")
+                                                      []
+                                                      [ T ]
+                                                  ],
+                                                "len",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| scratch |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "slice")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "core::mem::maybe_uninit::MaybeUninit")
+                                                            []
+                                                            [ T ]
+                                                        ]
+                                                    ])
+                                              ]
+                                            |);
+                                            M.read (| len |)
+                                          ]
+                                        |),
+                                        ltac:(M.monadic
+                                          (M.call_closure (|
+                                            Ty.path "bool",
+                                            BinOp.ge,
+                                            [ M.read (| pivot_pos |); M.read (| len |) ]
+                                          |)))
+                                      |))
+                                      (Ty.path "bool")
                                   ]
                                 |)
                               |)) in
@@ -1104,7 +1364,11 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |) in
                 let~ scratch_base : Ty.apply (Ty.path "*mut") [] [ T ] :=
                   M.call_closure (|
@@ -1115,7 +1379,19 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| scratch |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| scratch |) |) |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ T ] ]
+                          ])
+                    ]
                   |) in
                 let~ pivot : Ty.apply (Ty.path "*const") [] [ T ] :=
                   M.call_closure (|
@@ -1126,7 +1402,10 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.read (| v_base |); M.read (| pivot_pos |) ]
+                    [
+                      M.value_with_ty (M.read (| v_base |)) (Ty.apply (Ty.path "*const") [] [ T ]);
+                      M.value_with_ty (M.read (| pivot_pos |)) (Ty.path "usize")
+                    ]
                   |) in
                 let~ state :
                     Ty.apply
@@ -1147,7 +1426,13 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.read (| v_base |); M.read (| scratch_base |); M.read (| len |) ]
+                    [
+                      M.value_with_ty (M.read (| v_base |)) (Ty.apply (Ty.path "*const") [] [ T ]);
+                      M.value_with_ty
+                        (M.read (| scratch_base |))
+                        (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty (M.read (| len |)) (Ty.path "usize")
+                    ]
                   |) in
                 let~ pivot_in_scratch : Ty.apply (Ty.path "*mut") [] [ T ] :=
                   M.call_closure (|
@@ -1190,32 +1475,40 @@ Module slice.
                                           []
                                         |),
                                         [
-                                          M.read (| v_base |);
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_associated_function (|
+                                          M.value_with_ty
+                                            (M.read (| v_base |))
+                                            (Ty.apply (Ty.path "*const") [] [ T ]);
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.path "usize",
-                                              "saturating_sub",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.read (| loop_end_pos |);
-                                              M.call_closure (|
+                                              M.get_associated_function (|
                                                 Ty.path "usize",
-                                                BinOp.Wrap.sub,
-                                                [
-                                                  M.read (|
-                                                    get_constant (|
-                                                      "core::slice::sort::stable::quicksort::stable_partition::UNROLL_LEN",
-                                                      Ty.path "usize"
-                                                    |)
-                                                  |);
-                                                  Value.Integer IntegerKind.Usize 1
-                                                ]
-                                              |)
-                                            ]
-                                          |)
+                                                "saturating_sub",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| loop_end_pos |))
+                                                  (Ty.path "usize");
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.sub,
+                                                    [
+                                                      M.read (|
+                                                        get_constant (|
+                                                          "core::slice::sort::stable::quicksort::stable_partition::UNROLL_LEN",
+                                                          Ty.path "usize"
+                                                        |)
+                                                      |);
+                                                      Value.Integer IntegerKind.Usize 1
+                                                    ]
+                                                  |))
+                                                  (Ty.path "usize")
+                                              ]
+                                            |))
+                                            (Ty.path "usize")
                                         ]
                                       |) in
                                     M.loop (|
@@ -1268,62 +1561,103 @@ Module slice.
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (| Pointer.Kind.MutRef, state |);
-                                                          M.call_closure (|
-                                                            Ty.path "bool",
-                                                            M.get_trait_method (|
-                                                              "core::ops::function::FnMut",
-                                                              F,
-                                                              [],
-                                                              [
-                                                                Ty.tuple
-                                                                  [
-                                                                    Ty.apply (Ty.path "&") [] [ T ];
-                                                                    Ty.apply (Ty.path "&") [] [ T ]
-                                                                  ]
-                                                              ],
-                                                              "call_mut",
-                                                              [],
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              state
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
                                                               []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.deref (| M.read (| is_less |) |)
-                                                              |);
-                                                              Value.Tuple
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::slice::sort::stable::quicksort::PartitionState")
+                                                                  []
+                                                                  [ T ]
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              Ty.path "bool",
+                                                              M.get_trait_method (|
+                                                                "core::ops::function::FnMut",
+                                                                F,
+                                                                [],
                                                                 [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
+                                                                  Ty.tuple
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ T ];
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ T ]
+                                                                    ]
+                                                                ],
+                                                                "call_mut",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.MutRef,
                                                                     M.deref (|
+                                                                      M.read (| is_less |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [ F ]);
+                                                                M.value_with_ty
+                                                                  (Value.Tuple
+                                                                    [
                                                                       M.borrow (|
                                                                         Pointer.Kind.Ref,
                                                                         M.deref (|
-                                                                          M.read (|
-                                                                            M.SubPointer.get_struct_record_field (|
-                                                                              state,
-                                                                              "core::slice::sort::stable::quicksort::PartitionState",
-                                                                              "scan"
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (|
+                                                                                M.SubPointer.get_struct_record_field (|
+                                                                                  state,
+                                                                                  "core::slice::sort::stable::quicksort::PartitionState",
+                                                                                  "scan"
+                                                                                |)
+                                                                              |)
+                                                                            |)
+                                                                          |)
+                                                                        |)
+                                                                      |);
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (| pivot |)
                                                                             |)
                                                                           |)
                                                                         |)
                                                                       |)
-                                                                    |)
-                                                                  |);
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.deref (|
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.read (| pivot |)
-                                                                        |)
-                                                                      |)
-                                                                    |)
-                                                                  |)
-                                                                ]
-                                                            ]
-                                                          |)
+                                                                    ])
+                                                                  (Ty.tuple
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ T ];
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ T ]
+                                                                    ])
+                                                              ]
+                                                            |))
+                                                            (Ty.path "bool")
                                                         ]
                                                       |) in
                                                     let~ _ : Ty.apply (Ty.path "*mut") [] [ T ] :=
@@ -1340,62 +1674,103 @@ Module slice.
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (| Pointer.Kind.MutRef, state |);
-                                                          M.call_closure (|
-                                                            Ty.path "bool",
-                                                            M.get_trait_method (|
-                                                              "core::ops::function::FnMut",
-                                                              F,
-                                                              [],
-                                                              [
-                                                                Ty.tuple
-                                                                  [
-                                                                    Ty.apply (Ty.path "&") [] [ T ];
-                                                                    Ty.apply (Ty.path "&") [] [ T ]
-                                                                  ]
-                                                              ],
-                                                              "call_mut",
-                                                              [],
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              state
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
                                                               []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.deref (| M.read (| is_less |) |)
-                                                              |);
-                                                              Value.Tuple
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::slice::sort::stable::quicksort::PartitionState")
+                                                                  []
+                                                                  [ T ]
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              Ty.path "bool",
+                                                              M.get_trait_method (|
+                                                                "core::ops::function::FnMut",
+                                                                F,
+                                                                [],
                                                                 [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
+                                                                  Ty.tuple
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ T ];
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ T ]
+                                                                    ]
+                                                                ],
+                                                                "call_mut",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.MutRef,
                                                                     M.deref (|
+                                                                      M.read (| is_less |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [ F ]);
+                                                                M.value_with_ty
+                                                                  (Value.Tuple
+                                                                    [
                                                                       M.borrow (|
                                                                         Pointer.Kind.Ref,
                                                                         M.deref (|
-                                                                          M.read (|
-                                                                            M.SubPointer.get_struct_record_field (|
-                                                                              state,
-                                                                              "core::slice::sort::stable::quicksort::PartitionState",
-                                                                              "scan"
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (|
+                                                                                M.SubPointer.get_struct_record_field (|
+                                                                                  state,
+                                                                                  "core::slice::sort::stable::quicksort::PartitionState",
+                                                                                  "scan"
+                                                                                |)
+                                                                              |)
+                                                                            |)
+                                                                          |)
+                                                                        |)
+                                                                      |);
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (| pivot |)
                                                                             |)
                                                                           |)
                                                                         |)
                                                                       |)
-                                                                    |)
-                                                                  |);
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.deref (|
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.read (| pivot |)
-                                                                        |)
-                                                                      |)
-                                                                    |)
-                                                                  |)
-                                                                ]
-                                                            ]
-                                                          |)
+                                                                    ])
+                                                                  (Ty.tuple
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ T ];
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ T ]
+                                                                    ])
+                                                              ]
+                                                            |))
+                                                            (Ty.path "bool")
                                                         ]
                                                       |) in
                                                     let~ _ : Ty.apply (Ty.path "*mut") [] [ T ] :=
@@ -1412,62 +1787,103 @@ Module slice.
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (| Pointer.Kind.MutRef, state |);
-                                                          M.call_closure (|
-                                                            Ty.path "bool",
-                                                            M.get_trait_method (|
-                                                              "core::ops::function::FnMut",
-                                                              F,
-                                                              [],
-                                                              [
-                                                                Ty.tuple
-                                                                  [
-                                                                    Ty.apply (Ty.path "&") [] [ T ];
-                                                                    Ty.apply (Ty.path "&") [] [ T ]
-                                                                  ]
-                                                              ],
-                                                              "call_mut",
-                                                              [],
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              state
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
                                                               []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.deref (| M.read (| is_less |) |)
-                                                              |);
-                                                              Value.Tuple
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::slice::sort::stable::quicksort::PartitionState")
+                                                                  []
+                                                                  [ T ]
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              Ty.path "bool",
+                                                              M.get_trait_method (|
+                                                                "core::ops::function::FnMut",
+                                                                F,
+                                                                [],
                                                                 [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
+                                                                  Ty.tuple
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ T ];
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ T ]
+                                                                    ]
+                                                                ],
+                                                                "call_mut",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.MutRef,
                                                                     M.deref (|
+                                                                      M.read (| is_less |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [ F ]);
+                                                                M.value_with_ty
+                                                                  (Value.Tuple
+                                                                    [
                                                                       M.borrow (|
                                                                         Pointer.Kind.Ref,
                                                                         M.deref (|
-                                                                          M.read (|
-                                                                            M.SubPointer.get_struct_record_field (|
-                                                                              state,
-                                                                              "core::slice::sort::stable::quicksort::PartitionState",
-                                                                              "scan"
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (|
+                                                                                M.SubPointer.get_struct_record_field (|
+                                                                                  state,
+                                                                                  "core::slice::sort::stable::quicksort::PartitionState",
+                                                                                  "scan"
+                                                                                |)
+                                                                              |)
+                                                                            |)
+                                                                          |)
+                                                                        |)
+                                                                      |);
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (| pivot |)
                                                                             |)
                                                                           |)
                                                                         |)
                                                                       |)
-                                                                    |)
-                                                                  |);
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.deref (|
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.read (| pivot |)
-                                                                        |)
-                                                                      |)
-                                                                    |)
-                                                                  |)
-                                                                ]
-                                                            ]
-                                                          |)
+                                                                    ])
+                                                                  (Ty.tuple
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ T ];
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ T ]
+                                                                    ])
+                                                              ]
+                                                            |))
+                                                            (Ty.path "bool")
                                                         ]
                                                       |) in
                                                     let~ _ : Ty.apply (Ty.path "*mut") [] [ T ] :=
@@ -1484,62 +1900,103 @@ Module slice.
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (| Pointer.Kind.MutRef, state |);
-                                                          M.call_closure (|
-                                                            Ty.path "bool",
-                                                            M.get_trait_method (|
-                                                              "core::ops::function::FnMut",
-                                                              F,
-                                                              [],
-                                                              [
-                                                                Ty.tuple
-                                                                  [
-                                                                    Ty.apply (Ty.path "&") [] [ T ];
-                                                                    Ty.apply (Ty.path "&") [] [ T ]
-                                                                  ]
-                                                              ],
-                                                              "call_mut",
-                                                              [],
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              state
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
                                                               []
-                                                            |),
-                                                            [
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                M.deref (| M.read (| is_less |) |)
-                                                              |);
-                                                              Value.Tuple
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::slice::sort::stable::quicksort::PartitionState")
+                                                                  []
+                                                                  [ T ]
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              Ty.path "bool",
+                                                              M.get_trait_method (|
+                                                                "core::ops::function::FnMut",
+                                                                F,
+                                                                [],
                                                                 [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
+                                                                  Ty.tuple
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ T ];
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ T ]
+                                                                    ]
+                                                                ],
+                                                                "call_mut",
+                                                                [],
+                                                                []
+                                                              |),
+                                                              [
+                                                                M.value_with_ty
+                                                                  (M.borrow (|
+                                                                    Pointer.Kind.MutRef,
                                                                     M.deref (|
+                                                                      M.read (| is_less |)
+                                                                    |)
+                                                                  |))
+                                                                  (Ty.apply
+                                                                    (Ty.path "&mut")
+                                                                    []
+                                                                    [ F ]);
+                                                                M.value_with_ty
+                                                                  (Value.Tuple
+                                                                    [
                                                                       M.borrow (|
                                                                         Pointer.Kind.Ref,
                                                                         M.deref (|
-                                                                          M.read (|
-                                                                            M.SubPointer.get_struct_record_field (|
-                                                                              state,
-                                                                              "core::slice::sort::stable::quicksort::PartitionState",
-                                                                              "scan"
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (|
+                                                                                M.SubPointer.get_struct_record_field (|
+                                                                                  state,
+                                                                                  "core::slice::sort::stable::quicksort::PartitionState",
+                                                                                  "scan"
+                                                                                |)
+                                                                              |)
+                                                                            |)
+                                                                          |)
+                                                                        |)
+                                                                      |);
+                                                                      M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          M.borrow (|
+                                                                            Pointer.Kind.Ref,
+                                                                            M.deref (|
+                                                                              M.read (| pivot |)
                                                                             |)
                                                                           |)
                                                                         |)
                                                                       |)
-                                                                    |)
-                                                                  |);
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    M.deref (|
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        M.deref (|
-                                                                          M.read (| pivot |)
-                                                                        |)
-                                                                      |)
-                                                                    |)
-                                                                  |)
-                                                                ]
-                                                            ]
-                                                          |)
+                                                                    ])
+                                                                  (Ty.tuple
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ T ];
+                                                                      Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ T ]
+                                                                    ])
+                                                              ]
+                                                            |))
+                                                            (Ty.path "bool")
                                                         ]
                                                       |) in
                                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1572,7 +2029,12 @@ Module slice.
                               [],
                               []
                             |),
-                            [ M.read (| v_base |); M.read (| loop_end_pos |) ]
+                            [
+                              M.value_with_ty
+                                (M.read (| v_base |))
+                                (Ty.apply (Ty.path "*const") [] [ T ]);
+                              M.value_with_ty (M.read (| loop_end_pos |)) (Ty.path "usize")
+                            ]
                           |) in
                         let~ _ : Ty.tuple [] :=
                           M.read (|
@@ -1626,60 +2088,81 @@ Module slice.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (| Pointer.Kind.MutRef, state |);
-                                                  M.call_closure (|
-                                                    Ty.path "bool",
-                                                    M.get_trait_method (|
-                                                      "core::ops::function::FnMut",
-                                                      F,
-                                                      [],
-                                                      [
-                                                        Ty.tuple
-                                                          [
-                                                            Ty.apply (Ty.path "&") [] [ T ];
-                                                            Ty.apply (Ty.path "&") [] [ T ]
-                                                          ]
-                                                      ],
-                                                      "call_mut",
-                                                      [],
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.MutRef, state |))
+                                                    (Ty.apply
+                                                      (Ty.path "&mut")
                                                       []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.deref (| M.read (| is_less |) |)
-                                                      |);
-                                                      Value.Tuple
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "core::slice::sort::stable::quicksort::PartitionState")
+                                                          []
+                                                          [ T ]
+                                                      ]);
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
+                                                      Ty.path "bool",
+                                                      M.get_trait_method (|
+                                                        "core::ops::function::FnMut",
+                                                        F,
+                                                        [],
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
+                                                          Ty.tuple
+                                                            [
+                                                              Ty.apply (Ty.path "&") [] [ T ];
+                                                              Ty.apply (Ty.path "&") [] [ T ]
+                                                            ]
+                                                        ],
+                                                        "call_mut",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.deref (| M.read (| is_less |) |)
+                                                          |))
+                                                          (Ty.apply (Ty.path "&mut") [] [ F ]);
+                                                        M.value_with_ty
+                                                          (Value.Tuple
+                                                            [
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
                                                                 M.deref (|
-                                                                  M.read (|
-                                                                    M.SubPointer.get_struct_record_field (|
-                                                                      state,
-                                                                      "core::slice::sort::stable::quicksort::PartitionState",
-                                                                      "scan"
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (|
+                                                                      M.read (|
+                                                                        M.SubPointer.get_struct_record_field (|
+                                                                          state,
+                                                                          "core::slice::sort::stable::quicksort::PartitionState",
+                                                                          "scan"
+                                                                        |)
+                                                                      |)
                                                                     |)
                                                                   |)
                                                                 |)
-                                                              |)
-                                                            |)
-                                                          |);
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
+                                                              |);
                                                               M.borrow (|
                                                                 Pointer.Kind.Ref,
-                                                                M.deref (| M.read (| pivot |) |)
+                                                                M.deref (|
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.Ref,
+                                                                    M.deref (| M.read (| pivot |) |)
+                                                                  |)
+                                                                |)
                                                               |)
-                                                            |)
-                                                          |)
-                                                        ]
-                                                    ]
-                                                  |)
+                                                            ])
+                                                          (Ty.tuple
+                                                            [
+                                                              Ty.apply (Ty.path "&") [] [ T ];
+                                                              Ty.apply (Ty.path "&") [] [ T ]
+                                                            ])
+                                                      ]
+                                                    |))
+                                                    (Ty.path "bool")
                                                 ]
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1739,8 +2222,19 @@ Module slice.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.MutRef, state |);
-                                M.read (| pivot_goes_left |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, state |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path
+                                          "core::slice::sort::stable::quicksort::PartitionState")
+                                        []
+                                        [ T ]
+                                    ]);
+                                M.value_with_ty (M.read (| pivot_goes_left |)) (Ty.path "bool")
                               ]
                             |)
                           |) in
@@ -1781,9 +2275,15 @@ Module slice.
                                   [ T ]
                                 |),
                                 [
-                                  M.read (| pivot |);
-                                  M.read (| pivot_in_scratch |);
-                                  Value.Integer IntegerKind.Usize 1
+                                  M.value_with_ty
+                                    (M.read (| pivot |))
+                                    (Ty.apply (Ty.path "*const") [] [ T ]);
+                                  M.value_with_ty
+                                    (M.read (| pivot_in_scratch |))
+                                    (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                  M.value_with_ty
+                                    (Value.Integer IntegerKind.Usize 1)
+                                    (Ty.path "usize")
                                 ]
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1800,29 +2300,37 @@ Module slice.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| v |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| v |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                    ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.call_closure (|
                     Ty.tuple [],
                     M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
                     [
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*const") [] [ T ],
-                        M.pointer_coercion
-                          M.PointerCoercion.MutToConstPointer
-                          (Ty.apply (Ty.path "*mut") [] [ T ])
-                          (Ty.apply (Ty.path "*const") [] [ T ]),
-                        [ M.read (| scratch_base |) ]
-                      |);
-                      M.read (| v_base |);
-                      M.read (|
-                        M.SubPointer.get_struct_record_field (|
-                          state,
-                          "core::slice::sort::stable::quicksort::PartitionState",
-                          "num_left"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply (Ty.path "*const") [] [ T ],
+                          M.pointer_coercion
+                            M.PointerCoercion.MutToConstPointer
+                            (Ty.apply (Ty.path "*mut") [] [ T ])
+                            (Ty.apply (Ty.path "*const") [] [ T ]),
+                          [ M.read (| scratch_base |) ]
+                        |))
+                        (Ty.apply (Ty.path "*const") [] [ T ]);
+                      M.value_with_ty (M.read (| v_base |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                      M.value_with_ty
+                        (M.read (|
+                          M.SubPointer.get_struct_record_field (|
+                            state,
+                            "core::slice::sort::stable::quicksort::PartitionState",
+                            "num_left"
+                          |)
+                        |))
+                        (Ty.path "usize")
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -1846,28 +2354,36 @@ Module slice.
                                 []
                               |),
                               [
-                                Value.mkStructRecord
-                                  "core::ops::range::Range"
-                                  []
-                                  [ Ty.path "usize" ]
-                                  [
-                                    ("start", Value.Integer IntegerKind.Usize 0);
-                                    ("end_",
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        BinOp.Wrap.sub,
-                                        [
-                                          M.read (| len |);
-                                          M.read (|
-                                            M.SubPointer.get_struct_record_field (|
-                                              state,
-                                              "core::slice::sort::stable::quicksort::PartitionState",
-                                              "num_left"
-                                            |)
-                                          |)
-                                        ]
-                                      |))
-                                  ]
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.mkStructRecord
+                                      "core::ops::range::Range"
+                                      [
+                                        ("start", Value.Integer IntegerKind.Usize 0);
+                                        ("end_",
+                                          M.call_closure (|
+                                            Ty.path "usize",
+                                            BinOp.Wrap.sub,
+                                            [
+                                              M.read (| len |);
+                                              M.read (|
+                                                M.SubPointer.get_struct_record_field (|
+                                                  state,
+                                                  "core::slice::sort::stable::quicksort::PartitionState",
+                                                  "num_left"
+                                                |)
+                                              |)
+                                            ]
+                                          |))
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ]))
+                                  (Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "usize" ])
                               ]
                             |)
                           |),
@@ -1910,12 +2426,22 @@ Module slice.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.MutRef,
-                                                  M.deref (|
-                                                    M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                  |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.MutRef, iter |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::ops::range::Range")
+                                                        []
+                                                        [ Ty.path "usize" ]
+                                                    ])
                                               ]
                                             |)
                                           |),
@@ -1947,71 +2473,97 @@ Module slice.
                                                         [ T ]
                                                       |),
                                                       [
-                                                        M.call_closure (|
-                                                          Ty.apply (Ty.path "*const") [] [ T ],
-                                                          M.pointer_coercion
-                                                            M.PointerCoercion.MutToConstPointer
-                                                            (Ty.apply (Ty.path "*mut") [] [ T ])
-                                                            (Ty.apply (Ty.path "*const") [] [ T ]),
-                                                          [
-                                                            M.call_closure (|
-                                                              Ty.apply (Ty.path "*mut") [] [ T ],
-                                                              M.get_associated_function (|
-                                                                Ty.apply (Ty.path "*mut") [] [ T ],
-                                                                "add",
-                                                                [],
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
+                                                            Ty.apply (Ty.path "*const") [] [ T ],
+                                                            M.pointer_coercion
+                                                              M.PointerCoercion.MutToConstPointer
+                                                              (Ty.apply (Ty.path "*mut") [] [ T ])
+                                                              (Ty.apply
+                                                                (Ty.path "*const")
                                                                 []
-                                                              |),
-                                                              [
-                                                                M.read (| scratch_base |);
-                                                                M.call_closure (|
-                                                                  Ty.path "usize",
-                                                                  BinOp.Wrap.sub,
-                                                                  [
-                                                                    M.call_closure (|
+                                                                [ T ]),
+                                                            [
+                                                              M.call_closure (|
+                                                                Ty.apply (Ty.path "*mut") [] [ T ],
+                                                                M.get_associated_function (|
+                                                                  Ty.apply
+                                                                    (Ty.path "*mut")
+                                                                    []
+                                                                    [ T ],
+                                                                  "add",
+                                                                  [],
+                                                                  []
+                                                                |),
+                                                                [
+                                                                  M.value_with_ty
+                                                                    (M.read (| scratch_base |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "*mut")
+                                                                      []
+                                                                      [ T ]);
+                                                                  M.value_with_ty
+                                                                    (M.call_closure (|
                                                                       Ty.path "usize",
                                                                       BinOp.Wrap.sub,
                                                                       [
-                                                                        M.read (| len |);
-                                                                        Value.Integer
-                                                                          IntegerKind.Usize
-                                                                          1
+                                                                        M.call_closure (|
+                                                                          Ty.path "usize",
+                                                                          BinOp.Wrap.sub,
+                                                                          [
+                                                                            M.read (| len |);
+                                                                            Value.Integer
+                                                                              IntegerKind.Usize
+                                                                              1
+                                                                          ]
+                                                                        |);
+                                                                        M.read (| i |)
                                                                       ]
+                                                                    |))
+                                                                    (Ty.path "usize")
+                                                                ]
+                                                              |)
+                                                            ]
+                                                          |))
+                                                          (Ty.apply (Ty.path "*const") [] [ T ]);
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
+                                                            Ty.apply (Ty.path "*mut") [] [ T ],
+                                                            M.get_associated_function (|
+                                                              Ty.apply (Ty.path "*mut") [] [ T ],
+                                                              "add",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.read (| v_base |))
+                                                                (Ty.apply
+                                                                  (Ty.path "*mut")
+                                                                  []
+                                                                  [ T ]);
+                                                              M.value_with_ty
+                                                                (M.call_closure (|
+                                                                  Ty.path "usize",
+                                                                  BinOp.Wrap.add,
+                                                                  [
+                                                                    M.read (|
+                                                                      M.SubPointer.get_struct_record_field (|
+                                                                        state,
+                                                                        "core::slice::sort::stable::quicksort::PartitionState",
+                                                                        "num_left"
+                                                                      |)
                                                                     |);
                                                                     M.read (| i |)
                                                                   ]
-                                                                |)
-                                                              ]
-                                                            |)
-                                                          ]
-                                                        |);
-                                                        M.call_closure (|
-                                                          Ty.apply (Ty.path "*mut") [] [ T ],
-                                                          M.get_associated_function (|
-                                                            Ty.apply (Ty.path "*mut") [] [ T ],
-                                                            "add",
-                                                            [],
-                                                            []
-                                                          |),
-                                                          [
-                                                            M.read (| v_base |);
-                                                            M.call_closure (|
-                                                              Ty.path "usize",
-                                                              BinOp.Wrap.add,
-                                                              [
-                                                                M.read (|
-                                                                  M.SubPointer.get_struct_record_field (|
-                                                                    state,
-                                                                    "core::slice::sort::stable::quicksort::PartitionState",
-                                                                    "num_left"
-                                                                  |)
-                                                                |);
-                                                                M.read (| i |)
-                                                              ]
-                                                            |)
-                                                          ]
-                                                        |);
-                                                        Value.Integer IntegerKind.Usize 1
+                                                                |))
+                                                                (Ty.path "usize")
+                                                            ]
+                                                          |))
+                                                          (Ty.apply (Ty.path "*mut") [] [ T ]);
+                                                        M.value_with_ty
+                                                          (Value.Integer IntegerKind.Usize 1)
+                                                          (Ty.path "usize")
                                                       ]
                                                     |) in
                                                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -2083,26 +2635,34 @@ Module slice.
                 (let scan := M.alloc (| Ty.apply (Ty.path "*const") [] [ T ], scan |) in
                 let scratch := M.alloc (| Ty.apply (Ty.path "*mut") [] [ T ], scratch |) in
                 let len := M.alloc (| Ty.path "usize", len |) in
-                Value.mkStructRecord
-                  "core::slice::sort::stable::quicksort::PartitionState"
-                  []
-                  [ T ]
-                  [
-                    ("scratch_base", M.read (| scratch |));
-                    ("scan", M.read (| scan |));
-                    ("num_left", Value.Integer IntegerKind.Usize 0);
-                    ("scratch_rev",
-                      M.call_closure (|
-                        Ty.apply (Ty.path "*mut") [] [ T ],
-                        M.get_associated_function (|
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::slice::sort::stable::quicksort::PartitionState"
+                    [
+                      ("scratch_base", M.read (| scratch |));
+                      ("scan", M.read (| scan |));
+                      ("num_left", Value.Integer IntegerKind.Usize 0);
+                      ("scratch_rev",
+                        M.call_closure (|
                           Ty.apply (Ty.path "*mut") [] [ T ],
-                          "add",
-                          [],
-                          []
-                        |),
-                        [ M.read (| scratch |); M.read (| len |) ]
-                      |))
-                  ]))
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "*mut") [] [ T ],
+                            "add",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (| scratch |))
+                              (Ty.apply (Ty.path "*mut") [] [ T ]);
+                            M.value_with_ty (M.read (| len |)) (Ty.path "usize")
+                          ]
+                        |))
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::slice::sort::stable::quicksort::PartitionState")
+                    []
+                    [ T ])))
             | _, _, _ => M.impossible "wrong number of arguments"
             end.
           
@@ -2175,14 +2735,16 @@ Module slice.
                           []
                         |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::slice::sort::stable::quicksort::PartitionState",
-                              "scratch_rev"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.Usize 1
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::slice::sort::stable::quicksort::PartitionState",
+                                "scratch_rev"
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "*mut") [] [ T ]);
+                          M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
                         ]
                       |)
                     |) in
@@ -2224,14 +2786,18 @@ Module slice.
                         []
                       |),
                       [
-                        M.read (| dst_base |);
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::slice::sort::stable::quicksort::PartitionState",
-                            "num_left"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.read (| dst_base |))
+                          (Ty.apply (Ty.path "*mut") [] [ T ]);
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::slice::sort::stable::quicksort::PartitionState",
+                              "num_left"
+                            |)
+                          |))
+                          (Ty.path "usize")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -2239,15 +2805,17 @@ Module slice.
                       Ty.tuple [],
                       M.get_function (| "core::intrinsics::copy_nonoverlapping", [], [ T ] |),
                       [
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::slice::sort::stable::quicksort::PartitionState",
-                            "scan"
-                          |)
-                        |);
-                        M.read (| dst |);
-                        Value.Integer IntegerKind.Usize 1
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::slice::sort::stable::quicksort::PartitionState",
+                              "scan"
+                            |)
+                          |))
+                          (Ty.apply (Ty.path "*const") [] [ T ]);
+                        M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                        M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -2281,14 +2849,16 @@ Module slice.
                           []
                         |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::slice::sort::stable::quicksort::PartitionState",
-                              "scan"
-                            |)
-                          |);
-                          Value.Integer IntegerKind.Usize 1
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "core::slice::sort::stable::quicksort::PartitionState",
+                                "scan"
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "*const") [] [ T ]);
+                          M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
                         ]
                       |)
                     |) in

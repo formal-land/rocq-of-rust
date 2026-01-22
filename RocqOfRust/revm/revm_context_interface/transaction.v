@@ -17,59 +17,82 @@ Module transaction.
               Ty.path "never",
               M.get_function (| "core::panicking::panic_fmt", [], [] |),
               [
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0 ],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Arguments",
+                      "new_v1",
+                      [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0 ],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                Value.Array
+                                  [ mk_str (| "not implemented: legacy tx not supported" |) ]
+                              |)
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array [ mk_str (| "not implemented: legacy tx not supported" |) ]
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 0 ]
+                                  [ Ty.path "core::fmt::rt::Argument" ],
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 0 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ],
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "none",
+                                    [],
+                                    []
+                                  |),
+                                  []
+                                |)
+                              |)
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 0 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 0 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "none",
-                                [],
-                                []
-                              |),
-                              []
-                            |)
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
+                              [ Ty.path "core::fmt::rt::Argument" ]
+                          ])
+                    ]
+                  |))
+                  (Ty.path "core::fmt::Arguments")
               ]
             |)
           |)))
@@ -88,59 +111,82 @@ Module transaction.
               Ty.path "never",
               M.get_function (| "core::panicking::panic_fmt", [], [] |),
               [
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0 ],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Arguments",
+                      "new_v1",
+                      [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0 ],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                Value.Array
+                                  [ mk_str (| "not implemented: Eip2930 tx not supported" |) ]
+                              |)
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array [ mk_str (| "not implemented: Eip2930 tx not supported" |) ]
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 0 ]
+                                  [ Ty.path "core::fmt::rt::Argument" ],
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 0 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ],
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "none",
+                                    [],
+                                    []
+                                  |),
+                                  []
+                                |)
+                              |)
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 0 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 0 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "none",
-                                [],
-                                []
-                              |),
-                              []
-                            |)
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
+                              [ Ty.path "core::fmt::rt::Argument" ]
+                          ])
+                    ]
+                  |))
+                  (Ty.path "core::fmt::Arguments")
               ]
             |)
           |)))
@@ -159,59 +205,82 @@ Module transaction.
               Ty.path "never",
               M.get_function (| "core::panicking::panic_fmt", [], [] |),
               [
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0 ],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Arguments",
+                      "new_v1",
+                      [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0 ],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                Value.Array
+                                  [ mk_str (| "not implemented: Eip1559 tx not supported" |) ]
+                              |)
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array [ mk_str (| "not implemented: Eip1559 tx not supported" |) ]
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 0 ]
+                                  [ Ty.path "core::fmt::rt::Argument" ],
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 0 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ],
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "none",
+                                    [],
+                                    []
+                                  |),
+                                  []
+                                |)
+                              |)
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 0 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 0 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "none",
-                                [],
-                                []
-                              |),
-                              []
-                            |)
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
+                              [ Ty.path "core::fmt::rt::Argument" ]
+                          ])
+                    ]
+                  |))
+                  (Ty.path "core::fmt::Arguments")
               ]
             |)
           |)))
@@ -230,59 +299,82 @@ Module transaction.
               Ty.path "never",
               M.get_function (| "core::panicking::panic_fmt", [], [] |),
               [
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0 ],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Arguments",
+                      "new_v1",
+                      [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0 ],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                Value.Array
+                                  [ mk_str (| "not implemented: Eip4844 tx not supported" |) ]
+                              |)
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array [ mk_str (| "not implemented: Eip4844 tx not supported" |) ]
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 0 ]
+                                  [ Ty.path "core::fmt::rt::Argument" ],
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 0 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ],
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "none",
+                                    [],
+                                    []
+                                  |),
+                                  []
+                                |)
+                              |)
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 0 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 0 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "none",
-                                [],
-                                []
-                              |),
-                              []
-                            |)
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
+                              [ Ty.path "core::fmt::rt::Argument" ]
+                          ])
+                    ]
+                  |))
+                  (Ty.path "core::fmt::Arguments")
               ]
             |)
           |)))
@@ -301,59 +393,82 @@ Module transaction.
               Ty.path "never",
               M.get_function (| "core::panicking::panic_fmt", [], [] |),
               [
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0 ],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Arguments",
+                      "new_v1",
+                      [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0 ],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                Value.Array
+                                  [ mk_str (| "not implemented: Eip7702 tx not supported" |) ]
+                              |)
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array [ mk_str (| "not implemented: Eip7702 tx not supported" |) ]
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 0 ]
+                                  [ Ty.path "core::fmt::rt::Argument" ],
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 0 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ],
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::rt::Argument",
+                                    "none",
+                                    [],
+                                    []
+                                  |),
+                                  []
+                                |)
+                              |)
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 0 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 0 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::rt::Argument",
-                                "none",
-                                [],
-                                []
-                              |),
-                              []
-                            |)
-                          |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
+                              [ Ty.path "core::fmt::rt::Argument" ]
+                          ])
+                    ]
+                  |))
+                  (Ty.path "core::fmt::Arguments")
               ]
             |)
           |)))
@@ -472,29 +587,38 @@ Module transaction.
                                   []
                                 |),
                                 [
-                                  M.call_closure (|
-                                    Ty.associated_in_trait
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.associated_in_trait
+                                        "revm_context_interface::transaction::Transaction"
+                                        []
+                                        []
+                                        Self
+                                        "TransactionType",
+                                      M.get_trait_method (|
+                                        "revm_context_interface::transaction::Transaction",
+                                        Self,
+                                        [],
+                                        [],
+                                        "tx_type",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Self ])
+                                      ]
+                                    |))
+                                    (Ty.associated_in_trait
                                       "revm_context_interface::transaction::Transaction"
                                       []
                                       []
                                       Self
-                                      "TransactionType",
-                                    M.get_trait_method (|
-                                      "revm_context_interface::transaction::Transaction",
-                                      Self,
-                                      [],
-                                      [],
-                                      "tx_type",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
+                                      "TransactionType")
                                 ]
                               |)
                             |),
@@ -566,10 +690,12 @@ Module transaction.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Self ])
                                             ]
                                           |)
                                         |)
@@ -643,10 +769,12 @@ Module transaction.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Self ])
                                             ]
                                           |)
                                         |)
@@ -720,10 +848,12 @@ Module transaction.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Self ])
                                             ]
                                           |)
                                         |)
@@ -797,10 +927,12 @@ Module transaction.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Self ])
                                             ]
                                           |)
                                         |)
@@ -874,10 +1006,12 @@ Module transaction.
                                               []
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Self ])
                                             ]
                                           |)
                                         |)
@@ -896,68 +1030,95 @@ Module transaction.
                                       Ty.path "never",
                                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                       [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::Arguments",
-                                          M.get_associated_function (|
+                                        M.value_with_ty
+                                          (M.call_closure (|
                                             Ty.path "core::fmt::Arguments",
-                                            "new_v1",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::Arguments",
+                                              "new_v1",
+                                              [
+                                                Value.Integer IntegerKind.Usize 1;
+                                                Value.Integer IntegerKind.Usize 0
+                                              ],
+                                              []
+                                            |),
                                             [
-                                              Value.Integer IntegerKind.Usize 1;
-                                              Value.Integer IntegerKind.Usize 0
-                                            ],
-                                            []
-                                          |),
-                                          [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "str" ]
+                                                          ],
+                                                        Value.Array
+                                                          [
+                                                            mk_str (|
+                                                              "not implemented: Custom tx not supported"
+                                                            |)
+                                                          ]
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
                                                     Ty.apply
                                                       (Ty.path "array")
                                                       [ Value.Integer IntegerKind.Usize 1 ]
                                                       [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                                                      ],
-                                                    Value.Array
-                                                      [
-                                                        mk_str (|
-                                                          "not implemented: Custom tx not supported"
-                                                        |)
                                                       ]
-                                                  |)
-                                                |)
-                                              |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (|
-                                                M.borrow (|
+                                                  ]);
+                                              M.value_with_ty
+                                                (M.borrow (|
                                                   Pointer.Kind.Ref,
-                                                  M.alloc (|
+                                                  M.deref (|
+                                                    M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.alloc (|
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 0 ]
+                                                          [ Ty.path "core::fmt::rt::Argument" ],
+                                                        M.call_closure (|
+                                                          Ty.apply
+                                                            (Ty.path "array")
+                                                            [ Value.Integer IntegerKind.Usize 0 ]
+                                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                                          M.get_associated_function (|
+                                                            Ty.path "core::fmt::rt::Argument",
+                                                            "none",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          []
+                                                        |)
+                                                      |)
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
                                                     Ty.apply
                                                       (Ty.path "array")
                                                       [ Value.Integer IntegerKind.Usize 0 ]
-                                                      [ Ty.path "core::fmt::rt::Argument" ],
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 0 ]
-                                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                                      M.get_associated_function (|
-                                                        Ty.path "core::fmt::rt::Argument",
-                                                        "none",
-                                                        [],
-                                                        []
-                                                      |),
-                                                      []
-                                                    |)
-                                                  |)
-                                                |)
-                                              |)
-                                            |)
-                                          ]
-                                        |)
+                                                      [ Ty.path "core::fmt::rt::Argument" ]
+                                                  ])
+                                            ]
+                                          |))
+                                          (Ty.path "core::fmt::Arguments")
                                       ]
                                     |)
                                   |)))
@@ -1006,24 +1167,35 @@ Module transaction.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.associated_in_trait
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.associated_in_trait
+                        "revm_context_interface::transaction::Transaction"
+                        []
+                        []
+                        Self
+                        "TransactionType",
+                      M.get_trait_method (|
+                        "revm_context_interface::transaction::Transaction",
+                        Self,
+                        [],
+                        [],
+                        "tx_type",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Self ])
+                      ]
+                    |))
+                    (Ty.associated_in_trait
                       "revm_context_interface::transaction::Transaction"
                       []
                       []
                       Self
-                      "TransactionType",
-                    M.get_trait_method (|
-                      "revm_context_interface::transaction::Transaction",
-                      Self,
-                      [],
-                      [],
-                      "tx_type",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                  |)
+                      "TransactionType")
                 ]
               |)
             |),
@@ -1052,34 +1224,50 @@ Module transaction.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "revm_context_interface::transaction::Transaction"
+                                    []
+                                    []
+                                    Self
+                                    "Legacy"
+                                ],
+                              M.get_trait_method (|
+                                "revm_context_interface::transaction::Transaction",
+                                Self,
+                                [],
+                                [],
+                                "legacy",
+                                [],
+                                []
+                              |),
                               [
-                                Ty.associated_in_trait
-                                  "revm_context_interface::transaction::Transaction"
-                                  []
-                                  []
-                                  Self
-                                  "Legacy"
-                              ],
-                            M.get_trait_method (|
-                              "revm_context_interface::transaction::Transaction",
-                              Self,
-                              [],
-                              [],
-                              "legacy",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Self ])
+                              ]
+                            |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "revm_context_interface::transaction::Transaction"
+                              []
+                              []
+                              Self
+                              "Legacy"
+                          ])
                     ]
                   |)));
               fun γ =>
@@ -1106,34 +1294,50 @@ Module transaction.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "revm_context_interface::transaction::Transaction"
+                                    []
+                                    []
+                                    Self
+                                    "Eip2930"
+                                ],
+                              M.get_trait_method (|
+                                "revm_context_interface::transaction::Transaction",
+                                Self,
+                                [],
+                                [],
+                                "eip2930",
+                                [],
+                                []
+                              |),
                               [
-                                Ty.associated_in_trait
-                                  "revm_context_interface::transaction::Transaction"
-                                  []
-                                  []
-                                  Self
-                                  "Eip2930"
-                              ],
-                            M.get_trait_method (|
-                              "revm_context_interface::transaction::Transaction",
-                              Self,
-                              [],
-                              [],
-                              "eip2930",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Self ])
+                              ]
+                            |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "revm_context_interface::transaction::Transaction"
+                              []
+                              []
+                              Self
+                              "Eip2930"
+                          ])
                     ]
                   |)));
               fun γ =>
@@ -1160,34 +1364,50 @@ Module transaction.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "revm_context_interface::transaction::Transaction"
+                                    []
+                                    []
+                                    Self
+                                    "Eip1559"
+                                ],
+                              M.get_trait_method (|
+                                "revm_context_interface::transaction::Transaction",
+                                Self,
+                                [],
+                                [],
+                                "eip1559",
+                                [],
+                                []
+                              |),
                               [
-                                Ty.associated_in_trait
-                                  "revm_context_interface::transaction::Transaction"
-                                  []
-                                  []
-                                  Self
-                                  "Eip1559"
-                              ],
-                            M.get_trait_method (|
-                              "revm_context_interface::transaction::Transaction",
-                              Self,
-                              [],
-                              [],
-                              "eip1559",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Self ])
+                              ]
+                            |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "revm_context_interface::transaction::Transaction"
+                              []
+                              []
+                              Self
+                              "Eip1559"
+                          ])
                     ]
                   |)));
               fun γ =>
@@ -1214,34 +1434,50 @@ Module transaction.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "revm_context_interface::transaction::Transaction"
+                                    []
+                                    []
+                                    Self
+                                    "Eip4844"
+                                ],
+                              M.get_trait_method (|
+                                "revm_context_interface::transaction::Transaction",
+                                Self,
+                                [],
+                                [],
+                                "eip4844",
+                                [],
+                                []
+                              |),
                               [
-                                Ty.associated_in_trait
-                                  "revm_context_interface::transaction::Transaction"
-                                  []
-                                  []
-                                  Self
-                                  "Eip4844"
-                              ],
-                            M.get_trait_method (|
-                              "revm_context_interface::transaction::Transaction",
-                              Self,
-                              [],
-                              [],
-                              "eip4844",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Self ])
+                              ]
+                            |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "revm_context_interface::transaction::Transaction"
+                              []
+                              []
+                              Self
+                              "Eip4844"
+                          ])
                     ]
                   |)));
               fun γ =>
@@ -1268,34 +1504,50 @@ Module transaction.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "revm_context_interface::transaction::Transaction"
+                                    []
+                                    []
+                                    Self
+                                    "Eip7702"
+                                ],
+                              M.get_trait_method (|
+                                "revm_context_interface::transaction::Transaction",
+                                Self,
+                                [],
+                                [],
+                                "eip7702",
+                                [],
+                                []
+                              |),
                               [
-                                Ty.associated_in_trait
-                                  "revm_context_interface::transaction::Transaction"
-                                  []
-                                  []
-                                  Self
-                                  "Eip7702"
-                              ],
-                            M.get_trait_method (|
-                              "revm_context_interface::transaction::Transaction",
-                              Self,
-                              [],
-                              [],
-                              "eip7702",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Self ])
+                              ]
+                            |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.associated_in_trait
+                              "revm_context_interface::transaction::Transaction"
+                              []
+                              []
+                              Self
+                              "Eip7702"
+                          ])
                     ]
                   |)));
               fun γ =>
@@ -1310,61 +1562,84 @@ Module transaction.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                       [
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.path "core::fmt::Arguments",
-                            "new_v1",
-                            [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0
-                            ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new_v1",
+                              [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 0
+                              ],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        Value.Array
+                                          [ mk_str (| "not implemented: Custom tx not supported" |)
+                                          ]
+                                      |)
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [ mk_str (| "not implemented: Custom tx not supported" |) ]
-                                  |)
-                                |)
-                              |)
-                            |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 0 ]
+                                          [ Ty.path "core::fmt::rt::Argument" ],
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 0 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          M.get_associated_function (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            "none",
+                                            [],
+                                            []
+                                          |),
+                                          []
+                                        |)
+                                      |)
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 0 ]
-                                      [ Ty.path "core::fmt::rt::Argument" ],
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 0 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      M.get_associated_function (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        "none",
-                                        [],
-                                        []
-                                      |),
-                                      []
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                                      [ Ty.path "core::fmt::rt::Argument" ]
+                                  ])
+                            ]
+                          |))
+                          (Ty.path "core::fmt::Arguments")
                       ]
                     |)
                   |)))
@@ -1413,24 +1688,35 @@ Module transaction.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.associated_in_trait
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.associated_in_trait
+                            "revm_context_interface::transaction::Transaction"
+                            []
+                            []
+                            Self
+                            "TransactionType",
+                          M.get_trait_method (|
+                            "revm_context_interface::transaction::Transaction",
+                            Self,
+                            [],
+                            [],
+                            "tx_type",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Self ])
+                          ]
+                        |))
+                        (Ty.associated_in_trait
                           "revm_context_interface::transaction::Transaction"
                           []
                           []
                           Self
-                          "TransactionType",
-                        M.get_trait_method (|
-                          "revm_context_interface::transaction::Transaction",
-                          Self,
-                          [],
-                          [],
-                          "tx_type",
-                          [],
-                          []
-                        |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                      |)
+                          "TransactionType")
                     ]
                   |) in
                 M.alloc (|
@@ -1470,39 +1756,53 @@ Module transaction.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.associated_in_trait
+                                                      "revm_context_interface::transaction::Transaction"
+                                                      []
+                                                      []
+                                                      Self
+                                                      "Legacy"
+                                                  ],
+                                                M.get_trait_method (|
+                                                  "revm_context_interface::transaction::Transaction",
+                                                  Self,
+                                                  [],
+                                                  [],
+                                                  "legacy",
+                                                  [],
+                                                  []
+                                                |),
                                                 [
-                                                  Ty.associated_in_trait
-                                                    "revm_context_interface::transaction::Transaction"
-                                                    []
-                                                    []
-                                                    Self
-                                                    "Legacy"
-                                                ],
-                                              M.get_trait_method (|
-                                                "revm_context_interface::transaction::Transaction",
-                                                Self,
-                                                [],
-                                                [],
-                                                "legacy",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| self |) |)
-                                                |)
-                                              ]
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| self |) |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Self ])
+                                                ]
+                                              |)
                                             |)
-                                          |)
-                                        |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.associated_in_trait
+                                                "revm_context_interface::transaction::Transaction"
+                                                []
+                                                []
+                                                Self
+                                                "Legacy"
+                                            ])
                                       ]
                                     |)
                                   |)
@@ -1535,39 +1835,53 @@ Module transaction.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.call_closure (|
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.associated_in_trait
+                                                      "revm_context_interface::transaction::Transaction"
+                                                      []
+                                                      []
+                                                      Self
+                                                      "Eip2930"
+                                                  ],
+                                                M.get_trait_method (|
+                                                  "revm_context_interface::transaction::Transaction",
+                                                  Self,
+                                                  [],
+                                                  [],
+                                                  "eip2930",
+                                                  [],
+                                                  []
+                                                |),
                                                 [
-                                                  Ty.associated_in_trait
-                                                    "revm_context_interface::transaction::Transaction"
-                                                    []
-                                                    []
-                                                    Self
-                                                    "Eip2930"
-                                                ],
-                                              M.get_trait_method (|
-                                                "revm_context_interface::transaction::Transaction",
-                                                Self,
-                                                [],
-                                                [],
-                                                "eip2930",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| self |) |)
-                                                |)
-                                              ]
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (| M.read (| self |) |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Self ])
+                                                ]
+                                              |)
                                             |)
-                                          |)
-                                        |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.associated_in_trait
+                                                "revm_context_interface::transaction::Transaction"
+                                                []
+                                                []
+                                                Self
+                                                "Eip2930"
+                                            ])
                                       ]
                                     |)
                                   |)
@@ -1599,39 +1913,53 @@ Module transaction.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.associated_in_trait
+                                                    "revm_context_interface::transaction::Transaction"
+                                                    []
+                                                    []
+                                                    Self
+                                                    "Eip1559"
+                                                ],
+                                              M.get_trait_method (|
+                                                "revm_context_interface::transaction::Transaction",
+                                                Self,
+                                                [],
+                                                [],
+                                                "eip1559",
+                                                [],
+                                                []
+                                              |),
                                               [
-                                                Ty.associated_in_trait
-                                                  "revm_context_interface::transaction::Transaction"
-                                                  []
-                                                  []
-                                                  Self
-                                                  "Eip1559"
-                                              ],
-                                            M.get_trait_method (|
-                                              "revm_context_interface::transaction::Transaction",
-                                              Self,
-                                              [],
-                                              [],
-                                              "eip1559",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| self |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Self ])
+                                              ]
+                                            |)
                                           |)
-                                        |)
-                                      |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.associated_in_trait
+                                              "revm_context_interface::transaction::Transaction"
+                                              []
+                                              []
+                                              Self
+                                              "Eip1559"
+                                          ])
                                     ]
                                   |);
                                   M.call_closure (|
@@ -1651,39 +1979,53 @@ Module transaction.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.associated_in_trait
+                                                    "revm_context_interface::transaction::Transaction"
+                                                    []
+                                                    []
+                                                    Self
+                                                    "Eip1559"
+                                                ],
+                                              M.get_trait_method (|
+                                                "revm_context_interface::transaction::Transaction",
+                                                Self,
+                                                [],
+                                                [],
+                                                "eip1559",
+                                                [],
+                                                []
+                                              |),
                                               [
-                                                Ty.associated_in_trait
-                                                  "revm_context_interface::transaction::Transaction"
-                                                  []
-                                                  []
-                                                  Self
-                                                  "Eip1559"
-                                              ],
-                                            M.get_trait_method (|
-                                              "revm_context_interface::transaction::Transaction",
-                                              Self,
-                                              [],
-                                              [],
-                                              "eip1559",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| self |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Self ])
+                                              ]
+                                            |)
                                           |)
-                                        |)
-                                      |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.associated_in_trait
+                                              "revm_context_interface::transaction::Transaction"
+                                              []
+                                              []
+                                              Self
+                                              "Eip1559"
+                                          ])
                                     ]
                                   |)
                                 ]));
@@ -1713,39 +2055,53 @@ Module transaction.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.associated_in_trait
+                                                    "revm_context_interface::transaction::Transaction"
+                                                    []
+                                                    []
+                                                    Self
+                                                    "Eip4844"
+                                                ],
+                                              M.get_trait_method (|
+                                                "revm_context_interface::transaction::Transaction",
+                                                Self,
+                                                [],
+                                                [],
+                                                "eip4844",
+                                                [],
+                                                []
+                                              |),
                                               [
-                                                Ty.associated_in_trait
-                                                  "revm_context_interface::transaction::Transaction"
-                                                  []
-                                                  []
-                                                  Self
-                                                  "Eip4844"
-                                              ],
-                                            M.get_trait_method (|
-                                              "revm_context_interface::transaction::Transaction",
-                                              Self,
-                                              [],
-                                              [],
-                                              "eip4844",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| self |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Self ])
+                                              ]
+                                            |)
                                           |)
-                                        |)
-                                      |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.associated_in_trait
+                                              "revm_context_interface::transaction::Transaction"
+                                              []
+                                              []
+                                              Self
+                                              "Eip4844"
+                                          ])
                                     ]
                                   |);
                                   M.call_closure (|
@@ -1765,39 +2121,53 @@ Module transaction.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.associated_in_trait
+                                                    "revm_context_interface::transaction::Transaction"
+                                                    []
+                                                    []
+                                                    Self
+                                                    "Eip4844"
+                                                ],
+                                              M.get_trait_method (|
+                                                "revm_context_interface::transaction::Transaction",
+                                                Self,
+                                                [],
+                                                [],
+                                                "eip4844",
+                                                [],
+                                                []
+                                              |),
                                               [
-                                                Ty.associated_in_trait
-                                                  "revm_context_interface::transaction::Transaction"
-                                                  []
-                                                  []
-                                                  Self
-                                                  "Eip4844"
-                                              ],
-                                            M.get_trait_method (|
-                                              "revm_context_interface::transaction::Transaction",
-                                              Self,
-                                              [],
-                                              [],
-                                              "eip4844",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| self |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Self ])
+                                              ]
+                                            |)
                                           |)
-                                        |)
-                                      |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.associated_in_trait
+                                              "revm_context_interface::transaction::Transaction"
+                                              []
+                                              []
+                                              Self
+                                              "Eip4844"
+                                          ])
                                     ]
                                   |)
                                 ]));
@@ -1827,39 +2197,53 @@ Module transaction.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.associated_in_trait
+                                                    "revm_context_interface::transaction::Transaction"
+                                                    []
+                                                    []
+                                                    Self
+                                                    "Eip7702"
+                                                ],
+                                              M.get_trait_method (|
+                                                "revm_context_interface::transaction::Transaction",
+                                                Self,
+                                                [],
+                                                [],
+                                                "eip7702",
+                                                [],
+                                                []
+                                              |),
                                               [
-                                                Ty.associated_in_trait
-                                                  "revm_context_interface::transaction::Transaction"
-                                                  []
-                                                  []
-                                                  Self
-                                                  "Eip7702"
-                                              ],
-                                            M.get_trait_method (|
-                                              "revm_context_interface::transaction::Transaction",
-                                              Self,
-                                              [],
-                                              [],
-                                              "eip7702",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| self |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Self ])
+                                              ]
+                                            |)
                                           |)
-                                        |)
-                                      |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.associated_in_trait
+                                              "revm_context_interface::transaction::Transaction"
+                                              []
+                                              []
+                                              Self
+                                              "Eip7702"
+                                          ])
                                     ]
                                   |);
                                   M.call_closure (|
@@ -1879,39 +2263,53 @@ Module transaction.
                                       []
                                     |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.associated_in_trait
+                                                    "revm_context_interface::transaction::Transaction"
+                                                    []
+                                                    []
+                                                    Self
+                                                    "Eip7702"
+                                                ],
+                                              M.get_trait_method (|
+                                                "revm_context_interface::transaction::Transaction",
+                                                Self,
+                                                [],
+                                                [],
+                                                "eip7702",
+                                                [],
+                                                []
+                                              |),
                                               [
-                                                Ty.associated_in_trait
-                                                  "revm_context_interface::transaction::Transaction"
-                                                  []
-                                                  []
-                                                  Self
-                                                  "Eip7702"
-                                              ],
-                                            M.get_trait_method (|
-                                              "revm_context_interface::transaction::Transaction",
-                                              Self,
-                                              [],
-                                              [],
-                                              "eip7702",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.read (| self |) |)
-                                              |)
-                                            ]
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| self |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Self ])
+                                              ]
+                                            |)
                                           |)
-                                        |)
-                                      |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.associated_in_trait
+                                              "revm_context_interface::transaction::Transaction"
+                                              []
+                                              []
+                                              Self
+                                              "Eip7702"
+                                          ])
                                     ]
                                   |)
                                 ]));
@@ -1927,67 +2325,90 @@ Module transaction.
                                   Ty.path "never",
                                   M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                   [
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::Arguments",
-                                      M.get_associated_function (|
+                                    M.value_with_ty
+                                      (M.call_closure (|
                                         Ty.path "core::fmt::Arguments",
-                                        "new_v1",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::Arguments",
+                                          "new_v1",
+                                          [
+                                            Value.Integer IntegerKind.Usize 1;
+                                            Value.Integer IntegerKind.Usize 0
+                                          ],
+                                          []
+                                        |),
                                         [
-                                          Value.Integer IntegerKind.Usize 1;
-                                          Value.Integer IntegerKind.Usize 0
-                                        ],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
+                                          M.value_with_ty
+                                            (M.borrow (|
                                               Pointer.Kind.Ref,
-                                              M.alloc (|
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.alloc (|
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                                                      ],
+                                                    Value.Array
+                                                      [
+                                                        mk_str (|
+                                                          "not implemented: Custom tx not supported"
+                                                        |)
+                                                      ]
+                                                  |)
+                                                |)
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
                                                 Ty.apply
                                                   (Ty.path "array")
                                                   [ Value.Integer IntegerKind.Usize 1 ]
-                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                                Value.Array
-                                                  [
-                                                    mk_str (|
-                                                      "not implemented: Custom tx not supported"
-                                                    |)
-                                                  ]
-                                              |)
-                                            |)
-                                          |)
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                              ]);
+                                          M.value_with_ty
+                                            (M.borrow (|
                                               Pointer.Kind.Ref,
-                                              M.alloc (|
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.alloc (|
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 0 ]
+                                                      [ Ty.path "core::fmt::rt::Argument" ],
+                                                    M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "array")
+                                                        [ Value.Integer IntegerKind.Usize 0 ]
+                                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                                      M.get_associated_function (|
+                                                        Ty.path "core::fmt::rt::Argument",
+                                                        "none",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      []
+                                                    |)
+                                                  |)
+                                                |)
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
                                                 Ty.apply
                                                   (Ty.path "array")
                                                   [ Value.Integer IntegerKind.Usize 0 ]
-                                                  [ Ty.path "core::fmt::rt::Argument" ],
-                                                M.call_closure (|
-                                                  Ty.apply
-                                                    (Ty.path "array")
-                                                    [ Value.Integer IntegerKind.Usize 0 ]
-                                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                                  M.get_associated_function (|
-                                                    Ty.path "core::fmt::rt::Argument",
-                                                    "none",
-                                                    [],
-                                                    []
-                                                  |),
-                                                  []
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      ]
-                                    |)
+                                                  [ Ty.path "core::fmt::rt::Argument" ]
+                                              ])
+                                        ]
+                                      |))
+                                      (Ty.path "core::fmt::Arguments")
                                   ]
                                 |)
                               |)))
@@ -2005,17 +2426,22 @@ Module transaction.
                             Ty.path "u128",
                             M.get_function (| "core::cmp::min", [], [ Ty.path "u128" ] |),
                             [
-                              M.read (| max_fee |);
-                              M.call_closure (|
-                                Ty.path "u128",
-                                M.get_associated_function (|
+                              M.value_with_ty (M.read (| max_fee |)) (Ty.path "u128");
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.path "u128",
-                                  "saturating_add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| base_fee |); M.read (| max_priority_fee |) ]
-                              |)
+                                  M.get_associated_function (|
+                                    Ty.path "u128",
+                                    "saturating_add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty (M.read (| base_fee |)) (Ty.path "u128");
+                                    M.value_with_ty (M.read (| max_priority_fee |)) (Ty.path "u128")
+                                  ]
+                                |))
+                                (Ty.path "u128")
                             ]
                           |)))
                     ]
@@ -2057,24 +2483,35 @@ Module transaction.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.associated_in_trait
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.associated_in_trait
+                        "revm_context_interface::transaction::Transaction"
+                        []
+                        []
+                        Self
+                        "TransactionType",
+                      M.get_trait_method (|
+                        "revm_context_interface::transaction::Transaction",
+                        Self,
+                        [],
+                        [],
+                        "tx_type",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Self ])
+                      ]
+                    |))
+                    (Ty.associated_in_trait
                       "revm_context_interface::transaction::Transaction"
                       []
                       []
                       Self
-                      "TransactionType",
-                    M.get_trait_method (|
-                      "revm_context_interface::transaction::Transaction",
-                      Self,
-                      [],
-                      [],
-                      "tx_type",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                  |)
+                      "TransactionType")
                 ]
               |) in
             M.alloc (|
@@ -2107,34 +2544,53 @@ Module transaction.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "revm_context_interface::transaction::Transaction"
+                                        []
+                                        []
+                                        Self
+                                        "Legacy"
+                                    ],
+                                  M.get_trait_method (|
+                                    "revm_context_interface::transaction::Transaction",
+                                    Self,
+                                    [],
+                                    [],
+                                    "legacy",
+                                    [],
+                                    []
+                                  |),
                                   [
-                                    Ty.associated_in_trait
-                                      "revm_context_interface::transaction::Transaction"
-                                      []
-                                      []
-                                      Self
-                                      "Legacy"
-                                  ],
-                                M.get_trait_method (|
-                                  "revm_context_interface::transaction::Transaction",
-                                  Self,
-                                  [],
-                                  [],
-                                  "legacy",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Self ])
+                                  ]
+                                |)
                               |)
-                            |)
-                          |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.associated_in_trait
+                                  "revm_context_interface::transaction::Transaction"
+                                  []
+                                  []
+                                  Self
+                                  "Legacy"
+                              ])
                         ]
                       |)));
                   fun γ =>
@@ -2161,34 +2617,53 @@ Module transaction.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "revm_context_interface::transaction::Transaction"
+                                        []
+                                        []
+                                        Self
+                                        "Eip2930"
+                                    ],
+                                  M.get_trait_method (|
+                                    "revm_context_interface::transaction::Transaction",
+                                    Self,
+                                    [],
+                                    [],
+                                    "eip2930",
+                                    [],
+                                    []
+                                  |),
                                   [
-                                    Ty.associated_in_trait
-                                      "revm_context_interface::transaction::Transaction"
-                                      []
-                                      []
-                                      Self
-                                      "Eip2930"
-                                  ],
-                                M.get_trait_method (|
-                                  "revm_context_interface::transaction::Transaction",
-                                  Self,
-                                  [],
-                                  [],
-                                  "eip2930",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Self ])
+                                  ]
+                                |)
                               |)
-                            |)
-                          |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.associated_in_trait
+                                  "revm_context_interface::transaction::Transaction"
+                                  []
+                                  []
+                                  Self
+                                  "Eip2930"
+                              ])
                         ]
                       |)));
                   fun γ =>
@@ -2215,34 +2690,53 @@ Module transaction.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "revm_context_interface::transaction::Transaction"
+                                        []
+                                        []
+                                        Self
+                                        "Eip1559"
+                                    ],
+                                  M.get_trait_method (|
+                                    "revm_context_interface::transaction::Transaction",
+                                    Self,
+                                    [],
+                                    [],
+                                    "eip1559",
+                                    [],
+                                    []
+                                  |),
                                   [
-                                    Ty.associated_in_trait
-                                      "revm_context_interface::transaction::Transaction"
-                                      []
-                                      []
-                                      Self
-                                      "Eip1559"
-                                  ],
-                                M.get_trait_method (|
-                                  "revm_context_interface::transaction::Transaction",
-                                  Self,
-                                  [],
-                                  [],
-                                  "eip1559",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Self ])
+                                  ]
+                                |)
                               |)
-                            |)
-                          |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.associated_in_trait
+                                  "revm_context_interface::transaction::Transaction"
+                                  []
+                                  []
+                                  Self
+                                  "Eip1559"
+                              ])
                         ]
                       |)));
                   fun γ =>
@@ -2252,64 +2746,78 @@ Module transaction.
                           γ,
                           "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844"
                         |) in
-                      Value.StructTuple
-                        "alloy_primitives::common::TxKind::Call"
-                        []
-                        []
-                        [
-                          M.call_closure (|
-                            Ty.path "alloy_primitives::bits::address::Address",
-                            M.get_trait_method (|
-                              "revm_context_interface::transaction::eip4844::Eip4844Tx",
-                              Ty.associated_in_trait
-                                "revm_context_interface::transaction::Transaction"
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "alloy_primitives::common::TxKind::Call"
+                          [
+                            M.call_closure (|
+                              Ty.path "alloy_primitives::bits::address::Address",
+                              M.get_trait_method (|
+                                "revm_context_interface::transaction::eip4844::Eip4844Tx",
+                                Ty.associated_in_trait
+                                  "revm_context_interface::transaction::Transaction"
+                                  []
+                                  []
+                                  Self
+                                  "Eip4844",
+                                [],
+                                [],
+                                "destination",
+                                [],
                                 []
-                                []
-                                Self
-                                "Eip4844",
-                              [],
-                              [],
-                              "destination",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [
-                                        Ty.associated_in_trait
-                                          "revm_context_interface::transaction::Transaction"
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&")
                                           []
+                                          [
+                                            Ty.associated_in_trait
+                                              "revm_context_interface::transaction::Transaction"
+                                              []
+                                              []
+                                              Self
+                                              "Eip4844"
+                                          ],
+                                        M.get_trait_method (|
+                                          "revm_context_interface::transaction::Transaction",
+                                          Self,
+                                          [],
+                                          [],
+                                          "eip4844",
+                                          [],
                                           []
-                                          Self
-                                          "Eip4844"
-                                      ],
-                                    M.get_trait_method (|
-                                      "revm_context_interface::transaction::Transaction",
-                                      Self,
-                                      [],
-                                      [],
-                                      "eip4844",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Self ])
+                                        ]
                                       |)
-                                    ]
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
-                        ]));
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "revm_context_interface::transaction::Transaction"
+                                        []
+                                        []
+                                        Self
+                                        "Eip4844"
+                                    ])
+                              ]
+                            |)
+                          ])
+                        (Ty.path "alloy_primitives::common::TxKind")));
                   fun γ =>
                     ltac:(M.monadic
                       (let _ :=
@@ -2317,64 +2825,78 @@ Module transaction.
                           γ,
                           "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702"
                         |) in
-                      Value.StructTuple
-                        "alloy_primitives::common::TxKind::Call"
-                        []
-                        []
-                        [
-                          M.call_closure (|
-                            Ty.path "alloy_primitives::bits::address::Address",
-                            M.get_trait_method (|
-                              "revm_context_interface::transaction::eip7702::Eip7702Tx",
-                              Ty.associated_in_trait
-                                "revm_context_interface::transaction::Transaction"
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "alloy_primitives::common::TxKind::Call"
+                          [
+                            M.call_closure (|
+                              Ty.path "alloy_primitives::bits::address::Address",
+                              M.get_trait_method (|
+                                "revm_context_interface::transaction::eip7702::Eip7702Tx",
+                                Ty.associated_in_trait
+                                  "revm_context_interface::transaction::Transaction"
+                                  []
+                                  []
+                                  Self
+                                  "Eip7702",
+                                [],
+                                [],
+                                "destination",
+                                [],
                                 []
-                                []
-                                Self
-                                "Eip7702",
-                              [],
-                              [],
-                              "destination",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [
-                                        Ty.associated_in_trait
-                                          "revm_context_interface::transaction::Transaction"
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&")
                                           []
+                                          [
+                                            Ty.associated_in_trait
+                                              "revm_context_interface::transaction::Transaction"
+                                              []
+                                              []
+                                              Self
+                                              "Eip7702"
+                                          ],
+                                        M.get_trait_method (|
+                                          "revm_context_interface::transaction::Transaction",
+                                          Self,
+                                          [],
+                                          [],
+                                          "eip7702",
+                                          [],
                                           []
-                                          Self
-                                          "Eip7702"
-                                      ],
-                                    M.get_trait_method (|
-                                      "revm_context_interface::transaction::Transaction",
-                                      Self,
-                                      [],
-                                      [],
-                                      "eip7702",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Self ])
+                                        ]
                                       |)
-                                    ]
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
-                        ]));
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "revm_context_interface::transaction::Transaction"
+                                        []
+                                        []
+                                        Self
+                                        "Eip7702"
+                                    ])
+                              ]
+                            |)
+                          ])
+                        (Ty.path "alloy_primitives::common::TxKind")));
                   fun γ =>
                     ltac:(M.monadic
                       (let _ :=
@@ -2387,64 +2909,89 @@ Module transaction.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_v1",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_v1",
+                                  [
+                                    Value.Integer IntegerKind.Usize 1;
+                                    Value.Integer IntegerKind.Usize 0
+                                  ],
+                                  []
+                                |),
                                 [
-                                  Value.Integer IntegerKind.Usize 1;
-                                  Value.Integer IntegerKind.Usize 0
-                                ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [
+                                                mk_str (|
+                                                  "not implemented: Custom tx not supported"
+                                                |)
+                                              ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [ mk_str (| "not implemented: Custom tx not supported" |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 0 ]
+                                              [ Ty.path "core::fmt::rt::Argument" ],
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 0 ]
+                                                [ Ty.path "core::fmt::rt::Argument" ],
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "none",
+                                                [],
+                                                []
+                                              |),
+                                              []
+                                            |)
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 0 ]
-                                          [ Ty.path "core::fmt::rt::Argument" ],
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 0 ]
-                                            [ Ty.path "core::fmt::rt::Argument" ],
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "none",
-                                            [],
-                                            []
-                                          |),
-                                          []
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.path "core::fmt::rt::Argument" ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)))
@@ -2488,24 +3035,35 @@ Module transaction.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.associated_in_trait
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.associated_in_trait
+                        "revm_context_interface::transaction::Transaction"
+                        []
+                        []
+                        Self
+                        "TransactionType",
+                      M.get_trait_method (|
+                        "revm_context_interface::transaction::Transaction",
+                        Self,
+                        [],
+                        [],
+                        "tx_type",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Self ])
+                      ]
+                    |))
+                    (Ty.associated_in_trait
                       "revm_context_interface::transaction::Transaction"
                       []
                       []
                       Self
-                      "TransactionType",
-                    M.get_trait_method (|
-                      "revm_context_interface::transaction::Transaction",
-                      Self,
-                      [],
-                      [],
-                      "tx_type",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                  |)
+                      "TransactionType")
                 ]
               |) in
             M.alloc (|
@@ -2551,23 +3109,24 @@ Module transaction.
                           γ,
                           "revm_context_interface::transaction::transaction_type::TransactionType::Legacy"
                         |) in
-                      Value.StructTuple
-                        "core::option::Option::None"
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.associated_in_trait
-                                "revm_context_interface::transaction::Transaction"
-                                []
-                                []
-                                Self
-                                "AccessList"
-                            ]
-                        ]
-                        []));
+                      M.value_with_ty
+                        (Value.StructTuple "core::option::Option::None" [])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.associated_in_trait
+                                  "revm_context_interface::transaction::Transaction"
+                                  []
+                                  []
+                                  Self
+                                  "AccessList"
+                              ]
+                          ])));
                   fun γ =>
                     ltac:(M.monadic
                       (let _ :=
@@ -2575,91 +3134,108 @@ Module transaction.
                           γ,
                           "revm_context_interface::transaction::transaction_type::TransactionType::Eip2930"
                         |) in
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.associated_in_trait
-                                "revm_context_interface::transaction::Transaction"
-                                []
-                                []
-                                Self
-                                "AccessList"
-                            ]
-                        ]
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "revm_context_interface::transaction::Transaction"
+                                        []
+                                        []
+                                        Self
+                                        "AccessList"
+                                    ],
+                                  M.get_trait_method (|
+                                    "revm_context_interface::transaction::eip2930::Eip2930Tx",
                                     Ty.associated_in_trait
                                       "revm_context_interface::transaction::Transaction"
                                       []
                                       []
                                       Self
-                                      "AccessList"
-                                  ],
-                                M.get_trait_method (|
-                                  "revm_context_interface::transaction::eip2930::Eip2930Tx",
-                                  Ty.associated_in_trait
-                                    "revm_context_interface::transaction::Transaction"
+                                      "Eip2930",
+                                    [],
+                                    [],
+                                    "access_list",
+                                    [],
                                     []
-                                    []
-                                    Self
-                                    "Eip2930",
-                                  [],
-                                  [],
-                                  "access_list",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.associated_in_trait
-                                              "revm_context_interface::transaction::Transaction"
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
                                               []
+                                              [
+                                                Ty.associated_in_trait
+                                                  "revm_context_interface::transaction::Transaction"
+                                                  []
+                                                  []
+                                                  Self
+                                                  "Eip2930"
+                                              ],
+                                            M.get_trait_method (|
+                                              "revm_context_interface::transaction::Transaction",
+                                              Self,
+                                              [],
+                                              [],
+                                              "eip2930",
+                                              [],
                                               []
-                                              Self
-                                              "Eip2930"
-                                          ],
-                                        M.get_trait_method (|
-                                          "revm_context_interface::transaction::Transaction",
-                                          Self,
-                                          [],
-                                          [],
-                                          "eip2930",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Self ])
+                                            ]
                                           |)
-                                        ]
-                                      |)
-                                    |)
-                                  |)
-                                ]
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.associated_in_trait
+                                            "revm_context_interface::transaction::Transaction"
+                                            []
+                                            []
+                                            Self
+                                            "Eip2930"
+                                        ])
+                                  ]
+                                |)
                               |)
                             |)
-                          |)
-                        ]));
+                          ])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.associated_in_trait
+                                  "revm_context_interface::transaction::Transaction"
+                                  []
+                                  []
+                                  Self
+                                  "AccessList"
+                              ]
+                          ])));
                   fun γ =>
                     ltac:(M.monadic
                       (let _ :=
@@ -2667,91 +3243,108 @@ Module transaction.
                           γ,
                           "revm_context_interface::transaction::transaction_type::TransactionType::Eip1559"
                         |) in
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.associated_in_trait
-                                "revm_context_interface::transaction::Transaction"
-                                []
-                                []
-                                Self
-                                "AccessList"
-                            ]
-                        ]
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "revm_context_interface::transaction::Transaction"
+                                        []
+                                        []
+                                        Self
+                                        "AccessList"
+                                    ],
+                                  M.get_trait_method (|
+                                    "revm_context_interface::transaction::eip1559::Eip1559CommonTxFields",
                                     Ty.associated_in_trait
                                       "revm_context_interface::transaction::Transaction"
                                       []
                                       []
                                       Self
-                                      "AccessList"
-                                  ],
-                                M.get_trait_method (|
-                                  "revm_context_interface::transaction::eip1559::Eip1559CommonTxFields",
-                                  Ty.associated_in_trait
-                                    "revm_context_interface::transaction::Transaction"
+                                      "Eip1559",
+                                    [],
+                                    [],
+                                    "access_list",
+                                    [],
                                     []
-                                    []
-                                    Self
-                                    "Eip1559",
-                                  [],
-                                  [],
-                                  "access_list",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.associated_in_trait
-                                              "revm_context_interface::transaction::Transaction"
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
                                               []
+                                              [
+                                                Ty.associated_in_trait
+                                                  "revm_context_interface::transaction::Transaction"
+                                                  []
+                                                  []
+                                                  Self
+                                                  "Eip1559"
+                                              ],
+                                            M.get_trait_method (|
+                                              "revm_context_interface::transaction::Transaction",
+                                              Self,
+                                              [],
+                                              [],
+                                              "eip1559",
+                                              [],
                                               []
-                                              Self
-                                              "Eip1559"
-                                          ],
-                                        M.get_trait_method (|
-                                          "revm_context_interface::transaction::Transaction",
-                                          Self,
-                                          [],
-                                          [],
-                                          "eip1559",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Self ])
+                                            ]
                                           |)
-                                        ]
-                                      |)
-                                    |)
-                                  |)
-                                ]
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.associated_in_trait
+                                            "revm_context_interface::transaction::Transaction"
+                                            []
+                                            []
+                                            Self
+                                            "Eip1559"
+                                        ])
+                                  ]
+                                |)
                               |)
                             |)
-                          |)
-                        ]));
+                          ])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.associated_in_trait
+                                  "revm_context_interface::transaction::Transaction"
+                                  []
+                                  []
+                                  Self
+                                  "AccessList"
+                              ]
+                          ])));
                   fun γ =>
                     ltac:(M.monadic
                       (let _ :=
@@ -2759,91 +3352,108 @@ Module transaction.
                           γ,
                           "revm_context_interface::transaction::transaction_type::TransactionType::Eip4844"
                         |) in
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.associated_in_trait
-                                "revm_context_interface::transaction::Transaction"
-                                []
-                                []
-                                Self
-                                "AccessList"
-                            ]
-                        ]
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "revm_context_interface::transaction::Transaction"
+                                        []
+                                        []
+                                        Self
+                                        "AccessList"
+                                    ],
+                                  M.get_trait_method (|
+                                    "revm_context_interface::transaction::eip1559::Eip1559CommonTxFields",
                                     Ty.associated_in_trait
                                       "revm_context_interface::transaction::Transaction"
                                       []
                                       []
                                       Self
-                                      "AccessList"
-                                  ],
-                                M.get_trait_method (|
-                                  "revm_context_interface::transaction::eip1559::Eip1559CommonTxFields",
-                                  Ty.associated_in_trait
-                                    "revm_context_interface::transaction::Transaction"
+                                      "Eip4844",
+                                    [],
+                                    [],
+                                    "access_list",
+                                    [],
                                     []
-                                    []
-                                    Self
-                                    "Eip4844",
-                                  [],
-                                  [],
-                                  "access_list",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.associated_in_trait
-                                              "revm_context_interface::transaction::Transaction"
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
                                               []
+                                              [
+                                                Ty.associated_in_trait
+                                                  "revm_context_interface::transaction::Transaction"
+                                                  []
+                                                  []
+                                                  Self
+                                                  "Eip4844"
+                                              ],
+                                            M.get_trait_method (|
+                                              "revm_context_interface::transaction::Transaction",
+                                              Self,
+                                              [],
+                                              [],
+                                              "eip4844",
+                                              [],
                                               []
-                                              Self
-                                              "Eip4844"
-                                          ],
-                                        M.get_trait_method (|
-                                          "revm_context_interface::transaction::Transaction",
-                                          Self,
-                                          [],
-                                          [],
-                                          "eip4844",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Self ])
+                                            ]
                                           |)
-                                        ]
-                                      |)
-                                    |)
-                                  |)
-                                ]
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.associated_in_trait
+                                            "revm_context_interface::transaction::Transaction"
+                                            []
+                                            []
+                                            Self
+                                            "Eip4844"
+                                        ])
+                                  ]
+                                |)
                               |)
                             |)
-                          |)
-                        ]));
+                          ])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.associated_in_trait
+                                  "revm_context_interface::transaction::Transaction"
+                                  []
+                                  []
+                                  Self
+                                  "AccessList"
+                              ]
+                          ])));
                   fun γ =>
                     ltac:(M.monadic
                       (let _ :=
@@ -2851,91 +3461,108 @@ Module transaction.
                           γ,
                           "revm_context_interface::transaction::transaction_type::TransactionType::Eip7702"
                         |) in
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.associated_in_trait
-                                "revm_context_interface::transaction::Transaction"
-                                []
-                                []
-                                Self
-                                "AccessList"
-                            ]
-                        ]
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "revm_context_interface::transaction::Transaction"
+                                        []
+                                        []
+                                        Self
+                                        "AccessList"
+                                    ],
+                                  M.get_trait_method (|
+                                    "revm_context_interface::transaction::eip1559::Eip1559CommonTxFields",
                                     Ty.associated_in_trait
                                       "revm_context_interface::transaction::Transaction"
                                       []
                                       []
                                       Self
-                                      "AccessList"
-                                  ],
-                                M.get_trait_method (|
-                                  "revm_context_interface::transaction::eip1559::Eip1559CommonTxFields",
-                                  Ty.associated_in_trait
-                                    "revm_context_interface::transaction::Transaction"
+                                      "Eip7702",
+                                    [],
+                                    [],
+                                    "access_list",
+                                    [],
                                     []
-                                    []
-                                    Self
-                                    "Eip7702",
-                                  [],
-                                  [],
-                                  "access_list",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.associated_in_trait
-                                              "revm_context_interface::transaction::Transaction"
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "&")
                                               []
+                                              [
+                                                Ty.associated_in_trait
+                                                  "revm_context_interface::transaction::Transaction"
+                                                  []
+                                                  []
+                                                  Self
+                                                  "Eip7702"
+                                              ],
+                                            M.get_trait_method (|
+                                              "revm_context_interface::transaction::Transaction",
+                                              Self,
+                                              [],
+                                              [],
+                                              "eip7702",
+                                              [],
                                               []
-                                              Self
-                                              "Eip7702"
-                                          ],
-                                        M.get_trait_method (|
-                                          "revm_context_interface::transaction::Transaction",
-                                          Self,
-                                          [],
-                                          [],
-                                          "eip7702",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Self ])
+                                            ]
                                           |)
-                                        ]
-                                      |)
-                                    |)
-                                  |)
-                                ]
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.associated_in_trait
+                                            "revm_context_interface::transaction::Transaction"
+                                            []
+                                            []
+                                            Self
+                                            "Eip7702"
+                                        ])
+                                  ]
+                                |)
                               |)
                             |)
-                          |)
-                        ]));
+                          ])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.associated_in_trait
+                                  "revm_context_interface::transaction::Transaction"
+                                  []
+                                  []
+                                  Self
+                                  "AccessList"
+                              ]
+                          ])));
                   fun γ =>
                     ltac:(M.monadic
                       (let _ :=
@@ -2948,64 +3575,89 @@ Module transaction.
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "core::fmt::Arguments",
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.path "core::fmt::Arguments",
-                                "new_v1",
+                                M.get_associated_function (|
+                                  Ty.path "core::fmt::Arguments",
+                                  "new_v1",
+                                  [
+                                    Value.Integer IntegerKind.Usize 1;
+                                    Value.Integer IntegerKind.Usize 0
+                                  ],
+                                  []
+                                |),
                                 [
-                                  Value.Integer IntegerKind.Usize 1;
-                                  Value.Integer IntegerKind.Usize 0
-                                ],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 1 ]
+                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                            Value.Array
+                                              [
+                                                mk_str (|
+                                                  "not implemented: Custom tx not supported"
+                                                |)
+                                              ]
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 1 ]
-                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                        Value.Array
-                                          [ mk_str (| "not implemented: Custom tx not supported" |)
-                                          ]
-                                      |)
-                                    |)
-                                  |)
-                                |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.borrow (|
                                       Pointer.Kind.Ref,
-                                      M.alloc (|
+                                      M.deref (|
+                                        M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 0 ]
+                                              [ Ty.path "core::fmt::rt::Argument" ],
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 0 ]
+                                                [ Ty.path "core::fmt::rt::Argument" ],
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "none",
+                                                [],
+                                                []
+                                              |),
+                                              []
+                                            |)
+                                          |)
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
                                         Ty.apply
                                           (Ty.path "array")
                                           [ Value.Integer IntegerKind.Usize 0 ]
-                                          [ Ty.path "core::fmt::rt::Argument" ],
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 0 ]
-                                            [ Ty.path "core::fmt::rt::Argument" ],
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "none",
-                                            [],
-                                            []
-                                          |),
-                                          []
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                |)
-                              ]
-                            |)
+                                          [ Ty.path "core::fmt::rt::Argument" ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.path "core::fmt::Arguments")
                           ]
                         |)
                       |)))
@@ -3099,10 +3751,12 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3141,10 +3795,12 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -3185,10 +3841,12 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -3229,10 +3887,12 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -3273,10 +3933,12 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -3317,10 +3979,12 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -3427,10 +4091,12 @@ Module transaction.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                                |)
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ T ])
                               ]
                             |)
                           |)
@@ -3464,10 +4130,12 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3499,11 +4167,13 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| base_fee |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ]);
+                M.value_with_ty (M.read (| base_fee |)) (Ty.path "u128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3529,10 +4199,12 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3573,10 +4245,12 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3695,10 +4369,12 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3744,10 +4420,12 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -3795,10 +4473,12 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -3846,10 +4526,12 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -3897,10 +4579,12 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -3948,10 +4632,12 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -4065,10 +4751,12 @@ Module transaction.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                                |)
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ T ])
                               ]
                             |)
                           |)
@@ -4109,10 +4797,12 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4151,11 +4841,13 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |);
-                M.read (| base_fee |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ]);
+                M.value_with_ty (M.read (| base_fee |)) (Ty.path "u128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4188,10 +4880,12 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4239,10 +4933,12 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4361,27 +5057,41 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ T ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
-                        Ty.apply
-                          (Ty.path "alloc::sync::Arc")
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply
+                            (Ty.path "alloc::sync::Arc")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ],
+                          [],
+                          [],
+                          "deref",
+                          [],
                           []
-                          [ T; Ty.path "alloc::alloc::Global" ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::sync::Arc")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ]
+                              ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4427,27 +5137,41 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::sync::Arc")
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply
+                                (Ty.path "alloc::sync::Arc")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ],
+                              [],
+                              [],
+                              "deref",
+                              [],
                               []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::sync::Arc")
+                                      []
+                                      [ T; Ty.path "alloc::alloc::Global" ]
+                                  ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -4495,27 +5219,41 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::sync::Arc")
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply
+                                (Ty.path "alloc::sync::Arc")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ],
+                              [],
+                              [],
+                              "deref",
+                              [],
                               []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::sync::Arc")
+                                      []
+                                      [ T; Ty.path "alloc::alloc::Global" ]
+                                  ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -4563,27 +5301,41 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::sync::Arc")
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply
+                                (Ty.path "alloc::sync::Arc")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ],
+                              [],
+                              [],
+                              "deref",
+                              [],
                               []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::sync::Arc")
+                                      []
+                                      [ T; Ty.path "alloc::alloc::Global" ]
+                                  ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -4631,27 +5383,41 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::sync::Arc")
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply
+                                (Ty.path "alloc::sync::Arc")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ],
+                              [],
+                              [],
+                              "deref",
+                              [],
                               []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::sync::Arc")
+                                      []
+                                      [ T; Ty.path "alloc::alloc::Global" ]
+                                  ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -4699,27 +5465,41 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::sync::Arc")
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply
+                                (Ty.path "alloc::sync::Arc")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ],
+                              [],
+                              [],
+                              "deref",
+                              [],
                               []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::sync::Arc")
+                                      []
+                                      [ T; Ty.path "alloc::alloc::Global" ]
+                                  ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -4833,32 +5613,44 @@ Module transaction.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "&") [] [ T ],
-                                      M.get_trait_method (|
-                                        "core::ops::deref::Deref",
-                                        Ty.apply
-                                          (Ty.path "alloc::sync::Arc")
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "&") [] [ T ],
+                                        M.get_trait_method (|
+                                          "core::ops::deref::Deref",
+                                          Ty.apply
+                                            (Ty.path "alloc::sync::Arc")
+                                            []
+                                            [ T; Ty.path "alloc::alloc::Global" ],
+                                          [],
+                                          [],
+                                          "deref",
+                                          [],
                                           []
-                                          [ T; Ty.path "alloc::alloc::Global" ],
-                                        [],
-                                        [],
-                                        "deref",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
-                                      ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::sync::Arc")
+                                                  []
+                                                  [ T; Ty.path "alloc::alloc::Global" ]
+                                              ])
+                                        ]
+                                      |)
                                     |)
-                                  |)
-                                |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ T ])
                               ]
                             |)
                           |)
@@ -4899,27 +5691,41 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ T ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
-                        Ty.apply
-                          (Ty.path "alloc::sync::Arc")
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply
+                            (Ty.path "alloc::sync::Arc")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ],
+                          [],
+                          [],
+                          "deref",
+                          [],
                           []
-                          [ T; Ty.path "alloc::alloc::Global" ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::sync::Arc")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ]
+                              ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4958,28 +5764,42 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ T ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
-                        Ty.apply
-                          (Ty.path "alloc::sync::Arc")
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply
+                            (Ty.path "alloc::sync::Arc")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ],
+                          [],
+                          [],
+                          "deref",
+                          [],
                           []
-                          [ T; Ty.path "alloc::alloc::Global" ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::sync::Arc")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ]
+                              ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                M.read (| base_fee |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ]);
+                M.value_with_ty (M.read (| base_fee |)) (Ty.path "u128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5012,27 +5832,41 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ T ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
-                        Ty.apply
-                          (Ty.path "alloc::sync::Arc")
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply
+                            (Ty.path "alloc::sync::Arc")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ],
+                          [],
+                          [],
+                          "deref",
+                          [],
                           []
-                          [ T; Ty.path "alloc::alloc::Global" ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::sync::Arc")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ]
+                              ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5080,27 +5914,41 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ T ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
-                        Ty.apply
-                          (Ty.path "alloc::sync::Arc")
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply
+                            (Ty.path "alloc::sync::Arc")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ],
+                          [],
+                          [],
+                          "deref",
+                          [],
                           []
-                          [ T; Ty.path "alloc::alloc::Global" ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::sync::Arc")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ]
+                              ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5218,24 +6066,41 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ T ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
-                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply
+                            (Ty.path "alloc::rc::Rc")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ],
+                          [],
+                          [],
+                          "deref",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::rc::Rc")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ]
+                              ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5280,27 +6145,41 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::rc::Rc")
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply
+                                (Ty.path "alloc::rc::Rc")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ],
+                              [],
+                              [],
+                              "deref",
+                              [],
                               []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::rc::Rc")
+                                      []
+                                      [ T; Ty.path "alloc::alloc::Global" ]
+                                  ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -5347,27 +6226,41 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::rc::Rc")
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply
+                                (Ty.path "alloc::rc::Rc")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ],
+                              [],
+                              [],
+                              "deref",
+                              [],
                               []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::rc::Rc")
+                                      []
+                                      [ T; Ty.path "alloc::alloc::Global" ]
+                                  ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -5414,27 +6307,41 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::rc::Rc")
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply
+                                (Ty.path "alloc::rc::Rc")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ],
+                              [],
+                              [],
+                              "deref",
+                              [],
                               []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::rc::Rc")
+                                      []
+                                      [ T; Ty.path "alloc::alloc::Global" ]
+                                  ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -5481,27 +6388,41 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::rc::Rc")
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply
+                                (Ty.path "alloc::rc::Rc")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ],
+                              [],
+                              [],
+                              "deref",
+                              [],
                               []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::rc::Rc")
+                                      []
+                                      [ T; Ty.path "alloc::alloc::Global" ]
+                                  ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -5548,27 +6469,41 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::rc::Rc")
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply
+                                (Ty.path "alloc::rc::Rc")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ],
+                              [],
+                              [],
+                              "deref",
+                              [],
                               []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::rc::Rc")
+                                      []
+                                      [ T; Ty.path "alloc::alloc::Global" ]
+                                  ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -5681,32 +6616,44 @@ Module transaction.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "&") [] [ T ],
-                                      M.get_trait_method (|
-                                        "core::ops::deref::Deref",
-                                        Ty.apply
-                                          (Ty.path "alloc::rc::Rc")
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "&") [] [ T ],
+                                        M.get_trait_method (|
+                                          "core::ops::deref::Deref",
+                                          Ty.apply
+                                            (Ty.path "alloc::rc::Rc")
+                                            []
+                                            [ T; Ty.path "alloc::alloc::Global" ],
+                                          [],
+                                          [],
+                                          "deref",
+                                          [],
                                           []
-                                          [ T; Ty.path "alloc::alloc::Global" ],
-                                        [],
-                                        [],
-                                        "deref",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
-                                      ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "alloc::rc::Rc")
+                                                  []
+                                                  [ T; Ty.path "alloc::alloc::Global" ]
+                                              ])
+                                        ]
+                                      |)
                                     |)
-                                  |)
-                                |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ T ])
                               ]
                             |)
                           |)
@@ -5746,24 +6693,41 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ T ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
-                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply
+                            (Ty.path "alloc::rc::Rc")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ],
+                          [],
+                          [],
+                          "deref",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::rc::Rc")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ]
+                              ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5801,25 +6765,42 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ T ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
-                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply
+                            (Ty.path "alloc::rc::Rc")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ],
+                          [],
+                          [],
+                          "deref",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::rc::Rc")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ]
+                              ])
+                        ]
+                      |)
                     |)
-                  |)
-                |);
-                M.read (| base_fee |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ]);
+                M.value_with_ty (M.read (| base_fee |)) (Ty.path "u128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5851,24 +6832,41 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ T ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
-                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply
+                            (Ty.path "alloc::rc::Rc")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ],
+                          [],
+                          [],
+                          "deref",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::rc::Rc")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ]
+                              ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5915,24 +6913,41 @@ Module transaction.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ T ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
-                        Ty.apply (Ty.path "alloc::rc::Rc") [] [ T; Ty.path "alloc::alloc::Global" ],
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ T ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.apply
+                            (Ty.path "alloc::rc::Rc")
+                            []
+                            [ T; Ty.path "alloc::alloc::Global" ],
+                          [],
+                          [],
+                          "deref",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::rc::Rc")
+                                  []
+                                  [ T; Ty.path "alloc::alloc::Global" ]
+                              ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ T ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -6013,10 +7028,12 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -6083,10 +7100,12 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -6158,10 +7177,12 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -6233,27 +7254,41 @@ Module transaction.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ T ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.apply
-                              (Ty.path "alloc::sync::Arc")
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ T ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.apply
+                                (Ty.path "alloc::sync::Arc")
+                                []
+                                [ T; Ty.path "alloc::alloc::Global" ],
+                              [],
+                              [],
+                              "deref",
+                              [],
                               []
-                              [ T; Ty.path "alloc::alloc::Global" ],
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::sync::Arc")
+                                      []
+                                      [ T; Ty.path "alloc::alloc::Global" ]
+                                  ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
                   ]
                 |)
               |)
@@ -6327,11 +7362,20 @@ Module transaction.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| block |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ T ]);
+              M.value_with_ty
+                (M.read (| block |))
+                (Ty.associated_in_trait
+                  "revm_context_interface::transaction::TransactionGetter"
+                  []
+                  []
+                  T
+                  "Transaction")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -6391,11 +7435,20 @@ Module transaction.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| block |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ T ]);
+              M.value_with_ty
+                (M.read (| block |))
+                (Ty.associated_in_trait
+                  "revm_context_interface::transaction::TransactionGetter"
+                  []
+                  []
+                  T
+                  "Transaction")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

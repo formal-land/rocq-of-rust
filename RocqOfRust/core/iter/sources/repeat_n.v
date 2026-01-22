@@ -61,17 +61,17 @@ Module iter.
                             [],
                             []
                           |),
-                          [ M.read (| element |) ]
+                          [ M.value_with_ty (M.read (| element |)) T ]
                         |)))
                   ]
                 |) in
               M.alloc (|
                 Ty.apply (Ty.path "core::iter::sources::repeat_n::RepeatN") [] [ T ],
-                Value.mkStructRecord
-                  "core::iter::sources::repeat_n::RepeatN"
-                  []
-                  [ T ]
-                  [ ("element", M.read (| element |)); ("count", M.read (| count |)) ]
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::iter::sources::repeat_n::RepeatN"
+                    [ ("element", M.read (| element |)); ("count", M.read (| count |)) ])
+                  (Ty.apply (Ty.path "core::iter::sources::repeat_n::RepeatN") [] [ T ])
               |)
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -152,46 +152,60 @@ Module iter.
                             |)
                           |)) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.apply (Ty.path "&") [] [ A ] ]
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply (Ty.path "&") [] [ A ],
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "&") [] [ A ],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ A ],
+                                    "assume_init_ref",
+                                    [],
                                     []
-                                    [ A ],
-                                  "assume_init_ref",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::iter::sources::repeat_n::RepeatN",
-                                      "element"
-                                    |)
-                                  |)
-                                ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::iter::sources::repeat_n::RepeatN",
+                                          "element"
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ A ]
+                                        ])
+                                  ]
+                                |)
                               |)
                             |)
-                          |)
-                        ]));
+                          ])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ A ] ])));
                   fun γ =>
                     ltac:(M.monadic
-                      (Value.StructTuple
-                        "core::option::Option::None"
-                        []
-                        [ Ty.apply (Ty.path "&") [] [ A ] ]
-                        []))
+                      (M.value_with_ty
+                        (Value.StructTuple "core::option::Option::None" [])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ A ] ])))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -280,59 +294,84 @@ Module iter.
                               [ Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ] ]
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::iter::sources::repeat_n::RepeatN",
-                                      "element"
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::iter::sources::repeat_n::RepeatN",
+                                        "element"
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |);
-                              M.call_closure (|
-                                Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ],
-                                M.get_associated_function (|
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ A ]
+                                  ]);
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply
                                     (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                     []
                                     [ A ],
-                                  "uninit",
-                                  [],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ A ],
+                                    "uninit",
+                                    [],
+                                    []
+                                  |),
                                   []
-                                |),
-                                []
-                              |)
+                                |))
+                                (Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ])
                             ]
                           |) in
                         M.alloc (|
                           Ty.apply (Ty.path "core::option::Option") [] [ A ],
-                          Value.StructTuple
-                            "core::option::Option::Some"
-                            []
-                            [ A ]
-                            [
-                              M.call_closure (|
-                                A,
-                                M.get_associated_function (|
-                                  Ty.apply
-                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::option::Option::Some"
+                              [
+                                M.call_closure (|
+                                  A,
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ A ],
+                                    "assume_init",
+                                    [],
                                     []
-                                    [ A ],
-                                  "assume_init",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| element |) ]
-                              |)
-                            ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| element |))
+                                      (Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ A ])
+                                  ]
+                                |)
+                              ])
+                            (Ty.apply (Ty.path "core::option::Option") [] [ A ])
                         |)
                       |)));
                   fun γ =>
-                    ltac:(M.monadic (Value.StructTuple "core::option::Option::None" [] [ A ] []))
+                    ltac:(M.monadic
+                      (M.value_with_ty
+                        (Value.StructTuple "core::option::Option::None" [])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ A ])))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -370,82 +409,112 @@ Module iter.
                     [ Ty.apply (Ty.path "core::iter::sources::repeat_n::RepeatN") [] [ A ] ],
                   self
                 |) in
-              Value.mkStructRecord
-                "core::iter::sources::repeat_n::RepeatN"
-                []
-                [ A ]
-                [
-                  ("count",
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::iter::sources::repeat_n::RepeatN",
-                        "count"
-                      |)
-                    |));
-                  ("element",
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ],
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "core::option::Option") [] [ A ],
-                        "map_or_else",
-                        [],
-                        [
-                          Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ];
-                          Ty.function
-                            []
-                            (Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ]);
-                          Ty.function
-                            [ A ]
-                            (Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ])
-                        ]
-                      |),
-                      [
-                        M.call_closure (|
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "core::iter::sources::repeat_n::RepeatN"
+                  [
+                    ("count",
+                      M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "core::iter::sources::repeat_n::RepeatN",
+                          "count"
+                        |)
+                      |));
+                    ("element",
+                      M.call_closure (|
+                        Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ],
+                        M.get_associated_function (|
                           Ty.apply (Ty.path "core::option::Option") [] [ A ],
-                          M.get_associated_function (|
-                            Ty.apply
-                              (Ty.path "core::option::Option")
-                              []
-                              [ Ty.apply (Ty.path "&") [] [ A ] ],
-                            "cloned",
-                            [],
-                            []
-                          |),
+                          "map_or_else",
+                          [],
                           [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "core::option::Option")
-                                []
-                                [ Ty.apply (Ty.path "&") [] [ A ] ],
+                            Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ];
+                            Ty.function
+                              []
+                              (Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ]);
+                            Ty.function
+                              [ A ]
+                              (Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ])
+                          ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "core::option::Option") [] [ A ],
                               M.get_associated_function (|
                                 Ty.apply
-                                  (Ty.path "core::iter::sources::repeat_n::RepeatN")
+                                  (Ty.path "core::option::Option")
                                   []
-                                  [ A ],
-                                "element_ref",
+                                  [ Ty.apply (Ty.path "&") [] [ A ] ],
+                                "cloned",
                                 [],
                                 []
                               |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                            |)
-                          ]
-                        |);
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ],
-                          "uninit",
-                          [],
-                          []
-                        |);
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ],
-                          "new",
-                          [],
-                          []
-                        |)
-                      ]
-                    |))
-                ]))
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::option::Option")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ A ] ],
+                                    M.get_associated_function (|
+                                      Ty.apply
+                                        (Ty.path "core::iter::sources::repeat_n::RepeatN")
+                                        []
+                                        [ A ],
+                                      "element_ref",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::iter::sources::repeat_n::RepeatN")
+                                              []
+                                              [ A ]
+                                          ])
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::option::Option")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ A ] ])
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "core::option::Option") [] [ A ]);
+                          M.value_with_ty
+                            (M.get_associated_function (|
+                              Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ],
+                              "uninit",
+                              [],
+                              []
+                            |))
+                            (Ty.function
+                              []
+                              (Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ]));
+                          M.value_with_ty
+                            (M.get_associated_function (|
+                              Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ],
+                              "new",
+                              [],
+                              []
+                            |))
+                            (Ty.function
+                              [ A ]
+                              (Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ]))
+                        ]
+                      |))
+                  ])
+                (Ty.apply (Ty.path "core::iter::sources::repeat_n::RepeatN") [] [ A ])))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -498,157 +567,207 @@ Module iter.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ],
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::builders::DebugStruct",
-                          "field",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [ Ty.path "core::fmt::builders::DebugStruct" ],
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::builders::DebugStruct",
-                                  "field",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.alloc (|
-                                      Ty.path "core::fmt::builders::DebugStruct",
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::builders::DebugStruct",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::Formatter",
-                                          "debug_struct",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (| M.read (| f |) |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| mk_str (| "RepeatN" |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| mk_str (| "count" |) |)
-                                  |);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.path "core::fmt::builders::DebugStruct" ],
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::builders::DebugStruct",
+                            "field",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
                                   M.call_closure (|
                                     Ty.apply
-                                      (Ty.path "&")
+                                      (Ty.path "&mut")
                                       []
-                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                    M.pointer_coercion
-                                      M.PointerCoercion.Unsize
-                                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                      [ Ty.path "core::fmt::builders::DebugStruct" ],
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::builders::DebugStruct",
+                                      "field",
+                                      [],
+                                      []
+                                    |),
                                     [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "core::iter::sources::repeat_n::RepeatN",
-                                              "count"
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.alloc (|
+                                            Ty.path "core::fmt::builders::DebugStruct",
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::builders::DebugStruct",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::Formatter",
+                                                "debug_struct",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (| M.read (| f |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [ Ty.path "core::fmt::Formatter" ]);
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| mk_str (| "RepeatN" |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                              ]
                                             |)
                                           |)
-                                        |)
-                                      |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.path "core::fmt::builders::DebugStruct" ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| mk_str (| "count" |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                          M.pointer_coercion
+                                            M.PointerCoercion.Unsize
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "core::iter::sources::repeat_n::RepeatN",
+                                                    "count"
+                                                  |)
+                                                |)
+                                              |)
+                                            |)
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                                     ]
                                   |)
-                                ]
-                              |)
-                            |)
-                          |);
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "element" |) |) |);
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
+                                |)
+                              |))
                               (Ty.apply
-                                (Ty.path "&")
+                                (Ty.path "&mut")
                                 []
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::option::Option")
-                                    []
-                                    [ Ty.apply (Ty.path "&") [] [ A ] ]
-                                ])
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                            [
-                              M.borrow (|
+                                [ Ty.path "core::fmt::builders::DebugStruct" ]);
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
+                                M.deref (| mk_str (| "element" |) |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
-                                        [ Ty.apply (Ty.path "&") [] [ A ] ],
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "core::option::Option")
-                                          []
-                                          [ Ty.apply (Ty.path "&") [] [ A ] ],
-                                        M.get_associated_function (|
+                                        [ Ty.apply (Ty.path "&") [] [ A ] ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
                                           Ty.apply
-                                            (Ty.path "core::iter::sources::repeat_n::RepeatN")
+                                            (Ty.path "core::option::Option")
                                             []
-                                            [ A ],
-                                          "element_ref",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.read (| self |) |)
+                                            [ Ty.apply (Ty.path "&") [] [ A ] ],
+                                          M.call_closure (|
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.apply (Ty.path "&") [] [ A ] ],
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "core::iter::sources::repeat_n::RepeatN")
+                                                []
+                                                [ A ],
+                                              "element_ref",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.read (| self |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "core::iter::sources::repeat_n::RepeatN")
+                                                      []
+                                                      [ A ]
+                                                  ])
+                                            ]
                                           |)
-                                        ]
+                                        |)
                                       |)
                                     |)
                                   |)
-                                |)
-                              |)
-                            ]
-                          |)
-                        ]
+                                ]
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -696,7 +815,14 @@ Module iter.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "core::iter::sources::repeat_n::RepeatN") [] [ A ] ])
+                    ]
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
               |)))
@@ -769,27 +895,48 @@ Module iter.
                             |)
                           |)) in
                       let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ A ]
-                        [
-                          M.call_closure (|
-                            A,
-                            M.get_trait_method (|
-                              "core::iter::traits::unchecked_iterator::UncheckedIterator",
-                              Ty.apply (Ty.path "core::iter::sources::repeat_n::RepeatN") [] [ A ],
-                              [],
-                              [],
-                              "next_unchecked",
-                              [],
-                              []
-                            |),
-                            [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        ]));
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [
+                            M.call_closure (|
+                              A,
+                              M.get_trait_method (|
+                                "core::iter::traits::unchecked_iterator::UncheckedIterator",
+                                Ty.apply
+                                  (Ty.path "core::iter::sources::repeat_n::RepeatN")
+                                  []
+                                  [ A ],
+                                [],
+                                [],
+                                "next_unchecked",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.read (| self |) |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::iter::sources::repeat_n::RepeatN")
+                                        []
+                                        [ A ]
+                                    ])
+                              ]
+                            |)
+                          ])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ A ])));
                   fun γ =>
-                    ltac:(M.monadic (Value.StructTuple "core::option::Option::None" [] [ A ] []))
+                    ltac:(M.monadic
+                      (M.value_with_ty
+                        (Value.StructTuple "core::option::Option::None" [])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ A ])))
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -827,7 +974,14 @@ Module iter.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::iter::sources::repeat_n::RepeatN") [] [ A ] ])
+                    ]
                   |) in
                 M.alloc (|
                   Ty.tuple
@@ -838,11 +992,9 @@ Module iter.
                   Value.Tuple
                     [
                       M.read (| len |);
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.path "usize" ]
-                        [ M.read (| len |) ]
+                      M.value_with_ty
+                        (Value.StructTuple "core::option::Option::Some" [ M.read (| len |) ])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                     ]
                 |)
               |)))
@@ -927,10 +1079,20 @@ Module iter.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (| M.read (| self |) |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::iter::sources::repeat_n::RepeatN")
+                                          []
+                                          [ A ]
+                                      ])
                                 ]
                               |) in
                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -970,40 +1132,45 @@ Module iter.
                               |)) in
                           let _ :=
                             is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                          Value.StructTuple
-                            "core::result::Result::Err"
-                            []
-                            [
-                              Ty.tuple [];
-                              Ty.apply
-                                (Ty.path "core::num::nonzero::NonZero")
-                                []
-                                [ Ty.path "usize" ]
-                            ]
-                            [
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "core::num::nonzero::NonZero")
-                                  []
-                                  [ Ty.path "usize" ],
-                                M.get_associated_function (|
+                          M.value_with_ty
+                            (Value.StructTuple
+                              "core::result::Result::Err"
+                              [
+                                M.call_closure (|
                                   Ty.apply
                                     (Ty.path "core::num::nonzero::NonZero")
                                     []
                                     [ Ty.path "usize" ],
-                                  "new_unchecked",
-                                  [],
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "core::num::nonzero::NonZero")
+                                      []
+                                      [ Ty.path "usize" ],
+                                    "new_unchecked",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.sub,
+                                        [ M.read (| skip |); M.read (| len |) ]
+                                      |))
+                                      (Ty.path "usize")
+                                  ]
+                                |)
+                              ])
+                            (Ty.apply
+                              (Ty.path "core::result::Result")
+                              []
+                              [
+                                Ty.tuple [];
+                                Ty.apply
+                                  (Ty.path "core::num::nonzero::NonZero")
                                   []
-                                |),
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.sub,
-                                    [ M.read (| skip |); M.read (| len |) ]
-                                  |)
-                                ]
-                              |)
-                            ]));
+                                  [ Ty.path "usize" ]
+                              ])));
                       fun γ =>
                         ltac:(M.monadic
                           (M.read (|
@@ -1031,17 +1198,18 @@ Module iter.
                                     []
                                     [ Ty.path "usize" ]
                                 ],
-                              Value.StructTuple
-                                "core::result::Result::Ok"
-                                []
-                                [
-                                  Ty.tuple [];
-                                  Ty.apply
-                                    (Ty.path "core::num::nonzero::NonZero")
-                                    []
-                                    [ Ty.path "usize" ]
-                                ]
-                                [ Value.Tuple [] ]
+                              M.value_with_ty
+                                (Value.StructTuple "core::result::Result::Ok" [ Value.Tuple [] ])
+                                (Ty.apply
+                                  (Ty.path "core::result::Result")
+                                  []
+                                  [
+                                    Ty.tuple [];
+                                    Ty.apply
+                                      (Ty.path "core::num::nonzero::NonZero")
+                                      []
+                                      [ Ty.path "usize" ]
+                                  ])
                             |)
                           |)))
                     ]
@@ -1074,7 +1242,14 @@ Module iter.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, self |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, self |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "core::iter::sources::repeat_n::RepeatN") [] [ A ] ])
+                ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
@@ -1105,7 +1280,14 @@ Module iter.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, self |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "core::iter::sources::repeat_n::RepeatN") [] [ A ] ])
+                ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
@@ -1203,7 +1385,14 @@ Module iter.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "core::iter::sources::repeat_n::RepeatN") [] [ A ] ])
+                ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
@@ -1250,8 +1439,13 @@ Module iter.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.read (| n |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "core::iter::sources::repeat_n::RepeatN") [] [ A ] ]);
+                  M.value_with_ty (M.read (| n |)) (Ty.path "usize")
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -1288,8 +1482,13 @@ Module iter.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.read (| n |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "core::iter::sources::repeat_n::RepeatN") [] [ A ] ]);
+                  M.value_with_ty (M.read (| n |)) (Ty.path "usize")
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -1388,14 +1587,16 @@ Module iter.
                       Ty.path "usize",
                       M.get_associated_function (| Ty.path "usize", "unchecked_sub", [], [] |),
                       [
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "core::iter::sources::repeat_n::RepeatN",
-                            "count"
-                          |)
-                        |);
-                        Value.Integer IntegerKind.Usize 1
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "core::iter::sources::repeat_n::RepeatN",
+                              "count"
+                            |)
+                          |))
+                          (Ty.path "usize");
+                        M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
                       ]
                     |)
                   |) in
@@ -1437,50 +1638,70 @@ Module iter.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ],
-                                M.get_function (|
-                                  "core::mem::replace",
-                                  [],
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                      []
-                                      [ A ]
-                                  ]
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (|
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "core::iter::sources::repeat_n::RepeatN",
-                                          "element"
-                                        |)
-                                      |)
-                                    |)
-                                  |);
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                      []
-                                      [ A ],
-                                    M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [ A ],
+                                  M.get_function (|
+                                    "core::mem::replace",
+                                    [],
+                                    [
                                       Ty.apply
                                         (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                         []
-                                        [ A ],
-                                      "uninit",
-                                      [],
-                                      []
-                                    |),
-                                    []
-                                  |)
-                                ]
-                              |)
+                                        [ A ]
+                                    ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.SubPointer.get_struct_record_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "core::iter::sources::repeat_n::RepeatN",
+                                              "element"
+                                            |)
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ A ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ A ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ A ],
+                                          "uninit",
+                                          [],
+                                          []
+                                        |),
+                                        []
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ A ])
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "core::mem::maybe_uninit::MaybeUninit") [] [ A ])
                             ]
                           |)));
                       fun γ =>
@@ -1499,14 +1720,24 @@ Module iter.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::iter::sources::repeat_n::RepeatN",
-                                      "element"
-                                    |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::iter::sources::repeat_n::RepeatN",
+                                        "element"
+                                      |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ A ]
+                                      ])
                                 ]
                               |) in
                             M.alloc (|
@@ -1523,10 +1754,12 @@ Module iter.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.read (| element |) |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| element |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ A ])
                                 ]
                               |)
                             |)

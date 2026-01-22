@@ -41,7 +41,11 @@ Module str.
                   []
                   [ Ty.tuple []; Ty.path "core::str::error::Utf8Error" ],
                 M.get_function (| "core::str::validations::run_utf8_validation", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                ]
               |)
             |),
             [
@@ -49,38 +53,53 @@ Module str.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Ok", 0 |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
-                      Ty.path "core::str::error::Utf8Error"
-                    ]
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                            M.get_function (| "core::str::converts::from_utf8_unchecked", [], [] |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |) ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                              M.get_function (|
+                                "core::str::converts::from_utf8_unchecked",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                              ]
+                            |)
                           |)
                         |)
-                      |)
-                    ]));
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                        Ty.path "core::str::error::Utf8Error"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Err", 0 |) in
                   let err := M.copy (| Ty.path "core::str::error::Utf8Error", γ0_0 |) in
-                  Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [
-                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
-                      Ty.path "core::str::error::Utf8Error"
-                    ]
-                    [ M.read (| err |) ]))
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Err" [ M.read (| err |) ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                        Ty.path "core::str::error::Utf8Error"
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -131,7 +150,11 @@ Module str.
                   []
                   [ Ty.tuple []; Ty.path "core::str::error::Utf8Error" ],
                 M.get_function (| "core::str::validations::run_utf8_validation", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                ]
               |)
             |),
             [
@@ -139,47 +162,61 @@ Module str.
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Ok", 0 |) in
-                  Value.StructTuple
-                    "core::result::Result::Ok"
-                    []
-                    [
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ];
-                      Ty.path "core::str::error::Utf8Error"
-                    ]
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ],
-                                M.get_function (|
-                                  "core::str::converts::from_utf8_unchecked_mut",
-                                  [],
-                                  []
-                                |),
-                                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| v |) |) |) ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::result::Result::Ok"
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ],
+                                  M.get_function (|
+                                    "core::str::converts::from_utf8_unchecked_mut",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| v |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                  ]
+                                |)
                               |)
                             |)
                           |)
                         |)
-                      |)
-                    ]));
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ];
+                        Ty.path "core::str::error::Utf8Error"
+                      ])));
               fun γ =>
                 ltac:(M.monadic
                   (let γ0_0 :=
                     M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Err", 0 |) in
                   let err := M.copy (| Ty.path "core::str::error::Utf8Error", γ0_0 |) in
-                  Value.StructTuple
-                    "core::result::Result::Err"
-                    []
-                    [
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ];
-                      Ty.path "core::str::error::Utf8Error"
-                    ]
-                    [ M.read (| err |) ]))
+                  M.value_with_ty
+                    (Value.StructTuple "core::result::Result::Err" [ M.read (| err |) ])
+                    (Ty.apply
+                      (Ty.path "core::result::Result")
+                      []
+                      [
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ];
+                        Ty.path "core::str::error::Utf8Error"
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -216,7 +253,11 @@ Module str.
                 Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
               ]
             |),
-            [ M.read (| v |) ]
+            [
+              M.value_with_ty
+                (M.read (| v |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -312,7 +353,12 @@ Module str.
                       [],
                       [ Ty.path "str"; Ty.path "u8" ]
                     |),
-                    [ M.read (| ptr |); M.read (| len |) ]
+                    [
+                      M.value_with_ty
+                        (M.read (| ptr |))
+                        (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                      M.value_with_ty (M.read (| len |)) (Ty.path "usize")
+                    ]
                   |)
                 |)
               |)
@@ -357,7 +403,12 @@ Module str.
                               [],
                               [ Ty.path "str"; Ty.path "u8" ]
                             |),
-                            [ M.read (| ptr |); M.read (| len |) ]
+                            [
+                              M.value_with_ty
+                                (M.read (| ptr |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (M.read (| len |)) (Ty.path "usize")
+                            ]
                           |)
                         |)
                       |)

@@ -37,7 +37,7 @@ Module algorithms.
                           [],
                           []
                         |),
-                        [ M.read (| lhs |) ]
+                        [ M.value_with_ty (M.read (| lhs |)) (Ty.path "u64") ]
                       |);
                       M.call_closure (|
                         Ty.path "u128",
@@ -50,7 +50,7 @@ Module algorithms.
                           [],
                           []
                         |),
-                        [ M.read (| rhs |) ]
+                        [ M.value_with_ty (M.read (| rhs |)) (Ty.path "u64") ]
                       |)
                     ]
                   |);
@@ -65,7 +65,7 @@ Module algorithms.
                       [],
                       []
                     |),
-                    [ M.read (| carry |) ]
+                    [ M.value_with_ty (M.read (| carry |)) (Ty.path "u64") ]
                   |)
                 ]
               |) in
@@ -82,7 +82,7 @@ Module algorithms.
                   [],
                   []
                 |),
-                [ M.read (| result |) ]
+                [ M.value_with_ty (M.read (| result |)) (Ty.path "u128") ]
               |)
             |)
           |)))
@@ -114,51 +114,59 @@ Module algorithms.
                 Ty.path "u128",
                 M.get_associated_function (| Ty.path "u128", "wrapping_sub", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "u128",
-                    M.get_associated_function (| Ty.path "u128", "wrapping_sub", [], [] |),
-                    [
-                      M.call_closure (|
-                        Ty.path "u128",
-                        M.get_trait_method (|
-                          "core::convert::From",
-                          Ty.path "u128",
-                          [],
-                          [ Ty.path "u64" ],
-                          "from",
-                          [],
-                          []
-                        |),
-                        [ M.read (| lhs |) ]
-                      |);
-                      M.call_closure (|
-                        Ty.path "u128",
-                        M.get_trait_method (|
-                          "core::convert::From",
-                          Ty.path "u128",
-                          [],
-                          [ Ty.path "u64" ],
-                          "from",
-                          [],
-                          []
-                        |),
-                        [ M.read (| rhs |) ]
-                      |)
-                    ]
-                  |);
-                  M.call_closure (|
-                    Ty.path "u128",
-                    M.get_trait_method (|
-                      "core::convert::From",
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.path "u128",
-                      [],
-                      [ Ty.path "u64" ],
-                      "from",
-                      [],
-                      []
-                    |),
-                    [ M.read (| borrow |) ]
-                  |)
+                      M.get_associated_function (| Ty.path "u128", "wrapping_sub", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.path "u128",
+                            M.get_trait_method (|
+                              "core::convert::From",
+                              Ty.path "u128",
+                              [],
+                              [ Ty.path "u64" ],
+                              "from",
+                              [],
+                              []
+                            |),
+                            [ M.value_with_ty (M.read (| lhs |)) (Ty.path "u64") ]
+                          |))
+                          (Ty.path "u128");
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.path "u128",
+                            M.get_trait_method (|
+                              "core::convert::From",
+                              Ty.path "u128",
+                              [],
+                              [ Ty.path "u64" ],
+                              "from",
+                              [],
+                              []
+                            |),
+                            [ M.value_with_ty (M.read (| rhs |)) (Ty.path "u64") ]
+                          |))
+                          (Ty.path "u128")
+                      ]
+                    |))
+                    (Ty.path "u128");
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "u128",
+                      M.get_trait_method (|
+                        "core::convert::From",
+                        Ty.path "u128",
+                        [],
+                        [ Ty.path "u64" ],
+                        "from",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.read (| borrow |)) (Ty.path "u64") ]
+                    |))
+                    (Ty.path "u128")
                 ]
               |) in
             M.alloc (|
@@ -176,25 +184,27 @@ Module algorithms.
                       [],
                       []
                     |),
-                    [ M.read (| result |) ]
+                    [ M.value_with_ty (M.read (| result |)) (Ty.path "u128") ]
                   |);
                   M.call_closure (|
                     Ty.path "u64",
                     M.get_associated_function (| Ty.path "u64", "wrapping_neg", [], [] |),
                     [
-                      M.call_closure (|
-                        Ty.path "u64",
-                        M.get_trait_method (|
-                          "ruint::algorithms::DoubleWord",
-                          Ty.path "u128",
-                          [],
-                          [ Ty.path "u64" ],
-                          "high",
-                          [],
-                          []
-                        |),
-                        [ M.read (| result |) ]
-                      |)
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "u64",
+                          M.get_trait_method (|
+                            "ruint::algorithms::DoubleWord",
+                            Ty.path "u128",
+                            [],
+                            [ Ty.path "u64" ],
+                            "high",
+                            [],
+                            []
+                          |),
+                          [ M.value_with_ty (M.read (| result |)) (Ty.path "u128") ]
+                        |))
+                        (Ty.path "u64")
                     ]
                   |)
                 ]

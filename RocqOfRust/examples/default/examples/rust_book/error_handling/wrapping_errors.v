@@ -58,8 +58,12 @@ Module Impl_core_fmt_Debug_for_wrapping_errors_DoubleError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EmptyVec" |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "EmptyVec" |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -88,25 +92,38 @@ Module Impl_core_fmt_Debug_for_wrapping_errors_DoubleError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Parse" |) |) |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::ParseIntError" ]
-                          ])
-                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                        |)
-                      ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Parse" |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "core::num::error::ParseIntError" ]
+                            ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                          |)
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                   ]
                 |)))
           ]
@@ -170,34 +187,49 @@ Module Impl_core_fmt_Display_for_wrapping_errors_DoubleError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.call_closure (|
-                      Ty.path "core::fmt::Arguments",
-                      M.get_associated_function (|
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.path "core::fmt::Arguments",
-                        "new_const",
-                        [ Value.Integer IntegerKind.Usize 1 ],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new_const",
+                          [ Value.Integer IntegerKind.Usize 1 ],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
                               Pointer.Kind.Ref,
-                              M.alloc (|
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                    Value.Array
+                                      [ mk_str (| "please use a vector with at least one element" |)
+                                      ]
+                                  |)
+                                |)
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
                                 Ty.apply
                                   (Ty.path "array")
                                   [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array
-                                  [ mk_str (| "please use a vector with at least one element" |) ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |)
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                              ])
+                        ]
+                      |))
+                      (Ty.path "core::fmt::Arguments")
                   ]
                 |)));
             fun γ =>
@@ -215,34 +247,52 @@ Module Impl_core_fmt_Display_for_wrapping_errors_DoubleError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.call_closure (|
-                      Ty.path "core::fmt::Arguments",
-                      M.get_associated_function (|
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.path "core::fmt::Arguments",
-                        "new_const",
-                        [ Value.Integer IntegerKind.Usize 1 ],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new_const",
+                          [ Value.Integer IntegerKind.Usize 1 ],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
                               Pointer.Kind.Ref,
-                              M.alloc (|
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.alloc (|
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                    Value.Array
+                                      [
+                                        mk_str (|
+                                          "the provided string could not be parsed as int"
+                                        |)
+                                      ]
+                                  |)
+                                |)
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
                                 Ty.apply
                                   (Ty.path "array")
                                   [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                Value.Array
-                                  [ mk_str (| "the provided string could not be parsed as int" |) ]
-                              |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |)
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                              ])
+                        ]
+                      |))
+                      (Ty.path "core::fmt::Arguments")
                   ]
                 |)))
           ]
@@ -292,11 +342,13 @@ Module Impl_core_error_Error_for_wrapping_errors_DoubleError.
             fun γ =>
               ltac:(M.monadic
                 (let _ := M.is_struct_tuple (| γ, "wrapping_errors::DoubleError::EmptyVec" |) in
-                Value.StructTuple
-                  "core::option::Option::None"
-                  []
-                  [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ]
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "core::option::Option::None" [])
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                    ])));
             fun γ =>
               ltac:(M.monadic
                 (let γ0_0 :=
@@ -310,23 +362,27 @@ Module Impl_core_error_Error_for_wrapping_errors_DoubleError.
                     Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::ParseIntError" ],
                     γ0_0
                   |) in
-                Value.StructTuple
-                  "core::option::Option::Some"
-                  []
-                  [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ] ]
-                  [
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::ParseIntError" ])
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| e |) |) |) ]
-                    |)
-                  ]))
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::option::Option::Some"
+                    [
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "core::num::error::ParseIntError" ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]),
+                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| e |) |) |) ]
+                      |)
+                    ])
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::error::Error::Trait", []) ] ]
+                    ])))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -354,7 +410,9 @@ Module Impl_core_convert_From_core_num_error_ParseIntError_for_wrapping_errors_D
     | [], [], [ err ] =>
       ltac:(M.monadic
         (let err := M.alloc (| Ty.path "core::num::error::ParseIntError", err |) in
-        Value.StructTuple "wrapping_errors::DoubleError::Parse" [] [] [ M.read (| err |) ]))
+        M.value_with_ty
+          (Value.StructTuple "wrapping_errors::DoubleError::Parse" [ M.read (| err |) ])
+          (Ty.path "wrapping_errors::DoubleError")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -444,33 +502,19 @@ Definition double_first (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::result::Result")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
-                            Ty.path "wrapping_errors::DoubleError"
-                          ],
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.apply
-                            (Ty.path "core::option::Option")
+                            (Ty.path "core::result::Result")
                             []
                             [
                               Ty.apply
                                 (Ty.path "&")
                                 []
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
+                              Ty.path "wrapping_errors::DoubleError"
                             ],
-                          "ok_or",
-                          [],
-                          [ Ty.path "wrapping_errors::DoubleError" ]
-                        |),
-                        [
-                          M.call_closure (|
+                          M.get_associated_function (|
                             Ty.apply
                               (Ty.path "core::option::Option")
                               []
@@ -480,21 +524,81 @@ Definition double_first (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
                                   []
                                   [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
                               ],
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "slice")
-                                []
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              "first",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
+                            "ok_or",
+                            [],
+                            [ Ty.path "wrapping_errors::DoubleError" ]
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "core::option::Option")
+                                  []
+                                  [
                                     Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                  "first",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "slice")
+                                                []
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                            ],
+                                          M.get_trait_method (|
+                                            "core::ops::deref::Deref",
+                                            Ty.apply
+                                              (Ty.path "alloc::vec::Vec")
+                                              []
+                                              [
+                                                Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                                                Ty.path "alloc::alloc::Global"
+                                              ],
+                                            [],
+                                            [],
+                                            "deref",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (| Pointer.Kind.Ref, vec |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "alloc::vec::Vec")
+                                                    []
+                                                    [
+                                                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                                                      Ty.path "alloc::alloc::Global"
+                                                    ]
+                                                ])
+                                          ]
+                                        |)
+                                      |)
+                                    |))
+                                    (Ty.apply
                                       (Ty.path "&")
                                       []
                                       [
@@ -502,31 +606,35 @@ Definition double_first (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
                                           (Ty.path "slice")
                                           []
                                           [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                      ],
-                                    M.get_trait_method (|
-                                      "core::ops::deref::Deref",
-                                      Ty.apply
-                                        (Ty.path "alloc::vec::Vec")
-                                        []
-                                        [
-                                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
-                                          Ty.path "alloc::alloc::Global"
-                                        ],
-                                      [],
-                                      [],
-                                      "deref",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.borrow (| Pointer.Kind.Ref, vec |) ]
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |);
-                          Value.StructTuple "wrapping_errors::DoubleError::EmptyVec" [] [] []
-                        ]
-                      |)
+                                      ])
+                                ]
+                              |))
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple "wrapping_errors::DoubleError::EmptyVec" [])
+                                (Ty.path "wrapping_errors::DoubleError"))
+                              (Ty.path "wrapping_errors::DoubleError")
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "core::result::Result")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
+                            Ty.path "wrapping_errors::DoubleError"
+                          ])
                     ]
                   |)
                 |),
@@ -578,7 +686,17 @@ Definition double_first (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
                                 [],
                                 []
                               |),
-                              [ M.read (| residual |) ]
+                              [
+                                M.value_with_ty
+                                  (M.read (| residual |))
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "core::convert::Infallible";
+                                      Ty.path "wrapping_errors::DoubleError"
+                                    ])
+                              ]
                             |)
                           |)
                         |)
@@ -643,24 +761,31 @@ Definition double_first (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [ Ty.path "i32"; Ty.path "core::num::error::ParseIntError" ],
+                          M.get_associated_function (|
+                            Ty.path "str",
+                            "parse",
+                            [],
+                            [ Ty.path "i32" ]
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.read (| M.deref (| M.read (| first |) |) |) |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
+                        |))
+                        (Ty.apply
                           (Ty.path "core::result::Result")
                           []
-                          [ Ty.path "i32"; Ty.path "core::num::error::ParseIntError" ],
-                        M.get_associated_function (|
-                          Ty.path "str",
-                          "parse",
-                          [],
-                          [ Ty.path "i32" ]
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.read (| M.deref (| M.read (| first |) |) |) |)
-                          |)
-                        ]
-                      |)
+                          [ Ty.path "i32"; Ty.path "core::num::error::ParseIntError" ])
                     ]
                   |)
                 |),
@@ -712,7 +837,17 @@ Definition double_first (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
                                 [],
                                 []
                               |),
-                              [ M.read (| residual |) ]
+                              [
+                                M.value_with_ty
+                                  (M.read (| residual |))
+                                  (Ty.apply
+                                    (Ty.path "core::result::Result")
+                                    []
+                                    [
+                                      Ty.path "core::convert::Infallible";
+                                      Ty.path "core::num::error::ParseIntError"
+                                    ])
+                              ]
                             |)
                           |)
                         |)
@@ -734,17 +869,20 @@ Definition double_first (ε : list Value.t) (τ : list Ty.t) (α : list Value.t)
                 (Ty.path "core::result::Result")
                 []
                 [ Ty.path "i32"; Ty.path "wrapping_errors::DoubleError" ],
-              Value.StructTuple
-                "core::result::Result::Ok"
-                []
-                [ Ty.path "i32"; Ty.path "wrapping_errors::DoubleError" ]
-                [
-                  M.call_closure (|
-                    Ty.path "i32",
-                    BinOp.Wrap.mul,
-                    [ Value.Integer IntegerKind.I32 2; M.read (| parsed |) ]
-                  |)
-                ]
+              M.value_with_ty
+                (Value.StructTuple
+                  "core::result::Result::Ok"
+                  [
+                    M.call_closure (|
+                      Ty.path "i32",
+                      BinOp.Wrap.mul,
+                      [ Value.Integer IntegerKind.I32 2; M.read (| parsed |) ]
+                    |)
+                  ])
+                (Ty.apply
+                  (Ty.path "core::result::Result")
+                  []
+                  [ Ty.path "i32"; Ty.path "wrapping_errors::DoubleError" ])
             |)
           |)))
       |)))
@@ -796,94 +934,19 @@ Definition print (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Ty.tuple [],
                     M.get_function (| "std::io::stdio::_print", [], [] |),
                     [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [ mk_str (| "The first doubled is " |); mk_str (| "
-" |) ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.path "i32" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, n |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
-                    ]
-                  |) in
-                M.alloc (| Ty.tuple [], Value.Tuple [] |)
-              |)));
-          fun γ =>
-            ltac:(M.monadic
-              (let γ0_0 :=
-                M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Err", 0 |) in
-              let e := M.copy (| Ty.path "wrapping_errors::DoubleError", γ0_0 |) in
-              M.read (|
-                let~ _ : Ty.tuple [] :=
-                  M.read (|
-                    let~ _ : Ty.tuple [] :=
-                      M.call_closure (|
-                        Ty.tuple [],
-                        M.get_function (| "std::io::stdio::_print", [], [] |),
-                        [
-                          M.call_closure (|
+                          M.get_associated_function (|
                             Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
-                              Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
-                              ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
                                 M.deref (|
                                   M.borrow (|
@@ -893,13 +956,24 @@ Definition print (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 2 ]
                                         [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array [ mk_str (| "Error: " |); mk_str (| "
+                                      Value.Array
+                                        [ mk_str (| "The first doubled is " |); mk_str (| "
 " |) ]
                                     |)
                                   |)
                                 |)
-                              |);
-                              M.borrow (|
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 2 ]
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
                                 M.deref (|
                                   M.borrow (|
@@ -917,22 +991,142 @@ Definition print (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                               Ty.path "core::fmt::rt::Argument",
                                               "new_display",
                                               [],
-                                              [ Ty.path "wrapping_errors::DoubleError" ]
+                                              [ Ty.path "i32" ]
                                             |),
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, e |) |)
-                                              |)
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, n |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ])
                                             ]
                                           |)
                                         ]
                                     |)
                                   |)
                                 |)
-                              |)
-                            ]
-                          |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
+                    ]
+                  |) in
+                M.alloc (| Ty.tuple [], Value.Tuple [] |)
+              |)));
+          fun γ =>
+            ltac:(M.monadic
+              (let γ0_0 :=
+                M.SubPointer.get_struct_tuple_field (| γ, "core::result::Result::Err", 0 |) in
+              let e := M.copy (| Ty.path "wrapping_errors::DoubleError", γ0_0 |) in
+              M.read (|
+                let~ _ : Ty.tuple [] :=
+                  M.read (|
+                    let~ _ : Ty.tuple [] :=
+                      M.call_closure (|
+                        Ty.tuple [],
+                        M.get_function (| "std::io::stdio::_print", [], [] |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "core::fmt::Arguments",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_v1",
+                                [
+                                  Value.Integer IntegerKind.Usize 2;
+                                  Value.Integer IntegerKind.Usize 1
+                                ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 2 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array [ mk_str (| "Error: " |); mk_str (| "
+" |) ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.path "wrapping_errors::DoubleError" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.Ref, e |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.path "wrapping_errors::DoubleError" ])
+                                                ]
+                                              |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |) in
                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -975,7 +1169,14 @@ Definition print (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                   [],
                                   []
                                 |),
-                                [ M.borrow (| Pointer.Kind.Ref, e |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, e |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.path "wrapping_errors::DoubleError" ])
+                                ]
                               |)
                             |) in
                           let γ0_0 :=
@@ -1000,86 +1201,131 @@ Definition print (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                     Ty.tuple [],
                                     M.get_function (| "std::io::stdio::_print", [], [] |),
                                     [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::Arguments",
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.path "core::fmt::Arguments",
-                                          "new_v1",
+                                          M.get_associated_function (|
+                                            Ty.path "core::fmt::Arguments",
+                                            "new_v1",
+                                            [
+                                              Value.Integer IntegerKind.Usize 2;
+                                              Value.Integer IntegerKind.Usize 1
+                                            ],
+                                            []
+                                          |),
                                           [
-                                            Value.Integer IntegerKind.Usize 2;
-                                            Value.Integer IntegerKind.Usize 1
-                                          ],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
+                                            M.value_with_ty
+                                              (M.borrow (|
                                                 Pointer.Kind.Ref,
-                                                M.alloc (|
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.alloc (|
+                                                      Ty.apply
+                                                        (Ty.path "array")
+                                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "str" ]
+                                                        ],
+                                                      Value.Array
+                                                        [
+                                                          mk_str (| "  Caused by: " |);
+                                                          mk_str (| "
+" |)
+                                                        ]
+                                                    |)
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
                                                   Ty.apply
                                                     (Ty.path "array")
                                                     [ Value.Integer IntegerKind.Usize 2 ]
-                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                                  Value.Array
-                                                    [ mk_str (| "  Caused by: " |); mk_str (| "
-" |)
-                                                    ]
-                                                |)
-                                              |)
-                                            |)
-                                          |);
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.borrow (|
+                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                                ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
                                                 Pointer.Kind.Ref,
-                                                M.alloc (|
+                                                M.deref (|
+                                                  M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.alloc (|
+                                                      Ty.apply
+                                                        (Ty.path "array")
+                                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                                      Value.Array
+                                                        [
+                                                          M.call_closure (|
+                                                            Ty.path "core::fmt::rt::Argument",
+                                                            M.get_associated_function (|
+                                                              Ty.path "core::fmt::rt::Argument",
+                                                              "new_display",
+                                                              [],
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.dyn
+                                                                      [
+                                                                        ("core::error::Error::Trait",
+                                                                          [])
+                                                                      ]
+                                                                  ]
+                                                              ]
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      source
+                                                                    |)
+                                                                  |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.dyn
+                                                                          [
+                                                                            ("core::error::Error::Trait",
+                                                                              [])
+                                                                          ]
+                                                                      ]
+                                                                  ])
+                                                            ]
+                                                          |)
+                                                        ]
+                                                    |)
+                                                  |)
+                                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
                                                   Ty.apply
                                                     (Ty.path "array")
                                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                                  Value.Array
-                                                    [
-                                                      M.call_closure (|
-                                                        Ty.path "core::fmt::rt::Argument",
-                                                        M.get_associated_function (|
-                                                          Ty.path "core::fmt::rt::Argument",
-                                                          "new_display",
-                                                          [],
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "&")
-                                                              []
-                                                              [
-                                                                Ty.dyn
-                                                                  [
-                                                                    ("core::error::Error::Trait",
-                                                                      [])
-                                                                  ]
-                                                              ]
-                                                          ]
-                                                        |),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.Ref,
-                                                                source
-                                                              |)
-                                                            |)
-                                                          |)
-                                                        ]
-                                                      |)
-                                                    ]
-                                                |)
-                                              |)
-                                            |)
-                                          |)
-                                        ]
-                                      |)
+                                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                                ])
+                                          ]
+                                        |))
+                                        (Ty.path "core::fmt::Arguments")
                                     ]
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1133,47 +1379,40 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               [ Ty.path "alloc::alloc::Global" ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::boxed::Box")
-                  []
-                  [
-                    Ty.apply (Ty.path "slice") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
-                    Ty.path "alloc::alloc::Global"
-                  ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "alloc::boxed::Box")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 3 ]
-                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
-                      Ty.path "alloc::alloc::Global"
-                    ])
-                  (Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
                     [
                       Ty.apply (Ty.path "slice") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
                       Ty.path "alloc::alloc::Global"
-                    ]),
-                [
-                  M.read (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "alloc::boxed::Box")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 3 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
-                          Ty.path "alloc::alloc::Global"
-                        ],
-                      M.get_associated_function (|
+                    ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 3 ]
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
+                        Ty.path "alloc::alloc::Global"
+                      ])
+                    (Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "slice")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
+                        Ty.path "alloc::alloc::Global"
+                      ]),
+                  [
+                    M.read (|
+                      M.call_closure (|
                         Ty.apply
                           (Ty.path "alloc::boxed::Box")
                           []
@@ -1184,28 +1423,46 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                               [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
                             Ty.path "alloc::alloc::Global"
                           ],
-                        "new",
-                        [],
-                        []
-                      |),
-                      [
-                        M.alloc (|
+                        M.get_associated_function (|
                           Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 3 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array
+                            (Ty.path "alloc::boxed::Box")
+                            []
                             [
-                              mk_str (| "42" |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "93" |) |) |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "18" |) |) |)
-                            ]
-                        |)
-                      ]
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 3 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
+                              Ty.path "alloc::alloc::Global"
+                            ],
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 3 ]
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                            Value.Array
+                              [
+                                mk_str (| "42" |);
+                                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "93" |) |) |);
+                                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "18" |) |) |)
+                              ]
+                          |)
+                        ]
+                      |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply
+                  (Ty.path "alloc::boxed::Box")
+                  []
+                  [
+                    Ty.apply (Ty.path "slice") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
+                    Ty.path "alloc::alloc::Global"
+                  ])
             ]
           |) in
         let~ empty :
@@ -1246,47 +1503,40 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
               [ Ty.path "alloc::alloc::Global" ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "alloc::boxed::Box")
-                  []
-                  [
-                    Ty.apply (Ty.path "slice") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
-                    Ty.path "alloc::alloc::Global"
-                  ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "alloc::boxed::Box")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 3 ]
-                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
-                      Ty.path "alloc::alloc::Global"
-                    ])
-                  (Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
                     (Ty.path "alloc::boxed::Box")
                     []
                     [
                       Ty.apply (Ty.path "slice") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
                       Ty.path "alloc::alloc::Global"
-                    ]),
-                [
-                  M.read (|
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "alloc::boxed::Box")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 3 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
-                          Ty.path "alloc::alloc::Global"
-                        ],
-                      M.get_associated_function (|
+                    ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 3 ]
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
+                        Ty.path "alloc::alloc::Global"
+                      ])
+                    (Ty.apply
+                      (Ty.path "alloc::boxed::Box")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "slice")
+                          []
+                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
+                        Ty.path "alloc::alloc::Global"
+                      ]),
+                  [
+                    M.read (|
+                      M.call_closure (|
                         Ty.apply
                           (Ty.path "alloc::boxed::Box")
                           []
@@ -1297,28 +1547,46 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                               [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
                             Ty.path "alloc::alloc::Global"
                           ],
-                        "new",
-                        [],
-                        []
-                      |),
-                      [
-                        M.alloc (|
+                        M.get_associated_function (|
                           Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 3 ]
-                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                          Value.Array
+                            (Ty.path "alloc::boxed::Box")
+                            []
                             [
-                              mk_str (| "tofu" |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "93" |) |) |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "18" |) |) |)
-                            ]
-                        |)
-                      ]
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 3 ]
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
+                              Ty.path "alloc::alloc::Global"
+                            ],
+                          "new",
+                          [],
+                          []
+                        |),
+                        [
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 3 ]
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                            Value.Array
+                              [
+                                mk_str (| "tofu" |);
+                                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "93" |) |) |);
+                                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "18" |) |) |)
+                              ]
+                          |)
+                        ]
+                      |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply
+                  (Ty.path "alloc::boxed::Box")
+                  []
+                  [
+                    Ty.apply (Ty.path "slice") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ];
+                    Ty.path "alloc::alloc::Global"
+                  ])
             ]
           |) in
         let~ _ : Ty.tuple [] :=
@@ -1326,14 +1594,29 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             Ty.tuple [],
             M.get_function (| "wrapping_errors::print", [], [] |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.path "i32"; Ty.path "wrapping_errors::DoubleError" ],
+                  M.get_function (| "wrapping_errors::double_first", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.read (| numbers |))
+                      (Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [
+                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                          Ty.path "alloc::alloc::Global"
+                        ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::result::Result")
                   []
-                  [ Ty.path "i32"; Ty.path "wrapping_errors::DoubleError" ],
-                M.get_function (| "wrapping_errors::double_first", [], [] |),
-                [ M.read (| numbers |) ]
-              |)
+                  [ Ty.path "i32"; Ty.path "wrapping_errors::DoubleError" ])
             ]
           |) in
         let~ _ : Ty.tuple [] :=
@@ -1341,14 +1624,29 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             Ty.tuple [],
             M.get_function (| "wrapping_errors::print", [], [] |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.path "i32"; Ty.path "wrapping_errors::DoubleError" ],
+                  M.get_function (| "wrapping_errors::double_first", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.read (| empty |))
+                      (Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [
+                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                          Ty.path "alloc::alloc::Global"
+                        ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::result::Result")
                   []
-                  [ Ty.path "i32"; Ty.path "wrapping_errors::DoubleError" ],
-                M.get_function (| "wrapping_errors::double_first", [], [] |),
-                [ M.read (| empty |) ]
-              |)
+                  [ Ty.path "i32"; Ty.path "wrapping_errors::DoubleError" ])
             ]
           |) in
         let~ _ : Ty.tuple [] :=
@@ -1356,14 +1654,29 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             Ty.tuple [],
             M.get_function (| "wrapping_errors::print", [], [] |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::result::Result")
+                    []
+                    [ Ty.path "i32"; Ty.path "wrapping_errors::DoubleError" ],
+                  M.get_function (| "wrapping_errors::double_first", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.read (| strings |))
+                      (Ty.apply
+                        (Ty.path "alloc::vec::Vec")
+                        []
+                        [
+                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                          Ty.path "alloc::alloc::Global"
+                        ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::result::Result")
                   []
-                  [ Ty.path "i32"; Ty.path "wrapping_errors::DoubleError" ],
-                M.get_function (| "wrapping_errors::double_first", [], [] |),
-                [ M.read (| strings |) ]
-              |)
+                  [ Ty.path "i32"; Ty.path "wrapping_errors::DoubleError" ])
             ]
           |) in
         M.alloc (| Ty.tuple [], Value.Tuple [] |)

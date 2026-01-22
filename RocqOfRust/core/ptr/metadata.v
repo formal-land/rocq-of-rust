@@ -25,7 +25,7 @@ Module ptr.
               [],
               [ T; Ty.associated_in_trait "core::ptr::metadata::Pointee" [] [] T "Metadata" ]
             |),
-            [ M.read (| ptr |) ]
+            [ M.value_with_ty (M.read (| ptr |)) (Ty.apply (Ty.path "*const") [] [ T ]) ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -65,7 +65,14 @@ Module ptr.
                 Ty.associated_in_trait "core::ptr::metadata::Pointee" [] [] T "Metadata"
               ]
             |),
-            [ M.read (| data_pointer |); M.read (| metadata |) ]
+            [
+              M.value_with_ty
+                (M.read (| data_pointer |))
+                (Ty.apply (Ty.path "*const") [] [ impl_Thin ]);
+              M.value_with_ty
+                (M.read (| metadata |))
+                (Ty.associated_in_trait "core::ptr::metadata::Pointee" [] [] T "Metadata")
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -105,7 +112,14 @@ Module ptr.
                 Ty.associated_in_trait "core::ptr::metadata::Pointee" [] [] T "Metadata"
               ]
             |),
-            [ M.read (| data_pointer |); M.read (| metadata |) ]
+            [
+              M.value_with_ty
+                (M.read (| data_pointer |))
+                (Ty.apply (Ty.path "*mut") [] [ impl_Thin ]);
+              M.value_with_ty
+                (M.read (| metadata |))
+                (Ty.associated_in_trait "core::ptr::metadata::Pointee" [] [] T "Metadata")
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -169,7 +183,11 @@ Module ptr.
                   Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ]
                 ]
               |),
-              [ M.read (| self |) ]
+              [
+                M.value_with_ty
+                  (M.read (| self |))
+                  (Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ])
+              ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -203,18 +221,24 @@ Module ptr.
               Ty.path "usize",
               M.get_function (| "core::intrinsics::vtable_size", [], [] |),
               [
-                M.cast
+                M.value_with_ty
+                  (M.cast
+                    (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
+                        "vtable_ptr",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.read (| self |))
+                          (Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ])
+                      ]
+                    |)))
                   (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
-                  (M.call_closure (|
-                    Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
-                      "vtable_ptr",
-                      [],
-                      []
-                    |),
-                    [ M.read (| self |) ]
-                  |))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -246,18 +270,24 @@ Module ptr.
               Ty.path "usize",
               M.get_function (| "core::intrinsics::vtable_align", [], [] |),
               [
-                M.cast
+                M.value_with_ty
+                  (M.cast
+                    (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ],
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
+                        "vtable_ptr",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.read (| self |))
+                          (Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ])
+                      ]
+                    |)))
                   (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
-                  (M.call_closure (|
-                    Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
-                      "vtable_ptr",
-                      [],
-                      []
-                    |),
-                    [ M.read (| self |) ]
-                  |))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -295,26 +325,38 @@ Module ptr.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
-                    "size_of",
-                    [],
-                    []
-                  |),
-                  [ M.read (| self |) ]
-                |);
-                M.call_closure (|
-                  Ty.path "usize",
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
-                    "align_of",
-                    [],
-                    []
-                  |),
-                  [ M.read (| self |) ]
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
+                      "size_of",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ])
+                    ]
+                  |))
+                  (Ty.path "usize");
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.path "usize",
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
+                      "align_of",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| self |))
+                        (Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ])
+                    ]
+                  |))
+                  (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -391,94 +433,126 @@ Module ptr.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
-                      M.get_associated_function (|
-                        Ty.path "core::fmt::builders::DebugTuple",
-                        "field",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.MutRef,
-                          M.alloc (|
-                            Ty.path "core::fmt::builders::DebugTuple",
-                            M.call_closure (|
-                              Ty.path "core::fmt::builders::DebugTuple",
-                              M.get_associated_function (|
-                                Ty.path "core::fmt::Formatter",
-                                "debug_tuple",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (| mk_str (| "DynMetadata" |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::builders::DebugTuple",
+                          "field",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.alloc (|
+                                Ty.path "core::fmt::builders::DebugTuple",
+                                M.call_closure (|
+                                  Ty.path "core::fmt::builders::DebugTuple",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::Formatter",
+                                    "debug_tuple",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.deref (| M.read (| f |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.path "core::fmt::Formatter" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| mk_str (| "DynMetadata" |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                  ]
                                 |)
-                              ]
-                            |)
-                          |)
-                        |);
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
+                              |)
+                            |))
                             (Ty.apply
-                              (Ty.path "&")
+                              (Ty.path "&mut")
                               []
-                              [
-                                Ty.apply
-                                  (Ty.path "*const")
+                              [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&")
                                   []
-                                  [ Ty.path "core::ptr::metadata::VTable" ]
-                              ])
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
+                                  [
                                     Ty.apply
                                       (Ty.path "*const")
                                       []
-                                      [ Ty.path "core::ptr::metadata::VTable" ],
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "*const")
-                                        []
-                                        [ Ty.path "core::ptr::metadata::VTable" ],
-                                      M.get_associated_function (|
+                                      [ Ty.path "core::ptr::metadata::VTable" ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
                                         Ty.apply
-                                          (Ty.path "core::ptr::metadata::DynMetadata")
+                                          (Ty.path "*const")
                                           []
-                                          [ Dyn ],
-                                        "vtable_ptr",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                                          [ Ty.path "core::ptr::metadata::VTable" ],
+                                        M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "*const")
+                                            []
+                                            [ Ty.path "core::ptr::metadata::VTable" ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "core::ptr::metadata::DynMetadata")
+                                              []
+                                              [ Dyn ],
+                                            "vtable_ptr",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| M.deref (| M.read (| self |) |) |))
+                                              (Ty.apply
+                                                (Ty.path "core::ptr::metadata::DynMetadata")
+                                                []
+                                                [ Dyn ])
+                                          ]
+                                        |)
+                                      |)
                                     |)
                                   |)
                                 |)
-                              |)
-                            |)
-                          ]
-                        |)
-                      ]
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -606,26 +680,38 @@ Module ptr.
               Ty.path "bool",
               M.get_function (| "core::ptr::eq", [], [ Ty.path "core::ptr::metadata::VTable" ] |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
-                    "vtable_ptr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
-                    "vtable_ptr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| other |) |) |) ]
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
+                      "vtable_ptr",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
+                      "vtable_ptr",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| other |) |) |))
+                        (Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -684,48 +770,72 @@ Module ptr.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ],
-                        M.call_closure (|
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
-                            "vtable_ptr",
-                            [],
-                            []
-                          |),
-                          [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "*const")
+                              []
+                              [ Ty.path "core::ptr::metadata::VTable" ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
+                              "vtable_ptr",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ])
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.alloc (|
-                        Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ],
-                        M.call_closure (|
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ] ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.alloc (|
                           Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
-                            "vtable_ptr",
-                            [],
-                            []
-                          |),
-                          [ M.read (| M.deref (| M.read (| other |) |) |) ]
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "*const")
+                              []
+                              [ Ty.path "core::ptr::metadata::VTable" ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
+                              "vtable_ptr",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| M.deref (| M.read (| other |) |) |))
+                                (Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ])
+                            ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&")
+                    []
+                    [ Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -776,28 +886,38 @@ Module ptr.
                   [ Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ] ],
                 other
               |) in
-            Value.StructTuple
-              "core::option::Option::Some"
-              []
-              [ Ty.path "core::cmp::Ordering" ]
-              [
-                M.call_closure (|
-                  Ty.path "core::cmp::Ordering",
-                  M.get_trait_method (|
-                    "core::cmp::Ord",
-                    Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
-                    [],
-                    [],
-                    "cmp",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |)
-                  ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "core::option::Option::Some"
+                [
+                  M.call_closure (|
+                    Ty.path "core::cmp::Ordering",
+                    M.get_trait_method (|
+                      "core::cmp::Ord",
+                      Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
+                      [],
+                      [],
+                      "cmp",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ] ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ] ])
+                    ]
+                  |)
+                ])
+              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "core::cmp::Ordering" ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -843,17 +963,25 @@ Module ptr.
                 [ Ty.path "core::ptr::metadata::VTable"; H ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
-                    "vtable_ptr",
-                    [],
-                    []
-                  |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| hasher |) |) |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ],
+                      "vtable_ptr",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "core::ptr::metadata::DynMetadata") [] [ Dyn ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "core::ptr::metadata::VTable" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| hasher |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ H ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

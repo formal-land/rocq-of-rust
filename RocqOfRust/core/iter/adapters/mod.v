@@ -43,20 +43,22 @@ Module iter.
           let f := M.alloc (| F, f |) in
           M.read (|
             let~ residual : Ty.apply (Ty.path "core::option::Option") [] [ R ] :=
-              Value.StructTuple "core::option::Option::None" [] [ R ] [] in
+              M.value_with_ty
+                (Value.StructTuple "core::option::Option::None" [])
+                (Ty.apply (Ty.path "core::option::Option") [] [ R ]) in
             let~ shunt : Ty.apply (Ty.path "core::iter::adapters::GenericShunt") [] [ I; R ] :=
-              Value.mkStructRecord
-                "core::iter::adapters::GenericShunt"
-                []
-                [ I; R ]
-                [
-                  ("iter", M.read (| iter |));
-                  ("residual",
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (| M.borrow (| Pointer.Kind.MutRef, residual |) |)
-                    |))
-                ] in
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "core::iter::adapters::GenericShunt"
+                  [
+                    ("iter", M.read (| iter |));
+                    ("residual",
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (| M.borrow (| Pointer.Kind.MutRef, residual |) |)
+                      |))
+                  ])
+                (Ty.apply (Ty.path "core::iter::adapters::GenericShunt") [] [ I; R ]) in
             let~ value : U :=
               M.call_closure (|
                 U,
@@ -70,7 +72,15 @@ Module iter.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, f |); Value.Tuple [ M.read (| shunt |) ] ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, f |))
+                    (Ty.apply (Ty.path "&mut") [] [ F ]);
+                  M.value_with_ty
+                    (Value.Tuple [ M.read (| shunt |) ])
+                    (Ty.tuple
+                      [ Ty.apply (Ty.path "core::iter::adapters::GenericShunt") [] [ I; R ] ])
+                ]
               |) in
             M.alloc (|
               Ty.associated_in_trait "core::ops::try_trait::Residual" [] [ U ] R "TryType",
@@ -108,7 +118,7 @@ Module iter.
                           [],
                           []
                         |),
-                        [ M.read (| r |) ]
+                        [ M.value_with_ty (M.read (| r |)) R ]
                       |)));
                   fun γ =>
                     ltac:(M.monadic
@@ -134,7 +144,7 @@ Module iter.
                           [],
                           []
                         |),
-                        [ M.read (| value |) ]
+                        [ M.value_with_ty (M.read (| value |)) U ]
                       |)))
                 ]
               |)
@@ -214,47 +224,65 @@ Module iter.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "core::ops::control_flow::ControlFlow")
-                    []
-                    [
-                      Ty.associated_in_trait
-                        "core::ops::try_trait::Try"
-                        []
-                        []
-                        (Ty.associated_in_trait
-                          "core::iter::traits::iterator::Iterator"
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::ops::control_flow::ControlFlow")
+                      []
+                      [
+                        Ty.associated_in_trait
+                          "core::ops::try_trait::Try"
                           []
                           []
-                          I
-                          "Item")
-                        "Output";
-                      Ty.tuple []
-                    ],
-                  M.get_trait_method (|
-                    "core::iter::traits::iterator::Iterator",
-                    Ty.apply (Ty.path "core::iter::adapters::GenericShunt") [] [ I; R ],
-                    [],
-                    [],
-                    "try_for_each",
-                    [],
-                    [
-                      Ty.function
-                        [
-                          Ty.associated_in_trait
-                            "core::ops::try_trait::Try"
+                          (Ty.associated_in_trait
+                            "core::iter::traits::iterator::Iterator"
                             []
                             []
-                            (Ty.associated_in_trait
-                              "core::iter::traits::iterator::Iterator"
+                            I
+                            "Item")
+                          "Output";
+                        Ty.tuple []
+                      ],
+                    M.get_trait_method (|
+                      "core::iter::traits::iterator::Iterator",
+                      Ty.apply (Ty.path "core::iter::adapters::GenericShunt") [] [ I; R ],
+                      [],
+                      [],
+                      "try_for_each",
+                      [],
+                      [
+                        Ty.function
+                          [
+                            Ty.associated_in_trait
+                              "core::ops::try_trait::Try"
                               []
                               []
-                              I
-                              "Item")
-                            "Output"
-                        ]
-                        (Ty.apply
+                              (Ty.associated_in_trait
+                                "core::iter::traits::iterator::Iterator"
+                                []
+                                []
+                                I
+                                "Item")
+                              "Output"
+                          ]
+                          (Ty.apply
+                            (Ty.path "core::ops::control_flow::ControlFlow")
+                            []
+                            [
+                              Ty.associated_in_trait
+                                "core::ops::try_trait::Try"
+                                []
+                                []
+                                (Ty.associated_in_trait
+                                  "core::iter::traits::iterator::Iterator"
+                                  []
+                                  []
+                                  I
+                                  "Item")
+                                "Output";
+                              Ty.tuple []
+                            ]);
+                        Ty.apply
                           (Ty.path "core::ops::control_flow::ControlFlow")
                           []
                           [
@@ -270,47 +298,68 @@ Module iter.
                                 "Item")
                               "Output";
                             Ty.tuple []
-                          ]);
-                      Ty.apply
-                        (Ty.path "core::ops::control_flow::ControlFlow")
-                        []
-                        [
-                          Ty.associated_in_trait
-                            "core::ops::try_trait::Try"
-                            []
-                            []
-                            (Ty.associated_in_trait
-                              "core::iter::traits::iterator::Iterator"
-                              []
-                              []
-                              I
-                              "Item")
-                            "Output";
-                          Ty.tuple []
-                        ]
-                    ]
-                  |),
-                  [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                    M.constructor_as_closure
-                      "core::ops::control_flow::ControlFlow::Break"
-                      []
-                      [
-                        Ty.associated_in_trait
-                          "core::ops::try_trait::Try"
-                          []
-                          []
-                          (Ty.associated_in_trait
-                            "core::iter::traits::iterator::Iterator"
-                            []
-                            []
-                            I
-                            "Item")
-                          "Output";
-                        Ty.tuple []
+                          ]
                       ]
-                  ]
-                |)
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "core::iter::adapters::GenericShunt") [] [ I; R ] ]);
+                      M.value_with_ty
+                        (M.constructor_as_closure "core::ops::control_flow::ControlFlow::Break")
+                        (Ty.function
+                          [
+                            Ty.associated_in_trait
+                              "core::ops::try_trait::Try"
+                              []
+                              []
+                              (Ty.associated_in_trait
+                                "core::iter::traits::iterator::Iterator"
+                                []
+                                []
+                                I
+                                "Item")
+                              "Output"
+                          ]
+                          (Ty.apply
+                            (Ty.path "core::ops::control_flow::ControlFlow")
+                            []
+                            [
+                              Ty.associated_in_trait
+                                "core::ops::try_trait::Try"
+                                []
+                                []
+                                (Ty.associated_in_trait
+                                  "core::iter::traits::iterator::Iterator"
+                                  []
+                                  []
+                                  I
+                                  "Item")
+                                "Output";
+                              Ty.tuple []
+                            ]))
+                    ]
+                  |))
+                  (Ty.apply
+                    (Ty.path "core::ops::control_flow::ControlFlow")
+                    []
+                    [
+                      Ty.associated_in_trait
+                        "core::ops::try_trait::Try"
+                        []
+                        []
+                        (Ty.associated_in_trait
+                          "core::iter::traits::iterator::Iterator"
+                          []
+                          []
+                          I
+                          "Item")
+                        "Output";
+                      Ty.tuple []
+                    ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -360,18 +409,23 @@ Module iter.
                               []
                             |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::iter::adapters::GenericShunt",
-                                      "residual"
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "core::iter::adapters::GenericShunt",
+                                        "residual"
+                                      |)
                                     |)
                                   |)
-                                |)
-                              |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "core::option::Option") [] [ R ] ])
                             ]
                           |)
                         |)) in
@@ -379,11 +433,11 @@ Module iter.
                     Value.Tuple
                       [
                         Value.Integer IntegerKind.Usize 0;
-                        Value.StructTuple
-                          "core::option::Option::Some"
-                          []
-                          [ Ty.path "usize" ]
-                          [ Value.Integer IntegerKind.Usize 0 ]
+                        M.value_with_ty
+                          (Value.StructTuple
+                            "core::option::Option::Some"
+                            [ Value.Integer IntegerKind.Usize 0 ])
+                          (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                       ]));
                 fun γ =>
                   ltac:(M.monadic
@@ -415,14 +469,16 @@ Module iter.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::iter::adapters::GenericShunt",
-                                "iter"
-                              |)
-                            |)
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::iter::adapters::GenericShunt",
+                                  "iter"
+                                |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ I ])
                           ]
                         |)
                       |),
@@ -488,154 +544,101 @@ Module iter.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ T; B ],
-                  M.get_trait_method (|
-                    "core::iter::traits::iterator::Iterator",
-                    I,
-                    [],
-                    [],
-                    "try_fold",
-                    [],
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ T; B ],
+                    M.get_trait_method (|
+                      "core::iter::traits::iterator::Iterator",
+                      I,
+                      [],
+                      [],
+                      "try_fold",
+                      [],
+                      [
+                        B;
+                        Ty.function
+                          [
+                            B;
+                            Ty.associated_in_trait
+                              "core::iter::traits::iterator::Iterator"
+                              []
+                              []
+                              I
+                              "Item"
+                          ]
+                          (Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ T; B ]);
+                        Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ T; B ]
+                      ]
+                    |),
                     [
-                      B;
-                      Ty.function
-                        [
-                          B;
-                          Ty.associated_in_trait
-                            "core::iter::traits::iterator::Iterator"
-                            []
-                            []
-                            I
-                            "Item"
-                        ]
-                        (Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ T; B ]);
-                      Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ T; B ]
-                    ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "core::iter::adapters::GenericShunt",
-                        "iter"
-                      |)
-                    |);
-                    M.read (| init |);
-                    M.closure
-                      (fun γ =>
-                        ltac:(M.monadic
-                          match γ with
-                          | [ α0; α1 ] =>
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "core::iter::adapters::GenericShunt",
+                            "iter"
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ I ]);
+                      M.value_with_ty (M.read (| init |)) B;
+                      M.value_with_ty
+                        (M.closure
+                          (fun γ =>
                             ltac:(M.monadic
-                              (M.match_operator (|
-                                Ty.apply
-                                  (Ty.path "core::ops::control_flow::ControlFlow")
-                                  []
-                                  [ T; B ],
-                                M.alloc (| B, α0 |),
-                                [
-                                  fun γ =>
-                                    ltac:(M.monadic
-                                      (let acc := M.copy (| B, γ |) in
-                                      M.match_operator (|
-                                        Ty.apply
-                                          (Ty.path "core::ops::control_flow::ControlFlow")
-                                          []
-                                          [ T; B ],
-                                        M.alloc (|
-                                          Ty.associated_in_trait
-                                            "core::iter::traits::iterator::Iterator"
-                                            []
-                                            []
-                                            I
-                                            "Item",
-                                          α1
-                                        |),
-                                        [
-                                          fun γ =>
-                                            ltac:(M.monadic
-                                              (let x :=
-                                                M.copy (|
-                                                  Ty.associated_in_trait
-                                                    "core::iter::traits::iterator::Iterator"
-                                                    []
-                                                    []
-                                                    I
-                                                    "Item",
-                                                  γ
-                                                |) in
-                                              M.match_operator (|
-                                                Ty.apply
-                                                  (Ty.path "core::ops::control_flow::ControlFlow")
-                                                  []
-                                                  [ T; B ],
-                                                M.alloc (|
-                                                  Ty.apply
-                                                    (Ty.path "core::ops::control_flow::ControlFlow")
-                                                    []
-                                                    [
-                                                      R;
-                                                      Ty.associated_in_trait
-                                                        "core::ops::try_trait::Try"
-                                                        []
-                                                        []
-                                                        (Ty.associated_in_trait
-                                                          "core::iter::traits::iterator::Iterator"
-                                                          []
-                                                          []
-                                                          I
-                                                          "Item")
-                                                        "Output"
-                                                    ],
-                                                  M.call_closure (|
-                                                    Ty.apply
-                                                      (Ty.path
-                                                        "core::ops::control_flow::ControlFlow")
-                                                      []
-                                                      [
-                                                        R;
-                                                        Ty.associated_in_trait
-                                                          "core::ops::try_trait::Try"
-                                                          []
-                                                          []
-                                                          (Ty.associated_in_trait
-                                                            "core::iter::traits::iterator::Iterator"
-                                                            []
-                                                            []
-                                                            I
-                                                            "Item")
-                                                          "Output"
-                                                      ],
-                                                    M.get_trait_method (|
-                                                      "core::ops::try_trait::Try",
+                              match γ with
+                              | [ α0; α1 ] =>
+                                ltac:(M.monadic
+                                  (M.match_operator (|
+                                    Ty.apply
+                                      (Ty.path "core::ops::control_flow::ControlFlow")
+                                      []
+                                      [ T; B ],
+                                    M.alloc (| B, α0 |),
+                                    [
+                                      fun γ =>
+                                        ltac:(M.monadic
+                                          (let acc := M.copy (| B, γ |) in
+                                          M.match_operator (|
+                                            Ty.apply
+                                              (Ty.path "core::ops::control_flow::ControlFlow")
+                                              []
+                                              [ T; B ],
+                                            M.alloc (|
+                                              Ty.associated_in_trait
+                                                "core::iter::traits::iterator::Iterator"
+                                                []
+                                                []
+                                                I
+                                                "Item",
+                                              α1
+                                            |),
+                                            [
+                                              fun γ =>
+                                                ltac:(M.monadic
+                                                  (let x :=
+                                                    M.copy (|
                                                       Ty.associated_in_trait
                                                         "core::iter::traits::iterator::Iterator"
                                                         []
                                                         []
                                                         I
                                                         "Item",
-                                                      [],
-                                                      [],
-                                                      "branch",
-                                                      [],
+                                                      γ
+                                                    |) in
+                                                  M.match_operator (|
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "core::ops::control_flow::ControlFlow")
                                                       []
-                                                    |),
-                                                    [ M.read (| x |) ]
-                                                  |)
-                                                |),
-                                                [
-                                                  fun γ =>
-                                                    ltac:(M.monadic
-                                                      (let γ0_0 :=
-                                                        M.SubPointer.get_struct_tuple_field (|
-                                                          γ,
-                                                          "core::ops::control_flow::ControlFlow::Continue",
-                                                          0
-                                                        |) in
-                                                      let x :=
-                                                        M.copy (|
+                                                      [ T; B ],
+                                                    M.alloc (|
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::ops::control_flow::ControlFlow")
+                                                        []
+                                                        [
+                                                          R;
                                                           Ty.associated_in_trait
                                                             "core::ops::try_trait::Try"
                                                             []
@@ -646,133 +649,255 @@ Module iter.
                                                               []
                                                               I
                                                               "Item")
-                                                            "Output",
-                                                          γ0_0
-                                                        |) in
+                                                            "Output"
+                                                        ],
                                                       M.call_closure (|
                                                         Ty.apply
                                                           (Ty.path
                                                             "core::ops::control_flow::ControlFlow")
                                                           []
-                                                          [ T; B ],
-                                                        M.get_associated_function (|
-                                                          Ty.apply
-                                                            (Ty.path
-                                                              "core::ops::control_flow::ControlFlow")
+                                                          [
+                                                            R;
+                                                            Ty.associated_in_trait
+                                                              "core::ops::try_trait::Try"
+                                                              []
+                                                              []
+                                                              (Ty.associated_in_trait
+                                                                "core::iter::traits::iterator::Iterator"
+                                                                []
+                                                                []
+                                                                I
+                                                                "Item")
+                                                              "Output"
+                                                          ],
+                                                        M.get_trait_method (|
+                                                          "core::ops::try_trait::Try",
+                                                          Ty.associated_in_trait
+                                                            "core::iter::traits::iterator::Iterator"
                                                             []
-                                                            [
-                                                              T;
-                                                              Ty.associated_in_trait
-                                                                "core::ops::try_trait::Try"
-                                                                []
-                                                                []
-                                                                T
-                                                                "Output"
-                                                            ],
-                                                          "from_try",
+                                                            []
+                                                            I
+                                                            "Item",
+                                                          [],
+                                                          [],
+                                                          "branch",
                                                           [],
                                                           []
                                                         |),
                                                         [
-                                                          M.call_closure (|
-                                                            T,
-                                                            M.get_trait_method (|
-                                                              "core::ops::function::FnMut",
-                                                              F,
-                                                              [],
-                                                              [
-                                                                Ty.tuple
-                                                                  [
-                                                                    B;
-                                                                    Ty.associated_in_trait
-                                                                      "core::ops::try_trait::Try"
-                                                                      []
-                                                                      []
-                                                                      (Ty.associated_in_trait
-                                                                        "core::iter::traits::iterator::Iterator"
-                                                                        []
-                                                                        []
-                                                                        I
-                                                                        "Item")
-                                                                      "Output"
-                                                                  ]
-                                                              ],
-                                                              "call_mut",
-                                                              [],
+                                                          M.value_with_ty
+                                                            (M.read (| x |))
+                                                            (Ty.associated_in_trait
+                                                              "core::iter::traits::iterator::Iterator"
                                                               []
-                                                            |),
-                                                            [
-                                                              M.borrow (| Pointer.Kind.MutRef, f |);
-                                                              Value.Tuple
-                                                                [ M.read (| acc |); M.read (| x |) ]
-                                                            ]
-                                                          |)
+                                                              []
+                                                              I
+                                                              "Item")
                                                         ]
-                                                      |)));
-                                                  fun γ =>
-                                                    ltac:(M.monadic
-                                                      (let γ0_0 :=
-                                                        M.SubPointer.get_struct_tuple_field (|
-                                                          γ,
-                                                          "core::ops::control_flow::ControlFlow::Break",
-                                                          0
-                                                        |) in
-                                                      let r := M.copy (| R, γ0_0 |) in
-                                                      M.read (|
-                                                        let~ _ : Ty.tuple [] :=
-                                                          M.write (|
-                                                            M.deref (|
-                                                              M.read (|
-                                                                M.SubPointer.get_struct_record_field (|
-                                                                  M.deref (| M.read (| self |) |),
-                                                                  "core::iter::adapters::GenericShunt",
-                                                                  "residual"
-                                                                |)
-                                                              |)
-                                                            |),
-                                                            Value.StructTuple
-                                                              "core::option::Option::Some"
-                                                              []
-                                                              [ R ]
-                                                              [ M.read (| r |) ]
-                                                          |) in
-                                                        M.alloc (|
-                                                          Ty.apply
-                                                            (Ty.path
-                                                              "core::ops::control_flow::ControlFlow")
-                                                            []
-                                                            [ T; B ],
-                                                          Value.StructTuple
-                                                            "core::ops::control_flow::ControlFlow::Break"
-                                                            []
-                                                            [ T; B ]
-                                                            [
-                                                              M.call_closure (|
-                                                                T,
-                                                                M.get_trait_method (|
-                                                                  "core::ops::try_trait::Try",
-                                                                  T,
-                                                                  [],
-                                                                  [],
-                                                                  "from_output",
-                                                                  [],
+                                                      |)
+                                                    |),
+                                                    [
+                                                      fun γ =>
+                                                        ltac:(M.monadic
+                                                          (let γ0_0 :=
+                                                            M.SubPointer.get_struct_tuple_field (|
+                                                              γ,
+                                                              "core::ops::control_flow::ControlFlow::Continue",
+                                                              0
+                                                            |) in
+                                                          let x :=
+                                                            M.copy (|
+                                                              Ty.associated_in_trait
+                                                                "core::ops::try_trait::Try"
+                                                                []
+                                                                []
+                                                                (Ty.associated_in_trait
+                                                                  "core::iter::traits::iterator::Iterator"
                                                                   []
-                                                                |),
-                                                                [ M.read (| acc |) ]
-                                                              |)
+                                                                  []
+                                                                  I
+                                                                  "Item")
+                                                                "Output",
+                                                              γ0_0
+                                                            |) in
+                                                          M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::ops::control_flow::ControlFlow")
+                                                              []
+                                                              [ T; B ],
+                                                            M.get_associated_function (|
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "core::ops::control_flow::ControlFlow")
+                                                                []
+                                                                [
+                                                                  T;
+                                                                  Ty.associated_in_trait
+                                                                    "core::ops::try_trait::Try"
+                                                                    []
+                                                                    []
+                                                                    T
+                                                                    "Output"
+                                                                ],
+                                                              "from_try",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.call_closure (|
+                                                                  T,
+                                                                  M.get_trait_method (|
+                                                                    "core::ops::function::FnMut",
+                                                                    F,
+                                                                    [],
+                                                                    [
+                                                                      Ty.tuple
+                                                                        [
+                                                                          B;
+                                                                          Ty.associated_in_trait
+                                                                            "core::ops::try_trait::Try"
+                                                                            []
+                                                                            []
+                                                                            (Ty.associated_in_trait
+                                                                              "core::iter::traits::iterator::Iterator"
+                                                                              []
+                                                                              []
+                                                                              I
+                                                                              "Item")
+                                                                            "Output"
+                                                                        ]
+                                                                    ],
+                                                                    "call_mut",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        f
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&mut")
+                                                                        []
+                                                                        [ F ]);
+                                                                    M.value_with_ty
+                                                                      (Value.Tuple
+                                                                        [
+                                                                          M.read (| acc |);
+                                                                          M.read (| x |)
+                                                                        ])
+                                                                      (Ty.tuple
+                                                                        [
+                                                                          B;
+                                                                          Ty.associated_in_trait
+                                                                            "core::ops::try_trait::Try"
+                                                                            []
+                                                                            []
+                                                                            (Ty.associated_in_trait
+                                                                              "core::iter::traits::iterator::Iterator"
+                                                                              []
+                                                                              []
+                                                                              I
+                                                                              "Item")
+                                                                            "Output"
+                                                                        ])
+                                                                  ]
+                                                                |))
+                                                                T
                                                             ]
-                                                        |)
-                                                      |)))
-                                                ]
-                                              |)))
-                                        ]
-                                      |)))
-                                ]
-                              |)))
-                          | _ => M.impossible "wrong number of arguments"
-                          end))
-                  ]
-                |)
+                                                          |)));
+                                                      fun γ =>
+                                                        ltac:(M.monadic
+                                                          (let γ0_0 :=
+                                                            M.SubPointer.get_struct_tuple_field (|
+                                                              γ,
+                                                              "core::ops::control_flow::ControlFlow::Break",
+                                                              0
+                                                            |) in
+                                                          let r := M.copy (| R, γ0_0 |) in
+                                                          M.read (|
+                                                            let~ _ : Ty.tuple [] :=
+                                                              M.write (|
+                                                                M.deref (|
+                                                                  M.read (|
+                                                                    M.SubPointer.get_struct_record_field (|
+                                                                      M.deref (|
+                                                                        M.read (| self |)
+                                                                      |),
+                                                                      "core::iter::adapters::GenericShunt",
+                                                                      "residual"
+                                                                    |)
+                                                                  |)
+                                                                |),
+                                                                M.value_with_ty
+                                                                  (Value.StructTuple
+                                                                    "core::option::Option::Some"
+                                                                    [ M.read (| r |) ])
+                                                                  (Ty.apply
+                                                                    (Ty.path "core::option::Option")
+                                                                    []
+                                                                    [ R ])
+                                                              |) in
+                                                            M.alloc (|
+                                                              Ty.apply
+                                                                (Ty.path
+                                                                  "core::ops::control_flow::ControlFlow")
+                                                                []
+                                                                [ T; B ],
+                                                              M.value_with_ty
+                                                                (Value.StructTuple
+                                                                  "core::ops::control_flow::ControlFlow::Break"
+                                                                  [
+                                                                    M.call_closure (|
+                                                                      T,
+                                                                      M.get_trait_method (|
+                                                                        "core::ops::try_trait::Try",
+                                                                        T,
+                                                                        [],
+                                                                        [],
+                                                                        "from_output",
+                                                                        [],
+                                                                        []
+                                                                      |),
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (M.read (| acc |))
+                                                                          B
+                                                                      ]
+                                                                    |)
+                                                                  ])
+                                                                (Ty.apply
+                                                                  (Ty.path
+                                                                    "core::ops::control_flow::ControlFlow")
+                                                                  []
+                                                                  [ T; B ])
+                                                            |)
+                                                          |)))
+                                                    ]
+                                                  |)))
+                                            ]
+                                          |)))
+                                    ]
+                                  |)))
+                              | _ => M.impossible "wrong number of arguments"
+                              end)))
+                        (Ty.function
+                          [
+                            B;
+                            Ty.associated_in_trait
+                              "core::iter::traits::iterator::Iterator"
+                              []
+                              []
+                              I
+                              "Item"
+                          ]
+                          (Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ T; B ]))
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::ops::control_flow::ControlFlow") [] [ T; B ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -820,32 +945,39 @@ Module iter.
                       ]
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, self |);
-                      M.read (| init |);
-                      M.call_closure (|
-                        Ty.associated_unknown,
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "core::ops::try_trait::NeverShortCircuit") [] [ AAA ],
-                          "wrap_mut_2",
-                          [],
-                          [
-                            AAA;
-                            Ty.associated_in_trait
-                              "core::ops::try_trait::Try"
-                              []
-                              []
-                              (Ty.associated_in_trait
-                                "core::iter::traits::iterator::Iterator"
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, self |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "core::iter::adapters::GenericShunt") [] [ I; R ] ]);
+                      M.value_with_ty (M.read (| init |)) AAA;
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.associated_unknown,
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::ops::try_trait::NeverShortCircuit") [] [ AAA ],
+                            "wrap_mut_2",
+                            [],
+                            [
+                              AAA;
+                              Ty.associated_in_trait
+                                "core::ops::try_trait::Try"
                                 []
                                 []
-                                I
-                                "Item")
-                              "Output";
-                            FFF
-                          ]
-                        |),
-                        [ M.read (| fold |) ]
-                      |)
+                                (Ty.associated_in_trait
+                                  "core::iter::traits::iterator::Iterator"
+                                  []
+                                  []
+                                  I
+                                  "Item")
+                                "Output";
+                              FFF
+                            ]
+                          |),
+                          [ M.value_with_ty (M.read (| fold |)) FFF ]
+                        |))
+                        Ty.associated_unknown
                     ]
                   |)
                 |),
@@ -931,19 +1063,21 @@ Module iter.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::adapters::GenericShunt",
-                                    "iter"
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::iter::adapters::GenericShunt",
+                                      "iter"
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply (Ty.path "&mut") [] [ I ])
                           ]
                         |)
                       |)

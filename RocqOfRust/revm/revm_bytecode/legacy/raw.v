@@ -27,39 +27,41 @@ Module legacy.
                   [ Ty.path "revm_bytecode::legacy::raw::LegacyRawBytecode" ],
                 self
               |) in
-            Value.StructTuple
-              "revm_bytecode::legacy::raw::LegacyRawBytecode"
-              []
-              []
-              [
-                M.call_closure (|
-                  Ty.path "alloy_primitives::bytes_::Bytes",
-                  M.get_trait_method (|
-                    "core::clone::Clone",
+            M.value_with_ty
+              (Value.StructTuple
+                "revm_bytecode::legacy::raw::LegacyRawBytecode"
+                [
+                  M.call_closure (|
                     Ty.path "alloy_primitives::bytes_::Bytes",
-                    [],
-                    [],
-                    "clone",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_trait_method (|
+                      "core::clone::Clone",
+                      Ty.path "alloy_primitives::bytes_::Bytes",
+                      [],
+                      [],
+                      "clone",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_tuple_field (|
-                            M.deref (| M.read (| self |) |),
-                            "revm_bytecode::legacy::raw::LegacyRawBytecode",
-                            0
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.SubPointer.get_struct_tuple_field (|
+                                M.deref (| M.read (| self |) |),
+                                "revm_bytecode::legacy::raw::LegacyRawBytecode",
+                                0
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
-              ]))
+                        |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                    ]
+                  |)
+                ])
+              (Ty.path "revm_bytecode::legacy::raw::LegacyRawBytecode")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -102,39 +104,48 @@ Module legacy.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LegacyRawBytecode" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply
-                      (Ty.path "&")
-                      []
-                      [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_tuple_field (|
-                                M.deref (| M.read (| self |) |),
-                                "revm_bytecode::legacy::raw::LegacyRawBytecode",
-                                0
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "LegacyRawBytecode" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_tuple_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_bytecode::legacy::raw::LegacyRawBytecode",
+                                  0
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -197,22 +208,26 @@ Module legacy.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_bytecode::legacy::raw::LegacyRawBytecode",
-                    0
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| other |) |),
-                    "revm_bytecode::legacy::raw::LegacyRawBytecode",
-                    0
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_bytecode::legacy::raw::LegacyRawBytecode",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| other |) |),
+                      "revm_bytecode::legacy::raw::LegacyRawBytecode",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -294,20 +309,24 @@ Module legacy.
                 [ __H ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_bytecode::legacy::raw::LegacyRawBytecode",
-                        0
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_bytecode::legacy::raw::LegacyRawBytecode",
+                          0
+                        |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ __H ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -358,32 +377,36 @@ Module legacy.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_bytecode::legacy::raw::LegacyRawBytecode",
-                        0
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_bytecode::legacy::raw::LegacyRawBytecode",
+                          0
+                        |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| other |) |),
-                        "revm_bytecode::legacy::raw::LegacyRawBytecode",
-                        0
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| other |) |),
+                          "revm_bytecode::legacy::raw::LegacyRawBytecode",
+                          0
+                        |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -434,32 +457,36 @@ Module legacy.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_bytecode::legacy::raw::LegacyRawBytecode",
-                        0
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_bytecode::legacy::raw::LegacyRawBytecode",
+                          0
+                        |)
                       |)
                     |)
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.deref (| M.read (| other |) |),
-                        "revm_bytecode::legacy::raw::LegacyRawBytecode",
-                        0
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.SubPointer.get_struct_tuple_field (|
+                          M.deref (| M.read (| other |) |),
+                          "revm_bytecode::legacy::raw::LegacyRawBytecode",
+                          0
+                        |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "alloy_primitives::bytes_::Bytes" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -498,57 +525,69 @@ Module legacy.
               Ty.path "revm_bytecode::legacy::jump_map::JumpTable",
               M.get_function (| "revm_bytecode::legacy::raw::analyze_legacy", [], [] |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.deref (|
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                      M.get_trait_method (|
-                        "core::ops::deref::Deref",
-                        Ty.path "bytes::bytes::Bytes",
-                        [],
-                        [],
-                        "deref",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.call_closure (|
-                              Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
-                              M.get_trait_method (|
-                                "core::ops::deref::Deref",
-                                Ty.path "alloy_primitives::bytes_::Bytes",
-                                [],
-                                [],
-                                "deref",
-                                [],
-                                []
-                              |),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.SubPointer.get_struct_tuple_field (|
-                                        M.deref (| M.read (| self |) |),
-                                        "revm_bytecode::legacy::raw::LegacyRawBytecode",
-                                        0
-                                      |)
-                                    |)
-                                  |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.deref (|
+                      M.call_closure (|
+                        Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                        M.get_trait_method (|
+                          "core::ops::deref::Deref",
+                          Ty.path "bytes::bytes::Bytes",
+                          [],
+                          [],
+                          "deref",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
+                                  M.get_trait_method (|
+                                    "core::ops::deref::Deref",
+                                    Ty.path "alloy_primitives::bytes_::Bytes",
+                                    [],
+                                    [],
+                                    "deref",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.SubPointer.get_struct_tuple_field (|
+                                              M.deref (| M.read (| self |) |),
+                                              "revm_bytecode::legacy::raw::LegacyRawBytecode",
+                                              0
+                                            |)
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                                  ]
                                 |)
-                              ]
-                            |)
-                          |)
-                        |)
-                      ]
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ])
+                        ]
+                      |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -585,40 +624,54 @@ Module legacy.
                     [],
                     []
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, self |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.path "revm_bytecode::legacy::raw::LegacyRawBytecode" ])
+                  ]
                 |) in
               let~ len : Ty.path "usize" :=
                 M.call_closure (|
                   Ty.path "usize",
                   M.get_associated_function (| Ty.path "bytes::bytes::Bytes", "len", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.path "alloy_primitives::bytes_::Bytes",
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_tuple_field (|
-                                self,
-                                "revm_bytecode::legacy::raw::LegacyRawBytecode",
-                                0
-                              |)
-                            |)
-                          ]
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.path "alloy_primitives::bytes_::Bytes",
+                              [],
+                              [],
+                              "deref",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_tuple_field (|
+                                    self,
+                                    "revm_bytecode::legacy::raw::LegacyRawBytecode",
+                                    0
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ])
                   ]
                 |) in
               let~ padded_bytecode :
@@ -641,11 +694,13 @@ Module legacy.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.path "usize",
-                      BinOp.Wrap.add,
-                      [ M.read (| len |); Value.Integer IntegerKind.Usize 33 ]
-                    |)
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        BinOp.Wrap.add,
+                        [ M.read (| len |); Value.Integer IntegerKind.Usize 33 ]
+                      |))
+                      (Ty.path "usize")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -661,61 +716,80 @@ Module legacy.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, padded_bytecode |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, padded_bytecode |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
                           Ty.apply
-                            (Ty.path "&")
+                            (Ty.path "alloc::vec::Vec")
                             []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_trait_method (|
-                            "core::ops::deref::Deref",
-                            Ty.path "bytes::bytes::Bytes",
-                            [],
-                            [],
-                            "deref",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
-                                  M.get_trait_method (|
-                                    "core::ops::deref::Deref",
-                                    Ty.path "alloy_primitives::bytes_::Bytes",
-                                    [],
-                                    [],
-                                    "deref",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.SubPointer.get_struct_tuple_field (|
-                                            self,
-                                            "revm_bytecode::legacy::raw::LegacyRawBytecode",
-                                            0
-                                          |)
-                                        |)
-                                      |)
+                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                        ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            M.get_trait_method (|
+                              "core::ops::deref::Deref",
+                              Ty.path "bytes::bytes::Bytes",
+                              [],
+                              [],
+                              "deref",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ],
+                                      M.get_trait_method (|
+                                        "core::ops::deref::Deref",
+                                        Ty.path "alloy_primitives::bytes_::Bytes",
+                                        [],
+                                        [],
+                                        "deref",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.SubPointer.get_struct_tuple_field (|
+                                                  self,
+                                                  "revm_bytecode::legacy::raw::LegacyRawBytecode",
+                                                  0
+                                                |)
+                                              |)
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.path "alloy_primitives::bytes_::Bytes" ])
+                                      ]
                                     |)
-                                  ]
-                                |)
-                              |)
-                            |)
-                          ]
+                                  |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "bytes::bytes::Bytes" ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -731,13 +805,25 @@ Module legacy.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, padded_bytecode |);
-                    M.call_closure (|
-                      Ty.path "usize",
-                      BinOp.Wrap.add,
-                      [ M.read (| len |); Value.Integer IntegerKind.Usize 33 ]
-                    |);
-                    Value.Integer IntegerKind.U8 0
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, padded_bytecode |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ]
+                        ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        BinOp.Wrap.add,
+                        [ M.read (| len |); Value.Integer IntegerKind.Usize 33 ]
+                      |))
+                      (Ty.path "usize");
+                    M.value_with_ty (Value.Integer IntegerKind.U8 0) (Ty.path "u8")
                   ]
                 |) in
               M.alloc (|
@@ -751,24 +837,35 @@ Module legacy.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.path "alloy_primitives::bytes_::Bytes",
-                      M.get_trait_method (|
-                        "core::convert::Into",
-                        Ty.apply
-                          (Ty.path "alloc::vec::Vec")
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "alloy_primitives::bytes_::Bytes",
+                        M.get_trait_method (|
+                          "core::convert::Into",
+                          Ty.apply
+                            (Ty.path "alloc::vec::Vec")
+                            []
+                            [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
+                          [],
+                          [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                          "into",
+                          [],
                           []
-                          [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ],
-                        [],
-                        [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                        "into",
-                        [],
-                        []
-                      |),
-                      [ M.read (| padded_bytecode |) ]
-                    |);
-                    M.read (| len |);
-                    M.read (| jump_table |)
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.read (| padded_bytecode |))
+                            (Ty.apply
+                              (Ty.path "alloc::vec::Vec")
+                              []
+                              [ Ty.path "u8"; Ty.path "alloc::alloc::Global" ])
+                        ]
+                      |))
+                      (Ty.path "alloy_primitives::bytes_::Bytes");
+                    M.value_with_ty (M.read (| len |)) (Ty.path "usize");
+                    M.value_with_ty
+                      (M.read (| jump_table |))
+                      (Ty.path "revm_bytecode::legacy::jump_map::JumpTable")
                   ]
                 |)
               |)
@@ -795,11 +892,11 @@ Module legacy.
         | [], [], [ bytes ] =>
           ltac:(M.monadic
             (let bytes := M.alloc (| Ty.path "alloy_primitives::bytes_::Bytes", bytes |) in
-            Value.StructTuple
-              "revm_bytecode::legacy::raw::LegacyRawBytecode"
-              []
-              []
-              [ M.read (| bytes |) ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "revm_bytecode::legacy::raw::LegacyRawBytecode"
+                [ M.read (| bytes |) ])
+              (Ty.path "revm_bytecode::legacy::raw::LegacyRawBytecode")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -827,25 +924,29 @@ Module legacy.
         | [], [], [ bytes ] =>
           ltac:(M.monadic
             (let bytes := M.alloc (| Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ], bytes |) in
-            Value.StructTuple
-              "revm_bytecode::legacy::raw::LegacyRawBytecode"
-              []
-              []
-              [
-                M.call_closure (|
-                  Ty.path "alloy_primitives::bytes_::Bytes",
-                  M.get_trait_method (|
-                    "core::convert::Into",
-                    Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ],
-                    [],
-                    [ Ty.path "alloy_primitives::bytes_::Bytes" ],
-                    "into",
-                    [],
-                    []
-                  |),
-                  [ M.read (| bytes |) ]
-                |)
-              ]))
+            M.value_with_ty
+              (Value.StructTuple
+                "revm_bytecode::legacy::raw::LegacyRawBytecode"
+                [
+                  M.call_closure (|
+                    Ty.path "alloy_primitives::bytes_::Bytes",
+                    M.get_trait_method (|
+                      "core::convert::Into",
+                      Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ],
+                      [],
+                      [ Ty.path "alloy_primitives::bytes_::Bytes" ],
+                      "into",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.read (| bytes |))
+                        (Ty.apply (Ty.path "array") [ N ] [ Ty.path "u8" ])
+                    ]
+                  |)
+                ])
+              (Ty.path "revm_bytecode::legacy::raw::LegacyRawBytecode")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -945,42 +1046,41 @@ Module legacy.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.path "bool",
-                    BinOp.ne,
-                    [ Value.Integer IntegerKind.I32 0; Value.Integer IntegerKind.I32 0 ]
-                  |);
-                  M.call_closure (|
-                    Ty.path "usize",
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                      "len",
-                      [],
-                      []
-                    |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytetecode |) |) |) ]
-                  |)
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "bool",
+                      BinOp.ne,
+                      [ Value.Integer IntegerKind.I32 0; Value.Integer IntegerKind.I32 0 ]
+                    |))
+                    (Ty.path "bool");
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.path "usize",
+                      M.get_associated_function (|
+                        Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                        "len",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytetecode |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                      ]
+                    |))
+                    (Ty.path "usize")
                 ]
               |) in
             M.alloc (|
               Ty.path "revm_bytecode::legacy::jump_map::JumpTable",
-              Value.StructTuple
-                "revm_bytecode::legacy::jump_map::JumpTable"
-                []
-                []
-                [
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "alloc::sync::Arc")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "bitvec::vec::BitVec")
-                          []
-                          [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ];
-                        Ty.path "alloc::alloc::Global"
-                      ],
-                    M.get_associated_function (|
+              M.value_with_ty
+                (Value.StructTuple
+                  "revm_bytecode::legacy::jump_map::JumpTable"
+                  [
+                    M.call_closure (|
                       Ty.apply
                         (Ty.path "alloc::sync::Arc")
                         []
@@ -991,13 +1091,32 @@ Module legacy.
                             [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ];
                           Ty.path "alloc::alloc::Global"
                         ],
-                      "new",
-                      [],
-                      []
-                    |),
-                    [ M.read (| jumps |) ]
-                  |)
-                ]
+                      M.get_associated_function (|
+                        Ty.apply
+                          (Ty.path "alloc::sync::Arc")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "bitvec::vec::BitVec")
+                              []
+                              [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ];
+                            Ty.path "alloc::alloc::Global"
+                          ],
+                        "new",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.read (| jumps |))
+                          (Ty.apply
+                            (Ty.path "bitvec::vec::BitVec")
+                            []
+                            [ Ty.path "u8"; Ty.path "bitvec::order::Lsb0" ])
+                      ]
+                    |)
+                  ])
+                (Ty.path "revm_bytecode::legacy::jump_map::JumpTable")
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"

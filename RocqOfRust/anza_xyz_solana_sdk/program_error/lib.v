@@ -757,25 +757,29 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     0
                   |) in
                 let __self_0 := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u32" ], γ1_0 |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::Custom"
-                  []
-                  []
-                  [
-                    M.call_closure (|
-                      Ty.path "u32",
-                      M.get_trait_method (|
-                        "core::clone::Clone",
+                M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_error::ProgramError::Custom"
+                    [
+                      M.call_closure (|
                         Ty.path "u32",
-                        [],
-                        [],
-                        "clone",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |) ]
-                    |)
-                  ]));
+                        M.get_trait_method (|
+                          "core::clone::Clone",
+                          Ty.path "u32",
+                          [],
+                          [],
+                          "clone",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| __self_0 |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                        ]
+                      |)
+                    ])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -784,7 +788,9 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::InvalidArgument"
                   |) in
-                Value.StructTuple "solana_program_error::ProgramError::InvalidArgument" [] [] []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::InvalidArgument" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -793,11 +799,11 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::InvalidInstructionData"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::InvalidInstructionData"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_error::ProgramError::InvalidInstructionData"
+                    [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -806,11 +812,9 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::InvalidAccountData"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::InvalidAccountData"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::InvalidAccountData" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -819,11 +823,9 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::AccountDataTooSmall"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::AccountDataTooSmall"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::AccountDataTooSmall" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -832,11 +834,9 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::InsufficientFunds"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::InsufficientFunds"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::InsufficientFunds" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -845,11 +845,9 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::IncorrectProgramId"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::IncorrectProgramId"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::IncorrectProgramId" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -858,11 +856,11 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::MissingRequiredSignature"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::MissingRequiredSignature"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_error::ProgramError::MissingRequiredSignature"
+                    [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -871,11 +869,11 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::AccountAlreadyInitialized"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::AccountAlreadyInitialized"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_error::ProgramError::AccountAlreadyInitialized"
+                    [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -884,11 +882,9 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::UninitializedAccount"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::UninitializedAccount"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::UninitializedAccount" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -897,11 +893,9 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::NotEnoughAccountKeys"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::NotEnoughAccountKeys"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::NotEnoughAccountKeys" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -910,11 +904,9 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::AccountBorrowFailed"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::AccountBorrowFailed"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::AccountBorrowFailed" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -923,23 +915,25 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::MaxSeedLengthExceeded"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::MaxSeedLengthExceeded"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::MaxSeedLengthExceeded" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
                 let _ :=
                   M.is_struct_tuple (| γ, "solana_program_error::ProgramError::InvalidSeeds" |) in
-                Value.StructTuple "solana_program_error::ProgramError::InvalidSeeds" [] [] []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::InvalidSeeds" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
                 let _ :=
                   M.is_struct_tuple (| γ, "solana_program_error::ProgramError::BorshIoError" |) in
-                Value.StructTuple "solana_program_error::ProgramError::BorshIoError" [] [] []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::BorshIoError" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -948,11 +942,9 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::AccountNotRentExempt"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::AccountNotRentExempt"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::AccountNotRentExempt" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -961,17 +953,17 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::UnsupportedSysvar"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::UnsupportedSysvar"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::UnsupportedSysvar" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
                 let _ :=
                   M.is_struct_tuple (| γ, "solana_program_error::ProgramError::IllegalOwner" |) in
-                Value.StructTuple "solana_program_error::ProgramError::IllegalOwner" [] [] []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::IllegalOwner" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -980,17 +972,19 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::MaxAccountsDataAllocationsExceeded"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::MaxAccountsDataAllocationsExceeded"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_error::ProgramError::MaxAccountsDataAllocationsExceeded"
+                    [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
                 let _ :=
                   M.is_struct_tuple (| γ, "solana_program_error::ProgramError::InvalidRealloc" |) in
-                Value.StructTuple "solana_program_error::ProgramError::InvalidRealloc" [] [] []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::InvalidRealloc" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -999,11 +993,11 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::MaxInstructionTraceLengthExceeded"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::MaxInstructionTraceLengthExceeded"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_error::ProgramError::MaxInstructionTraceLengthExceeded"
+                    [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -1012,11 +1006,11 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::BuiltinProgramsMustConsumeComputeUnits"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::BuiltinProgramsMustConsumeComputeUnits"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_error::ProgramError::BuiltinProgramsMustConsumeComputeUnits"
+                    [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -1025,11 +1019,9 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::InvalidAccountOwner"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::InvalidAccountOwner"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::InvalidAccountOwner" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -1038,17 +1030,17 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::ArithmeticOverflow"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::ArithmeticOverflow"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::ArithmeticOverflow" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
                 let _ :=
                   M.is_struct_tuple (| γ, "solana_program_error::ProgramError::Immutable" |) in
-                Value.StructTuple "solana_program_error::ProgramError::Immutable" [] [] []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::Immutable" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let γ := M.deref (| M.read (| γ |) |) in
@@ -1057,11 +1049,9 @@ Module Impl_core_clone_Clone_for_solana_program_error_ProgramError.
                     γ,
                     "solana_program_error::ProgramError::IncorrectAuthority"
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::IncorrectAuthority"
-                  []
-                  []
-                  []))
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::IncorrectAuthority" [])
+                  (Ty.path "solana_program_error::ProgramError")))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1116,21 +1106,33 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Custom" |) |) |);
-                    M.call_closure (|
-                      Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ])
-                        (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
-                        |)
-                      ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Custom" |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                        [
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| M.borrow (| Pointer.Kind.Ref, __self_0 |) |)
+                          |)
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                   ]
                 |)));
             fun γ =>
@@ -1153,8 +1155,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidArgument" |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "InvalidArgument" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1177,11 +1186,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "InvalidInstructionData" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "InvalidInstructionData" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1204,8 +1217,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidAccountData" |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "InvalidAccountData" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1228,11 +1248,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "AccountDataTooSmall" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "AccountDataTooSmall" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1255,8 +1279,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InsufficientFunds" |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "InsufficientFunds" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1279,8 +1310,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "IncorrectProgramId" |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "IncorrectProgramId" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1303,11 +1341,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "MissingRequiredSignature" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "MissingRequiredSignature" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1330,11 +1372,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "AccountAlreadyInitialized" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "AccountAlreadyInitialized" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1357,11 +1403,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "UninitializedAccount" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "UninitializedAccount" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1384,11 +1434,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "NotEnoughAccountKeys" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "NotEnoughAccountKeys" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1411,11 +1465,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "AccountBorrowFailed" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "AccountBorrowFailed" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1438,11 +1496,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "MaxSeedLengthExceeded" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "MaxSeedLengthExceeded" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1462,8 +1524,12 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidSeeds" |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidSeeds" |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1483,8 +1549,12 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BorshIoError" |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "BorshIoError" |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1507,11 +1577,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "AccountNotRentExempt" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "AccountNotRentExempt" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1534,8 +1608,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "UnsupportedSysvar" |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "UnsupportedSysvar" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1555,8 +1636,12 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "IllegalOwner" |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "IllegalOwner" |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1579,11 +1664,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "MaxAccountsDataAllocationsExceeded" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "MaxAccountsDataAllocationsExceeded" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1603,8 +1692,12 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidRealloc" |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "InvalidRealloc" |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1627,11 +1720,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "MaxInstructionTraceLengthExceeded" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "MaxInstructionTraceLengthExceeded" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1654,11 +1751,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "BuiltinProgramsMustConsumeComputeUnits" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "BuiltinProgramsMustConsumeComputeUnits" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1681,11 +1782,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "InvalidAccountOwner" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "InvalidAccountOwner" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1708,8 +1813,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "ArithmeticOverflow" |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "ArithmeticOverflow" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1729,8 +1841,12 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Immutable" |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Immutable" |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -1753,8 +1869,15 @@ Module Impl_core_fmt_Debug_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "IncorrectAuthority" |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "IncorrectAuthority" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)))
           ]
@@ -1845,7 +1968,11 @@ Module Impl_core_cmp_PartialEq_solana_program_error_ProgramError_for_solana_prog
                 [],
                 [ Ty.path "solana_program_error::ProgramError" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "solana_program_error::ProgramError" ])
+              ]
             |) in
           let~ __arg1_discr : Ty.path "isize" :=
             M.call_closure (|
@@ -1855,7 +1982,11 @@ Module Impl_core_cmp_PartialEq_solana_program_error_ProgramError_for_solana_prog
                 [],
                 [ Ty.path "solana_program_error::ProgramError" ]
               |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "solana_program_error::ProgramError" ])
+              ]
             |) in
           M.alloc (|
             Ty.path "bool",
@@ -1911,8 +2042,18 @@ Module Impl_core_cmp_PartialEq_solana_program_error_ProgramError_for_solana_prog
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, __self_0 |);
-                            M.borrow (| Pointer.Kind.Ref, __arg1_0 |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, __self_0 |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, __arg1_0 |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ])
                           ]
                         |)));
                     fun γ => ltac:(M.monadic (Value.Bool true))
@@ -2040,37 +2181,68 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.call_closure (|
-                      Ty.path "core::fmt::Arguments",
-                      M.get_associated_function (|
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.call_closure (|
                         Ty.path "core::fmt::Arguments",
-                        "new_v1_formatted",
-                        [],
-                        []
-                      |),
-                      [
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
+                        M.get_associated_function (|
+                          Ty.path "core::fmt::Arguments",
+                          "new_v1_formatted",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.apply
-                                (Ty.path "slice")
+                                (Ty.path "&")
                                 []
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                            ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ]),
                               [
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                              ])
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        Value.Array [ mk_str (| "Custom program error: " |) ]
+                                      |)
+                                    |)
+                                  |)
+                                |)
+                              ]
+                            |))
                             (Ty.apply
                               (Ty.path "&")
                               []
@@ -2079,98 +2251,177 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                                   (Ty.path "slice")
                                   []
                                   [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                              ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
+                              ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array [ mk_str (| "Custom program error: " |) ]
+                                      [ Ty.path "core::fmt::rt::Argument" ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.path "core::fmt::rt::Argument" ]
+                                  ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                          [ Ty.path "core::fmt::rt::Argument" ],
+                                        Value.Array
+                                          [
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                "new_lower_hex",
+                                                [],
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (|
+                                                      M.borrow (| Pointer.Kind.Ref, num |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ])
+                                              ]
+                                            |)
+                                          ]
+                                      |)
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
-                          ]
-                        |);
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ] ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.path "core::fmt::rt::Argument" ]
-                              ])
+                              ]
+                            |))
                             (Ty.apply
                               (Ty.path "&")
                               []
                               [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ]
-                              ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
+                              ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.path "core::fmt::rt::Placeholder" ]
+                                ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.path "core::fmt::rt::Argument" ],
-                                    Value.Array
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            "new_lower_hex",
-                                            [],
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "u32" ] ]
-                                          |),
+                                      [ Ty.path "core::fmt::rt::Placeholder" ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [ Ty.path "core::fmt::rt::Placeholder" ]
+                                  ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                          [ Ty.path "core::fmt::rt::Placeholder" ],
+                                        Value.Array
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.borrow (| Pointer.Kind.Ref, num |) |)
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::rt::Placeholder",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::rt::Placeholder",
+                                                "new",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (Value.Integer IntegerKind.Usize 0)
+                                                  (Ty.path "usize");
+                                                M.value_with_ty
+                                                  (Value.UnicodeChar 32)
+                                                  (Ty.path "char");
+                                                M.value_with_ty
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::fmt::rt::Alignment::Unknown"
+                                                      [])
+                                                    (Ty.path "core::fmt::rt::Alignment"))
+                                                  (Ty.path "core::fmt::rt::Alignment");
+                                                M.value_with_ty
+                                                  (Value.Integer IntegerKind.U32 4)
+                                                  (Ty.path "u32");
+                                                M.value_with_ty
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::fmt::rt::Count::Implied"
+                                                      [])
+                                                    (Ty.path "core::fmt::rt::Count"))
+                                                  (Ty.path "core::fmt::rt::Count");
+                                                M.value_with_ty
+                                                  (M.value_with_ty
+                                                    (Value.StructTuple
+                                                      "core::fmt::rt::Count::Implied"
+                                                      [])
+                                                    (Ty.path "core::fmt::rt::Count"))
+                                                  (Ty.path "core::fmt::rt::Count")
+                                              ]
                                             |)
                                           ]
-                                        |)
-                                      ]
+                                      |)
+                                    |)
                                   |)
                                 |)
-                              |)
-                            |)
-                          ]
-                        |);
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ]
-                            ],
-                          M.pointer_coercion
-                            M.PointerCoercion.Unsize
-                            (Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "array")
-                                  [ Value.Integer IntegerKind.Usize 1 ]
-                                  [ Ty.path "core::fmt::rt::Placeholder" ]
-                              ])
+                              ]
+                            |))
                             (Ty.apply
                               (Ty.path "&")
                               []
@@ -2179,68 +2430,22 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                                   (Ty.path "slice")
                                   []
                                   [ Ty.path "core::fmt::rt::Placeholder" ]
-                              ]),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.alloc (|
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.path "core::fmt::rt::Placeholder" ],
-                                    Value.Array
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::rt::Placeholder",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::rt::Placeholder",
-                                            "new",
-                                            [],
-                                            []
-                                          |),
-                                          [
-                                            Value.Integer IntegerKind.Usize 0;
-                                            Value.UnicodeChar 32;
-                                            Value.StructTuple
-                                              "core::fmt::rt::Alignment::Unknown"
-                                              []
-                                              []
-                                              [];
-                                            Value.Integer IntegerKind.U32 4;
-                                            Value.StructTuple
-                                              "core::fmt::rt::Count::Implied"
-                                              []
-                                              []
-                                              [];
-                                            Value.StructTuple
-                                              "core::fmt::rt::Count::Implied"
-                                              []
-                                              []
-                                              []
-                                          ]
-                                        |)
-                                      ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |);
-                        M.call_closure (|
-                          Ty.path "core::fmt::rt::UnsafeArg",
-                          M.get_associated_function (|
-                            Ty.path "core::fmt::rt::UnsafeArg",
-                            "new",
-                            [],
-                            []
-                          |),
-                          []
-                        |)
-                      ]
-                    |)
+                              ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "core::fmt::rt::UnsafeArg",
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::rt::UnsafeArg",
+                                "new",
+                                [],
+                                []
+                              |),
+                              []
+                            |))
+                            (Ty.path "core::fmt::rt::UnsafeArg")
+                        ]
+                      |))
+                      (Ty.path "core::fmt::Arguments")
                   ]
                 |)));
             fun γ =>
@@ -2263,13 +2468,19 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        mk_str (| "The arguments provided to a program instruction were invalid" |)
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          mk_str (|
+                            "The arguments provided to a program instruction were invalid"
+                          |)
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2292,11 +2503,15 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "An instruction's data contents was invalid" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "An instruction's data contents was invalid" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2319,11 +2534,15 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "An account's data contents was invalid" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "An account's data contents was invalid" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2346,11 +2565,15 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "An account's data was too small" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "An account's data was too small" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2373,15 +2596,19 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        mk_str (|
-                          "An account's balance was too small to complete the instruction"
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          mk_str (|
+                            "An account's balance was too small to complete the instruction"
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2404,11 +2631,17 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "The account did not have the expected program id" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          mk_str (| "The account did not have the expected program id" |)
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2431,11 +2664,15 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "A signature was required but not found" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "A signature was required but not found" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2458,15 +2695,19 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        mk_str (|
-                          "An initialize instruction was sent to an account that has already been initialized"
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          mk_str (|
+                            "An initialize instruction was sent to an account that has already been initialized"
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2489,15 +2730,19 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        mk_str (|
-                          "An attempt to operate on an account that hasn't been initialized"
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          mk_str (|
+                            "An attempt to operate on an account that hasn't been initialized"
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2520,11 +2765,17 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "The instruction expected additional account keys" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          mk_str (| "The instruction expected additional account keys" |)
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2547,15 +2798,19 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        mk_str (|
-                          "Failed to borrow a reference to account data, already borrowed"
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          mk_str (|
+                            "Failed to borrow a reference to account data, already borrowed"
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2578,13 +2833,17 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        mk_str (| "Length of the seed is too long for address generation" |)
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          mk_str (| "Length of the seed is too long for address generation" |)
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2604,11 +2863,15 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "Provided seeds do not result in a valid address" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Provided seeds do not result in a valid address" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2628,8 +2891,12 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "IO Error" |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "IO Error" |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2652,13 +2919,17 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        mk_str (| "An account does not have enough lamports to be rent-exempt" |)
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          mk_str (| "An account does not have enough lamports to be rent-exempt" |)
+                        |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2681,8 +2952,15 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Unsupported sysvar" |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Unsupported sysvar" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2702,11 +2980,15 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "Provided owner is not allowed" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Provided owner is not allowed" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2729,15 +3011,19 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        mk_str (|
-                          "Accounts data allocations exceeded the maximum allowed per transaction"
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          mk_str (|
+                            "Accounts data allocations exceeded the maximum allowed per transaction"
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2757,11 +3043,15 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "Account data reallocation was invalid" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Account data reallocation was invalid" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2784,15 +3074,19 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        mk_str (|
-                          "Instruction trace length exceeded the maximum allowed per transaction"
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          mk_str (|
+                            "Instruction trace length exceeded the maximum allowed per transaction"
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2815,11 +3109,15 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "Builtin programs must consume compute units" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Builtin programs must consume compute units" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2842,11 +3140,15 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "Invalid account owner" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Invalid account owner" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2869,11 +3171,15 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "Program arithmetic overflowed" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Program arithmetic overflowed" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2893,11 +3199,15 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "Account is immutable" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Account is immutable" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)));
             fun γ =>
@@ -2920,11 +3230,15 @@ Module Impl_core_fmt_Display_for_solana_program_error_ProgramError.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| mk_str (| "Incorrect authority provided" |) |)
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| mk_str (| "Incorrect authority provided" |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)))
           ]
@@ -3055,7 +3369,11 @@ Module Impl_solana_program_error_ProgramError.
                                 [],
                                 []
                               |),
-                              [ M.read (| M.deref (| M.read (| error |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.read (| M.deref (| M.read (| error |) |) |))
+                                  (Ty.path "u32")
+                              ]
                             |)
                           |) in
                         let γ0_0 :=
@@ -3076,7 +3394,11 @@ Module Impl_solana_program_error_ProgramError.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, custom_error |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, custom_error |))
+                              (Ty.apply (Ty.path "&") [] [ E ])
+                          ]
                         |)));
                     fun γ => ltac:(M.monadic (mk_str (| "Error: Unknown" |)))
                   ]
@@ -3708,11 +4030,11 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 4294967296
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::Custom"
-                  []
-                  []
-                  [ Value.Integer IntegerKind.U32 0 ]));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_error::ProgramError::Custom"
+                    [ Value.Integer IntegerKind.U32 0 ])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3720,7 +4042,9 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 8589934592
                   |) in
-                Value.StructTuple "solana_program_error::ProgramError::InvalidArgument" [] [] []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::InvalidArgument" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3728,11 +4052,11 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 12884901888
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::InvalidInstructionData"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_error::ProgramError::InvalidInstructionData"
+                    [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3740,11 +4064,9 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 17179869184
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::InvalidAccountData"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::InvalidAccountData" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3752,11 +4074,9 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 21474836480
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::AccountDataTooSmall"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::AccountDataTooSmall" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3764,11 +4084,9 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 25769803776
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::InsufficientFunds"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::InsufficientFunds" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3776,11 +4094,9 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 30064771072
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::IncorrectProgramId"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::IncorrectProgramId" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3788,11 +4104,11 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 34359738368
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::MissingRequiredSignature"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_error::ProgramError::MissingRequiredSignature"
+                    [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3800,11 +4116,11 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 38654705664
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::AccountAlreadyInitialized"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_error::ProgramError::AccountAlreadyInitialized"
+                    [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3812,11 +4128,9 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 42949672960
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::UninitializedAccount"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::UninitializedAccount" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3824,11 +4138,9 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 47244640256
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::NotEnoughAccountKeys"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::NotEnoughAccountKeys" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3836,11 +4148,9 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 51539607552
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::AccountBorrowFailed"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::AccountBorrowFailed" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3848,11 +4158,9 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 55834574848
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::MaxSeedLengthExceeded"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::MaxSeedLengthExceeded" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3860,7 +4168,9 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 60129542144
                   |) in
-                Value.StructTuple "solana_program_error::ProgramError::InvalidSeeds" [] [] []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::InvalidSeeds" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3868,7 +4178,9 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 64424509440
                   |) in
-                Value.StructTuple "solana_program_error::ProgramError::BorshIoError" [] [] []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::BorshIoError" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3876,11 +4188,9 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 68719476736
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::AccountNotRentExempt"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::AccountNotRentExempt" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3888,11 +4198,9 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 73014444032
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::UnsupportedSysvar"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::UnsupportedSysvar" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3900,7 +4208,9 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 77309411328
                   |) in
-                Value.StructTuple "solana_program_error::ProgramError::IllegalOwner" [] [] []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::IllegalOwner" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3908,11 +4218,11 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 81604378624
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::MaxAccountsDataAllocationsExceeded"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_error::ProgramError::MaxAccountsDataAllocationsExceeded"
+                    [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3920,7 +4230,9 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 85899345920
                   |) in
-                Value.StructTuple "solana_program_error::ProgramError::InvalidRealloc" [] [] []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::InvalidRealloc" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3928,11 +4240,11 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 90194313216
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::MaxInstructionTraceLengthExceeded"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_error::ProgramError::MaxInstructionTraceLengthExceeded"
+                    [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3940,11 +4252,11 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 94489280512
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::BuiltinProgramsMustConsumeComputeUnits"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_error::ProgramError::BuiltinProgramsMustConsumeComputeUnits"
+                    [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3952,11 +4264,9 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 98784247808
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::InvalidAccountOwner"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::InvalidAccountOwner" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3964,11 +4274,9 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 103079215104
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::ArithmeticOverflow"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::ArithmeticOverflow" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3976,7 +4284,9 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 107374182400
                   |) in
-                Value.StructTuple "solana_program_error::ProgramError::Immutable" [] [] []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::Immutable" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
                 (let _ :=
@@ -3984,18 +4294,16 @@ Module Impl_core_convert_From_u64_for_solana_program_error_ProgramError.
                     M.read (| γ |),
                     Value.Integer IntegerKind.U64 111669149696
                   |) in
-                Value.StructTuple
-                  "solana_program_error::ProgramError::IncorrectAuthority"
-                  []
-                  []
-                  []));
+                M.value_with_ty
+                  (Value.StructTuple "solana_program_error::ProgramError::IncorrectAuthority" [])
+                  (Ty.path "solana_program_error::ProgramError")));
             fun γ =>
               ltac:(M.monadic
-                (Value.StructTuple
-                  "solana_program_error::ProgramError::Custom"
-                  []
-                  []
-                  [ M.cast (Ty.path "u32") (M.read (| error |)) ]))
+                (M.value_with_ty
+                  (Value.StructTuple
+                    "solana_program_error::ProgramError::Custom"
+                    [ M.cast (Ty.path "u32") (M.read (| error |)) ])
+                  (Ty.path "solana_program_error::ProgramError")))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"

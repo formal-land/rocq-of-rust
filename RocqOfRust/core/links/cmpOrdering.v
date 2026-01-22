@@ -21,11 +21,11 @@ Module Ordering.
     φ x :=
       match x with
       | Less =>
-          Value.StructTuple "core::cmp::Ordering::Less" [] [] []
+          Value.StructTuple "core::cmp::Ordering::Less" []
       | Equal =>
-          Value.StructTuple "core::cmp::Ordering::Equal" [] [] []
+          Value.StructTuple "core::cmp::Ordering::Equal" []
       | Greater =>
-          Value.StructTuple "core::cmp::Ordering::Greater" [] [] []
+          Value.StructTuple "core::cmp::Ordering::Greater" []
       end
   }.
 
@@ -36,42 +36,42 @@ Module Ordering.
   }.
 
   Instance IsOfValueWith_Less :
-    OfValueWith.C t (Value.StructTuple "core::cmp::Ordering::Less" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "core::cmp::Ordering::Less" []) :=
   {
     value := Less;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Less :
-    OfValue.C (Value.StructTuple "core::cmp::Ordering::Less" [] [] []) :=
+    OfValue.C (Value.StructTuple "core::cmp::Ordering::Less" []) :=
   {
     value := Less;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Equal :
-    OfValueWith.C t (Value.StructTuple "core::cmp::Ordering::Equal" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "core::cmp::Ordering::Equal" []) :=
   {
     value := Equal;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Equal :
-    OfValue.C (Value.StructTuple "core::cmp::Ordering::Equal" [] [] []) :=
+    OfValue.C (Value.StructTuple "core::cmp::Ordering::Equal" []) :=
   {
     value := Equal;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_Greater :
-    OfValueWith.C t (Value.StructTuple "core::cmp::Ordering::Greater" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "core::cmp::Ordering::Greater" []) :=
   {
     value := Greater;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_Greater :
-    OfValue.C (Value.StructTuple "core::cmp::Ordering::Greater" [] [] []) :=
+    OfValue.C (Value.StructTuple "core::cmp::Ordering::Greater" []) :=
   {
     value := Greater;
     eq := eq_refl;

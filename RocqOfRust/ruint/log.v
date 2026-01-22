@@ -53,23 +53,37 @@ Module log.
                                       []
                                     |),
                                     [
-                                      M.borrow (| Pointer.Kind.Ref, base |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.alloc (|
-                                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          M.call_closure (|
+                                      M.value_with_ty
+                                        (M.borrow (| Pointer.Kind.Ref, base |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.alloc (|
                                             Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            M.get_associated_function (|
+                                            M.call_closure (|
                                               Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                              "from",
-                                              [],
-                                              [ Ty.path "i32" ]
-                                            |),
-                                            [ Value.Integer IntegerKind.I32 2 ]
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                                "from",
+                                                [],
+                                                [ Ty.path "i32" ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (Value.Integer IntegerKind.I32 2)
+                                                  (Ty.path "i32")
+                                              ]
+                                            |)
                                           |)
-                                        |)
-                                      |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                     ]
                                   |),
                                   ltac:(M.monadic
@@ -85,15 +99,26 @@ Module log.
                                         []
                                       |),
                                       [
-                                        M.borrow (| Pointer.Kind.Ref, self |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          get_associated_constant (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            "ZERO",
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                          |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, self |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            get_associated_constant (|
+                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                              "ZERO",
+                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                       ]
                                     |)))
                                 |)
@@ -103,11 +128,9 @@ Module log.
                           M.never_to_any (|
                             M.read (|
                               M.return_ (|
-                                Value.StructTuple
-                                  "core::option::Option::None"
-                                  []
-                                  [ Ty.path "usize" ]
-                                  []
+                                M.value_with_ty
+                                  (Value.StructTuple "core::option::Option::None" [])
+                                  (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                               |)
                             |)
                           |)));
@@ -116,22 +139,29 @@ Module log.
                   |) in
                 M.alloc (|
                   Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [ Ty.path "usize" ]
-                    [
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                          "log",
-                          [],
-                          []
-                        |),
-                        [ M.read (| self |); M.read (| base |) ]
-                      |)
-                    ]
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.call_closure (|
+                          Ty.path "usize",
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                            "log",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (| self |))
+                              (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                            M.value_with_ty
+                              (M.read (| base |))
+                              (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                          ]
+                        |)
+                      ])
+                    (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                 |)
               |)))
           |)))
@@ -169,17 +199,21 @@ Module log.
               []
             |),
             [
-              M.read (| self |);
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "from",
-                  [],
-                  [ Ty.path "i32" ]
-                |),
-                [ Value.Integer IntegerKind.I32 10 ]
-              |)
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "from",
+                    [],
+                    [ Ty.path "i32" ]
+                  |),
+                  [ M.value_with_ty (Value.Integer IntegerKind.I32 10) (Ty.path "i32") ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -216,17 +250,21 @@ Module log.
               []
             |),
             [
-              M.read (| self |);
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "from",
-                  [],
-                  [ Ty.path "i32" ]
-                |),
-                [ Value.Integer IntegerKind.I32 2 ]
-              |)
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "from",
+                    [],
+                    [ Ty.path "i32" ]
+                  |),
+                  [ M.value_with_ty (Value.Integer IntegerKind.I32 2) (Ty.path "i32") ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -327,15 +365,26 @@ Module log.
                                         []
                                       |),
                                       [
-                                        M.borrow (| Pointer.Kind.Ref, self |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          get_associated_constant (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            "ZERO",
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
-                                          |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, self |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            get_associated_constant (|
+                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                              "ZERO",
+                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                       ]
                                     |)
                                   ]
@@ -347,7 +396,11 @@ Module log.
                             M.call_closure (|
                               Ty.path "never",
                               M.get_function (| "core::panicking::panic", [], [] |),
-                              [ mk_str (| "assertion failed: self != Self::ZERO" |) ]
+                              [
+                                M.value_with_ty
+                                  (mk_str (| "assertion failed: self != Self::ZERO" |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                              ]
                             |)
                           |)));
                       fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -380,23 +433,41 @@ Module log.
                                         []
                                       |),
                                       [
-                                        M.borrow (| Pointer.Kind.Ref, base |);
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.alloc (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            M.call_closure (|
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, base |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                            ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.alloc (|
                                               Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                              M.get_associated_function (|
+                                              M.call_closure (|
                                                 Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                                "from",
-                                                [],
-                                                [ Ty.path "i32" ]
-                                              |),
-                                              [ Value.Integer IntegerKind.I32 2 ]
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "ruint::Uint")
+                                                    [ BITS; LIMBS ]
+                                                    [],
+                                                  "from",
+                                                  [],
+                                                  [ Ty.path "i32" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (Value.Integer IntegerKind.I32 2)
+                                                    (Ty.path "i32")
+                                                ]
+                                              |)
                                             |)
-                                          |)
-                                        |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                       ]
                                     |)
                                   ]
@@ -408,7 +479,11 @@ Module log.
                             M.call_closure (|
                               Ty.path "never",
                               M.get_function (| "core::panicking::panic", [], [] |),
-                              [ mk_str (| "assertion failed: base >= Self::from(2)" |) ]
+                              [
+                                M.value_with_ty
+                                  (mk_str (| "assertion failed: base >= Self::from(2)" |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                              ]
                             |)
                           |)));
                       fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -437,23 +512,37 @@ Module log.
                                     []
                                   |),
                                   [
-                                    M.borrow (| Pointer.Kind.Ref, base |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.alloc (|
-                                        Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                        M.call_closure (|
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, base |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
                                           Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                          M.get_associated_function (|
+                                          M.call_closure (|
                                             Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            "from",
-                                            [],
-                                            [ Ty.path "i32" ]
-                                          |),
-                                          [ Value.Integer IntegerKind.I32 2 ]
+                                            M.get_associated_function (|
+                                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                              "from",
+                                              [],
+                                              [ Ty.path "i32" ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.I32 2)
+                                                (Ty.path "i32")
+                                            ]
+                                          |)
                                         |)
-                                      |)
-                                    |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                   ]
                                 |)
                               |)) in
@@ -474,7 +563,14 @@ Module log.
                                         [],
                                         []
                                       |),
-                                      [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (| Pointer.Kind.Ref, self |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                                      ]
                                     |);
                                     Value.Integer IntegerKind.Usize 1
                                   ]
@@ -508,8 +604,18 @@ Module log.
                                     []
                                   |),
                                   [
-                                    M.borrow (| Pointer.Kind.Ref, self |);
-                                    M.borrow (| Pointer.Kind.Ref, base |)
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, self |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]);
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.Ref, base |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
                                   ]
                                 |)
                               |)) in
@@ -534,7 +640,11 @@ Module log.
                           [],
                           []
                         |),
-                        [ M.read (| self |) ]
+                        [
+                          M.value_with_ty
+                            (M.read (| self |))
+                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                        ]
                       |);
                       M.call_closure (|
                         Ty.path "f64",
@@ -544,7 +654,11 @@ Module log.
                           [],
                           []
                         |),
-                        [ M.read (| base |) ]
+                        [
+                          M.value_with_ty
+                            (M.read (| base |))
+                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                        ]
                       |)
                     ]
                   |) in
@@ -571,7 +685,7 @@ Module log.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| result |) ]
+                                      [ M.value_with_ty (M.read (| result |)) (Ty.path "f64") ]
                                     |)
                                   ]
                                 |)
@@ -582,7 +696,11 @@ Module log.
                             M.call_closure (|
                               Ty.path "never",
                               M.get_function (| "core::panicking::panic", [], [] |),
-                              [ mk_str (| "assertion failed: result.is_normal()" |) ]
+                              [
+                                M.value_with_ty
+                                  (mk_str (| "assertion failed: result.is_normal()" |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                              ]
                             |)
                           |)));
                       fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -607,8 +725,30 @@ Module log.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::result::Result")
+                            []
+                            [
+                              Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [];
+                              Ty.apply
+                                (Ty.path "ruint::from::ToUintError")
+                                []
+                                [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
+                            ],
+                          M.get_trait_method (|
+                            "core::convert::TryInto",
+                            Ty.path "f64",
+                            [],
+                            [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
+                            "try_into",
+                            [],
+                            []
+                          |),
+                          [ M.value_with_ty (M.read (| result |)) (Ty.path "f64") ]
+                        |))
+                        (Ty.apply
                           (Ty.path "core::result::Result")
                           []
                           [
@@ -617,18 +757,7 @@ Module log.
                               (Ty.path "ruint::from::ToUintError")
                               []
                               [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ]
-                          ],
-                        M.get_trait_method (|
-                          "core::convert::TryInto",
-                          Ty.path "f64",
-                          [],
-                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ],
-                          "try_into",
-                          [],
-                          []
-                        |),
-                        [ M.read (| result |) ]
-                      |)
+                          ])
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -660,7 +789,14 @@ Module log.
                                           [],
                                           []
                                         |),
-                                        [ M.read (| base |); M.read (| result |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| base |))
+                                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                                          M.value_with_ty
+                                            (M.read (| result |))
+                                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                                        ]
                                       |)
                                     |) in
                                   let γ0_0 :=
@@ -704,8 +840,28 @@ Module log.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (| Pointer.Kind.Ref, value |);
-                                                    M.borrow (| Pointer.Kind.Ref, self |)
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.Ref, value |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [ BITS; LIMBS ]
+                                                            []
+                                                        ]);
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.Ref, self |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [ BITS; LIMBS ]
+                                                            []
+                                                        ])
                                                   ]
                                                 |)
                                               |)) in
@@ -751,24 +907,48 @@ Module log.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        result
-                                                                      |);
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.Ref,
-                                                                        get_associated_constant (|
-                                                                          Ty.apply
-                                                                            (Ty.path "ruint::Uint")
-                                                                            [ BITS; LIMBS ]
-                                                                            [],
-                                                                          "ZERO",
-                                                                          Ty.apply
-                                                                            (Ty.path "ruint::Uint")
-                                                                            [ BITS; LIMBS ]
-                                                                            []
-                                                                        |)
-                                                                      |)
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          result
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "ruint::Uint")
+                                                                              [ BITS; LIMBS ]
+                                                                              []
+                                                                          ]);
+                                                                      M.value_with_ty
+                                                                        (M.borrow (|
+                                                                          Pointer.Kind.Ref,
+                                                                          get_associated_constant (|
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "ruint::Uint")
+                                                                              [ BITS; LIMBS ]
+                                                                              [],
+                                                                            "ZERO",
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "ruint::Uint")
+                                                                              [ BITS; LIMBS ]
+                                                                              []
+                                                                          |)
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "ruint::Uint")
+                                                                              [ BITS; LIMBS ]
+                                                                              []
+                                                                          ])
                                                                     ]
                                                                   |)
                                                                 ]
@@ -788,9 +968,14 @@ Module log.
                                                               []
                                                             |),
                                                             [
-                                                              mk_str (|
-                                                                "assertion failed: result != Self::ZERO"
-                                                              |)
+                                                              M.value_with_ty
+                                                                (mk_str (|
+                                                                  "assertion failed: result != Self::ZERO"
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "str" ])
                                                             ]
                                                           |)
                                                         |)));
@@ -818,23 +1003,42 @@ Module log.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (| Pointer.Kind.MutRef, result |);
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "ruint::Uint")
-                                                        [ BITS; LIMBS ]
-                                                        [],
-                                                      M.get_associated_function (|
+                                                    M.value_with_ty
+                                                      (M.borrow (| Pointer.Kind.MutRef, result |))
+                                                      (Ty.apply
+                                                        (Ty.path "&mut")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [ BITS; LIMBS ]
+                                                            []
+                                                        ]);
+                                                    M.value_with_ty
+                                                      (M.call_closure (|
                                                         Ty.apply
                                                           (Ty.path "ruint::Uint")
                                                           [ BITS; LIMBS ]
                                                           [],
-                                                        "from",
-                                                        [],
-                                                        [ Ty.path "i32" ]
-                                                      |),
-                                                      [ Value.Integer IntegerKind.I32 1 ]
-                                                    |)
+                                                        M.get_associated_function (|
+                                                          Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [ BITS; LIMBS ]
+                                                            [],
+                                                          "from",
+                                                          [],
+                                                          [ Ty.path "i32" ]
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (Value.Integer IntegerKind.I32 1)
+                                                            (Ty.path "i32")
+                                                        ]
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "ruint::Uint")
+                                                        [ BITS; LIMBS ]
+                                                        [])
                                                   ]
                                                 |) in
                                               M.continue (||)
@@ -859,17 +1063,29 @@ Module log.
                                           []
                                         |),
                                         [
-                                          M.borrow (| Pointer.Kind.MutRef, result |);
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            M.get_associated_function (|
+                                          M.value_with_ty
+                                            (M.borrow (| Pointer.Kind.MutRef, result |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []
+                                              ]);
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                              "from",
-                                              [],
-                                              [ Ty.path "i32" ]
-                                            |),
-                                            [ Value.Integer IntegerKind.I32 1 ]
-                                          |)
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                                "from",
+                                                [],
+                                                [ Ty.path "i32" ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (Value.Integer IntegerKind.I32 1)
+                                                  (Ty.path "i32")
+                                              ]
+                                            |))
+                                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                                         ]
                                       |) in
                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -910,17 +1126,25 @@ Module log.
                                           []
                                         |),
                                         [
-                                          M.read (| result |);
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                            M.get_associated_function (|
+                                          M.value_with_ty
+                                            (M.read (| result |))
+                                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                                              "from",
-                                              [],
-                                              [ Ty.path "i32" ]
-                                            |),
-                                            [ Value.Integer IntegerKind.I32 1 ]
-                                          |)
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                                                "from",
+                                                [],
+                                                [ Ty.path "i32" ]
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (Value.Integer IntegerKind.I32 1)
+                                                  (Ty.path "i32")
+                                              ]
+                                            |))
+                                            (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
                                         ]
                                       |)
                                     |) in
@@ -974,7 +1198,20 @@ Module log.
                                                         [],
                                                         []
                                                       |),
-                                                      [ M.read (| base |); M.read (| trial |) ]
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| base |))
+                                                          (Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [ BITS; LIMBS ]
+                                                            []);
+                                                        M.value_with_ty
+                                                          (M.read (| trial |))
+                                                          (Ty.apply
+                                                            (Ty.path "ruint::Uint")
+                                                            [ BITS; LIMBS ]
+                                                            [])
+                                                      ]
                                                     |)
                                                   |) in
                                                 let γ0_0 :=
@@ -1021,14 +1258,34 @@ Module log.
                                                                   []
                                                                 |),
                                                                 [
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    value
-                                                                  |);
-                                                                  M.borrow (|
-                                                                    Pointer.Kind.Ref,
-                                                                    self
-                                                                  |)
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      value
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "ruint::Uint")
+                                                                          [ BITS; LIMBS ]
+                                                                          []
+                                                                      ]);
+                                                                  M.value_with_ty
+                                                                    (M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      self
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "ruint::Uint")
+                                                                          [ BITS; LIMBS ]
+                                                                          []
+                                                                      ])
                                                                 ]
                                                               |)
                                                             |)) in
@@ -1080,7 +1337,14 @@ Module log.
                       [],
                       [ Ty.path "usize" ]
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, result |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, result |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                    ]
                   |)
                 |)
               |)))
@@ -1119,17 +1383,21 @@ Module log.
               []
             |),
             [
-              M.read (| self |);
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "from",
-                  [],
-                  [ Ty.path "i32" ]
-                |),
-                [ Value.Integer IntegerKind.I32 10 ]
-              |)
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "from",
+                    [],
+                    [ Ty.path "i32" ]
+                  |),
+                  [ M.value_with_ty (Value.Integer IntegerKind.I32 10) (Ty.path "i32") ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1166,17 +1434,21 @@ Module log.
               []
             |),
             [
-              M.read (| self |);
-              M.call_closure (|
-                Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                M.get_associated_function (|
+              M.value_with_ty
+                (M.read (| self |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] []);
+              M.value_with_ty
+                (M.call_closure (|
                   Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
-                  "from",
-                  [],
-                  [ Ty.path "i32" ]
-                |),
-                [ Value.Integer IntegerKind.I32 2 ]
-              |)
+                  M.get_associated_function (|
+                    Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [],
+                    "from",
+                    [],
+                    [ Ty.path "i32" ]
+                  |),
+                  [ M.value_with_ty (Value.Integer IntegerKind.I32 2) (Ty.path "i32") ]
+                |))
+                (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1217,12 +1489,16 @@ Module log.
                   [],
                   []
                 |),
-                [ M.read (| self |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| self |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                ]
               |);
               M.call_closure (|
                 Ty.path "f64",
                 M.get_associated_function (| Ty.path "f64", "log2", [], [] |),
-                [ M.read (| base |) ]
+                [ M.value_with_ty (M.read (| base |)) (Ty.path "f64") ]
               |)
             ]
           |)))
@@ -1271,7 +1547,14 @@ Module log.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, self |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, self |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [] ])
+                ]
               |)
             |),
             [
@@ -1293,7 +1576,7 @@ Module log.
                           M.call_closure (|
                             Ty.path "f64",
                             M.get_associated_function (| Ty.path "f64", "log2", [], [] |),
-                            [ M.read (| bits |) ]
+                            [ M.value_with_ty (M.read (| bits |)) (Ty.path "f64") ]
                           |);
                           M.read (| exp |)
                         ]
@@ -1339,7 +1622,11 @@ Module log.
                   [],
                   []
                 |),
-                [ M.read (| self |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| self |))
+                    (Ty.apply (Ty.path "ruint::Uint") [ BITS; LIMBS ] [])
+                ]
               |);
               M.read (| get_constant (| "core::f64::consts::LOG2_10", Ty.path "f64" |) |)
             ]

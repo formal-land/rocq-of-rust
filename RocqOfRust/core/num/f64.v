@@ -623,7 +623,7 @@ Module f64.
               M.call_closure (|
                 Ty.path "f64",
                 M.get_associated_function (| Ty.path "f64", "abs", [], [] |),
-                [ M.read (| self |) ]
+                [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
               |);
               M.read (| get_associated_constant (| Ty.path "f64", "INFINITY", Ty.path "f64" |) |)
             ]
@@ -653,7 +653,7 @@ Module f64.
               M.call_closure (|
                 Ty.path "core::num::FpCategory",
                 M.get_associated_function (| Ty.path "f64", "classify", [], [] |),
-                [ M.read (| self |) ]
+                [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
               |)
             |),
             [
@@ -689,7 +689,7 @@ Module f64.
               M.call_closure (|
                 Ty.path "core::num::FpCategory",
                 M.get_associated_function (| Ty.path "f64", "classify", [], [] |),
-                [ M.read (| self |) ]
+                [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
               |)
             |),
             [
@@ -735,7 +735,7 @@ Module f64.
               M.call_closure (|
                 Ty.path "u64",
                 M.get_associated_function (| Ty.path "f64", "to_bits", [], [] |),
-                [ M.read (| self |) ]
+                [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
               |) in
             M.alloc (|
               Ty.path "core::num::FpCategory",
@@ -782,7 +782,9 @@ Module f64.
                           M.read (| γ0_1 |),
                           Value.Integer IntegerKind.U64 9218868437227405312
                         |) in
-                      Value.StructTuple "core::num::FpCategory::Infinite" [] [] []));
+                      M.value_with_ty
+                        (Value.StructTuple "core::num::FpCategory::Infinite" [])
+                        (Ty.path "core::num::FpCategory")));
                   fun γ =>
                     ltac:(M.monadic
                       (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
@@ -792,7 +794,9 @@ Module f64.
                           M.read (| γ0_1 |),
                           Value.Integer IntegerKind.U64 9218868437227405312
                         |) in
-                      Value.StructTuple "core::num::FpCategory::Nan" [] [] []));
+                      M.value_with_ty
+                        (Value.StructTuple "core::num::FpCategory::Nan" [])
+                        (Ty.path "core::num::FpCategory")));
                   fun γ =>
                     ltac:(M.monadic
                       (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
@@ -807,7 +811,9 @@ Module f64.
                           M.read (| γ0_1 |),
                           Value.Integer IntegerKind.U64 0
                         |) in
-                      Value.StructTuple "core::num::FpCategory::Zero" [] [] []));
+                      M.value_with_ty
+                        (Value.StructTuple "core::num::FpCategory::Zero" [])
+                        (Ty.path "core::num::FpCategory")));
                   fun γ =>
                     ltac:(M.monadic
                       (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
@@ -817,9 +823,14 @@ Module f64.
                           M.read (| γ0_1 |),
                           Value.Integer IntegerKind.U64 0
                         |) in
-                      Value.StructTuple "core::num::FpCategory::Subnormal" [] [] []));
+                      M.value_with_ty
+                        (Value.StructTuple "core::num::FpCategory::Subnormal" [])
+                        (Ty.path "core::num::FpCategory")));
                   fun γ =>
-                    ltac:(M.monadic (Value.StructTuple "core::num::FpCategory::Normal" [] [] []))
+                    ltac:(M.monadic
+                      (M.value_with_ty
+                        (Value.StructTuple "core::num::FpCategory::Normal" [])
+                        (Ty.path "core::num::FpCategory")))
                 ]
               |)
             |)
@@ -848,7 +859,7 @@ Module f64.
               M.call_closure (|
                 Ty.path "bool",
                 M.get_associated_function (| Ty.path "f64", "is_sign_negative", [], [] |),
-                [ M.read (| self |) ]
+                [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
               |)
             ]
           |)))
@@ -873,7 +884,7 @@ Module f64.
           M.call_closure (|
             Ty.path "bool",
             M.get_associated_function (| Ty.path "f64", "is_sign_positive", [], [] |),
-            [ M.read (| self |) ]
+            [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -911,7 +922,7 @@ Module f64.
                       [],
                       [ Ty.path "f64"; Ty.path "u64" ]
                     |),
-                    [ M.read (| self |) ]
+                    [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
                   |);
                   M.read (|
                     get_associated_constant (| Ty.path "f64", "SIGN_MASK", Ty.path "u64" |)
@@ -942,7 +953,7 @@ Module f64.
           M.call_closure (|
             Ty.path "bool",
             M.get_associated_function (| Ty.path "f64", "is_sign_negative", [], [] |),
-            [ M.read (| self |) ]
+            [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -985,7 +996,7 @@ Module f64.
                   M.call_closure (|
                     Ty.path "u64",
                     M.get_associated_function (| Ty.path "f64", "to_bits", [], [] |),
-                    [ M.read (| self |) ]
+                    [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -1002,7 +1013,7 @@ Module f64.
                                   M.call_closure (|
                                     Ty.path "bool",
                                     M.get_associated_function (| Ty.path "f64", "is_nan", [], [] |),
-                                    [ M.read (| self |) ]
+                                    [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
                                   |),
                                   ltac:(M.monadic
                                     (M.call_closure (|
@@ -1019,13 +1030,15 @@ Module f64.
                                             []
                                           |),
                                           [
-                                            M.read (|
-                                              get_associated_constant (|
-                                                Ty.path "f64",
-                                                "INFINITY",
-                                                Ty.path "f64"
-                                              |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.read (|
+                                                get_associated_constant (|
+                                                  Ty.path "f64",
+                                                  "INFINITY",
+                                                  Ty.path "f64"
+                                                |)
+                                              |))
+                                              (Ty.path "f64")
                                           ]
                                         |)
                                       ]
@@ -1121,7 +1134,7 @@ Module f64.
                   M.call_closure (|
                     Ty.path "f64",
                     M.get_associated_function (| Ty.path "f64", "from_bits", [], [] |),
-                    [ M.read (| next_bits |) ]
+                    [ M.value_with_ty (M.read (| next_bits |)) (Ty.path "u64") ]
                   |)
                 |)
               |)))
@@ -1166,7 +1179,7 @@ Module f64.
                   M.call_closure (|
                     Ty.path "u64",
                     M.get_associated_function (| Ty.path "f64", "to_bits", [], [] |),
-                    [ M.read (| self |) ]
+                    [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
                   |) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
@@ -1183,7 +1196,7 @@ Module f64.
                                   M.call_closure (|
                                     Ty.path "bool",
                                     M.get_associated_function (| Ty.path "f64", "is_nan", [], [] |),
-                                    [ M.read (| self |) ]
+                                    [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
                                   |),
                                   ltac:(M.monadic
                                     (M.call_closure (|
@@ -1200,13 +1213,15 @@ Module f64.
                                             []
                                           |),
                                           [
-                                            M.read (|
-                                              get_associated_constant (|
-                                                Ty.path "f64",
-                                                "NEG_INFINITY",
-                                                Ty.path "f64"
-                                              |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.read (|
+                                                get_associated_constant (|
+                                                  Ty.path "f64",
+                                                  "NEG_INFINITY",
+                                                  Ty.path "f64"
+                                                |)
+                                              |))
+                                              (Ty.path "f64")
                                           ]
                                         |)
                                       ]
@@ -1306,7 +1321,7 @@ Module f64.
                   M.call_closure (|
                     Ty.path "f64",
                     M.get_associated_function (| Ty.path "f64", "from_bits", [], [] |),
-                    [ M.read (| next_bits |) ]
+                    [ M.value_with_ty (M.read (| next_bits |)) (Ty.path "u64") ]
                   |)
                 |)
               |)))
@@ -1418,7 +1433,10 @@ Module f64.
           M.call_closure (|
             Ty.path "f64",
             M.get_function (| "core::intrinsics::maxnumf64", [], [] |),
-            [ M.read (| self |); M.read (| other |) ]
+            [
+              M.value_with_ty (M.read (| self |)) (Ty.path "f64");
+              M.value_with_ty (M.read (| other |)) (Ty.path "f64")
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1441,7 +1459,10 @@ Module f64.
           M.call_closure (|
             Ty.path "f64",
             M.get_function (| "core::intrinsics::minnumf64", [], [] |),
-            [ M.read (| self |); M.read (| other |) ]
+            [
+              M.value_with_ty (M.read (| self |)) (Ty.path "f64");
+              M.value_with_ty (M.read (| other |)) (Ty.path "f64")
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1550,7 +1571,11 @@ Module f64.
                                                       [],
                                                       []
                                                     |),
-                                                    [ M.read (| self |) ]
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (| self |))
+                                                        (Ty.path "f64")
+                                                    ]
                                                   |),
                                                   ltac:(M.monadic
                                                     (M.call_closure (|
@@ -1561,7 +1586,11 @@ Module f64.
                                                         [],
                                                         []
                                                       |),
-                                                      [ M.read (| other |) ]
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| other |))
+                                                          (Ty.path "f64")
+                                                      ]
                                                     |)))
                                                 |)
                                               |)) in
@@ -1695,7 +1724,11 @@ Module f64.
                                                       [],
                                                       []
                                                     |),
-                                                    [ M.read (| self |) ]
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (| self |))
+                                                        (Ty.path "f64")
+                                                    ]
                                                   |),
                                                   ltac:(M.monadic
                                                     (M.call_closure (|
@@ -1706,7 +1739,11 @@ Module f64.
                                                         [],
                                                         []
                                                       |),
-                                                      [ M.read (| other |) ]
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| other |))
+                                                          (Ty.path "f64")
+                                                      ]
                                                     |)))
                                                 |)
                                               |)) in
@@ -1787,13 +1824,13 @@ Module f64.
                       M.call_closure (|
                         Ty.path "f64",
                         M.get_associated_function (| Ty.path "f64", "abs", [], [] |),
-                        [ M.read (| a |) ]
+                        [ M.value_with_ty (M.read (| a |)) (Ty.path "f64") ]
                       |) in
                     let~ abs_b : Ty.path "f64" :=
                       M.call_closure (|
                         Ty.path "f64",
                         M.get_associated_function (| Ty.path "f64", "abs", [], [] |),
-                        [ M.read (| b |) ]
+                        [ M.value_with_ty (M.read (| b |)) (Ty.path "f64") ]
                       |) in
                     M.alloc (|
                       Ty.path "f64",
@@ -2007,7 +2044,7 @@ Module f64.
               [],
               []
             |),
-            [ M.read (| self |) ]
+            [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -2035,7 +2072,7 @@ Module f64.
               [],
               [ Ty.path "f64"; Ty.path "u64" ]
             |),
-            [ M.read (| self |) ]
+            [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -2063,7 +2100,7 @@ Module f64.
               [],
               [ Ty.path "u64"; Ty.path "f64" ]
             |),
-            [ M.read (| v |) ]
+            [ M.value_with_ty (M.read (| v |)) (Ty.path "u64") ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -2087,11 +2124,13 @@ Module f64.
             Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
             M.get_associated_function (| Ty.path "u64", "to_be_bytes", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_associated_function (| Ty.path "f64", "to_bits", [], [] |),
-                [ M.read (| self |) ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "u64",
+                  M.get_associated_function (| Ty.path "f64", "to_bits", [], [] |),
+                  [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
+                |))
+                (Ty.path "u64")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2116,11 +2155,13 @@ Module f64.
             Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
             M.get_associated_function (| Ty.path "u64", "to_le_bytes", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_associated_function (| Ty.path "f64", "to_bits", [], [] |),
-                [ M.read (| self |) ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "u64",
+                  M.get_associated_function (| Ty.path "f64", "to_bits", [], [] |),
+                  [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
+                |))
+                (Ty.path "u64")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2145,11 +2186,13 @@ Module f64.
             Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
             M.get_associated_function (| Ty.path "u64", "to_ne_bytes", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_associated_function (| Ty.path "f64", "to_bits", [], [] |),
-                [ M.read (| self |) ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "u64",
+                  M.get_associated_function (| Ty.path "f64", "to_bits", [], [] |),
+                  [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
+                |))
+                (Ty.path "u64")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2178,11 +2221,20 @@ Module f64.
             Ty.path "f64",
             M.get_associated_function (| Ty.path "f64", "from_bits", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_associated_function (| Ty.path "u64", "from_be_bytes", [], [] |),
-                [ M.read (| bytes |) ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "u64",
+                  M.get_associated_function (| Ty.path "u64", "from_be_bytes", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.read (| bytes |))
+                      (Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 8 ]
+                        [ Ty.path "u8" ])
+                  ]
+                |))
+                (Ty.path "u64")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2211,11 +2263,20 @@ Module f64.
             Ty.path "f64",
             M.get_associated_function (| Ty.path "f64", "from_bits", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_associated_function (| Ty.path "u64", "from_le_bytes", [], [] |),
-                [ M.read (| bytes |) ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "u64",
+                  M.get_associated_function (| Ty.path "u64", "from_le_bytes", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.read (| bytes |))
+                      (Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 8 ]
+                        [ Ty.path "u8" ])
+                  ]
+                |))
+                (Ty.path "u64")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2244,11 +2305,20 @@ Module f64.
             Ty.path "f64",
             M.get_associated_function (| Ty.path "f64", "from_bits", [], [] |),
             [
-              M.call_closure (|
-                Ty.path "u64",
-                M.get_associated_function (| Ty.path "u64", "from_ne_bytes", [], [] |),
-                [ M.read (| bytes |) ]
-              |)
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.path "u64",
+                  M.get_associated_function (| Ty.path "u64", "from_ne_bytes", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.read (| bytes |))
+                      (Ty.apply
+                        (Ty.path "array")
+                        [ Value.Integer IntegerKind.Usize 8 ]
+                        [ Ty.path "u8" ])
+                  ]
+                |))
+                (Ty.path "u64")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2305,7 +2375,7 @@ Module f64.
                 (M.call_closure (|
                   Ty.path "u64",
                   M.get_associated_function (| Ty.path "f64", "to_bits", [], [] |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                  [ M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "f64") ]
                 |)) in
             let~ right : Ty.path "i64" :=
               M.cast
@@ -2313,7 +2383,8 @@ Module f64.
                 (M.call_closure (|
                   Ty.path "u64",
                   M.get_associated_function (| Ty.path "f64", "to_bits", [], [] |),
-                  [ M.read (| M.deref (| M.read (| other |) |) |) ]
+                  [ M.value_with_ty (M.read (| M.deref (| M.read (| other |) |) |)) (Ty.path "f64")
+                  ]
                 |)) in
             let~ _ : Ty.tuple [] :=
               let β := left in
@@ -2377,11 +2448,15 @@ Module f64.
                 Ty.path "core::cmp::Ordering",
                 M.get_trait_method (| "core::cmp::Ord", Ty.path "i64", [], [], "cmp", [], [] |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, left |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, right |) |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, left |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, right |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ])
                 ]
               |)
             |)
@@ -2440,11 +2515,13 @@ Module f64.
                                   Ty.path "bool",
                                   M.get_function (| "core::intrinsics::likely", [], [] |),
                                   [
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      BinOp.le,
-                                      [ M.read (| min |); M.read (| max |) ]
-                                    |)
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "bool",
+                                        BinOp.le,
+                                        [ M.read (| min |); M.read (| max |) ]
+                                      |))
+                                      (Ty.path "bool")
                                   ]
                                 |)
                               ]
@@ -2455,7 +2532,10 @@ Module f64.
                         M.call_closure (|
                           Ty.path "never",
                           M.get_associated_function (| Self, "do_panic.clamp", [], [] |),
-                          [ M.read (| min |); M.read (| max |) ]
+                          [
+                            M.value_with_ty (M.read (| min |)) (Ty.path "f64");
+                            M.value_with_ty (M.read (| max |)) (Ty.path "f64")
+                          ]
                         |)
                       |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -2534,7 +2614,7 @@ Module f64.
           M.call_closure (|
             Ty.path "f64",
             M.get_function (| "core::intrinsics::fabsf64", [], [] |),
-            [ M.read (| self |) ]
+            [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -2566,7 +2646,7 @@ Module f64.
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_associated_function (| Ty.path "f64", "is_nan", [], [] |),
-                          [ M.read (| self |) ]
+                          [ M.value_with_ty (M.read (| self |)) (Ty.path "f64") ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -2576,7 +2656,10 @@ Module f64.
                   (M.call_closure (|
                     Ty.path "f64",
                     M.get_associated_function (| Ty.path "f64", "copysign", [], [] |),
-                    [ M.read (| UnsupportedLiteral |); M.read (| self |) ]
+                    [
+                      M.value_with_ty (M.read (| UnsupportedLiteral |)) (Ty.path "f64");
+                      M.value_with_ty (M.read (| self |)) (Ty.path "f64")
+                    ]
                   |)))
             ]
           |)))
@@ -2602,7 +2685,10 @@ Module f64.
           M.call_closure (|
             Ty.path "f64",
             M.get_function (| "core::intrinsics::copysignf64", [], [] |),
-            [ M.read (| self |); M.read (| sign |) ]
+            [
+              M.value_with_ty (M.read (| self |)) (Ty.path "f64");
+              M.value_with_ty (M.read (| sign |)) (Ty.path "f64")
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.

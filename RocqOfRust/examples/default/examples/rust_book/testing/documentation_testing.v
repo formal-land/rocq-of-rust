@@ -62,7 +62,11 @@ Definition div (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                         [],
                         [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
                       |),
-                      [ mk_str (| "Divide-by-zero error" |) ]
+                      [
+                        M.value_with_ty
+                          (mk_str (| "Divide-by-zero error" |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
                     |)
                   |)));
               fun γ => ltac:(M.monadic (Value.Tuple []))

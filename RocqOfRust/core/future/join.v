@@ -92,8 +92,17 @@ Module future.
                             [ Ty.apply (Ty.path "core::future::join::MaybeDone") [] [ F ] ]
                           |),
                           [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                            Value.StructTuple "core::future::join::MaybeDone::Taken" [] [ F ] []
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.apply (Ty.path "core::future::join::MaybeDone") [] [ F ] ]);
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple "core::future::join::MaybeDone::Taken" [])
+                                (Ty.apply (Ty.path "core::future::join::MaybeDone") [] [ F ]))
+                              (Ty.apply (Ty.path "core::future::join::MaybeDone") [] [ F ])
                           ]
                         |)
                       |),
@@ -116,36 +125,43 @@ Module future.
                                   "Output",
                                 γ0_0
                               |) in
-                            Value.StructTuple
-                              "core::option::Option::Some"
-                              []
-                              [
-                                Ty.associated_in_trait
-                                  "core::future::future::Future"
-                                  []
-                                  []
-                                  F
-                                  "Output"
-                              ]
-                              [ M.read (| val |) ]));
+                            M.value_with_ty
+                              (Value.StructTuple "core::option::Option::Some" [ M.read (| val |) ])
+                              (Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "core::future::future::Future"
+                                    []
+                                    []
+                                    F
+                                    "Output"
+                                ])));
                         fun γ =>
                           ltac:(M.monadic
                             (M.never_to_any (|
                               M.call_closure (|
                                 Ty.path "never",
                                 M.get_function (| "core::panicking::panic", [], [] |),
-                                [ mk_str (| "internal error: entered unreachable code" |) ]
+                                [
+                                  M.value_with_ty
+                                    (mk_str (| "internal error: entered unreachable code" |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                ]
                               |)
                             |)))
                       ]
                     |)));
                 fun γ =>
                   ltac:(M.monadic
-                    (Value.StructTuple
-                      "core::option::Option::None"
-                      []
-                      [ Ty.associated_in_trait "core::future::future::Future" [] [] F "Output" ]
-                      []))
+                    (M.value_with_ty
+                      (Value.StructTuple "core::option::Option::None" [])
+                      (Ty.apply
+                        (Ty.path "core::option::Option")
+                        []
+                        [ Ty.associated_in_trait "core::future::future::Future" [] [] F "Output"
+                        ])))
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -244,17 +260,8 @@ Module future.
                             []
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "core::pin::Pin")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [ Ty.apply (Ty.path "core::future::join::MaybeDone") [] [ F ] ]
-                                ],
-                              M.get_associated_function (|
+                            M.value_with_ty
+                              (M.call_closure (|
                                 Ty.apply
                                   (Ty.path "core::pin::Pin")
                                   []
@@ -265,12 +272,58 @@ Module future.
                                       [ Ty.apply (Ty.path "core::future::join::MaybeDone") [] [ F ]
                                       ]
                                   ],
-                                "as_mut",
-                                [],
+                                M.get_associated_function (|
+                                  Ty.apply
+                                    (Ty.path "core::pin::Pin")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::future::join::MaybeDone")
+                                            []
+                                            [ F ]
+                                        ]
+                                    ],
+                                  "as_mut",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.MutRef, self |))
+                                    (Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::pin::Pin")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::future::join::MaybeDone")
+                                                  []
+                                                  [ F ]
+                                              ]
+                                          ]
+                                      ])
+                                ]
+                              |))
+                              (Ty.apply
+                                (Ty.path "core::pin::Pin")
                                 []
-                              |),
-                              [ M.borrow (| Pointer.Kind.MutRef, self |) ]
-                            |)
+                                [
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.apply (Ty.path "core::future::join::MaybeDone") [] [ F ] ]
+                                ])
                           ]
                         |)
                       |),
@@ -333,26 +386,40 @@ Module future.
                                         []
                                       |),
                                       [
-                                        M.call_closure (|
-                                          Ty.apply
-                                            (Ty.path "core::pin::Pin")
-                                            []
-                                            [ Ty.apply (Ty.path "&mut") [] [ F ] ],
-                                          M.get_associated_function (|
+                                        M.value_with_ty
+                                          (M.call_closure (|
                                             Ty.apply
                                               (Ty.path "core::pin::Pin")
                                               []
                                               [ Ty.apply (Ty.path "&mut") [] [ F ] ],
-                                            "new_unchecked",
-                                            [],
+                                            M.get_associated_function (|
+                                              Ty.apply
+                                                (Ty.path "core::pin::Pin")
+                                                []
+                                                [ Ty.apply (Ty.path "&mut") [] [ F ] ],
+                                              "new_unchecked",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| f |))
+                                                (Ty.apply (Ty.path "&mut") [] [ F ])
+                                            ]
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "core::pin::Pin")
                                             []
-                                          |),
-                                          [ M.read (| f |) ]
-                                        |);
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.read (| cx |) |)
-                                        |)
+                                            [ Ty.apply (Ty.path "&mut") [] [ F ] ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.read (| cx |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [ Ty.path "core::task::wake::Context" ])
                                       ]
                                     |)
                                   |),
@@ -386,11 +453,14 @@ Module future.
                                         M.never_to_any (|
                                           M.read (|
                                             M.return_ (|
-                                              Value.StructTuple
-                                                "core::task::poll::Poll::Pending"
-                                                []
-                                                [ Ty.tuple [] ]
-                                                []
+                                              M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::task::poll::Poll::Pending"
+                                                  [])
+                                                (Ty.apply
+                                                  (Ty.path "core::task::poll::Poll")
+                                                  []
+                                                  [ Ty.tuple [] ])
                                             |)
                                           |)
                                         |)))
@@ -419,12 +489,37 @@ Module future.
                                     []
                                   |),
                                   [
-                                    M.borrow (| Pointer.Kind.MutRef, self |);
-                                    Value.StructTuple
-                                      "core::future::join::MaybeDone::Done"
-                                      []
-                                      [ F ]
-                                      [ M.read (| val |) ]
+                                    M.value_with_ty
+                                      (M.borrow (| Pointer.Kind.MutRef, self |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::pin::Pin")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::future::join::MaybeDone")
+                                                    []
+                                                    [ F ]
+                                                ]
+                                            ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple
+                                          "core::future::join::MaybeDone::Done"
+                                          [ M.read (| val |) ])
+                                        (Ty.apply
+                                          (Ty.path "core::future::join::MaybeDone")
+                                          []
+                                          [ F ]))
+                                      (Ty.apply (Ty.path "core::future::join::MaybeDone") [] [ F ])
                                   ]
                                 |) in
                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -446,18 +541,20 @@ Module future.
                               M.call_closure (|
                                 Ty.path "never",
                                 M.get_function (| "core::panicking::panic", [], [] |),
-                                [ mk_str (| "internal error: entered unreachable code" |) ]
+                                [
+                                  M.value_with_ty
+                                    (mk_str (| "internal error: entered unreachable code" |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                ]
                               |)
                             |)))
                       ]
                     |) in
                   M.alloc (|
                     Ty.apply (Ty.path "core::task::poll::Poll") [] [ Ty.tuple [] ],
-                    Value.StructTuple
-                      "core::task::poll::Poll::Ready"
-                      []
-                      [ Ty.tuple [] ]
-                      [ Value.Tuple [] ]
+                    M.value_with_ty
+                      (Value.StructTuple "core::task::poll::Poll::Ready" [ Value.Tuple [] ])
+                      (Ty.apply (Ty.path "core::task::poll::Poll") [] [ Ty.tuple [] ])
                   |)
                 |)))
             |)))

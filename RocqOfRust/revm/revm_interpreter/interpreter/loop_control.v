@@ -34,35 +34,35 @@ Module interpreter.
         | [], [], [ gas_limit ] =>
           ltac:(M.monadic
             (let gas_limit := M.alloc (| Ty.path "u64", gas_limit |) in
-            Value.mkStructRecord
-              "revm_interpreter::interpreter::loop_control::LoopControl"
-              []
-              []
-              [
-                ("instruction_result",
-                  Value.StructTuple
-                    "revm_interpreter::instruction_result::InstructionResult::Continue"
-                    []
-                    []
-                    []);
-                ("next_action",
-                  Value.StructTuple
-                    "revm_interpreter::interpreter_action::InterpreterAction::None"
-                    []
-                    []
-                    []);
-                ("gas",
-                  M.call_closure (|
-                    Ty.path "revm_interpreter::gas::Gas",
-                    M.get_associated_function (|
+            M.value_with_ty
+              (Value.mkStructRecord
+                "revm_interpreter::interpreter::loop_control::LoopControl"
+                [
+                  ("instruction_result",
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "revm_interpreter::instruction_result::InstructionResult::Continue"
+                        [])
+                      (Ty.path "revm_interpreter::instruction_result::InstructionResult"));
+                  ("next_action",
+                    M.value_with_ty
+                      (Value.StructTuple
+                        "revm_interpreter::interpreter_action::InterpreterAction::None"
+                        [])
+                      (Ty.path "revm_interpreter::interpreter_action::InterpreterAction"));
+                  ("gas",
+                    M.call_closure (|
                       Ty.path "revm_interpreter::gas::Gas",
-                      "new",
-                      [],
-                      []
-                    |),
-                    [ M.read (| gas_limit |) ]
-                  |))
-              ]))
+                      M.get_associated_function (|
+                        Ty.path "revm_interpreter::gas::Gas",
+                        "new",
+                        [],
+                        []
+                      |),
+                      [ M.value_with_ty (M.read (| gas_limit |)) (Ty.path "u64") ]
+                    |))
+                ])
+              (Ty.path "revm_interpreter::interpreter::loop_control::LoopControl")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -253,19 +253,24 @@ Module interpreter.
                 [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.MutRef,
-                  M.deref (|
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.SubPointer.get_struct_record_field (|
-                        M.deref (| M.read (| self |) |),
-                        "revm_interpreter::interpreter::loop_control::LoopControl",
-                        "next_action"
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.MutRef,
+                    M.deref (|
+                      M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.SubPointer.get_struct_record_field (|
+                          M.deref (| M.read (| self |) |),
+                          "revm_interpreter::interpreter::loop_control::LoopControl",
+                          "next_action"
+                        |)
                       |)
                     |)
-                  |)
-                |)
+                  |))
+                  (Ty.apply
+                    (Ty.path "&mut")
+                    []
+                    [ Ty.path "revm_interpreter::interpreter_action::InterpreterAction" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

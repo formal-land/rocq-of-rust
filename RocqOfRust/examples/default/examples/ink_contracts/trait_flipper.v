@@ -26,26 +26,26 @@ Module Impl_trait_flipper_Flipper.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.mkStructRecord
-          "trait_flipper::Flipper"
-          []
-          []
-          [
-            ("value",
-              M.call_closure (|
-                Ty.path "bool",
-                M.get_trait_method (|
-                  "core::default::Default",
+        (M.value_with_ty
+          (Value.mkStructRecord
+            "trait_flipper::Flipper"
+            [
+              ("value",
+                M.call_closure (|
                   Ty.path "bool",
-                  [],
-                  [],
-                  "default",
-                  [],
+                  M.get_trait_method (|
+                    "core::default::Default",
+                    Ty.path "bool",
+                    [],
+                    [],
+                    "default",
+                    [],
+                    []
+                  |),
                   []
-                |),
-                []
-              |))
-          ]))
+                |))
+            ])
+          (Ty.path "trait_flipper::Flipper")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   

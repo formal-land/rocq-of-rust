@@ -118,78 +118,100 @@ Module collections.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [ Ty.path "core::fmt::builders::DebugTuple" ],
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::builders::DebugTuple",
-                                    "field",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.alloc (|
-                                        Ty.path "core::fmt::builders::DebugTuple",
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::builders::DebugTuple",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::Formatter",
-                                            "debug_tuple",
-                                            [],
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.path "core::fmt::builders::DebugTuple" ],
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::builders::DebugTuple",
+                                      "field",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.alloc (|
+                                            Ty.path "core::fmt::builders::DebugTuple",
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::builders::DebugTuple",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::Formatter",
+                                                "debug_tuple",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (| M.read (| f |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [ Ty.path "core::fmt::Formatter" ]);
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| mk_str (| "Entry" |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                              ]
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
                                             []
-                                          |),
+                                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                          M.pointer_coercion
+                                            M.PointerCoercion.Unsize
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "alloc::collections::btree::set::entry::VacantEntry")
+                                                  []
+                                                  [ T; A ]
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| f |) |)
-                                            |);
                                             M.borrow (|
                                               Pointer.Kind.Ref,
-                                              M.deref (| mk_str (| "Entry" |) |)
+                                              M.deref (| M.read (| v |) |)
                                             |)
                                           ]
-                                        |)
-                                      |)
-                                    |);
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                      M.pointer_coercion
-                                        M.PointerCoercion.Unsize
+                                        |))
                                         (Ty.apply
                                           (Ty.path "&")
                                           []
-                                          [
-                                            Ty.apply
-                                              (Ty.path
-                                                "alloc::collections::btree::set::entry::VacantEntry")
-                                              []
-                                              [ T; A ]
-                                          ])
-                                        (Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| v |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
+                                          [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                                    ]
+                                  |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.path "core::fmt::builders::DebugTuple" ])
                           ]
                         |)));
                     fun γ =>
@@ -225,78 +247,100 @@ Module collections.
                             []
                           |),
                           [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "&mut")
-                                    []
-                                    [ Ty.path "core::fmt::builders::DebugTuple" ],
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::builders::DebugTuple",
-                                    "field",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.alloc (|
-                                        Ty.path "core::fmt::builders::DebugTuple",
-                                        M.call_closure (|
-                                          Ty.path "core::fmt::builders::DebugTuple",
-                                          M.get_associated_function (|
-                                            Ty.path "core::fmt::Formatter",
-                                            "debug_tuple",
-                                            [],
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.path "core::fmt::builders::DebugTuple" ],
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::builders::DebugTuple",
+                                      "field",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.alloc (|
+                                            Ty.path "core::fmt::builders::DebugTuple",
+                                            M.call_closure (|
+                                              Ty.path "core::fmt::builders::DebugTuple",
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::Formatter",
+                                                "debug_tuple",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.MutRef,
+                                                    M.deref (| M.read (| f |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [ Ty.path "core::fmt::Formatter" ]);
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| mk_str (| "Entry" |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                              ]
+                                            |)
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
                                             []
-                                          |),
+                                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                          M.pointer_coercion
+                                            M.PointerCoercion.Unsize
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path
+                                                    "alloc::collections::btree::set::entry::OccupiedEntry")
+                                                  []
+                                                  [ T; A ]
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| f |) |)
-                                            |);
                                             M.borrow (|
                                               Pointer.Kind.Ref,
-                                              M.deref (| mk_str (| "Entry" |) |)
+                                              M.deref (| M.read (| o |) |)
                                             |)
                                           ]
-                                        |)
-                                      |)
-                                    |);
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                      M.pointer_coercion
-                                        M.PointerCoercion.Unsize
+                                        |))
                                         (Ty.apply
                                           (Ty.path "&")
                                           []
-                                          [
-                                            Ty.apply
-                                              (Ty.path
-                                                "alloc::collections::btree::set::entry::OccupiedEntry")
-                                              []
-                                              [ T; A ]
-                                          ])
-                                        (Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| o |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  ]
+                                          [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                                    ]
+                                  |)
                                 |)
-                              |)
-                            |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.path "core::fmt::builders::DebugTuple" ])
                           ]
                         |)))
                   ]
@@ -373,90 +417,125 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [ Ty.path "core::fmt::builders::DebugStruct" ],
-                          M.get_associated_function (|
-                            Ty.path "core::fmt::builders::DebugStruct",
-                            "field",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.alloc (|
-                                Ty.path "core::fmt::builders::DebugStruct",
-                                M.call_closure (|
-                                  Ty.path "core::fmt::builders::DebugStruct",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::Formatter",
-                                    "debug_struct",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (| M.read (| f |) |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| mk_str (| "OccupiedEntry" |) |)
-                                    |)
-                                  ]
-                                |)
-                              |)
-                            |);
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "value" |) |) |);
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                              M.pointer_coercion
-                                M.PointerCoercion.Unsize
-                                (Ty.apply (Ty.path "&") [] [ T ])
-                                (Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.path "core::fmt::builders::DebugStruct" ],
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::builders::DebugStruct",
+                              "field",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.alloc (|
+                                    Ty.path "core::fmt::builders::DebugStruct",
                                     M.call_closure (|
-                                      Ty.apply (Ty.path "&") [] [ T ],
+                                      Ty.path "core::fmt::builders::DebugStruct",
                                       M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path
-                                            "alloc::collections::btree::set::entry::OccupiedEntry")
-                                          []
-                                          [ T; A ],
-                                        "get",
+                                        Ty.path "core::fmt::Formatter",
+                                        "debug_struct",
                                         [],
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.read (| f |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [ Ty.path "core::fmt::Formatter" ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| mk_str (| "OccupiedEntry" |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                       ]
                                     |)
                                   |)
-                                |)
-                              ]
-                            |)
-                          ]
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.path "core::fmt::builders::DebugStruct" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| mk_str (| "value" |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                  M.pointer_coercion
+                                    M.PointerCoercion.Unsize
+                                    (Ty.apply (Ty.path "&") [] [ T ])
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply (Ty.path "&") [] [ T ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path
+                                                "alloc::collections::btree::set::entry::OccupiedEntry")
+                                              []
+                                              [ T; A ],
+                                            "get",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::btree::set::entry::OccupiedEntry")
+                                                    []
+                                                    [ T; A ]
+                                                ])
+                                          ]
+                                        |)
+                                      |)
+                                    |)
+                                  ]
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
                   ]
                 |)))
             | _, _, _ => M.impossible "wrong number of arguments"
@@ -531,89 +610,119 @@ Module collections.
                     []
                   |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [ Ty.path "core::fmt::builders::DebugTuple" ],
-                          M.get_associated_function (|
-                            Ty.path "core::fmt::builders::DebugTuple",
-                            "field",
-                            [],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.MutRef,
-                              M.alloc (|
-                                Ty.path "core::fmt::builders::DebugTuple",
-                                M.call_closure (|
-                                  Ty.path "core::fmt::builders::DebugTuple",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::Formatter",
-                                    "debug_tuple",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.deref (| M.read (| f |) |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| mk_str (| "VacantEntry" |) |)
-                                    |)
-                                  ]
-                                |)
-                              |)
-                            |);
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                              M.pointer_coercion
-                                M.PointerCoercion.Unsize
-                                (Ty.apply (Ty.path "&") [] [ T ])
-                                (Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.path "core::fmt::builders::DebugTuple" ],
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::builders::DebugTuple",
+                              "field",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.alloc (|
+                                    Ty.path "core::fmt::builders::DebugTuple",
                                     M.call_closure (|
-                                      Ty.apply (Ty.path "&") [] [ T ],
+                                      Ty.path "core::fmt::builders::DebugTuple",
                                       M.get_associated_function (|
-                                        Ty.apply
-                                          (Ty.path
-                                            "alloc::collections::btree::set::entry::VacantEntry")
-                                          []
-                                          [ T; A ],
-                                        "get",
+                                        Ty.path "core::fmt::Formatter",
+                                        "debug_tuple",
                                         [],
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.read (| f |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [ Ty.path "core::fmt::Formatter" ]);
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| mk_str (| "VacantEntry" |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                       ]
                                     |)
                                   |)
-                                |)
-                              ]
-                            |)
-                          ]
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                  M.pointer_coercion
+                                    M.PointerCoercion.Unsize
+                                    (Ty.apply (Ty.path "&") [] [ T ])
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.call_closure (|
+                                          Ty.apply (Ty.path "&") [] [ T ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path
+                                                "alloc::collections::btree::set::entry::VacantEntry")
+                                              []
+                                              [ T; A ],
+                                            "get",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| self |) |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path
+                                                      "alloc::collections::btree::set::entry::VacantEntry")
+                                                    []
+                                                    [ T; A ]
+                                                ])
+                                          ]
+                                        |)
+                                      |)
+                                    |)
+                                  ]
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ])
                   ]
                 |)))
             | _, _, _ => M.impossible "wrong number of arguments"
@@ -710,7 +819,14 @@ Module collections.
                             [],
                             []
                           |),
-                          [ M.read (| entry |) ]
+                          [
+                            M.value_with_ty
+                              (M.read (| entry |))
+                              (Ty.apply
+                                (Ty.path "alloc::collections::btree::set::entry::VacantEntry")
+                                []
+                                [ T; A ])
+                          ]
                         |)))
                   ]
                 |)))
@@ -779,7 +895,14 @@ Module collections.
                                 [],
                                 []
                               |),
-                              [ M.read (| entry |) ]
+                              [
+                                M.value_with_ty
+                                  (M.read (| entry |))
+                                  (Ty.apply
+                                    (Ty.path "alloc::collections::btree::set::entry::VacantEntry")
+                                    []
+                                    [ T; A ])
+                              ]
                             |) in
                           M.alloc (| Ty.tuple [], Value.Tuple [] |)
                         |)));
@@ -866,10 +989,21 @@ Module collections.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| entry |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| entry |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path
+                                              "alloc::collections::btree::set::entry::OccupiedEntry")
+                                            []
+                                            [ T; A ]
+                                        ])
                                   ]
                                 |)
                               |)
@@ -910,10 +1044,21 @@ Module collections.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| entry |) |)
-                                    |)
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| entry |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path
+                                              "alloc::collections::btree::set::entry::VacantEntry")
+                                            []
+                                            [ T; A ]
+                                        ])
                                   ]
                                 |)
                               |)
@@ -974,14 +1119,24 @@ Module collections.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::btree::set::entry::OccupiedEntry",
-                            "inner"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::collections::btree::set::entry::OccupiedEntry",
+                              "inner"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::collections::btree::map::entry::OccupiedEntry")
+                                []
+                                [ T; Ty.path "alloc::collections::btree::set_val::SetValZST"; A ]
+                            ])
                       ]
                     |)
                   |)
@@ -1034,13 +1189,18 @@ Module collections.
                           []
                         |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              self,
-                              "alloc::collections::btree::set::entry::OccupiedEntry",
-                              "inner"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                self,
+                                "alloc::collections::btree::set::entry::OccupiedEntry",
+                                "inner"
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "alloc::collections::btree::map::entry::OccupiedEntry")
+                              []
+                              [ T; Ty.path "alloc::collections::btree::set_val::SetValZST"; A ])
                         ]
                       |)
                     |),
@@ -1099,14 +1259,24 @@ Module collections.
                         []
                       |),
                       [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::btree::set::entry::VacantEntry",
-                            "inner"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::collections::btree::set::entry::VacantEntry",
+                              "inner"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "alloc::collections::btree::map::entry::VacantEntry")
+                                []
+                                [ T; Ty.path "alloc::collections::btree::set_val::SetValZST"; A ]
+                            ])
                       ]
                     |)
                   |)
@@ -1155,13 +1325,18 @@ Module collections.
                     []
                   |),
                   [
-                    M.read (|
-                      M.SubPointer.get_struct_record_field (|
-                        self,
-                        "alloc::collections::btree::set::entry::VacantEntry",
-                        "inner"
-                      |)
-                    |)
+                    M.value_with_ty
+                      (M.read (|
+                        M.SubPointer.get_struct_record_field (|
+                          self,
+                          "alloc::collections::btree::set::entry::VacantEntry",
+                          "inner"
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "alloc::collections::btree::map::entry::VacantEntry")
+                        []
+                        [ T; Ty.path "alloc::collections::btree::set_val::SetValZST"; A ])
                   ]
                 |)))
             | _, _, _ => M.impossible "wrong number of arguments"
@@ -1217,14 +1392,23 @@ Module collections.
                         []
                       |),
                       [
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            self,
-                            "alloc::collections::btree::set::entry::VacantEntry",
-                            "inner"
-                          |)
-                        |);
-                        Value.StructTuple "alloc::collections::btree::set_val::SetValZST" [] [] []
+                        M.value_with_ty
+                          (M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              self,
+                              "alloc::collections::btree::set::entry::VacantEntry",
+                              "inner"
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "alloc::collections::btree::map::entry::VacantEntry")
+                            []
+                            [ T; Ty.path "alloc::collections::btree::set_val::SetValZST"; A ]);
+                        M.value_with_ty
+                          (M.value_with_ty
+                            (Value.StructTuple "alloc::collections::btree::set_val::SetValZST" [])
+                            (Ty.path "alloc::collections::btree::set_val::SetValZST"))
+                          (Ty.path "alloc::collections::btree::set_val::SetValZST")
                       ]
                     |) in
                   M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -1261,38 +1445,52 @@ Module collections.
                       [ T; A ],
                     self
                   |) in
-                Value.mkStructRecord
-                  "alloc::collections::btree::set::entry::OccupiedEntry"
-                  []
-                  [ T; A ]
-                  [
-                    ("inner",
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "alloc::collections::btree::map::entry::OccupiedEntry")
-                          []
-                          [ T; Ty.path "alloc::collections::btree::set_val::SetValZST"; A ],
-                        M.get_associated_function (|
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "alloc::collections::btree::set::entry::OccupiedEntry"
+                    [
+                      ("inner",
+                        M.call_closure (|
                           Ty.apply
-                            (Ty.path "alloc::collections::btree::map::entry::VacantEntry")
+                            (Ty.path "alloc::collections::btree::map::entry::OccupiedEntry")
                             []
                             [ T; Ty.path "alloc::collections::btree::set_val::SetValZST"; A ],
-                          "insert_entry",
-                          [],
-                          []
-                        |),
-                        [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              self,
-                              "alloc::collections::btree::set::entry::VacantEntry",
-                              "inner"
-                            |)
-                          |);
-                          Value.StructTuple "alloc::collections::btree::set_val::SetValZST" [] [] []
-                        ]
-                      |))
-                  ]))
+                          M.get_associated_function (|
+                            Ty.apply
+                              (Ty.path "alloc::collections::btree::map::entry::VacantEntry")
+                              []
+                              [ T; Ty.path "alloc::collections::btree::set_val::SetValZST"; A ],
+                            "insert_entry",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  self,
+                                  "alloc::collections::btree::set::entry::VacantEntry",
+                                  "inner"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "alloc::collections::btree::map::entry::VacantEntry")
+                                []
+                                [ T; Ty.path "alloc::collections::btree::set_val::SetValZST"; A ]);
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple
+                                  "alloc::collections::btree::set_val::SetValZST"
+                                  [])
+                                (Ty.path "alloc::collections::btree::set_val::SetValZST"))
+                              (Ty.path "alloc::collections::btree::set_val::SetValZST")
+                          ]
+                        |))
+                    ])
+                  (Ty.apply
+                    (Ty.path "alloc::collections::btree::set::entry::OccupiedEntry")
+                    []
+                    [ T; A ])))
             | _, _, _ => M.impossible "wrong number of arguments"
             end.
           

@@ -819,7 +819,14 @@ Module fmt.
                 M.call_closure (|
                   Ty.path "bool",
                   M.get_trait_method (| "core::cmp::PartialOrd", T, [], [ T ], "ge", [], [] |),
-                  [ M.borrow (| Pointer.Kind.Ref, x |); M.borrow (| Pointer.Kind.Ref, zero |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, x |))
+                      (Ty.apply (Ty.path "&") [] [ T ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, zero |))
+                      (Ty.apply (Ty.path "&") [] [ T ])
+                  ]
                 |) in
               let~ buf :
                   Ty.apply
@@ -858,38 +865,9 @@ Module fmt.
                     []
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "slice")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                []
-                                [ Ty.path "u8" ]
-                            ]
-                        ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 128 ]
-                              [
-                                Ty.apply
-                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                  []
-                                  [ Ty.path "u8" ]
-                              ]
-                          ])
-                        (Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
                           (Ty.path "&")
                           []
                           [
@@ -902,9 +880,53 @@ Module fmt.
                                   []
                                   [ Ty.path "u8" ]
                               ]
-                          ]),
-                      [ M.borrow (| Pointer.Kind.Ref, buf |) ]
-                    |)
+                          ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 128 ]
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [ Ty.path "u8" ]
+                                ]
+                            ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [ Ty.path "u8" ]
+                                ]
+                            ]),
+                        [ M.borrow (| Pointer.Kind.Ref, buf |) ]
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                []
+                                [ Ty.path "u8" ]
+                            ]
+                        ])
                   ]
                 |) in
               let~ base : T :=
@@ -920,9 +942,11 @@ Module fmt.
                     []
                   |),
                   [
-                    M.read (|
-                      get_constant (| "core::fmt::num::GenericRadix::BASE", Ty.path "u8" |)
-                    |)
+                    M.value_with_ty
+                      (M.read (|
+                        get_constant (| "core::fmt::num::GenericRadix::BASE", Ty.path "u8" |)
+                      |))
+                      (Ty.path "u8")
                   ]
                 |) in
               let~ _ : Ty.tuple [] :=
@@ -950,7 +974,10 @@ Module fmt.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| x |); M.read (| base |) ]
+                                  [
+                                    M.value_with_ty (M.read (| x |)) T;
+                                    M.value_with_ty (M.read (| base |)) T
+                                  ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
                                 M.write (|
@@ -966,7 +993,10 @@ Module fmt.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| x |); M.read (| base |) ]
+                                    [
+                                      M.value_with_ty (M.read (| x |)) T;
+                                      M.value_with_ty (M.read (| base |)) T
+                                    ]
                                   |)
                                 |) in
                               let~ _ : Ty.tuple [] :=
@@ -992,37 +1022,55 @@ Module fmt.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.SubPointer.get_array_field (| buf, M.read (| curr |) |)
-                                    |);
-                                    M.call_closure (|
-                                      Ty.path "u8",
-                                      M.get_trait_method (|
-                                        "core::fmt::num::GenericRadix",
-                                        Self,
-                                        [],
-                                        [],
-                                        "digit",
-                                        [],
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_array_field (| buf, M.read (| curr |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
                                         []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "u8",
-                                          M.get_trait_method (|
-                                            "core::fmt::num::DisplayInt",
-                                            T,
-                                            [],
-                                            [],
-                                            "to_u8",
-                                            [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                             []
-                                          |),
-                                          [ M.borrow (| Pointer.Kind.Ref, n |) ]
-                                        |)
-                                      ]
-                                    |)
+                                            [ Ty.path "u8" ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "u8",
+                                        M.get_trait_method (|
+                                          "core::fmt::num::GenericRadix",
+                                          Self,
+                                          [],
+                                          [],
+                                          "digit",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "u8",
+                                              M.get_trait_method (|
+                                                "core::fmt::num::DisplayInt",
+                                                T,
+                                                [],
+                                                [],
+                                                "to_u8",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (| Pointer.Kind.Ref, n |))
+                                                  (Ty.apply (Ty.path "&") [] [ T ])
+                                              ]
+                                            |))
+                                            (Ty.path "u8")
+                                        ]
+                                      |))
+                                      (Ty.path "u8")
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
@@ -1048,8 +1096,12 @@ Module fmt.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (| Pointer.Kind.Ref, x |);
-                                                  M.borrow (| Pointer.Kind.Ref, zero |)
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.Ref, x |))
+                                                    (Ty.apply (Ty.path "&") [] [ T ]);
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.Ref, zero |))
+                                                    (Ty.apply (Ty.path "&") [] [ T ])
                                                 ]
                                               |)
                                             |)) in
@@ -1084,20 +1136,25 @@ Module fmt.
                                     []
                                   |),
                                   [
-                                    M.read (| zero |);
-                                    M.call_closure (|
-                                      T,
-                                      M.get_trait_method (|
-                                        "core::ops::arith::Rem",
+                                    M.value_with_ty (M.read (| zero |)) T;
+                                    M.value_with_ty
+                                      (M.call_closure (|
                                         T,
-                                        [],
-                                        [ T ],
-                                        "rem",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| x |); M.read (| base |) ]
-                                    |)
+                                        M.get_trait_method (|
+                                          "core::ops::arith::Rem",
+                                          T,
+                                          [],
+                                          [ T ],
+                                          "rem",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty (M.read (| x |)) T;
+                                          M.value_with_ty (M.read (| base |)) T
+                                        ]
+                                      |))
+                                      T
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
@@ -1114,7 +1171,10 @@ Module fmt.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| x |); M.read (| base |) ]
+                                    [
+                                      M.value_with_ty (M.read (| x |)) T;
+                                      M.value_with_ty (M.read (| base |)) T
+                                    ]
                                   |)
                                 |) in
                               let~ _ : Ty.tuple [] :=
@@ -1140,37 +1200,55 @@ Module fmt.
                                     []
                                   |),
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.MutRef,
-                                      M.SubPointer.get_array_field (| buf, M.read (| curr |) |)
-                                    |);
-                                    M.call_closure (|
-                                      Ty.path "u8",
-                                      M.get_trait_method (|
-                                        "core::fmt::num::GenericRadix",
-                                        Self,
-                                        [],
-                                        [],
-                                        "digit",
-                                        [],
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_array_field (| buf, M.read (| curr |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
                                         []
-                                      |),
-                                      [
-                                        M.call_closure (|
-                                          Ty.path "u8",
-                                          M.get_trait_method (|
-                                            "core::fmt::num::DisplayInt",
-                                            T,
-                                            [],
-                                            [],
-                                            "to_u8",
-                                            [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                             []
-                                          |),
-                                          [ M.borrow (| Pointer.Kind.Ref, n |) ]
-                                        |)
-                                      ]
-                                    |)
+                                            [ Ty.path "u8" ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "u8",
+                                        M.get_trait_method (|
+                                          "core::fmt::num::GenericRadix",
+                                          Self,
+                                          [],
+                                          [],
+                                          "digit",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.call_closure (|
+                                              Ty.path "u8",
+                                              M.get_trait_method (|
+                                                "core::fmt::num::DisplayInt",
+                                                T,
+                                                [],
+                                                [],
+                                                "to_u8",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (| Pointer.Kind.Ref, n |))
+                                                  (Ty.apply (Ty.path "&") [] [ T ])
+                                              ]
+                                            |))
+                                            (Ty.path "u8")
+                                        ]
+                                      |))
+                                      (Ty.path "u8")
                                   ]
                                 |) in
                               let~ _ : Ty.tuple [] :=
@@ -1196,8 +1274,12 @@ Module fmt.
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (| Pointer.Kind.Ref, x |);
-                                                  M.borrow (| Pointer.Kind.Ref, zero |)
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.Ref, x |))
+                                                    (Ty.apply (Ty.path "&") [] [ T ]);
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.Ref, zero |))
+                                                    (Ty.apply (Ty.path "&") [] [ T ])
                                                 ]
                                               |)
                                             |)) in
@@ -1260,38 +1342,9 @@ Module fmt.
                     [ Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ Ty.path "usize" ] ]
                   |),
                   [
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "slice")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                []
-                                [ Ty.path "u8" ]
-                            ]
-                        ],
-                      M.pointer_coercion
-                        M.PointerCoercion.Unsize
-                        (Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 128 ]
-                              [
-                                Ty.apply
-                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                  []
-                                  [ Ty.path "u8" ]
-                              ]
-                          ])
-                        (Ty.apply
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply
                           (Ty.path "&")
                           []
                           [
@@ -1304,14 +1357,60 @@ Module fmt.
                                   []
                                   [ Ty.path "u8" ]
                               ]
-                          ]),
-                      [ M.borrow (| Pointer.Kind.Ref, buf |) ]
-                    |);
-                    Value.mkStructRecord
-                      "core::ops::range::RangeFrom"
-                      []
-                      [ Ty.path "usize" ]
-                      [ ("start", M.read (| curr |)) ]
+                          ],
+                        M.pointer_coercion
+                          M.PointerCoercion.Unsize
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 128 ]
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [ Ty.path "u8" ]
+                                ]
+                            ])
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "slice")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                    []
+                                    [ Ty.path "u8" ]
+                                ]
+                            ]),
+                        [ M.borrow (| Pointer.Kind.Ref, buf |) ]
+                      |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "slice")
+                            []
+                            [
+                              Ty.apply
+                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                []
+                                [ Ty.path "u8" ]
+                            ]
+                        ]);
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.mkStructRecord
+                          "core::ops::range::RangeFrom"
+                          [ ("start", M.read (| curr |)) ])
+                        (Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ Ty.path "usize" ]))
+                      (Ty.apply (Ty.path "core::ops::range::RangeFrom") [] [ Ty.path "usize" ])
                   ]
                 |) in
               let~ buf : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
@@ -1319,55 +1418,101 @@ Module fmt.
                   Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                   M.get_function (| "core::str::converts::from_utf8_unchecked", [], [] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_function (|
-                            "core::slice::raw::from_raw_parts",
-                            [],
-                            [ Ty.path "u8" ]
-                          |),
-                          [
-                            M.call_closure (|
-                              Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                  []
-                                  [ Ty.path "u8" ],
-                                "slice_as_ptr",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf |) |) |) ]
-                            |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_associated_function (|
-                                Ty.apply
-                                  (Ty.path "slice")
-                                  []
-                                  [
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            M.get_function (|
+                              "core::slice::raw::from_raw_parts",
+                              [],
+                              [ Ty.path "u8" ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                  M.get_associated_function (|
                                     Ty.apply
                                       (Ty.path "core::mem::maybe_uninit::MaybeUninit")
                                       []
-                                      [ Ty.path "u8" ]
-                                  ],
-                                "len",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf |) |) |) ]
-                            |)
-                          ]
+                                      [ Ty.path "u8" ],
+                                    "slice_as_ptr",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| buf |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "slice")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                []
+                                                [ Ty.path "u8" ]
+                                            ]
+                                        ])
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ Ty.path "u8" ]
+                                      ],
+                                    "len",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| buf |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "slice")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                []
+                                                [ Ty.path "u8" ]
+                                            ]
+                                        ])
+                                  ]
+                                |))
+                                (Ty.path "usize")
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |) in
               M.alloc (|
@@ -1387,20 +1532,26 @@ Module fmt.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                    M.read (| is_nonnegative |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.read (|
-                          get_constant (|
-                            "core::fmt::num::GenericRadix::PREFIX",
-                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                    M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.read (|
+                            get_constant (|
+                              "core::fmt::num::GenericRadix::PREFIX",
+                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                            |)
                           |)
                         |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |)
               |)
@@ -1430,7 +1581,9 @@ Module fmt.
           ltac:(M.monadic
             (let self :=
               M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Binary" ], self |) in
-            Value.StructTuple "core::fmt::num::Binary" [] [] []))
+            M.value_with_ty
+              (Value.StructTuple "core::fmt::num::Binary" [])
+              (Ty.path "core::fmt::num::Binary")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1498,7 +1651,9 @@ Module fmt.
           ltac:(M.monadic
             (let self :=
               M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Octal" ], self |) in
-            Value.StructTuple "core::fmt::num::Octal" [] [] []))
+            M.value_with_ty
+              (Value.StructTuple "core::fmt::num::Octal" [])
+              (Ty.path "core::fmt::num::Octal")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1569,7 +1724,9 @@ Module fmt.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::LowerHex" ],
                 self
               |) in
-            Value.StructTuple "core::fmt::num::LowerHex" [] [] []))
+            M.value_with_ty
+              (Value.StructTuple "core::fmt::num::LowerHex" [])
+              (Ty.path "core::fmt::num::LowerHex")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1646,7 +1803,9 @@ Module fmt.
                 Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::UpperHex" ],
                 self
               |) in
-            Value.StructTuple "core::fmt::num::UpperHex" [] [] []))
+            M.value_with_ty
+              (Value.StructTuple "core::fmt::num::UpperHex" [])
+              (Ty.path "core::fmt::num::UpperHex")))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -1749,104 +1908,134 @@ Module fmt.
                         Ty.path "never",
                         M.get_function (| "core::panicking::panic_fmt", [], [] |),
                         [
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2
-                              ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_v1",
+                                [
+                                  Value.Integer IntegerKind.Usize 2;
+                                  Value.Integer IntegerKind.Usize 2
+                                ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array
-                                        [
-                                          mk_str (| "number not in the range 0..=" |);
-                                          mk_str (| ": " |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.path "u8" ]
-                                            |),
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 2 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.path "u8",
-                                                      M.call_closure (|
-                                                        Ty.path "u8",
-                                                        BinOp.Wrap.sub,
-                                                        [
-                                                          M.read (|
-                                                            get_constant (|
-                                                              "core::fmt::num::GenericRadix::BASE",
-                                                              Ty.path "u8"
+                                              mk_str (| "number not in the range 0..=" |);
+                                              mk_str (| ": " |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 2 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.path "u8" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.alloc (|
+                                                            Ty.path "u8",
+                                                            M.call_closure (|
+                                                              Ty.path "u8",
+                                                              BinOp.Wrap.sub,
+                                                              [
+                                                                M.read (|
+                                                                  get_constant (|
+                                                                    "core::fmt::num::GenericRadix::BASE",
+                                                                    Ty.path "u8"
+                                                                  |)
+                                                                |);
+                                                                Value.Integer IntegerKind.U8 1
+                                                              ]
                                                             |)
-                                                          |);
-                                                          Value.Integer IntegerKind.U8 1
-                                                        ]
+                                                          |)
+                                                        |)
                                                       |)
-                                                    |)
-                                                  |)
-                                                |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                                                ]
+                                              |);
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.path "u8" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.Ref, x |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                                                ]
                                               |)
                                             ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.path "u8" ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, x |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
+                                        |)
+                                      |)
                                     |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)
                     |)))
@@ -1916,104 +2105,134 @@ Module fmt.
                         Ty.path "never",
                         M.get_function (| "core::panicking::panic_fmt", [], [] |),
                         [
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2
-                              ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_v1",
+                                [
+                                  Value.Integer IntegerKind.Usize 2;
+                                  Value.Integer IntegerKind.Usize 2
+                                ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array
-                                        [
-                                          mk_str (| "number not in the range 0..=" |);
-                                          mk_str (| ": " |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.path "u8" ]
-                                            |),
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 2 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.path "u8",
-                                                      M.call_closure (|
-                                                        Ty.path "u8",
-                                                        BinOp.Wrap.sub,
-                                                        [
-                                                          M.read (|
-                                                            get_constant (|
-                                                              "core::fmt::num::GenericRadix::BASE",
-                                                              Ty.path "u8"
+                                              mk_str (| "number not in the range 0..=" |);
+                                              mk_str (| ": " |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 2 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.path "u8" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.alloc (|
+                                                            Ty.path "u8",
+                                                            M.call_closure (|
+                                                              Ty.path "u8",
+                                                              BinOp.Wrap.sub,
+                                                              [
+                                                                M.read (|
+                                                                  get_constant (|
+                                                                    "core::fmt::num::GenericRadix::BASE",
+                                                                    Ty.path "u8"
+                                                                  |)
+                                                                |);
+                                                                Value.Integer IntegerKind.U8 1
+                                                              ]
                                                             |)
-                                                          |);
-                                                          Value.Integer IntegerKind.U8 1
-                                                        ]
+                                                          |)
+                                                        |)
                                                       |)
-                                                    |)
-                                                  |)
-                                                |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                                                ]
+                                              |);
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.path "u8" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.Ref, x |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                                                ]
                                               |)
                                             ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.path "u8" ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, x |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
+                                        |)
+                                      |)
                                     |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)
                     |)))
@@ -2098,104 +2317,134 @@ Module fmt.
                         Ty.path "never",
                         M.get_function (| "core::panicking::panic_fmt", [], [] |),
                         [
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2
-                              ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_v1",
+                                [
+                                  Value.Integer IntegerKind.Usize 2;
+                                  Value.Integer IntegerKind.Usize 2
+                                ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array
-                                        [
-                                          mk_str (| "number not in the range 0..=" |);
-                                          mk_str (| ": " |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.path "u8" ]
-                                            |),
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 2 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.path "u8",
-                                                      M.call_closure (|
-                                                        Ty.path "u8",
-                                                        BinOp.Wrap.sub,
-                                                        [
-                                                          M.read (|
-                                                            get_constant (|
-                                                              "core::fmt::num::GenericRadix::BASE",
-                                                              Ty.path "u8"
+                                              mk_str (| "number not in the range 0..=" |);
+                                              mk_str (| ": " |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 2 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.path "u8" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.alloc (|
+                                                            Ty.path "u8",
+                                                            M.call_closure (|
+                                                              Ty.path "u8",
+                                                              BinOp.Wrap.sub,
+                                                              [
+                                                                M.read (|
+                                                                  get_constant (|
+                                                                    "core::fmt::num::GenericRadix::BASE",
+                                                                    Ty.path "u8"
+                                                                  |)
+                                                                |);
+                                                                Value.Integer IntegerKind.U8 1
+                                                              ]
                                                             |)
-                                                          |);
-                                                          Value.Integer IntegerKind.U8 1
-                                                        ]
+                                                          |)
+                                                        |)
                                                       |)
-                                                    |)
-                                                  |)
-                                                |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                                                ]
+                                              |);
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.path "u8" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.Ref, x |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                                                ]
                                               |)
                                             ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.path "u8" ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, x |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
+                                        |)
+                                      |)
                                     |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)
                     |)))
@@ -2280,104 +2529,134 @@ Module fmt.
                         Ty.path "never",
                         M.get_function (| "core::panicking::panic_fmt", [], [] |),
                         [
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2
-                              ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_v1",
+                                [
+                                  Value.Integer IntegerKind.Usize 2;
+                                  Value.Integer IntegerKind.Usize 2
+                                ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array
-                                        [
-                                          mk_str (| "number not in the range 0..=" |);
-                                          mk_str (| ": " |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 2 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.path "u8" ]
-                                            |),
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 2 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array
                                             [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.alloc (|
-                                                      Ty.path "u8",
-                                                      M.call_closure (|
-                                                        Ty.path "u8",
-                                                        BinOp.Wrap.sub,
-                                                        [
-                                                          M.read (|
-                                                            get_constant (|
-                                                              "core::fmt::num::GenericRadix::BASE",
-                                                              Ty.path "u8"
+                                              mk_str (| "number not in the range 0..=" |);
+                                              mk_str (| ": " |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 2 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.path "u8" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.alloc (|
+                                                            Ty.path "u8",
+                                                            M.call_closure (|
+                                                              Ty.path "u8",
+                                                              BinOp.Wrap.sub,
+                                                              [
+                                                                M.read (|
+                                                                  get_constant (|
+                                                                    "core::fmt::num::GenericRadix::BASE",
+                                                                    Ty.path "u8"
+                                                                  |)
+                                                                |);
+                                                                Value.Integer IntegerKind.U8 1
+                                                              ]
                                                             |)
-                                                          |);
-                                                          Value.Integer IntegerKind.U8 1
-                                                        ]
+                                                          |)
+                                                        |)
                                                       |)
-                                                    |)
-                                                  |)
-                                                |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                                                ]
+                                              |);
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.path "u8" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.Ref, x |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                                                ]
                                               |)
                                             ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.path "u8" ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, x |) |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
+                                        |)
+                                      |)
                                     |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)
                     |)))
@@ -2430,15 +2709,23 @@ Module fmt.
                 [ Ty.path "usize" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Binary",
-                    Value.StructTuple "core::fmt::num::Binary" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "usize") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Binary",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Binary" [])
+                        (Ty.path "core::fmt::num::Binary")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Binary" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "usize") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "usize");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2483,15 +2770,23 @@ Module fmt.
                 [ Ty.path "usize" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Octal",
-                    Value.StructTuple "core::fmt::num::Octal" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "usize") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Octal",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Octal" [])
+                        (Ty.path "core::fmt::num::Octal")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Octal" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "usize") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "usize");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2536,15 +2831,23 @@ Module fmt.
                 [ Ty.path "usize" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::LowerHex",
-                    Value.StructTuple "core::fmt::num::LowerHex" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "usize") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::LowerHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::LowerHex" [])
+                        (Ty.path "core::fmt::num::LowerHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::LowerHex" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "usize") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "usize");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2589,15 +2892,23 @@ Module fmt.
                 [ Ty.path "usize" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::UpperHex",
-                    Value.StructTuple "core::fmt::num::UpperHex" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "usize") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::UpperHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::UpperHex" [])
+                        (Ty.path "core::fmt::num::UpperHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::UpperHex" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "usize") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "usize");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2642,15 +2953,23 @@ Module fmt.
                 [ Ty.path "usize" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Binary",
-                    Value.StructTuple "core::fmt::num::Binary" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Binary",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Binary" [])
+                        (Ty.path "core::fmt::num::Binary")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Binary" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "usize");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2695,15 +3014,23 @@ Module fmt.
                 [ Ty.path "usize" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Octal",
-                    Value.StructTuple "core::fmt::num::Octal" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Octal",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Octal" [])
+                        (Ty.path "core::fmt::num::Octal")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Octal" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "usize");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2748,15 +3075,23 @@ Module fmt.
                 [ Ty.path "usize" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::LowerHex",
-                    Value.StructTuple "core::fmt::num::LowerHex" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::LowerHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::LowerHex" [])
+                        (Ty.path "core::fmt::num::LowerHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::LowerHex" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "usize");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2801,15 +3136,23 @@ Module fmt.
                 [ Ty.path "usize" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::UpperHex",
-                    Value.StructTuple "core::fmt::num::UpperHex" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::UpperHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::UpperHex" [])
+                        (Ty.path "core::fmt::num::UpperHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::UpperHex" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "usize");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2854,15 +3197,23 @@ Module fmt.
                 [ Ty.path "u8" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Binary",
-                    Value.StructTuple "core::fmt::num::Binary" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u8") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Binary",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Binary" [])
+                        (Ty.path "core::fmt::num::Binary")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Binary" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u8") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u8");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2907,15 +3258,23 @@ Module fmt.
                 [ Ty.path "u8" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Octal",
-                    Value.StructTuple "core::fmt::num::Octal" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u8") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Octal",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Octal" [])
+                        (Ty.path "core::fmt::num::Octal")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Octal" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u8") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u8");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2960,15 +3319,23 @@ Module fmt.
                 [ Ty.path "u8" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::LowerHex",
-                    Value.StructTuple "core::fmt::num::LowerHex" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u8") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::LowerHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::LowerHex" [])
+                        (Ty.path "core::fmt::num::LowerHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::LowerHex" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u8") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u8");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3013,15 +3380,23 @@ Module fmt.
                 [ Ty.path "u8" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::UpperHex",
-                    Value.StructTuple "core::fmt::num::UpperHex" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u8") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::UpperHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::UpperHex" [])
+                        (Ty.path "core::fmt::num::UpperHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::UpperHex" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u8") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u8");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3066,15 +3441,23 @@ Module fmt.
                 [ Ty.path "u8" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Binary",
-                    Value.StructTuple "core::fmt::num::Binary" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Binary",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Binary" [])
+                        (Ty.path "core::fmt::num::Binary")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Binary" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u8");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3119,15 +3502,23 @@ Module fmt.
                 [ Ty.path "u8" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Octal",
-                    Value.StructTuple "core::fmt::num::Octal" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Octal",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Octal" [])
+                        (Ty.path "core::fmt::num::Octal")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Octal" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u8");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3172,15 +3563,23 @@ Module fmt.
                 [ Ty.path "u8" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::LowerHex",
-                    Value.StructTuple "core::fmt::num::LowerHex" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::LowerHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::LowerHex" [])
+                        (Ty.path "core::fmt::num::LowerHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::LowerHex" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u8");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3225,15 +3624,23 @@ Module fmt.
                 [ Ty.path "u8" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::UpperHex",
-                    Value.StructTuple "core::fmt::num::UpperHex" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::UpperHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::UpperHex" [])
+                        (Ty.path "core::fmt::num::UpperHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::UpperHex" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u8");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3278,15 +3685,23 @@ Module fmt.
                 [ Ty.path "u16" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Binary",
-                    Value.StructTuple "core::fmt::num::Binary" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u16") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Binary",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Binary" [])
+                        (Ty.path "core::fmt::num::Binary")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Binary" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u16") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u16");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3331,15 +3746,23 @@ Module fmt.
                 [ Ty.path "u16" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Octal",
-                    Value.StructTuple "core::fmt::num::Octal" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u16") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Octal",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Octal" [])
+                        (Ty.path "core::fmt::num::Octal")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Octal" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u16") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u16");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3384,15 +3807,23 @@ Module fmt.
                 [ Ty.path "u16" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::LowerHex",
-                    Value.StructTuple "core::fmt::num::LowerHex" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u16") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::LowerHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::LowerHex" [])
+                        (Ty.path "core::fmt::num::LowerHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::LowerHex" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u16") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u16");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3437,15 +3868,23 @@ Module fmt.
                 [ Ty.path "u16" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::UpperHex",
-                    Value.StructTuple "core::fmt::num::UpperHex" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u16") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::UpperHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::UpperHex" [])
+                        (Ty.path "core::fmt::num::UpperHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::UpperHex" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u16") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u16");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3490,15 +3929,23 @@ Module fmt.
                 [ Ty.path "u16" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Binary",
-                    Value.StructTuple "core::fmt::num::Binary" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Binary",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Binary" [])
+                        (Ty.path "core::fmt::num::Binary")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Binary" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u16");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3543,15 +3990,23 @@ Module fmt.
                 [ Ty.path "u16" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Octal",
-                    Value.StructTuple "core::fmt::num::Octal" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Octal",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Octal" [])
+                        (Ty.path "core::fmt::num::Octal")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Octal" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u16");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3596,15 +4051,23 @@ Module fmt.
                 [ Ty.path "u16" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::LowerHex",
-                    Value.StructTuple "core::fmt::num::LowerHex" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::LowerHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::LowerHex" [])
+                        (Ty.path "core::fmt::num::LowerHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::LowerHex" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u16");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3649,15 +4112,23 @@ Module fmt.
                 [ Ty.path "u16" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::UpperHex",
-                    Value.StructTuple "core::fmt::num::UpperHex" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::UpperHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::UpperHex" [])
+                        (Ty.path "core::fmt::num::UpperHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::UpperHex" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u16");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3702,15 +4173,23 @@ Module fmt.
                 [ Ty.path "u32" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Binary",
-                    Value.StructTuple "core::fmt::num::Binary" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u32") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Binary",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Binary" [])
+                        (Ty.path "core::fmt::num::Binary")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Binary" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u32") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u32");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3755,15 +4234,23 @@ Module fmt.
                 [ Ty.path "u32" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Octal",
-                    Value.StructTuple "core::fmt::num::Octal" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u32") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Octal",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Octal" [])
+                        (Ty.path "core::fmt::num::Octal")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Octal" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u32") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u32");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3808,15 +4295,23 @@ Module fmt.
                 [ Ty.path "u32" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::LowerHex",
-                    Value.StructTuple "core::fmt::num::LowerHex" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u32") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::LowerHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::LowerHex" [])
+                        (Ty.path "core::fmt::num::LowerHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::LowerHex" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u32") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u32");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3861,15 +4356,23 @@ Module fmt.
                 [ Ty.path "u32" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::UpperHex",
-                    Value.StructTuple "core::fmt::num::UpperHex" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u32") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::UpperHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::UpperHex" [])
+                        (Ty.path "core::fmt::num::UpperHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::UpperHex" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u32") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u32");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3914,15 +4417,23 @@ Module fmt.
                 [ Ty.path "u32" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Binary",
-                    Value.StructTuple "core::fmt::num::Binary" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Binary",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Binary" [])
+                        (Ty.path "core::fmt::num::Binary")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Binary" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u32");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -3967,15 +4478,23 @@ Module fmt.
                 [ Ty.path "u32" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Octal",
-                    Value.StructTuple "core::fmt::num::Octal" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Octal",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Octal" [])
+                        (Ty.path "core::fmt::num::Octal")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Octal" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u32");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4020,15 +4539,23 @@ Module fmt.
                 [ Ty.path "u32" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::LowerHex",
-                    Value.StructTuple "core::fmt::num::LowerHex" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::LowerHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::LowerHex" [])
+                        (Ty.path "core::fmt::num::LowerHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::LowerHex" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u32");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4073,15 +4600,23 @@ Module fmt.
                 [ Ty.path "u32" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::UpperHex",
-                    Value.StructTuple "core::fmt::num::UpperHex" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::UpperHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::UpperHex" [])
+                        (Ty.path "core::fmt::num::UpperHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::UpperHex" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u32");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4126,15 +4661,23 @@ Module fmt.
                 [ Ty.path "u64" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Binary",
-                    Value.StructTuple "core::fmt::num::Binary" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Binary",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Binary" [])
+                        (Ty.path "core::fmt::num::Binary")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Binary" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u64");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4179,15 +4722,23 @@ Module fmt.
                 [ Ty.path "u64" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Octal",
-                    Value.StructTuple "core::fmt::num::Octal" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Octal",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Octal" [])
+                        (Ty.path "core::fmt::num::Octal")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Octal" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u64");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4232,15 +4783,23 @@ Module fmt.
                 [ Ty.path "u64" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::LowerHex",
-                    Value.StructTuple "core::fmt::num::LowerHex" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::LowerHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::LowerHex" [])
+                        (Ty.path "core::fmt::num::LowerHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::LowerHex" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u64");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4285,15 +4844,23 @@ Module fmt.
                 [ Ty.path "u64" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::UpperHex",
-                    Value.StructTuple "core::fmt::num::UpperHex" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::UpperHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::UpperHex" [])
+                        (Ty.path "core::fmt::num::UpperHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::UpperHex" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u64") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u64");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4338,15 +4905,23 @@ Module fmt.
                 [ Ty.path "u64" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Binary",
-                    Value.StructTuple "core::fmt::num::Binary" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Binary",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Binary" [])
+                        (Ty.path "core::fmt::num::Binary")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Binary" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u64");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4391,15 +4966,23 @@ Module fmt.
                 [ Ty.path "u64" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Octal",
-                    Value.StructTuple "core::fmt::num::Octal" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Octal",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Octal" [])
+                        (Ty.path "core::fmt::num::Octal")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Octal" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u64");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4444,15 +5027,23 @@ Module fmt.
                 [ Ty.path "u64" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::LowerHex",
-                    Value.StructTuple "core::fmt::num::LowerHex" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::LowerHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::LowerHex" [])
+                        (Ty.path "core::fmt::num::LowerHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::LowerHex" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u64");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4497,15 +5088,23 @@ Module fmt.
                 [ Ty.path "u64" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::UpperHex",
-                    Value.StructTuple "core::fmt::num::UpperHex" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::UpperHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::UpperHex" [])
+                        (Ty.path "core::fmt::num::UpperHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::UpperHex" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u64");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4550,15 +5149,23 @@ Module fmt.
                 [ Ty.path "u128" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Binary",
-                    Value.StructTuple "core::fmt::num::Binary" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u128") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Binary",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Binary" [])
+                        (Ty.path "core::fmt::num::Binary")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Binary" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u128") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u128");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4603,15 +5210,23 @@ Module fmt.
                 [ Ty.path "u128" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Octal",
-                    Value.StructTuple "core::fmt::num::Octal" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u128") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Octal",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Octal" [])
+                        (Ty.path "core::fmt::num::Octal")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Octal" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u128") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u128");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4656,15 +5271,23 @@ Module fmt.
                 [ Ty.path "u128" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::LowerHex",
-                    Value.StructTuple "core::fmt::num::LowerHex" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u128") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::LowerHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::LowerHex" [])
+                        (Ty.path "core::fmt::num::LowerHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::LowerHex" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u128") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u128");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4709,15 +5332,23 @@ Module fmt.
                 [ Ty.path "u128" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::UpperHex",
-                    Value.StructTuple "core::fmt::num::UpperHex" [] [] []
-                  |)
-                |);
-                M.cast (Ty.path "u128") (M.read (| M.deref (| M.read (| self |) |) |));
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::UpperHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::UpperHex" [])
+                        (Ty.path "core::fmt::num::UpperHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::UpperHex" ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u128") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u128");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4762,15 +5393,23 @@ Module fmt.
                 [ Ty.path "u128" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Binary",
-                    Value.StructTuple "core::fmt::num::Binary" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Binary",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Binary" [])
+                        (Ty.path "core::fmt::num::Binary")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Binary" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u128");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4815,15 +5454,23 @@ Module fmt.
                 [ Ty.path "u128" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::Octal",
-                    Value.StructTuple "core::fmt::num::Octal" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::Octal",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::Octal" [])
+                        (Ty.path "core::fmt::num::Octal")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::Octal" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u128");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4868,15 +5515,23 @@ Module fmt.
                 [ Ty.path "u128" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::LowerHex",
-                    Value.StructTuple "core::fmt::num::LowerHex" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::LowerHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::LowerHex" [])
+                        (Ty.path "core::fmt::num::LowerHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::LowerHex" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u128");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -4921,15 +5576,23 @@ Module fmt.
                 [ Ty.path "u128" ]
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.alloc (|
-                    Ty.path "core::fmt::num::UpperHex",
-                    Value.StructTuple "core::fmt::num::UpperHex" [] [] []
-                  |)
-                |);
-                M.read (| M.use (M.deref (| M.read (| self |) |)) |);
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.alloc (|
+                      Ty.path "core::fmt::num::UpperHex",
+                      M.value_with_ty
+                        (Value.StructTuple "core::fmt::num::UpperHex" [])
+                        (Ty.path "core::fmt::num::UpperHex")
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::num::UpperHex" ]);
+                M.value_with_ty
+                  (M.read (| M.use (M.deref (| M.read (| self |) |)) |))
+                  (Ty.path "u128");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -5001,7 +5664,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Formatter" ])
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -5020,8 +5687,12 @@ Module fmt.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                       ]
                     |)));
                 fun γ =>
@@ -5047,7 +5718,16 @@ Module fmt.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |)
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| f |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::fmt::Formatter" ])
                                     ]
                                   |)
                                 |)) in
@@ -5068,8 +5748,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)));
                         fun γ =>
@@ -5089,8 +5773,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)))
                       ]
@@ -5151,7 +5839,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Formatter" ])
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -5170,8 +5862,12 @@ Module fmt.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "i16" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                       ]
                     |)));
                 fun γ =>
@@ -5197,7 +5893,16 @@ Module fmt.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |)
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| f |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::fmt::Formatter" ])
                                     ]
                                   |)
                                 |)) in
@@ -5218,8 +5923,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "i16" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)));
                         fun γ =>
@@ -5239,8 +5948,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "i16" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)))
                       ]
@@ -5301,7 +6014,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Formatter" ])
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -5320,8 +6037,12 @@ Module fmt.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                       ]
                     |)));
                 fun γ =>
@@ -5347,7 +6068,16 @@ Module fmt.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |)
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| f |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::fmt::Formatter" ])
                                     ]
                                   |)
                                 |)) in
@@ -5368,8 +6098,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)));
                         fun γ =>
@@ -5389,8 +6123,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)))
                       ]
@@ -5451,7 +6189,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Formatter" ])
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -5470,8 +6212,12 @@ Module fmt.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                       ]
                     |)));
                 fun γ =>
@@ -5497,7 +6243,16 @@ Module fmt.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |)
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| f |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::fmt::Formatter" ])
                                     ]
                                   |)
                                 |)) in
@@ -5518,8 +6273,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)));
                         fun γ =>
@@ -5539,8 +6298,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)))
                       ]
@@ -5601,7 +6364,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Formatter" ])
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -5620,8 +6387,12 @@ Module fmt.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "i128" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                       ]
                     |)));
                 fun γ =>
@@ -5647,7 +6418,16 @@ Module fmt.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |)
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| f |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::fmt::Formatter" ])
                                     ]
                                   |)
                                 |)) in
@@ -5668,8 +6448,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "i128" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)));
                         fun γ =>
@@ -5689,8 +6473,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "i128" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)))
                       ]
@@ -5751,7 +6539,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Formatter" ])
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -5770,8 +6562,12 @@ Module fmt.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                       ]
                     |)));
                 fun γ =>
@@ -5797,7 +6593,16 @@ Module fmt.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |)
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| f |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::fmt::Formatter" ])
                                     ]
                                   |)
                                 |)) in
@@ -5818,8 +6623,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)));
                         fun γ =>
@@ -5839,8 +6648,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)))
                       ]
@@ -5901,7 +6714,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Formatter" ])
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -5920,8 +6737,12 @@ Module fmt.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                       ]
                     |)));
                 fun γ =>
@@ -5947,7 +6768,16 @@ Module fmt.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |)
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| f |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::fmt::Formatter" ])
                                     ]
                                   |)
                                 |)) in
@@ -5968,8 +6798,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)));
                         fun γ =>
@@ -5989,8 +6823,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)))
                       ]
@@ -6051,7 +6889,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Formatter" ])
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -6070,8 +6912,12 @@ Module fmt.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                       ]
                     |)));
                 fun γ =>
@@ -6097,7 +6943,16 @@ Module fmt.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |)
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| f |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::fmt::Formatter" ])
                                     ]
                                   |)
                                 |)) in
@@ -6118,8 +6973,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)));
                         fun γ =>
@@ -6139,8 +6998,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)))
                       ]
@@ -6201,7 +7064,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Formatter" ])
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -6220,8 +7087,12 @@ Module fmt.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                       ]
                     |)));
                 fun γ =>
@@ -6247,7 +7118,16 @@ Module fmt.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |)
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| f |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::fmt::Formatter" ])
                                     ]
                                   |)
                                 |)) in
@@ -6268,8 +7148,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)));
                         fun γ =>
@@ -6289,8 +7173,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)))
                       ]
@@ -6351,7 +7239,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Formatter" ])
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -6370,8 +7262,12 @@ Module fmt.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                       ]
                     |)));
                 fun γ =>
@@ -6397,7 +7293,16 @@ Module fmt.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |)
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| f |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::fmt::Formatter" ])
                                     ]
                                   |)
                                 |)) in
@@ -6418,8 +7323,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)));
                         fun γ =>
@@ -6439,8 +7348,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)))
                       ]
@@ -6501,7 +7414,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Formatter" ])
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -6520,8 +7437,12 @@ Module fmt.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "u128" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                       ]
                     |)));
                 fun γ =>
@@ -6547,7 +7468,16 @@ Module fmt.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |)
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| f |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::fmt::Formatter" ])
                                     ]
                                   |)
                                 |)) in
@@ -6568,8 +7498,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "u128" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)));
                         fun γ =>
@@ -6589,8 +7523,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "u128" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)))
                       ]
@@ -6651,7 +7589,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Formatter" ])
+                            ]
                           |)
                         |)) in
                     let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
@@ -6670,8 +7612,12 @@ Module fmt.
                         []
                       |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                       ]
                     |)));
                 fun γ =>
@@ -6697,7 +7643,16 @@ Module fmt.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |)
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| f |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.path "core::fmt::Formatter" ])
                                     ]
                                   |)
                                 |)) in
@@ -6718,8 +7673,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)));
                         fun γ =>
@@ -6739,8 +7698,12 @@ Module fmt.
                                 []
                               |),
                               [
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ]);
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                               ]
                             |)))
                       ]
@@ -6789,9 +7752,11 @@ Module fmt.
                   [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                 M.get_associated_function (| Ty.path "u8", "_fmt", [], [] |),
                 [
-                  M.read (| M.deref (| M.read (| self |) |) |);
-                  Value.Bool true;
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "u8");
+                  M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -6844,20 +7809,35 @@ Module fmt.
                             [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                           M.get_associated_function (| Ty.path "u8", "_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "u8",
-                              M.get_associated_function (| Ty.path "i8", "unsigned_abs", [], [] |),
-                              [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                            |);
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.ge,
-                              [
-                                M.read (| M.deref (| M.read (| self |) |) |);
-                                Value.Integer IntegerKind.I8 0
-                              ]
-                            |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "u8",
+                                M.get_associated_function (|
+                                  Ty.path "i8",
+                                  "unsigned_abs",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| M.deref (| M.read (| self |) |) |))
+                                    (Ty.path "i8")
+                                ]
+                              |))
+                              (Ty.path "u8");
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.ge,
+                                [
+                                  M.read (| M.deref (| M.read (| self |) |) |);
+                                  Value.Integer IntegerKind.I8 0
+                                ]
+                              |))
+                              (Ty.path "bool");
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                           ]
                         |)
                       |)
@@ -7000,38 +7980,9 @@ Module fmt.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&mut")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "slice")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                  []
-                                  [ Ty.path "u8" ]
-                              ]
-                          ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 3 ]
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                    []
-                                    [ Ty.path "u8" ]
-                                ]
-                            ])
-                          (Ty.apply
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
                             (Ty.path "&mut")
                             []
                             [
@@ -7044,14 +7995,58 @@ Module fmt.
                                     []
                                     [ Ty.path "u8" ]
                                 ]
-                            ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
-                          |)
-                        ]
-                      |)
+                            ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 3 ]
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ Ty.path "u8" ]
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ Ty.path "u8" ]
+                                  ]
+                              ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                  []
+                                  [ Ty.path "u8" ]
+                              ]
+                          ])
                     ]
                   |) in
                 let~ lut_ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
@@ -7064,57 +8059,62 @@ Module fmt.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
                             (Ty.path "&")
                             []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 200 ]
-                                [ Ty.path "u8" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.read (|
-                                M.deref (|
-                                  M.read (|
-                                    get_constant (|
-                                      "core::fmt::num::DEC_DIGITS_LUT",
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 200 ]
-                                                [ Ty.path "u8" ]
-                                            ]
-                                        ]
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 200 ]
+                                  [ Ty.path "u8" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.read (|
+                                  M.deref (|
+                                    M.read (|
+                                      get_constant (|
+                                        "core::fmt::num::DEC_DIGITS_LUT",
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 200 ]
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ]
+                                      |)
                                     |)
                                   |)
                                 |)
                               |)
                             |)
-                          |)
-                        ]
-                      |)
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -7258,42 +8258,71 @@ Module fmt.
                                                       [ Ty.path "u8" ]
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*const")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*const")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*const")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| lut_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*const")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.read (| M.use d1 |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*const")
                                                           []
-                                                        |),
-                                                        [
-                                                          M.read (| lut_ptr |);
-                                                          M.read (| M.use d1 |)
-                                                        ]
-                                                      |);
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*mut")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*mut")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*mut")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| buf_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*mut")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.read (| curr |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*mut")
                                                           []
-                                                        |),
-                                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                                      |);
-                                                      Value.Integer IntegerKind.Usize 2
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (Value.Integer IntegerKind.Usize 2)
+                                                        (Ty.path "usize")
                                                     ]
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
@@ -7305,52 +8334,78 @@ Module fmt.
                                                       [ Ty.path "u8" ]
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*const")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*const")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*const")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| lut_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*const")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.read (| M.use d2 |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*const")
                                                           []
-                                                        |),
-                                                        [
-                                                          M.read (| lut_ptr |);
-                                                          M.read (| M.use d2 |)
-                                                        ]
-                                                      |);
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*mut")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*mut")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*mut")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| buf_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*mut")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.path "usize",
+                                                                BinOp.Wrap.add,
+                                                                [
+                                                                  M.read (| curr |);
+                                                                  Value.Integer IntegerKind.Usize 2
+                                                                ]
+                                                              |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*mut")
                                                           []
-                                                        |),
-                                                        [
-                                                          M.read (| buf_ptr |);
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            BinOp.Wrap.add,
-                                                            [
-                                                              M.read (| curr |);
-                                                              Value.Integer IntegerKind.Usize 2
-                                                            ]
-                                                          |)
-                                                        ]
-                                                      |);
-                                                      Value.Integer IntegerKind.Usize 2
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (Value.Integer IntegerKind.Usize 2)
+                                                        (Ty.path "usize")
                                                     ]
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -7437,27 +8492,43 @@ Module fmt.
                                       [ Ty.path "u8" ]
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| lut_ptr |); M.read (| d1 |) ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| lut_ptr |))
+                                              (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| d1 |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                      |);
-                                      Value.Integer IntegerKind.Usize 2
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| buf_ptr |))
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (Value.Integer IntegerKind.Usize 2)
+                                        (Ty.path "usize")
                                     ]
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -7507,7 +8578,12 @@ Module fmt.
                                           [],
                                           []
                                         |),
-                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| buf_ptr |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                          M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                        ]
                                       |)
                                     |),
                                     M.call_closure (|
@@ -7549,27 +8625,43 @@ Module fmt.
                                       [ Ty.path "u8" ]
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| lut_ptr |); M.read (| d1 |) ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| lut_ptr |))
+                                              (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| d1 |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                      |);
-                                      Value.Integer IntegerKind.Usize 2
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| buf_ptr |))
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (Value.Integer IntegerKind.Usize 2)
+                                        (Ty.path "usize")
                                     ]
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -7583,116 +8675,149 @@ Module fmt.
                     Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                     M.get_function (| "core::str::converts::from_utf8_unchecked", [], [] |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                            M.get_function (|
-                              "core::slice::raw::from_raw_parts",
-                              [],
-                              [ Ty.path "u8" ]
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.MutToConstPointer
-                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
-                                [
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                      "add",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.path "usize",
-                                BinOp.Wrap.sub,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "slice")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                            []
-                                            [ Ty.path "u8" ]
-                                        ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                              M.get_function (|
+                                "core::slice::raw::from_raw_parts",
+                                [],
+                                [ Ty.path "u8" ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.MutToConstPointer
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
                                     [
                                       M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
+                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                          "add",
+                                          [],
                                           []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "slice")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                  []
-                                                  [ Ty.path "u8" ]
-                                              ]
-                                          ],
-                                        M.pointer_coercion
-                                          M.PointerCoercion.Unsize
-                                          (Ty.apply
-                                            (Ty.path "&")
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| buf_ptr |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                          M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                        ]
+                                      |)
+                                    ]
+                                  |))
+                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.sub,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "slice")
                                             []
                                             [
                                               Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 3 ]
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                    []
-                                                    [ Ty.path "u8" ]
-                                                ]
-                                            ])
-                                          (Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
+                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                []
+                                                [ Ty.path "u8" ]
+                                            ],
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply
-                                                (Ty.path "slice")
+                                                (Ty.path "&")
                                                 []
                                                 [
                                                   Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                    (Ty.path "slice")
                                                     []
-                                                    [ Ty.path "u8" ]
-                                                ]
-                                            ]),
-                                        [ M.borrow (| Pointer.Kind.Ref, buf |) ]
-                                      |)
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::mem::maybe_uninit::MaybeUninit")
+                                                        []
+                                                        [ Ty.path "u8" ]
+                                                    ]
+                                                ],
+                                              M.pointer_coercion
+                                                M.PointerCoercion.Unsize
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 3 ]
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "slice")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ]),
+                                              [ M.borrow (| Pointer.Kind.Ref, buf |) ]
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "slice")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "core::mem::maybe_uninit::MaybeUninit")
+                                                      []
+                                                      [ Ty.path "u8" ]
+                                                  ]
+                                              ])
+                                        ]
+                                      |);
+                                      M.read (| curr |)
                                     ]
-                                  |);
-                                  M.read (| curr |)
-                                ]
-                              |)
-                            ]
+                                  |))
+                                  (Ty.path "usize")
+                              ]
+                            |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                     ]
                   |) in
                 M.alloc (|
@@ -7712,10 +8837,16 @@ Module fmt.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.read (| is_nonnegative |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "" |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf_slice |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf_slice |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)
                 |)
@@ -7757,9 +8888,11 @@ Module fmt.
                   [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                 M.get_associated_function (| Ty.path "u16", "_fmt", [], [] |),
                 [
-                  M.read (| M.deref (| M.read (| self |) |) |);
-                  Value.Bool true;
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "u16");
+                  M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -7812,20 +8945,35 @@ Module fmt.
                             [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                           M.get_associated_function (| Ty.path "u16", "_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "u16",
-                              M.get_associated_function (| Ty.path "i16", "unsigned_abs", [], [] |),
-                              [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                            |);
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.ge,
-                              [
-                                M.read (| M.deref (| M.read (| self |) |) |);
-                                Value.Integer IntegerKind.I16 0
-                              ]
-                            |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "u16",
+                                M.get_associated_function (|
+                                  Ty.path "i16",
+                                  "unsigned_abs",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| M.deref (| M.read (| self |) |) |))
+                                    (Ty.path "i16")
+                                ]
+                              |))
+                              (Ty.path "u16");
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.ge,
+                                [
+                                  M.read (| M.deref (| M.read (| self |) |) |);
+                                  Value.Integer IntegerKind.I16 0
+                                ]
+                              |))
+                              (Ty.path "bool");
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                           ]
                         |)
                       |)
@@ -7968,38 +9116,9 @@ Module fmt.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&mut")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "slice")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                  []
-                                  [ Ty.path "u8" ]
-                              ]
-                          ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 5 ]
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                    []
-                                    [ Ty.path "u8" ]
-                                ]
-                            ])
-                          (Ty.apply
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
                             (Ty.path "&mut")
                             []
                             [
@@ -8012,14 +9131,58 @@ Module fmt.
                                     []
                                     [ Ty.path "u8" ]
                                 ]
-                            ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
-                          |)
-                        ]
-                      |)
+                            ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 5 ]
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ Ty.path "u8" ]
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ Ty.path "u8" ]
+                                  ]
+                              ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                  []
+                                  [ Ty.path "u8" ]
+                              ]
+                          ])
                     ]
                   |) in
                 let~ lut_ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
@@ -8032,57 +9195,62 @@ Module fmt.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
                             (Ty.path "&")
                             []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 200 ]
-                                [ Ty.path "u8" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.read (|
-                                M.deref (|
-                                  M.read (|
-                                    get_constant (|
-                                      "core::fmt::num::DEC_DIGITS_LUT",
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 200 ]
-                                                [ Ty.path "u8" ]
-                                            ]
-                                        ]
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 200 ]
+                                  [ Ty.path "u8" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.read (|
+                                  M.deref (|
+                                    M.read (|
+                                      get_constant (|
+                                        "core::fmt::num::DEC_DIGITS_LUT",
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 200 ]
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ]
+                                      |)
                                     |)
                                   |)
                                 |)
                               |)
                             |)
-                          |)
-                        ]
-                      |)
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -8226,42 +9394,71 @@ Module fmt.
                                                       [ Ty.path "u8" ]
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*const")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*const")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*const")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| lut_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*const")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.read (| M.use d1 |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*const")
                                                           []
-                                                        |),
-                                                        [
-                                                          M.read (| lut_ptr |);
-                                                          M.read (| M.use d1 |)
-                                                        ]
-                                                      |);
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*mut")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*mut")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*mut")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| buf_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*mut")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.read (| curr |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*mut")
                                                           []
-                                                        |),
-                                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                                      |);
-                                                      Value.Integer IntegerKind.Usize 2
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (Value.Integer IntegerKind.Usize 2)
+                                                        (Ty.path "usize")
                                                     ]
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
@@ -8273,52 +9470,78 @@ Module fmt.
                                                       [ Ty.path "u8" ]
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*const")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*const")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*const")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| lut_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*const")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.read (| M.use d2 |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*const")
                                                           []
-                                                        |),
-                                                        [
-                                                          M.read (| lut_ptr |);
-                                                          M.read (| M.use d2 |)
-                                                        ]
-                                                      |);
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*mut")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*mut")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*mut")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| buf_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*mut")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.path "usize",
+                                                                BinOp.Wrap.add,
+                                                                [
+                                                                  M.read (| curr |);
+                                                                  Value.Integer IntegerKind.Usize 2
+                                                                ]
+                                                              |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*mut")
                                                           []
-                                                        |),
-                                                        [
-                                                          M.read (| buf_ptr |);
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            BinOp.Wrap.add,
-                                                            [
-                                                              M.read (| curr |);
-                                                              Value.Integer IntegerKind.Usize 2
-                                                            ]
-                                                          |)
-                                                        ]
-                                                      |);
-                                                      Value.Integer IntegerKind.Usize 2
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (Value.Integer IntegerKind.Usize 2)
+                                                        (Ty.path "usize")
                                                     ]
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -8405,27 +9628,43 @@ Module fmt.
                                       [ Ty.path "u8" ]
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| lut_ptr |); M.read (| d1 |) ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| lut_ptr |))
+                                              (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| d1 |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                      |);
-                                      Value.Integer IntegerKind.Usize 2
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| buf_ptr |))
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (Value.Integer IntegerKind.Usize 2)
+                                        (Ty.path "usize")
                                     ]
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -8475,7 +9714,12 @@ Module fmt.
                                           [],
                                           []
                                         |),
-                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| buf_ptr |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                          M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                        ]
                                       |)
                                     |),
                                     M.call_closure (|
@@ -8517,27 +9761,43 @@ Module fmt.
                                       [ Ty.path "u8" ]
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| lut_ptr |); M.read (| d1 |) ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| lut_ptr |))
+                                              (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| d1 |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                      |);
-                                      Value.Integer IntegerKind.Usize 2
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| buf_ptr |))
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (Value.Integer IntegerKind.Usize 2)
+                                        (Ty.path "usize")
                                     ]
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -8551,116 +9811,149 @@ Module fmt.
                     Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                     M.get_function (| "core::str::converts::from_utf8_unchecked", [], [] |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                            M.get_function (|
-                              "core::slice::raw::from_raw_parts",
-                              [],
-                              [ Ty.path "u8" ]
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.MutToConstPointer
-                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
-                                [
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                      "add",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.path "usize",
-                                BinOp.Wrap.sub,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "slice")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                            []
-                                            [ Ty.path "u8" ]
-                                        ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                              M.get_function (|
+                                "core::slice::raw::from_raw_parts",
+                                [],
+                                [ Ty.path "u8" ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.MutToConstPointer
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
                                     [
                                       M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
+                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                          "add",
+                                          [],
                                           []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "slice")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                  []
-                                                  [ Ty.path "u8" ]
-                                              ]
-                                          ],
-                                        M.pointer_coercion
-                                          M.PointerCoercion.Unsize
-                                          (Ty.apply
-                                            (Ty.path "&")
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| buf_ptr |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                          M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                        ]
+                                      |)
+                                    ]
+                                  |))
+                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.sub,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "slice")
                                             []
                                             [
                                               Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 5 ]
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                    []
-                                                    [ Ty.path "u8" ]
-                                                ]
-                                            ])
-                                          (Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
+                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                []
+                                                [ Ty.path "u8" ]
+                                            ],
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply
-                                                (Ty.path "slice")
+                                                (Ty.path "&")
                                                 []
                                                 [
                                                   Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                    (Ty.path "slice")
                                                     []
-                                                    [ Ty.path "u8" ]
-                                                ]
-                                            ]),
-                                        [ M.borrow (| Pointer.Kind.Ref, buf |) ]
-                                      |)
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::mem::maybe_uninit::MaybeUninit")
+                                                        []
+                                                        [ Ty.path "u8" ]
+                                                    ]
+                                                ],
+                                              M.pointer_coercion
+                                                M.PointerCoercion.Unsize
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 5 ]
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "slice")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ]),
+                                              [ M.borrow (| Pointer.Kind.Ref, buf |) ]
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "slice")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "core::mem::maybe_uninit::MaybeUninit")
+                                                      []
+                                                      [ Ty.path "u8" ]
+                                                  ]
+                                              ])
+                                        ]
+                                      |);
+                                      M.read (| curr |)
                                     ]
-                                  |);
-                                  M.read (| curr |)
-                                ]
-                              |)
-                            ]
+                                  |))
+                                  (Ty.path "usize")
+                              ]
+                            |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                     ]
                   |) in
                 M.alloc (|
@@ -8680,10 +9973,16 @@ Module fmt.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.read (| is_nonnegative |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "" |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf_slice |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf_slice |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)
                 |)
@@ -8725,9 +10024,11 @@ Module fmt.
                   [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                 M.get_associated_function (| Ty.path "u32", "_fmt", [], [] |),
                 [
-                  M.read (| M.deref (| M.read (| self |) |) |);
-                  Value.Bool true;
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "u32");
+                  M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -8780,20 +10081,35 @@ Module fmt.
                             [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                           M.get_associated_function (| Ty.path "u32", "_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "u32",
-                              M.get_associated_function (| Ty.path "i32", "unsigned_abs", [], [] |),
-                              [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                            |);
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.ge,
-                              [
-                                M.read (| M.deref (| M.read (| self |) |) |);
-                                Value.Integer IntegerKind.I32 0
-                              ]
-                            |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "u32",
+                                M.get_associated_function (|
+                                  Ty.path "i32",
+                                  "unsigned_abs",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| M.deref (| M.read (| self |) |) |))
+                                    (Ty.path "i32")
+                                ]
+                              |))
+                              (Ty.path "u32");
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.ge,
+                                [
+                                  M.read (| M.deref (| M.read (| self |) |) |);
+                                  Value.Integer IntegerKind.I32 0
+                                ]
+                              |))
+                              (Ty.path "bool");
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                           ]
                         |)
                       |)
@@ -8936,38 +10252,9 @@ Module fmt.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&mut")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "slice")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                  []
-                                  [ Ty.path "u8" ]
-                              ]
-                          ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 10 ]
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                    []
-                                    [ Ty.path "u8" ]
-                                ]
-                            ])
-                          (Ty.apply
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
                             (Ty.path "&mut")
                             []
                             [
@@ -8980,14 +10267,58 @@ Module fmt.
                                     []
                                     [ Ty.path "u8" ]
                                 ]
-                            ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
-                          |)
-                        ]
-                      |)
+                            ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 10 ]
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ Ty.path "u8" ]
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ Ty.path "u8" ]
+                                  ]
+                              ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                  []
+                                  [ Ty.path "u8" ]
+                              ]
+                          ])
                     ]
                   |) in
                 let~ lut_ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
@@ -9000,57 +10331,62 @@ Module fmt.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
                             (Ty.path "&")
                             []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 200 ]
-                                [ Ty.path "u8" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.read (|
-                                M.deref (|
-                                  M.read (|
-                                    get_constant (|
-                                      "core::fmt::num::DEC_DIGITS_LUT",
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 200 ]
-                                                [ Ty.path "u8" ]
-                                            ]
-                                        ]
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 200 ]
+                                  [ Ty.path "u8" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.read (|
+                                  M.deref (|
+                                    M.read (|
+                                      get_constant (|
+                                        "core::fmt::num::DEC_DIGITS_LUT",
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 200 ]
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ]
+                                      |)
                                     |)
                                   |)
                                 |)
                               |)
                             |)
-                          |)
-                        ]
-                      |)
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -9194,42 +10530,71 @@ Module fmt.
                                                       [ Ty.path "u8" ]
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*const")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*const")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*const")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| lut_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*const")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.read (| M.use d1 |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*const")
                                                           []
-                                                        |),
-                                                        [
-                                                          M.read (| lut_ptr |);
-                                                          M.read (| M.use d1 |)
-                                                        ]
-                                                      |);
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*mut")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*mut")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*mut")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| buf_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*mut")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.read (| curr |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*mut")
                                                           []
-                                                        |),
-                                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                                      |);
-                                                      Value.Integer IntegerKind.Usize 2
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (Value.Integer IntegerKind.Usize 2)
+                                                        (Ty.path "usize")
                                                     ]
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
@@ -9241,52 +10606,78 @@ Module fmt.
                                                       [ Ty.path "u8" ]
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*const")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*const")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*const")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| lut_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*const")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.read (| M.use d2 |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*const")
                                                           []
-                                                        |),
-                                                        [
-                                                          M.read (| lut_ptr |);
-                                                          M.read (| M.use d2 |)
-                                                        ]
-                                                      |);
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*mut")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*mut")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*mut")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| buf_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*mut")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.path "usize",
+                                                                BinOp.Wrap.add,
+                                                                [
+                                                                  M.read (| curr |);
+                                                                  Value.Integer IntegerKind.Usize 2
+                                                                ]
+                                                              |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*mut")
                                                           []
-                                                        |),
-                                                        [
-                                                          M.read (| buf_ptr |);
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            BinOp.Wrap.add,
-                                                            [
-                                                              M.read (| curr |);
-                                                              Value.Integer IntegerKind.Usize 2
-                                                            ]
-                                                          |)
-                                                        ]
-                                                      |);
-                                                      Value.Integer IntegerKind.Usize 2
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (Value.Integer IntegerKind.Usize 2)
+                                                        (Ty.path "usize")
                                                     ]
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -9373,27 +10764,43 @@ Module fmt.
                                       [ Ty.path "u8" ]
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| lut_ptr |); M.read (| d1 |) ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| lut_ptr |))
+                                              (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| d1 |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                      |);
-                                      Value.Integer IntegerKind.Usize 2
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| buf_ptr |))
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (Value.Integer IntegerKind.Usize 2)
+                                        (Ty.path "usize")
                                     ]
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -9443,7 +10850,12 @@ Module fmt.
                                           [],
                                           []
                                         |),
-                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| buf_ptr |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                          M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                        ]
                                       |)
                                     |),
                                     M.call_closure (|
@@ -9485,27 +10897,43 @@ Module fmt.
                                       [ Ty.path "u8" ]
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| lut_ptr |); M.read (| d1 |) ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| lut_ptr |))
+                                              (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| d1 |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                      |);
-                                      Value.Integer IntegerKind.Usize 2
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| buf_ptr |))
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (Value.Integer IntegerKind.Usize 2)
+                                        (Ty.path "usize")
                                     ]
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -9519,116 +10947,149 @@ Module fmt.
                     Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                     M.get_function (| "core::str::converts::from_utf8_unchecked", [], [] |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                            M.get_function (|
-                              "core::slice::raw::from_raw_parts",
-                              [],
-                              [ Ty.path "u8" ]
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.MutToConstPointer
-                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
-                                [
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                      "add",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.path "usize",
-                                BinOp.Wrap.sub,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "slice")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                            []
-                                            [ Ty.path "u8" ]
-                                        ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                              M.get_function (|
+                                "core::slice::raw::from_raw_parts",
+                                [],
+                                [ Ty.path "u8" ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.MutToConstPointer
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
                                     [
                                       M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
+                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                          "add",
+                                          [],
                                           []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "slice")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                  []
-                                                  [ Ty.path "u8" ]
-                                              ]
-                                          ],
-                                        M.pointer_coercion
-                                          M.PointerCoercion.Unsize
-                                          (Ty.apply
-                                            (Ty.path "&")
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| buf_ptr |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                          M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                        ]
+                                      |)
+                                    ]
+                                  |))
+                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.sub,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "slice")
                                             []
                                             [
                                               Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 10 ]
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                    []
-                                                    [ Ty.path "u8" ]
-                                                ]
-                                            ])
-                                          (Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
+                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                []
+                                                [ Ty.path "u8" ]
+                                            ],
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply
-                                                (Ty.path "slice")
+                                                (Ty.path "&")
                                                 []
                                                 [
                                                   Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                    (Ty.path "slice")
                                                     []
-                                                    [ Ty.path "u8" ]
-                                                ]
-                                            ]),
-                                        [ M.borrow (| Pointer.Kind.Ref, buf |) ]
-                                      |)
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::mem::maybe_uninit::MaybeUninit")
+                                                        []
+                                                        [ Ty.path "u8" ]
+                                                    ]
+                                                ],
+                                              M.pointer_coercion
+                                                M.PointerCoercion.Unsize
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 10 ]
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "slice")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ]),
+                                              [ M.borrow (| Pointer.Kind.Ref, buf |) ]
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "slice")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "core::mem::maybe_uninit::MaybeUninit")
+                                                      []
+                                                      [ Ty.path "u8" ]
+                                                  ]
+                                              ])
+                                        ]
+                                      |);
+                                      M.read (| curr |)
                                     ]
-                                  |);
-                                  M.read (| curr |)
-                                ]
-                              |)
-                            ]
+                                  |))
+                                  (Ty.path "usize")
+                              ]
+                            |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                     ]
                   |) in
                 M.alloc (|
@@ -9648,10 +11109,16 @@ Module fmt.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.read (| is_nonnegative |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "" |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf_slice |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf_slice |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)
                 |)
@@ -9693,9 +11160,11 @@ Module fmt.
                   [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                 M.get_associated_function (| Ty.path "u64", "_fmt", [], [] |),
                 [
-                  M.read (| M.deref (| M.read (| self |) |) |);
-                  Value.Bool true;
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "u64");
+                  M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -9748,20 +11217,35 @@ Module fmt.
                             [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                           M.get_associated_function (| Ty.path "u64", "_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "u64",
-                              M.get_associated_function (| Ty.path "i64", "unsigned_abs", [], [] |),
-                              [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                            |);
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.ge,
-                              [
-                                M.read (| M.deref (| M.read (| self |) |) |);
-                                Value.Integer IntegerKind.I64 0
-                              ]
-                            |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "u64",
+                                M.get_associated_function (|
+                                  Ty.path "i64",
+                                  "unsigned_abs",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| M.deref (| M.read (| self |) |) |))
+                                    (Ty.path "i64")
+                                ]
+                              |))
+                              (Ty.path "u64");
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.ge,
+                                [
+                                  M.read (| M.deref (| M.read (| self |) |) |);
+                                  Value.Integer IntegerKind.I64 0
+                                ]
+                              |))
+                              (Ty.path "bool");
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                           ]
                         |)
                       |)
@@ -9904,38 +11388,9 @@ Module fmt.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&mut")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "slice")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                  []
-                                  [ Ty.path "u8" ]
-                              ]
-                          ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 20 ]
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                    []
-                                    [ Ty.path "u8" ]
-                                ]
-                            ])
-                          (Ty.apply
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
                             (Ty.path "&mut")
                             []
                             [
@@ -9948,14 +11403,58 @@ Module fmt.
                                     []
                                     [ Ty.path "u8" ]
                                 ]
-                            ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
-                          |)
-                        ]
-                      |)
+                            ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 20 ]
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ Ty.path "u8" ]
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ Ty.path "u8" ]
+                                  ]
+                              ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                  []
+                                  [ Ty.path "u8" ]
+                              ]
+                          ])
                     ]
                   |) in
                 let~ lut_ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
@@ -9968,57 +11467,62 @@ Module fmt.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
                             (Ty.path "&")
                             []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 200 ]
-                                [ Ty.path "u8" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.read (|
-                                M.deref (|
-                                  M.read (|
-                                    get_constant (|
-                                      "core::fmt::num::DEC_DIGITS_LUT",
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 200 ]
-                                                [ Ty.path "u8" ]
-                                            ]
-                                        ]
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 200 ]
+                                  [ Ty.path "u8" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.read (|
+                                  M.deref (|
+                                    M.read (|
+                                      get_constant (|
+                                        "core::fmt::num::DEC_DIGITS_LUT",
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 200 ]
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ]
+                                      |)
                                     |)
                                   |)
                                 |)
                               |)
                             |)
-                          |)
-                        ]
-                      |)
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -10162,42 +11666,71 @@ Module fmt.
                                                       [ Ty.path "u8" ]
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*const")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*const")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*const")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| lut_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*const")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.read (| M.use d1 |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*const")
                                                           []
-                                                        |),
-                                                        [
-                                                          M.read (| lut_ptr |);
-                                                          M.read (| M.use d1 |)
-                                                        ]
-                                                      |);
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*mut")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*mut")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*mut")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| buf_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*mut")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.read (| curr |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*mut")
                                                           []
-                                                        |),
-                                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                                      |);
-                                                      Value.Integer IntegerKind.Usize 2
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (Value.Integer IntegerKind.Usize 2)
+                                                        (Ty.path "usize")
                                                     ]
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
@@ -10209,52 +11742,78 @@ Module fmt.
                                                       [ Ty.path "u8" ]
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*const")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*const")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*const")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| lut_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*const")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.read (| M.use d2 |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*const")
                                                           []
-                                                        |),
-                                                        [
-                                                          M.read (| lut_ptr |);
-                                                          M.read (| M.use d2 |)
-                                                        ]
-                                                      |);
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*mut")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*mut")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*mut")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| buf_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*mut")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.path "usize",
+                                                                BinOp.Wrap.add,
+                                                                [
+                                                                  M.read (| curr |);
+                                                                  Value.Integer IntegerKind.Usize 2
+                                                                ]
+                                                              |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*mut")
                                                           []
-                                                        |),
-                                                        [
-                                                          M.read (| buf_ptr |);
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            BinOp.Wrap.add,
-                                                            [
-                                                              M.read (| curr |);
-                                                              Value.Integer IntegerKind.Usize 2
-                                                            ]
-                                                          |)
-                                                        ]
-                                                      |);
-                                                      Value.Integer IntegerKind.Usize 2
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (Value.Integer IntegerKind.Usize 2)
+                                                        (Ty.path "usize")
                                                     ]
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -10341,27 +11900,43 @@ Module fmt.
                                       [ Ty.path "u8" ]
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| lut_ptr |); M.read (| d1 |) ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| lut_ptr |))
+                                              (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| d1 |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                      |);
-                                      Value.Integer IntegerKind.Usize 2
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| buf_ptr |))
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (Value.Integer IntegerKind.Usize 2)
+                                        (Ty.path "usize")
                                     ]
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -10411,7 +11986,12 @@ Module fmt.
                                           [],
                                           []
                                         |),
-                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| buf_ptr |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                          M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                        ]
                                       |)
                                     |),
                                     M.call_closure (|
@@ -10453,27 +12033,43 @@ Module fmt.
                                       [ Ty.path "u8" ]
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| lut_ptr |); M.read (| d1 |) ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| lut_ptr |))
+                                              (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| d1 |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                      |);
-                                      Value.Integer IntegerKind.Usize 2
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| buf_ptr |))
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (Value.Integer IntegerKind.Usize 2)
+                                        (Ty.path "usize")
                                     ]
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -10487,116 +12083,149 @@ Module fmt.
                     Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                     M.get_function (| "core::str::converts::from_utf8_unchecked", [], [] |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                            M.get_function (|
-                              "core::slice::raw::from_raw_parts",
-                              [],
-                              [ Ty.path "u8" ]
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.MutToConstPointer
-                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
-                                [
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                      "add",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.path "usize",
-                                BinOp.Wrap.sub,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "slice")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                            []
-                                            [ Ty.path "u8" ]
-                                        ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                              M.get_function (|
+                                "core::slice::raw::from_raw_parts",
+                                [],
+                                [ Ty.path "u8" ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.MutToConstPointer
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
                                     [
                                       M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
+                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                          "add",
+                                          [],
                                           []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "slice")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                  []
-                                                  [ Ty.path "u8" ]
-                                              ]
-                                          ],
-                                        M.pointer_coercion
-                                          M.PointerCoercion.Unsize
-                                          (Ty.apply
-                                            (Ty.path "&")
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| buf_ptr |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                          M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                        ]
+                                      |)
+                                    ]
+                                  |))
+                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.sub,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "slice")
                                             []
                                             [
                                               Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 20 ]
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                    []
-                                                    [ Ty.path "u8" ]
-                                                ]
-                                            ])
-                                          (Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
+                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                []
+                                                [ Ty.path "u8" ]
+                                            ],
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply
-                                                (Ty.path "slice")
+                                                (Ty.path "&")
                                                 []
                                                 [
                                                   Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                    (Ty.path "slice")
                                                     []
-                                                    [ Ty.path "u8" ]
-                                                ]
-                                            ]),
-                                        [ M.borrow (| Pointer.Kind.Ref, buf |) ]
-                                      |)
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::mem::maybe_uninit::MaybeUninit")
+                                                        []
+                                                        [ Ty.path "u8" ]
+                                                    ]
+                                                ],
+                                              M.pointer_coercion
+                                                M.PointerCoercion.Unsize
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 20 ]
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "slice")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ]),
+                                              [ M.borrow (| Pointer.Kind.Ref, buf |) ]
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "slice")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "core::mem::maybe_uninit::MaybeUninit")
+                                                      []
+                                                      [ Ty.path "u8" ]
+                                                  ]
+                                              ])
+                                        ]
+                                      |);
+                                      M.read (| curr |)
                                     ]
-                                  |);
-                                  M.read (| curr |)
-                                ]
-                              |)
-                            ]
+                                  |))
+                                  (Ty.path "usize")
+                              ]
+                            |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                     ]
                   |) in
                 M.alloc (|
@@ -10616,10 +12245,16 @@ Module fmt.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.read (| is_nonnegative |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "" |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf_slice |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf_slice |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)
                 |)
@@ -10661,9 +12296,11 @@ Module fmt.
                   [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                 M.get_associated_function (| Ty.path "usize", "_fmt", [], [] |),
                 [
-                  M.read (| M.deref (| M.read (| self |) |) |);
-                  Value.Bool true;
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                  M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "usize");
+                  M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -10716,25 +12353,35 @@ Module fmt.
                             [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                           M.get_associated_function (| Ty.path "usize", "_fmt", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_associated_function (|
-                                Ty.path "isize",
-                                "unsigned_abs",
-                                [],
-                                []
-                              |),
-                              [ M.read (| M.deref (| M.read (| self |) |) |) ]
-                            |);
-                            M.call_closure (|
-                              Ty.path "bool",
-                              BinOp.ge,
-                              [
-                                M.read (| M.deref (| M.read (| self |) |) |);
-                                Value.Integer IntegerKind.Isize 0
-                              ]
-                            |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_associated_function (|
+                                  Ty.path "isize",
+                                  "unsigned_abs",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| M.deref (| M.read (| self |) |) |))
+                                    (Ty.path "isize")
+                                ]
+                              |))
+                              (Ty.path "usize");
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "bool",
+                                BinOp.ge,
+                                [
+                                  M.read (| M.deref (| M.read (| self |) |) |);
+                                  Value.Integer IntegerKind.Isize 0
+                                ]
+                              |))
+                              (Ty.path "bool");
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                           ]
                         |)
                       |)
@@ -10877,38 +12524,9 @@ Module fmt.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&mut")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "slice")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                  []
-                                  [ Ty.path "u8" ]
-                              ]
-                          ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&mut")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 20 ]
-                                [
-                                  Ty.apply
-                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                    []
-                                    [ Ty.path "u8" ]
-                                ]
-                            ])
-                          (Ty.apply
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
                             (Ty.path "&mut")
                             []
                             [
@@ -10921,14 +12539,58 @@ Module fmt.
                                     []
                                     [ Ty.path "u8" ]
                                 ]
-                            ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
-                          |)
-                        ]
-                      |)
+                            ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 20 ]
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ Ty.path "u8" ]
+                                  ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ Ty.path "u8" ]
+                                  ]
+                              ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
+                            |)
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                  []
+                                  [ Ty.path "u8" ]
+                              ]
+                          ])
                     ]
                   |) in
                 let~ lut_ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
@@ -10941,57 +12603,62 @@ Module fmt.
                       []
                     |),
                     [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
                             (Ty.path "&")
                             []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 200 ]
-                                [ Ty.path "u8" ]
-                            ])
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.read (|
-                                M.deref (|
-                                  M.read (|
-                                    get_constant (|
-                                      "core::fmt::num::DEC_DIGITS_LUT",
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 200 ]
-                                                [ Ty.path "u8" ]
-                                            ]
-                                        ]
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                          M.pointer_coercion
+                            M.PointerCoercion.Unsize
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 200 ]
+                                  [ Ty.path "u8" ]
+                              ])
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                          [
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.read (|
+                                  M.deref (|
+                                    M.read (|
+                                      get_constant (|
+                                        "core::fmt::num::DEC_DIGITS_LUT",
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "array")
+                                                  [ Value.Integer IntegerKind.Usize 200 ]
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ]
+                                      |)
                                     |)
                                   |)
                                 |)
                               |)
                             |)
-                          |)
-                        ]
-                      |)
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -11139,42 +12806,71 @@ Module fmt.
                                                       [ Ty.path "u8" ]
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*const")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*const")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*const")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| lut_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*const")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.read (| M.use d1 |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*const")
                                                           []
-                                                        |),
-                                                        [
-                                                          M.read (| lut_ptr |);
-                                                          M.read (| M.use d1 |)
-                                                        ]
-                                                      |);
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*mut")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*mut")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*mut")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| buf_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*mut")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.read (| curr |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*mut")
                                                           []
-                                                        |),
-                                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                                      |);
-                                                      Value.Integer IntegerKind.Usize 2
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (Value.Integer IntegerKind.Usize 2)
+                                                        (Ty.path "usize")
                                                     ]
                                                   |) in
                                                 let~ _ : Ty.tuple [] :=
@@ -11186,52 +12882,78 @@ Module fmt.
                                                       [ Ty.path "u8" ]
                                                     |),
                                                     [
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*const")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*const")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*const")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| lut_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*const")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.read (| M.use d2 |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*const")
                                                           []
-                                                        |),
-                                                        [
-                                                          M.read (| lut_ptr |);
-                                                          M.read (| M.use d2 |)
-                                                        ]
-                                                      |);
-                                                      M.call_closure (|
-                                                        Ty.apply
-                                                          (Ty.path "*mut")
-                                                          []
-                                                          [ Ty.path "u8" ],
-                                                        M.get_associated_function (|
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
                                                           Ty.apply
                                                             (Ty.path "*mut")
                                                             []
                                                             [ Ty.path "u8" ],
-                                                          "add",
-                                                          [],
+                                                          M.get_associated_function (|
+                                                            Ty.apply
+                                                              (Ty.path "*mut")
+                                                              []
+                                                              [ Ty.path "u8" ],
+                                                            "add",
+                                                            [],
+                                                            []
+                                                          |),
+                                                          [
+                                                            M.value_with_ty
+                                                              (M.read (| buf_ptr |))
+                                                              (Ty.apply
+                                                                (Ty.path "*mut")
+                                                                []
+                                                                [ Ty.path "u8" ]);
+                                                            M.value_with_ty
+                                                              (M.call_closure (|
+                                                                Ty.path "usize",
+                                                                BinOp.Wrap.add,
+                                                                [
+                                                                  M.read (| curr |);
+                                                                  Value.Integer IntegerKind.Usize 2
+                                                                ]
+                                                              |))
+                                                              (Ty.path "usize")
+                                                          ]
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "*mut")
                                                           []
-                                                        |),
-                                                        [
-                                                          M.read (| buf_ptr |);
-                                                          M.call_closure (|
-                                                            Ty.path "usize",
-                                                            BinOp.Wrap.add,
-                                                            [
-                                                              M.read (| curr |);
-                                                              Value.Integer IntegerKind.Usize 2
-                                                            ]
-                                                          |)
-                                                        ]
-                                                      |);
-                                                      Value.Integer IntegerKind.Usize 2
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (Value.Integer IntegerKind.Usize 2)
+                                                        (Ty.path "usize")
                                                     ]
                                                   |) in
                                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -11318,27 +13040,43 @@ Module fmt.
                                       [ Ty.path "u8" ]
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| lut_ptr |); M.read (| d1 |) ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| lut_ptr |))
+                                              (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| d1 |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                      |);
-                                      Value.Integer IntegerKind.Usize 2
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| buf_ptr |))
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (Value.Integer IntegerKind.Usize 2)
+                                        (Ty.path "usize")
                                     ]
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -11388,7 +13126,12 @@ Module fmt.
                                           [],
                                           []
                                         |),
-                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| buf_ptr |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                          M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                        ]
                                       |)
                                     |),
                                     M.call_closure (|
@@ -11430,27 +13173,43 @@ Module fmt.
                                       [ Ty.path "u8" ]
                                     |),
                                     [
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| lut_ptr |); M.read (| d1 |) ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                        M.get_associated_function (|
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| lut_ptr |))
+                                              (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| d1 |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
                                           Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                          "add",
-                                          [],
-                                          []
-                                        |),
-                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                      |);
-                                      Value.Integer IntegerKind.Usize 2
+                                          M.get_associated_function (|
+                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                            "add",
+                                            [],
+                                            []
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| buf_ptr |))
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                          ]
+                                        |))
+                                        (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                      M.value_with_ty
+                                        (Value.Integer IntegerKind.Usize 2)
+                                        (Ty.path "usize")
                                     ]
                                   |) in
                                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -11464,116 +13223,149 @@ Module fmt.
                     Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                     M.get_function (| "core::str::converts::from_utf8_unchecked", [], [] |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                            M.get_function (|
-                              "core::slice::raw::from_raw_parts",
-                              [],
-                              [ Ty.path "u8" ]
-                            |),
-                            [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.MutToConstPointer
-                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
-                                [
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                      "add",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                  |)
-                                ]
-                              |);
-                              M.call_closure (|
-                                Ty.path "usize",
-                                BinOp.Wrap.sub,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "slice")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                            []
-                                            [ Ty.path "u8" ]
-                                        ],
-                                      "len",
-                                      [],
-                                      []
-                                    |),
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                              M.get_function (|
+                                "core::slice::raw::from_raw_parts",
+                                [],
+                                [ Ty.path "u8" ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.MutToConstPointer
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
                                     [
                                       M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
+                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                          "add",
+                                          [],
                                           []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "slice")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                  []
-                                                  [ Ty.path "u8" ]
-                                              ]
-                                          ],
-                                        M.pointer_coercion
-                                          M.PointerCoercion.Unsize
-                                          (Ty.apply
-                                            (Ty.path "&")
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| buf_ptr |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                          M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                        ]
+                                      |)
+                                    ]
+                                  |))
+                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.sub,
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "usize",
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "slice")
                                             []
                                             [
                                               Ty.apply
-                                                (Ty.path "array")
-                                                [ Value.Integer IntegerKind.Usize 20 ]
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                    []
-                                                    [ Ty.path "u8" ]
-                                                ]
-                                            ])
-                                          (Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
+                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                []
+                                                [ Ty.path "u8" ]
+                                            ],
+                                          "len",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply
-                                                (Ty.path "slice")
+                                                (Ty.path "&")
                                                 []
                                                 [
                                                   Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                    (Ty.path "slice")
                                                     []
-                                                    [ Ty.path "u8" ]
-                                                ]
-                                            ]),
-                                        [ M.borrow (| Pointer.Kind.Ref, buf |) ]
-                                      |)
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::mem::maybe_uninit::MaybeUninit")
+                                                        []
+                                                        [ Ty.path "u8" ]
+                                                    ]
+                                                ],
+                                              M.pointer_coercion
+                                                M.PointerCoercion.Unsize
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 20 ]
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ])
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "slice")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ]),
+                                              [ M.borrow (| Pointer.Kind.Ref, buf |) ]
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "slice")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "core::mem::maybe_uninit::MaybeUninit")
+                                                      []
+                                                      [ Ty.path "u8" ]
+                                                  ]
+                                              ])
+                                        ]
+                                      |);
+                                      M.read (| curr |)
                                     ]
-                                  |);
-                                  M.read (| curr |)
-                                ]
-                              |)
-                            ]
+                                  |))
+                                  (Ty.path "usize")
+                              ]
+                            |)
                           |)
-                        |)
-                      |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                     ]
                   |) in
                 M.alloc (|
@@ -11593,10 +13385,16 @@ Module fmt.
                       []
                     |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.read (| is_nonnegative |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "" |) |) |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf_slice |) |) |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "" |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf_slice |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                     ]
                   |)
                 |)
@@ -11856,7 +13654,11 @@ Module fmt.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Formatter" ])
+                          ]
                         |)
                       |),
                       [
@@ -11960,7 +13762,10 @@ Module fmt.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| fmt_prec |); M.read (| prec |) ]
+                                      [
+                                        M.value_with_ty (M.read (| fmt_prec |)) (Ty.path "usize");
+                                        M.value_with_ty (M.read (| prec |)) (Ty.path "usize")
+                                      ]
                                     |);
                                     M.call_closure (|
                                       Ty.path "usize",
@@ -11970,7 +13775,10 @@ Module fmt.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| prec |); M.read (| fmt_prec |) ]
+                                      [
+                                        M.value_with_ty (M.read (| prec |)) (Ty.path "usize");
+                                        M.value_with_ty (M.read (| fmt_prec |)) (Ty.path "usize")
+                                      ]
                                     |)
                                   ]
                               |)
@@ -12022,14 +13830,22 @@ Module fmt.
                                           []
                                         |),
                                         [
-                                          Value.mkStructRecord
-                                            "core::ops::range::Range"
-                                            []
-                                            [ Ty.path "usize" ]
-                                            [
-                                              ("start", Value.Integer IntegerKind.Usize 1);
-                                              ("end_", M.read (| subtracted_precision |))
-                                            ]
+                                          M.value_with_ty
+                                            (M.value_with_ty
+                                              (Value.mkStructRecord
+                                                "core::ops::range::Range"
+                                                [
+                                                  ("start", Value.Integer IntegerKind.Usize 1);
+                                                  ("end_", M.read (| subtracted_precision |))
+                                                ])
+                                              (Ty.apply
+                                                (Ty.path "core::ops::range::Range")
+                                                []
+                                                [ Ty.path "usize" ]))
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::Range")
+                                              []
+                                              [ Ty.path "usize" ])
                                         ]
                                       |)
                                     |),
@@ -12072,15 +13888,26 @@ Module fmt.
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                iter
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.deref (|
+                                                                M.borrow (|
+                                                                  Pointer.Kind.MutRef,
+                                                                  iter
+                                                                |)
                                                               |)
-                                                            |)
-                                                          |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::ops::range::Range")
+                                                                  []
+                                                                  [ Ty.path "usize" ]
+                                                              ])
                                                         ]
                                                       |)
                                                     |),
@@ -12308,7 +14135,11 @@ Module fmt.
                                                                           [],
                                                                           []
                                                                         |),
-                                                                        [ M.read (| n |) ]
+                                                                        [
+                                                                          M.value_with_ty
+                                                                            (M.read (| n |))
+                                                                            (Ty.path "u64")
+                                                                        ]
                                                                       |);
                                                                       M.call_closure (|
                                                                         Ty.path "u32",
@@ -12319,16 +14150,18 @@ Module fmt.
                                                                           []
                                                                         |),
                                                                         [
-                                                                          M.call_closure (|
-                                                                            Ty.path "u64",
-                                                                            BinOp.Wrap.sub,
-                                                                            [
-                                                                              M.read (| n |);
-                                                                              Value.Integer
-                                                                                IntegerKind.U64
-                                                                                1
-                                                                            ]
-                                                                          |)
+                                                                          M.value_with_ty
+                                                                            (M.call_closure (|
+                                                                              Ty.path "u64",
+                                                                              BinOp.Wrap.sub,
+                                                                              [
+                                                                                M.read (| n |);
+                                                                                Value.Integer
+                                                                                  IntegerKind.U64
+                                                                                  1
+                                                                              ]
+                                                                            |))
+                                                                            (Ty.path "u64")
                                                                         ]
                                                                       |)
                                                                     ]
@@ -12462,38 +14295,9 @@ Module fmt.
                             []
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "slice")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                        []
-                                        [ Ty.path "u8" ]
-                                    ]
-                                ],
-                              M.pointer_coercion
-                                M.PointerCoercion.Unsize
-                                (Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 40 ]
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                          []
-                                          [ Ty.path "u8" ]
-                                      ]
-                                  ])
-                                (Ty.apply
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
                                   (Ty.path "&")
                                   []
                                   [
@@ -12506,9 +14310,53 @@ Module fmt.
                                           []
                                           [ Ty.path "u8" ]
                                       ]
-                                  ]),
-                              [ M.borrow (| Pointer.Kind.Ref, buf |) ]
-                            |)
+                                  ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 40 ]
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ Ty.path "u8" ]
+                                        ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ Ty.path "u8" ]
+                                        ]
+                                    ]),
+                                [ M.borrow (| Pointer.Kind.Ref, buf |) ]
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ Ty.path "u8" ]
+                                    ]
+                                ])
                           ]
                         |) in
                       let~ buf_ptr : Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ] :=
@@ -12524,38 +14372,9 @@ Module fmt.
                             []
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "slice")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                        []
-                                        [ Ty.path "u8" ]
-                                    ]
-                                ],
-                              M.pointer_coercion
-                                M.PointerCoercion.Unsize
-                                (Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 40 ]
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                          []
-                                          [ Ty.path "u8" ]
-                                      ]
-                                  ])
-                                (Ty.apply
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
                                   (Ty.path "&mut")
                                   []
                                   [
@@ -12568,14 +14387,58 @@ Module fmt.
                                           []
                                           [ Ty.path "u8" ]
                                       ]
-                                  ]),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
-                                |)
-                              ]
-                            |)
+                                  ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 40 ]
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ Ty.path "u8" ]
+                                        ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ Ty.path "u8" ]
+                                        ]
+                                    ]),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
+                                  |)
+                                ]
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ Ty.path "u8" ]
+                                    ]
+                                ])
                           ]
                         |) in
                       let~ lut_ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
@@ -12588,57 +14451,62 @@ Module fmt.
                             []
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                              M.pointer_coercion
-                                M.PointerCoercion.Unsize
-                                (Ty.apply
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
                                   (Ty.path "&")
                                   []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 200 ]
-                                      [ Ty.path "u8" ]
-                                  ])
-                                (Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.deref (|
-                                    M.read (|
-                                      M.deref (|
-                                        M.read (|
-                                          get_constant (|
-                                            "core::fmt::num::DEC_DIGITS_LUT",
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "array")
-                                                      [ Value.Integer IntegerKind.Usize 200 ]
-                                                      [ Ty.path "u8" ]
-                                                  ]
-                                              ]
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 200 ]
+                                        [ Ty.path "u8" ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.read (|
+                                        M.deref (|
+                                          M.read (|
+                                            get_constant (|
+                                              "core::fmt::num::DEC_DIGITS_LUT",
+                                              Ty.apply
+                                                (Ty.path "&")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "array")
+                                                        [ Value.Integer IntegerKind.Usize 200 ]
+                                                        [ Ty.path "u8" ]
+                                                    ]
+                                                ]
+                                            |)
                                           |)
                                         |)
                                       |)
                                     |)
                                   |)
-                                |)
-                              ]
-                            |)
+                                ]
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -12711,36 +14579,71 @@ Module fmt.
                                                     [ Ty.path "u8" ]
                                                   |),
                                                   [
-                                                    M.call_closure (|
-                                                      Ty.apply
-                                                        (Ty.path "*const")
-                                                        []
-                                                        [ Ty.path "u8" ],
-                                                      M.get_associated_function (|
+                                                    M.value_with_ty
+                                                      (M.call_closure (|
                                                         Ty.apply
                                                           (Ty.path "*const")
                                                           []
                                                           [ Ty.path "u8" ],
-                                                        "add",
-                                                        [],
+                                                        M.get_associated_function (|
+                                                          Ty.apply
+                                                            (Ty.path "*const")
+                                                            []
+                                                            [ Ty.path "u8" ],
+                                                          "add",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.read (| lut_ptr |))
+                                                            (Ty.apply
+                                                              (Ty.path "*const")
+                                                              []
+                                                              [ Ty.path "u8" ]);
+                                                          M.value_with_ty
+                                                            (M.read (| d1 |))
+                                                            (Ty.path "usize")
+                                                        ]
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "*const")
                                                         []
-                                                      |),
-                                                      [ M.read (| lut_ptr |); M.read (| d1 |) ]
-                                                    |);
-                                                    M.call_closure (|
-                                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                      M.get_associated_function (|
+                                                        [ Ty.path "u8" ]);
+                                                    M.value_with_ty
+                                                      (M.call_closure (|
                                                         Ty.apply
                                                           (Ty.path "*mut")
                                                           []
                                                           [ Ty.path "u8" ],
-                                                        "add",
-                                                        [],
+                                                        M.get_associated_function (|
+                                                          Ty.apply
+                                                            (Ty.path "*mut")
+                                                            []
+                                                            [ Ty.path "u8" ],
+                                                          "add",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.read (| buf_ptr |))
+                                                            (Ty.apply
+                                                              (Ty.path "*mut")
+                                                              []
+                                                              [ Ty.path "u8" ]);
+                                                          M.value_with_ty
+                                                            (M.read (| curr |))
+                                                            (Ty.path "usize")
+                                                        ]
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "*mut")
                                                         []
-                                                      |),
-                                                      [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                                    |);
-                                                    Value.Integer IntegerKind.Usize 2
+                                                        [ Ty.path "u8" ]);
+                                                    M.value_with_ty
+                                                      (Value.Integer IntegerKind.Usize 2)
+                                                      (Ty.path "usize")
                                                   ]
                                                 |) in
                                               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -12830,7 +14733,14 @@ Module fmt.
                                                 [],
                                                 []
                                               |),
-                                              [ M.read (| buf_ptr |); M.read (| curr |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| buf_ptr |))
+                                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                                M.value_with_ty
+                                                  (M.read (| curr |))
+                                                  (Ty.path "usize")
+                                              ]
                                             |)
                                           |),
                                           M.call_closure (|
@@ -12931,7 +14841,12 @@ Module fmt.
                                             [],
                                             []
                                           |),
-                                          [ M.read (| buf_ptr |); M.read (| curr |) ]
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| buf_ptr |))
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                          ]
                                         |)
                                       |),
                                       M.read (| UnsupportedLiteral |)
@@ -12968,7 +14883,12 @@ Module fmt.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| buf_ptr |); M.read (| curr |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| buf_ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                  ]
                                 |)
                               |),
                               M.call_closure (|
@@ -13002,38 +14922,9 @@ Module fmt.
                                     []
                                   |),
                                   [
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "slice")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                []
-                                                [ Ty.path "u8" ]
-                                            ]
-                                        ],
-                                      M.pointer_coercion
-                                        M.PointerCoercion.Unsize
-                                        (Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "array")
-                                              [ Value.Integer IntegerKind.Usize 40 ]
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                  []
-                                                  [ Ty.path "u8" ]
-                                              ]
-                                          ])
-                                        (Ty.apply
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply
                                           (Ty.path "&")
                                           []
                                           [
@@ -13046,9 +14937,53 @@ Module fmt.
                                                   []
                                                   [ Ty.path "u8" ]
                                               ]
-                                          ]),
-                                      [ M.borrow (| Pointer.Kind.Ref, buf |) ]
-                                    |)
+                                          ],
+                                        M.pointer_coercion
+                                          M.PointerCoercion.Unsize
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 40 ]
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                    []
+                                                    [ Ty.path "u8" ]
+                                                ]
+                                            ])
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "slice")
+                                                []
+                                                [
+                                                  Ty.apply
+                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                    []
+                                                    [ Ty.path "u8" ]
+                                                ]
+                                            ]),
+                                        [ M.borrow (| Pointer.Kind.Ref, buf |) ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "slice")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                []
+                                                [ Ty.path "u8" ]
+                                            ]
+                                        ])
                                   ]
                                 |);
                                 M.read (| M.use curr |)
@@ -13070,26 +15005,33 @@ Module fmt.
                                 [ Ty.path "u8" ]
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.MutToConstPointer
-                                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                                    (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
-                                  [
-                                    M.call_closure (|
-                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                      M.get_associated_function (|
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.MutToConstPointer
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
+                                    [
+                                      M.call_closure (|
                                         Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                        "add",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                    |)
-                                  ]
-                                |);
-                                M.read (| len |)
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                          "add",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| buf_ptr |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                          M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                        ]
+                                      |)
+                                    ]
+                                  |))
+                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                M.value_with_ty (M.read (| len |)) (Ty.path "usize")
                               ]
                             |)
                           |)
@@ -13136,38 +15078,9 @@ Module fmt.
                             []
                           |),
                           [
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "slice")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                        []
-                                        [ Ty.path "u8" ]
-                                    ]
-                                ],
-                              M.pointer_coercion
-                                M.PointerCoercion.Unsize
-                                (Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 3 ]
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                          []
-                                          [ Ty.path "u8" ]
-                                      ]
-                                  ])
-                                (Ty.apply
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
                                   (Ty.path "&mut")
                                   []
                                   [
@@ -13180,14 +15093,58 @@ Module fmt.
                                           []
                                           [ Ty.path "u8" ]
                                       ]
-                                  ]),
-                              [
-                                M.borrow (|
-                                  Pointer.Kind.MutRef,
-                                  M.deref (| M.borrow (| Pointer.Kind.MutRef, exp_buf |) |)
-                                |)
-                              ]
-                            |)
+                                  ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 3 ]
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ Ty.path "u8" ]
+                                        ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                            []
+                                            [ Ty.path "u8" ]
+                                        ]
+                                    ]),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (| M.borrow (| Pointer.Kind.MutRef, exp_buf |) |)
+                                  |)
+                                ]
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                        []
+                                        [ Ty.path "u8" ]
+                                    ]
+                                ])
                           ]
                         |) in
                       let~ exp_slice :
@@ -13207,7 +15164,14 @@ Module fmt.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| exp_ptr |); Value.Integer IntegerKind.Usize 0 ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| exp_ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (Value.Integer IntegerKind.Usize 0)
+                                      (Ty.path "usize")
+                                  ]
                                 |)
                               |),
                               M.match_operator (|
@@ -13265,8 +15229,12 @@ Module fmt.
                                                 []
                                               |),
                                               [
-                                                M.read (| exp_ptr |);
-                                                Value.Integer IntegerKind.Usize 1
+                                                M.value_with_ty
+                                                  (M.read (| exp_ptr |))
+                                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                                M.value_with_ty
+                                                  (Value.Integer IntegerKind.Usize 1)
+                                                  (Ty.path "usize")
                                               ]
                                             |)
                                           |),
@@ -13302,30 +15270,50 @@ Module fmt.
                                             [ Ty.path "u8" ]
                                           |),
                                           [
-                                            M.call_closure (|
-                                              Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                              M.get_associated_function (|
+                                            M.value_with_ty
+                                              (M.call_closure (|
                                                 Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| lut_ptr |); M.read (| off |) ]
-                                            |);
-                                            M.call_closure (|
-                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                              M.get_associated_function (|
+                                                M.get_associated_function (|
+                                                  Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| lut_ptr |))
+                                                    (Ty.apply
+                                                      (Ty.path "*const")
+                                                      []
+                                                      [ Ty.path "u8" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| off |))
+                                                    (Ty.path "usize")
+                                                ]
+                                              |))
+                                              (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty
+                                              (M.call_closure (|
                                                 Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                "add",
-                                                [],
-                                                []
-                                              |),
-                                              [
-                                                M.read (| exp_ptr |);
-                                                Value.Integer IntegerKind.Usize 1
-                                              ]
-                                            |);
-                                            Value.Integer IntegerKind.Usize 2
+                                                M.get_associated_function (|
+                                                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                                  "add",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.read (| exp_ptr |))
+                                                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                                  M.value_with_ty
+                                                    (Value.Integer IntegerKind.Usize 1)
+                                                    (Ty.path "usize")
+                                                ]
+                                              |))
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                            M.value_with_ty
+                                              (Value.Integer IntegerKind.Usize 2)
+                                              (Ty.path "usize")
                                           ]
                                         |) in
                                       M.alloc (|
@@ -13351,15 +15339,17 @@ Module fmt.
                                 [ Ty.path "u8" ]
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  M.pointer_coercion
-                                    M.PointerCoercion.MutToConstPointer
-                                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                                    (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
-                                  [ M.read (| exp_ptr |) ]
-                                |);
-                                M.read (| len |)
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    M.pointer_coercion
+                                      M.PointerCoercion.MutToConstPointer
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
+                                    [ M.read (| exp_ptr |) ]
+                                  |))
+                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                M.value_with_ty (M.read (| len |)) (Ty.path "usize")
                               ]
                             |)
                           |)
@@ -13383,31 +15373,31 @@ Module fmt.
                               [ Ty.path "core::num::fmt::Part" ],
                             Value.Array
                               [
-                                Value.StructTuple
-                                  "core::num::fmt::Part::Copy"
-                                  []
-                                  []
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| buf_slice |) |)
-                                    |)
-                                  ];
-                                Value.StructTuple
-                                  "core::num::fmt::Part::Zero"
-                                  []
-                                  []
-                                  [ M.read (| added_precision |) ];
-                                Value.StructTuple
-                                  "core::num::fmt::Part::Copy"
-                                  []
-                                  []
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| exp_slice |) |)
-                                    |)
-                                  ]
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::num::fmt::Part::Copy"
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| buf_slice |) |)
+                                      |)
+                                    ])
+                                  (Ty.path "core::num::fmt::Part");
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::num::fmt::Part::Zero"
+                                    [ M.read (| added_precision |) ])
+                                  (Ty.path "core::num::fmt::Part");
+                                M.value_with_ty
+                                  (Value.StructTuple
+                                    "core::num::fmt::Part::Copy"
+                                    [
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| exp_slice |) |)
+                                      |)
+                                    ])
+                                  (Ty.path "core::num::fmt::Part")
                               ]
                           |)
                         |) in
@@ -13458,10 +15448,15 @@ Module fmt.
                                                       []
                                                     |),
                                                     [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| f |) |)
-                                                      |)
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (| M.read (| f |) |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [ Ty.path "core::fmt::Formatter" ])
                                                     ]
                                                   |)
                                                 |)) in
@@ -13484,32 +15479,15 @@ Module fmt.
                           ]
                         |) in
                       let~ formatted : Ty.path "core::num::fmt::Formatted" :=
-                        Value.mkStructRecord
-                          "core::num::fmt::Formatted"
-                          []
-                          []
-                          [
-                            ("sign",
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| sign |) |) |));
-                            ("parts",
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::num::fmt::Part" ]
-                                  ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.Unsize
-                                  (Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 3 ]
-                                        [ Ty.path "core::num::fmt::Part" ]
-                                    ])
-                                  (Ty.apply
+                        M.value_with_ty
+                          (Value.mkStructRecord
+                            "core::num::fmt::Formatted"
+                            [
+                              ("sign",
+                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| sign |) |) |));
+                              ("parts",
+                                M.call_closure (|
+                                  Ty.apply
                                     (Ty.path "&")
                                     []
                                     [
@@ -13517,11 +15495,36 @@ Module fmt.
                                         (Ty.path "slice")
                                         []
                                         [ Ty.path "core::num::fmt::Part" ]
-                                    ]),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| parts |) |) |)
-                                ]
-                              |))
-                          ] in
+                                    ],
+                                  M.pointer_coercion
+                                    M.PointerCoercion.Unsize
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 3 ]
+                                          [ Ty.path "core::num::fmt::Part" ]
+                                      ])
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "slice")
+                                          []
+                                          [ Ty.path "core::num::fmt::Part" ]
+                                      ]),
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| parts |) |)
+                                    |)
+                                  ]
+                                |))
+                            ])
+                          (Ty.path "core::num::fmt::Formatted") in
                       M.alloc (|
                         Ty.apply
                           (Ty.path "core::result::Result")
@@ -13539,11 +15542,15 @@ Module fmt.
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (| M.borrow (| Pointer.Kind.Ref, formatted |) |)
-                            |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (| M.borrow (| Pointer.Kind.Ref, formatted |) |)
+                              |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "core::num::fmt::Formatted" ])
                           ]
                         |)
                       |)
@@ -13608,7 +15615,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -13616,31 +15627,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
-                                      Ty.path "i8",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "i8",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -13657,10 +15672,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool false;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -13727,7 +15744,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -13735,31 +15756,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
-                                      Ty.path "u8",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "u8",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -13776,10 +15801,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool false;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -13847,7 +15874,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "i16" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -13855,31 +15886,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
-                                      Ty.path "i16",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "i16",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "i16" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -13896,10 +15931,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool false;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -13967,7 +16004,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -13975,31 +16016,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
-                                      Ty.path "u16",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "u16",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -14016,10 +16061,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool false;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -14087,7 +16134,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -14095,31 +16146,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
-                                      Ty.path "i32",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "i32",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -14136,10 +16191,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool false;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -14207,7 +16264,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -14215,31 +16276,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
-                                      Ty.path "u32",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "u32",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -14256,10 +16321,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool false;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -14327,7 +16394,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -14335,31 +16406,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
-                                      Ty.path "i64",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "i64",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -14376,10 +16451,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool false;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -14447,7 +16524,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -14455,31 +16536,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
                                       Ty.path "u64",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "u64",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -14496,10 +16581,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool false;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -14569,7 +16656,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -14577,31 +16668,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
-                                      Ty.path "usize",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "usize",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -14618,10 +16713,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool false;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -14691,7 +16788,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -14699,31 +16800,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
-                                      Ty.path "isize",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "isize",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -14740,10 +16845,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool false;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -14810,7 +16917,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -14818,31 +16929,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
-                                      Ty.path "i8",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "i8",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "i8" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -14859,10 +16974,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool true;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -14929,7 +17046,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -14937,31 +17058,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
-                                      Ty.path "u8",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "u8",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u8" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -14978,10 +17103,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool true;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -15049,7 +17176,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "i16" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -15057,31 +17188,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
-                                      Ty.path "i16",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "i16",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "i16" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -15098,10 +17233,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool true;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -15169,7 +17306,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -15177,31 +17318,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
-                                      Ty.path "u16",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "u16",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u16" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -15218,10 +17363,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool true;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -15289,7 +17436,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -15297,31 +17448,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
-                                      Ty.path "i32",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "i32",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "i32" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -15338,10 +17493,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool true;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -15409,7 +17566,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -15417,31 +17578,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
-                                      Ty.path "u32",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "u32",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -15458,10 +17623,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool true;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -15529,7 +17696,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -15537,31 +17708,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
-                                      Ty.path "i64",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "i64",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "i64" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -15578,10 +17753,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool true;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -15649,7 +17826,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -15657,31 +17838,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
                                       Ty.path "u64",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "u64",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -15698,10 +17883,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool true;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -15771,7 +17958,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -15779,31 +17970,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
-                                      Ty.path "usize",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "usize",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -15820,10 +18015,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool true;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -15893,7 +18090,11 @@ Module fmt.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ])
+                            ]
                           |)));
                       fun γ =>
                         ltac:(M.monadic
@@ -15901,31 +18102,35 @@ Module fmt.
                             Ty.path "u64",
                             M.get_associated_function (| Ty.path "u64", "wrapping_add", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "u64",
-                                UnOp.not,
-                                [
-                                  M.call_closure (|
-                                    Ty.path "u64",
-                                    M.get_trait_method (|
-                                      "core::fmt::num::DisplayInt",
-                                      Ty.path "isize",
-                                      [],
-                                      [],
-                                      "to_u64",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.U64 1
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.path "u64",
+                                  UnOp.not,
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "u64",
+                                      M.get_trait_method (|
+                                        "core::fmt::num::DisplayInt",
+                                        Ty.path "isize",
+                                        [],
+                                        [],
+                                        "to_u64",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "isize" ])
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.path "u64");
+                              M.value_with_ty (Value.Integer IntegerKind.U64 1) (Ty.path "u64")
                             ]
                           |)))
                     ]
@@ -15942,10 +18147,12 @@ Module fmt.
                       [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                     M.get_function (| "core::fmt::num::imp::exp_u64", [], [] |),
                     [
-                      M.read (| n |);
-                      M.read (| is_nonnegative |);
-                      Value.Bool true;
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                      M.value_with_ty (M.read (| n |)) (Ty.path "u64");
+                      M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                      M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                     ]
                   |)
                 |)
@@ -16207,7 +18414,11 @@ Module fmt.
                           [],
                           []
                         |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |) ]
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Formatter" ])
+                        ]
                       |)
                     |),
                     [
@@ -16311,7 +18522,10 @@ Module fmt.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| fmt_prec |); M.read (| prec |) ]
+                                    [
+                                      M.value_with_ty (M.read (| fmt_prec |)) (Ty.path "usize");
+                                      M.value_with_ty (M.read (| prec |)) (Ty.path "usize")
+                                    ]
                                   |);
                                   M.call_closure (|
                                     Ty.path "usize",
@@ -16321,7 +18535,10 @@ Module fmt.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| prec |); M.read (| fmt_prec |) ]
+                                    [
+                                      M.value_with_ty (M.read (| prec |)) (Ty.path "usize");
+                                      M.value_with_ty (M.read (| fmt_prec |)) (Ty.path "usize")
+                                    ]
                                   |)
                                 ]
                             |)
@@ -16373,14 +18590,22 @@ Module fmt.
                                         []
                                       |),
                                       [
-                                        Value.mkStructRecord
-                                          "core::ops::range::Range"
-                                          []
-                                          [ Ty.path "usize" ]
-                                          [
-                                            ("start", Value.Integer IntegerKind.Usize 1);
-                                            ("end_", M.read (| subtracted_precision |))
-                                          ]
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.mkStructRecord
+                                              "core::ops::range::Range"
+                                              [
+                                                ("start", Value.Integer IntegerKind.Usize 1);
+                                                ("end_", M.read (| subtracted_precision |))
+                                              ])
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::Range")
+                                              []
+                                              [ Ty.path "usize" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::ops::range::Range")
+                                            []
+                                            [ Ty.path "usize" ])
                                       ]
                                     |)
                                   |),
@@ -16423,12 +18648,25 @@ Module fmt.
                                                         []
                                                       |),
                                                       [
-                                                        M.borrow (|
-                                                          Pointer.Kind.MutRef,
-                                                          M.deref (|
-                                                            M.borrow (| Pointer.Kind.MutRef, iter |)
-                                                          |)
-                                                        |)
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.MutRef,
+                                                            M.deref (|
+                                                              M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                iter
+                                                              |)
+                                                            |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "core::ops::range::Range")
+                                                                []
+                                                                [ Ty.path "usize" ]
+                                                            ])
                                                       ]
                                                     |)
                                                   |),
@@ -16651,7 +18889,11 @@ Module fmt.
                                                                         [],
                                                                         []
                                                                       |),
-                                                                      [ M.read (| n |) ]
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (M.read (| n |))
+                                                                          (Ty.path "u128")
+                                                                      ]
                                                                     |);
                                                                     M.call_closure (|
                                                                       Ty.path "u32",
@@ -16662,16 +18904,18 @@ Module fmt.
                                                                         []
                                                                       |),
                                                                       [
-                                                                        M.call_closure (|
-                                                                          Ty.path "u128",
-                                                                          BinOp.Wrap.sub,
-                                                                          [
-                                                                            M.read (| n |);
-                                                                            Value.Integer
-                                                                              IntegerKind.U128
-                                                                              1
-                                                                          ]
-                                                                        |)
+                                                                        M.value_with_ty
+                                                                          (M.call_closure (|
+                                                                            Ty.path "u128",
+                                                                            BinOp.Wrap.sub,
+                                                                            [
+                                                                              M.read (| n |);
+                                                                              Value.Integer
+                                                                                IntegerKind.U128
+                                                                                1
+                                                                            ]
+                                                                          |))
+                                                                          (Ty.path "u128")
                                                                       ]
                                                                     |)
                                                                   ]
@@ -16805,38 +19049,9 @@ Module fmt.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "slice")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                      []
-                                      [ Ty.path "u8" ]
-                                  ]
-                              ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 40 ]
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                        []
-                                        [ Ty.path "u8" ]
-                                    ]
-                                ])
-                              (Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
                                 (Ty.path "&")
                                 []
                                 [
@@ -16849,9 +19064,53 @@ Module fmt.
                                         []
                                         [ Ty.path "u8" ]
                                     ]
-                                ]),
-                            [ M.borrow (| Pointer.Kind.Ref, buf |) ]
-                          |)
+                                ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 40 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ Ty.path "u8" ]
+                                      ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ Ty.path "u8" ]
+                                      ]
+                                  ]),
+                              [ M.borrow (| Pointer.Kind.Ref, buf |) ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ Ty.path "u8" ]
+                                  ]
+                              ])
                         ]
                       |) in
                     let~ buf_ptr : Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ] :=
@@ -16867,38 +19126,9 @@ Module fmt.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "slice")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                      []
-                                      [ Ty.path "u8" ]
-                                  ]
-                              ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 40 ]
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                        []
-                                        [ Ty.path "u8" ]
-                                    ]
-                                ])
-                              (Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
                                 (Ty.path "&mut")
                                 []
                                 [
@@ -16911,14 +19141,58 @@ Module fmt.
                                         []
                                         [ Ty.path "u8" ]
                                     ]
-                                ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
-                              |)
-                            ]
-                          |)
+                                ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 40 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ Ty.path "u8" ]
+                                      ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ Ty.path "u8" ]
+                                      ]
+                                  ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
+                                |)
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ Ty.path "u8" ]
+                                  ]
+                              ])
                         ]
                       |) in
                     let~ lut_ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
@@ -16931,57 +19205,62 @@ Module fmt.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
                                 (Ty.path "&")
                                 []
-                                [
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 200 ]
-                                    [ Ty.path "u8" ]
-                                ])
-                              (Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.read (|
-                                    M.deref (|
-                                      M.read (|
-                                        get_constant (|
-                                          "core::fmt::num::DEC_DIGITS_LUT",
-                                          Ty.apply
-                                            (Ty.path "&")
-                                            []
-                                            [
-                                              Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "array")
-                                                    [ Value.Integer IntegerKind.Usize 200 ]
-                                                    [ Ty.path "u8" ]
-                                                ]
-                                            ]
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 200 ]
+                                      [ Ty.path "u8" ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.read (|
+                                      M.deref (|
+                                        M.read (|
+                                          get_constant (|
+                                            "core::fmt::num::DEC_DIGITS_LUT",
+                                            Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 200 ]
+                                                      [ Ty.path "u8" ]
+                                                  ]
+                                              ]
+                                          |)
                                         |)
                                       |)
                                     |)
                                   |)
                                 |)
-                              |)
-                            ]
-                          |)
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
@@ -17052,30 +19331,65 @@ Module fmt.
                                                   [ Ty.path "u8" ]
                                                 |),
                                                 [
-                                                  M.call_closure (|
-                                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                                    M.get_associated_function (|
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
                                                       Ty.apply
                                                         (Ty.path "*const")
                                                         []
                                                         [ Ty.path "u8" ],
-                                                      "add",
-                                                      [],
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path "*const")
+                                                          []
+                                                          [ Ty.path "u8" ],
+                                                        "add",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| lut_ptr |))
+                                                          (Ty.apply
+                                                            (Ty.path "*const")
+                                                            []
+                                                            [ Ty.path "u8" ]);
+                                                        M.value_with_ty
+                                                          (M.read (| d1 |))
+                                                          (Ty.path "usize")
+                                                      ]
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "*const")
                                                       []
-                                                    |),
-                                                    [ M.read (| lut_ptr |); M.read (| d1 |) ]
-                                                  |);
-                                                  M.call_closure (|
-                                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                    M.get_associated_function (|
+                                                      [ Ty.path "u8" ]);
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
                                                       Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                      "add",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                                  |);
-                                                  Value.Integer IntegerKind.Usize 2
+                                                      M.get_associated_function (|
+                                                        Ty.apply
+                                                          (Ty.path "*mut")
+                                                          []
+                                                          [ Ty.path "u8" ],
+                                                        "add",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (| buf_ptr |))
+                                                          (Ty.apply
+                                                            (Ty.path "*mut")
+                                                            []
+                                                            [ Ty.path "u8" ]);
+                                                        M.value_with_ty
+                                                          (M.read (| curr |))
+                                                          (Ty.path "usize")
+                                                      ]
+                                                    |))
+                                                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                                  M.value_with_ty
+                                                    (Value.Integer IntegerKind.Usize 2)
+                                                    (Ty.path "usize")
                                                 ]
                                               |) in
                                             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -17160,7 +19474,12 @@ Module fmt.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| buf_ptr |); M.read (| curr |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| buf_ptr |))
+                                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                              M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                            ]
                                           |)
                                         |),
                                         M.call_closure (|
@@ -17258,7 +19577,12 @@ Module fmt.
                                           [],
                                           []
                                         |),
-                                        [ M.read (| buf_ptr |); M.read (| curr |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| buf_ptr |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                          M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                        ]
                                       |)
                                     |),
                                     M.read (| UnsupportedLiteral |)
@@ -17295,7 +19619,12 @@ Module fmt.
                                   [],
                                   []
                                 |),
-                                [ M.read (| buf_ptr |); M.read (| curr |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| buf_ptr |))
+                                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                  M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                ]
                               |)
                             |),
                             M.call_closure (|
@@ -17329,38 +19658,9 @@ Module fmt.
                                   []
                                 |),
                                 [
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [
-                                        Ty.apply
-                                          (Ty.path "slice")
-                                          []
-                                          [
-                                            Ty.apply
-                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                              []
-                                              [ Ty.path "u8" ]
-                                          ]
-                                      ],
-                                    M.pointer_coercion
-                                      M.PointerCoercion.Unsize
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 40 ]
-                                            [
-                                              Ty.apply
-                                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                []
-                                                [ Ty.path "u8" ]
-                                            ]
-                                        ])
-                                      (Ty.apply
+                                  M.value_with_ty
+                                    (M.call_closure (|
+                                      Ty.apply
                                         (Ty.path "&")
                                         []
                                         [
@@ -17373,9 +19673,53 @@ Module fmt.
                                                 []
                                                 [ Ty.path "u8" ]
                                             ]
-                                        ]),
-                                    [ M.borrow (| Pointer.Kind.Ref, buf |) ]
-                                  |)
+                                        ],
+                                      M.pointer_coercion
+                                        M.PointerCoercion.Unsize
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 40 ]
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                  []
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ])
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "slice")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                                  []
+                                                  [ Ty.path "u8" ]
+                                              ]
+                                          ]),
+                                      [ M.borrow (| Pointer.Kind.Ref, buf |) ]
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "slice")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                              []
+                                              [ Ty.path "u8" ]
+                                          ]
+                                      ])
                                 ]
                               |);
                               M.read (| M.use curr |)
@@ -17397,26 +19741,33 @@ Module fmt.
                               [ Ty.path "u8" ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.MutToConstPointer
-                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
-                                [
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                    M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                  M.pointer_coercion
+                                    M.PointerCoercion.MutToConstPointer
+                                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                    (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
+                                  [
+                                    M.call_closure (|
                                       Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                      "add",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| buf_ptr |); M.read (| curr |) ]
-                                  |)
-                                ]
-                              |);
-                              M.read (| len |)
+                                      M.get_associated_function (|
+                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                        "add",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.read (| buf_ptr |))
+                                          (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                        M.value_with_ty (M.read (| curr |)) (Ty.path "usize")
+                                      ]
+                                    |)
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (M.read (| len |)) (Ty.path "usize")
                             ]
                           |)
                         |)
@@ -17463,38 +19814,9 @@ Module fmt.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [
-                                Ty.apply
-                                  (Ty.path "slice")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                      []
-                                      [ Ty.path "u8" ]
-                                  ]
-                              ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 3 ]
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                        []
-                                        [ Ty.path "u8" ]
-                                    ]
-                                ])
-                              (Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
                                 (Ty.path "&mut")
                                 []
                                 [
@@ -17507,14 +19829,58 @@ Module fmt.
                                         []
                                         [ Ty.path "u8" ]
                                     ]
-                                ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (| M.borrow (| Pointer.Kind.MutRef, exp_buf |) |)
-                              |)
-                            ]
-                          |)
+                                ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 3 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ Ty.path "u8" ]
+                                      ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "slice")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ Ty.path "u8" ]
+                                      ]
+                                  ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.borrow (| Pointer.Kind.MutRef, exp_buf |) |)
+                                |)
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                      []
+                                      [ Ty.path "u8" ]
+                                  ]
+                              ])
                         ]
                       |) in
                     let~ exp_slice :
@@ -17534,7 +19900,14 @@ Module fmt.
                                   [],
                                   []
                                 |),
-                                [ M.read (| exp_ptr |); Value.Integer IntegerKind.Usize 0 ]
+                                [
+                                  M.value_with_ty
+                                    (M.read (| exp_ptr |))
+                                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                  M.value_with_ty
+                                    (Value.Integer IntegerKind.Usize 0)
+                                    (Ty.path "usize")
+                                ]
                               |)
                             |),
                             M.match_operator (|
@@ -17592,8 +19965,12 @@ Module fmt.
                                               []
                                             |),
                                             [
-                                              M.read (| exp_ptr |);
-                                              Value.Integer IntegerKind.Usize 1
+                                              M.value_with_ty
+                                                (M.read (| exp_ptr |))
+                                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.Usize 1)
+                                                (Ty.path "usize")
                                             ]
                                           |)
                                         |),
@@ -17626,30 +20003,45 @@ Module fmt.
                                           [ Ty.path "u8" ]
                                         |),
                                         [
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                            M.get_associated_function (|
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                              "add",
-                                              [],
-                                              []
-                                            |),
-                                            [ M.read (| lut_ptr |); M.read (| off |) ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                            M.get_associated_function (|
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| lut_ptr |))
+                                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                                M.value_with_ty (M.read (| off |)) (Ty.path "usize")
+                                              ]
+                                            |))
+                                            (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                              "add",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.read (| exp_ptr |);
-                                              Value.Integer IntegerKind.Usize 1
-                                            ]
-                                          |);
-                                          Value.Integer IntegerKind.Usize 2
+                                              M.get_associated_function (|
+                                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                                "add",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| exp_ptr |))
+                                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                                M.value_with_ty
+                                                  (Value.Integer IntegerKind.Usize 1)
+                                                  (Ty.path "usize")
+                                              ]
+                                            |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                          M.value_with_ty
+                                            (Value.Integer IntegerKind.Usize 2)
+                                            (Ty.path "usize")
                                         ]
                                       |) in
                                     M.alloc (| Ty.path "usize", Value.Integer IntegerKind.Usize 3 |)
@@ -17672,15 +20064,17 @@ Module fmt.
                               [ Ty.path "u8" ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.pointer_coercion
-                                  M.PointerCoercion.MutToConstPointer
-                                  (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
-                                [ M.read (| exp_ptr |) ]
-                              |);
-                              M.read (| len |)
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                  M.pointer_coercion
+                                    M.PointerCoercion.MutToConstPointer
+                                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                    (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
+                                  [ M.read (| exp_ptr |) ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (M.read (| len |)) (Ty.path "usize")
                             ]
                           |)
                         |)
@@ -17704,31 +20098,31 @@ Module fmt.
                             [ Ty.path "core::num::fmt::Part" ],
                           Value.Array
                             [
-                              Value.StructTuple
-                                "core::num::fmt::Part::Copy"
-                                []
-                                []
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.read (| buf_slice |) |)
-                                  |)
-                                ];
-                              Value.StructTuple
-                                "core::num::fmt::Part::Zero"
-                                []
-                                []
-                                [ M.read (| added_precision |) ];
-                              Value.StructTuple
-                                "core::num::fmt::Part::Copy"
-                                []
-                                []
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (| M.read (| exp_slice |) |)
-                                  |)
-                                ]
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::num::fmt::Part::Copy"
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| buf_slice |) |)
+                                    |)
+                                  ])
+                                (Ty.path "core::num::fmt::Part");
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::num::fmt::Part::Zero"
+                                  [ M.read (| added_precision |) ])
+                                (Ty.path "core::num::fmt::Part");
+                              M.value_with_ty
+                                (Value.StructTuple
+                                  "core::num::fmt::Part::Copy"
+                                  [
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| exp_slice |) |)
+                                    |)
+                                  ])
+                                (Ty.path "core::num::fmt::Part")
                             ]
                         |)
                       |) in
@@ -17776,10 +20170,15 @@ Module fmt.
                                                     []
                                                   |),
                                                   [
-                                                    M.borrow (|
-                                                      Pointer.Kind.Ref,
-                                                      M.deref (| M.read (| f |) |)
-                                                    |)
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (| M.read (| f |) |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [ Ty.path "core::fmt::Formatter" ])
                                                   ]
                                                 |)
                                               |)) in
@@ -17802,39 +20201,44 @@ Module fmt.
                         ]
                       |) in
                     let~ formatted : Ty.path "core::num::fmt::Formatted" :=
-                      Value.mkStructRecord
-                        "core::num::fmt::Formatted"
-                        []
-                        []
-                        [
-                          ("sign",
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| sign |) |) |));
-                          ("parts",
-                            M.call_closure (|
-                              Ty.apply
-                                (Ty.path "&")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::num::fmt::Part" ]
-                                ],
-                              M.pointer_coercion
-                                M.PointerCoercion.Unsize
-                                (Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "array")
-                                      [ Value.Integer IntegerKind.Usize 3 ]
-                                      [ Ty.path "core::num::fmt::Part" ]
-                                  ])
-                                (Ty.apply
+                      M.value_with_ty
+                        (Value.mkStructRecord
+                          "core::num::fmt::Formatted"
+                          [
+                            ("sign",
+                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| sign |) |) |));
+                            ("parts",
+                              M.call_closure (|
+                                Ty.apply
                                   (Ty.path "&")
                                   []
                                   [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::num::fmt::Part" ]
-                                  ]),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| parts |) |) |) ]
-                            |))
-                        ] in
+                                  ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 3 ]
+                                        [ Ty.path "core::num::fmt::Part" ]
+                                    ])
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "slice")
+                                        []
+                                        [ Ty.path "core::num::fmt::Part" ]
+                                    ]),
+                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| parts |) |) |)
+                                ]
+                              |))
+                          ])
+                        (Ty.path "core::num::fmt::Formatted") in
                     M.alloc (|
                       Ty.apply
                         (Ty.path "core::result::Result")
@@ -17852,11 +20256,15 @@ Module fmt.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| M.borrow (| Pointer.Kind.Ref, formatted |) |)
-                          |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| M.borrow (| Pointer.Kind.Ref, formatted |) |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "core::num::fmt::Formatted" ])
                         ]
                       |)
                     |)
@@ -17920,7 +20328,11 @@ Module fmt.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "i128" ])
+                          ]
                         |)));
                     fun γ =>
                       ltac:(M.monadic
@@ -17928,27 +20340,35 @@ Module fmt.
                           Ty.path "u128",
                           M.get_associated_function (| Ty.path "u128", "wrapping_add", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "u128",
-                              UnOp.not,
-                              [
-                                M.call_closure (|
-                                  Ty.path "u128",
-                                  M.get_trait_method (|
-                                    "core::fmt::num::DisplayInt",
-                                    Ty.path "i128",
-                                    [],
-                                    [],
-                                    "to_u128",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                                  ]
-                                |)
-                              ]
-                            |);
-                            Value.Integer IntegerKind.U128 1
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "u128",
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "u128",
+                                    M.get_trait_method (|
+                                      "core::fmt::num::DisplayInt",
+                                      Ty.path "i128",
+                                      [],
+                                      [],
+                                      "to_u128",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "i128" ])
+                                    ]
+                                  |)
+                                ]
+                              |))
+                              (Ty.path "u128");
+                            M.value_with_ty (Value.Integer IntegerKind.U128 1) (Ty.path "u128")
                           ]
                         |)))
                   ]
@@ -17965,10 +20385,12 @@ Module fmt.
                     [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                   M.get_function (| "core::fmt::num::exp_u128", [], [] |),
                   [
-                    M.read (| n |);
-                    M.read (| is_nonnegative |);
-                    Value.Bool false;
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                    M.value_with_ty (M.read (| n |)) (Ty.path "u128");
+                    M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                    M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                   ]
                 |)
               |)
@@ -18034,7 +20456,11 @@ Module fmt.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "u128" ])
+                          ]
                         |)));
                     fun γ =>
                       ltac:(M.monadic
@@ -18042,27 +20468,35 @@ Module fmt.
                           Ty.path "u128",
                           M.get_associated_function (| Ty.path "u128", "wrapping_add", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "u128",
-                              UnOp.not,
-                              [
-                                M.call_closure (|
-                                  Ty.path "u128",
-                                  M.get_trait_method (|
-                                    "core::fmt::num::DisplayInt",
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "u128",
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
                                     Ty.path "u128",
-                                    [],
-                                    [],
-                                    "to_u128",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                                  ]
-                                |)
-                              ]
-                            |);
-                            Value.Integer IntegerKind.U128 1
+                                    M.get_trait_method (|
+                                      "core::fmt::num::DisplayInt",
+                                      Ty.path "u128",
+                                      [],
+                                      [],
+                                      "to_u128",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "u128" ])
+                                    ]
+                                  |)
+                                ]
+                              |))
+                              (Ty.path "u128");
+                            M.value_with_ty (Value.Integer IntegerKind.U128 1) (Ty.path "u128")
                           ]
                         |)))
                   ]
@@ -18079,10 +20513,12 @@ Module fmt.
                     [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                   M.get_function (| "core::fmt::num::exp_u128", [], [] |),
                   [
-                    M.read (| n |);
-                    M.read (| is_nonnegative |);
-                    Value.Bool false;
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                    M.value_with_ty (M.read (| n |)) (Ty.path "u128");
+                    M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                    M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                   ]
                 |)
               |)
@@ -18148,7 +20584,11 @@ Module fmt.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "i128" ])
+                          ]
                         |)));
                     fun γ =>
                       ltac:(M.monadic
@@ -18156,27 +20596,35 @@ Module fmt.
                           Ty.path "u128",
                           M.get_associated_function (| Ty.path "u128", "wrapping_add", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "u128",
-                              UnOp.not,
-                              [
-                                M.call_closure (|
-                                  Ty.path "u128",
-                                  M.get_trait_method (|
-                                    "core::fmt::num::DisplayInt",
-                                    Ty.path "i128",
-                                    [],
-                                    [],
-                                    "to_u128",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                                  ]
-                                |)
-                              ]
-                            |);
-                            Value.Integer IntegerKind.U128 1
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "u128",
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "u128",
+                                    M.get_trait_method (|
+                                      "core::fmt::num::DisplayInt",
+                                      Ty.path "i128",
+                                      [],
+                                      [],
+                                      "to_u128",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "i128" ])
+                                    ]
+                                  |)
+                                ]
+                              |))
+                              (Ty.path "u128");
+                            M.value_with_ty (Value.Integer IntegerKind.U128 1) (Ty.path "u128")
                           ]
                         |)))
                   ]
@@ -18193,10 +20641,12 @@ Module fmt.
                     [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                   M.get_function (| "core::fmt::num::exp_u128", [], [] |),
                   [
-                    M.read (| n |);
-                    M.read (| is_nonnegative |);
-                    Value.Bool true;
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                    M.value_with_ty (M.read (| n |)) (Ty.path "u128");
+                    M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                    M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                   ]
                 |)
               |)
@@ -18262,7 +20712,11 @@ Module fmt.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "u128" ])
+                          ]
                         |)));
                     fun γ =>
                       ltac:(M.monadic
@@ -18270,27 +20724,35 @@ Module fmt.
                           Ty.path "u128",
                           M.get_associated_function (| Ty.path "u128", "wrapping_add", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "u128",
-                              UnOp.not,
-                              [
-                                M.call_closure (|
-                                  Ty.path "u128",
-                                  M.get_trait_method (|
-                                    "core::fmt::num::DisplayInt",
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "u128",
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
                                     Ty.path "u128",
-                                    [],
-                                    [],
-                                    "to_u128",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                                  ]
-                                |)
-                              ]
-                            |);
-                            Value.Integer IntegerKind.U128 1
+                                    M.get_trait_method (|
+                                      "core::fmt::num::DisplayInt",
+                                      Ty.path "u128",
+                                      [],
+                                      [],
+                                      "to_u128",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "u128" ])
+                                    ]
+                                  |)
+                                ]
+                              |))
+                              (Ty.path "u128");
+                            M.value_with_ty (Value.Integer IntegerKind.U128 1) (Ty.path "u128")
                           ]
                         |)))
                   ]
@@ -18307,10 +20769,12 @@ Module fmt.
                     [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                   M.get_function (| "core::fmt::num::exp_u128", [], [] |),
                   [
-                    M.read (| n |);
-                    M.read (| is_nonnegative |);
-                    Value.Bool true;
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                    M.value_with_ty (M.read (| n |)) (Ty.path "u128");
+                    M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                    M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                   ]
                 |)
               |)
@@ -18445,38 +20909,9 @@ Module fmt.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&mut")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "slice")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                              []
-                              [ Ty.path "u8" ]
-                          ]
-                      ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ N ]
-                            [
-                              Ty.apply
-                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                []
-                                [ Ty.path "u8" ]
-                            ]
-                        ])
-                      (Ty.apply
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
                         (Ty.path "&mut")
                         []
                         [
@@ -18489,9 +20924,53 @@ Module fmt.
                                 []
                                 [ Ty.path "u8" ]
                             ]
-                        ]),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| buf |) |) |) ]
-                  |)
+                        ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ N ]
+                              [
+                                Ty.apply
+                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                  []
+                                  [ Ty.path "u8" ]
+                              ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                  []
+                                  [ Ty.path "u8" ]
+                              ]
+                          ]),
+                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| buf |) |) |) ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "slice")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                              []
+                              [ Ty.path "u8" ]
+                          ]
+                      ])
                 ]
               |) in
             let~ lut_ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
@@ -18504,54 +20983,56 @@ Module fmt.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 200 ]
-                            [ Ty.path "u8" ]
-                        ])
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.read (|
-                            M.deref (|
-                              M.read (|
-                                get_constant (|
-                                  "core::fmt::num::DEC_DIGITS_LUT",
-                                  Ty.apply
-                                    (Ty.path "&")
-                                    []
-                                    [
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "array")
-                                            [ Value.Integer IntegerKind.Usize 200 ]
-                                            [ Ty.path "u8" ]
-                                        ]
-                                    ]
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 200 ]
+                              [ Ty.path "u8" ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.read (|
+                              M.deref (|
+                                M.read (|
+                                  get_constant (|
+                                    "core::fmt::num::DEC_DIGITS_LUT",
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "array")
+                                              [ Value.Integer IntegerKind.Usize 200 ]
+                                              [ Ty.path "u8" ]
+                                          ]
+                                      ]
+                                  |)
                                 |)
                               |)
                             |)
                           |)
                         |)
-                      |)
-                    ]
-                  |)
+                      ]
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -18585,7 +21066,11 @@ Module fmt.
                         M.call_closure (|
                           Ty.path "never",
                           M.get_function (| "core::panicking::panic", [], [] |),
-                          [ mk_str (| "assertion failed: *curr > 19" |) ]
+                          [
+                            M.value_with_ty
+                              (mk_str (| "assertion failed: *curr > 19" |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
                         |)
                       |)));
                   fun γ => ltac:(M.monadic (Value.Tuple []))
@@ -18838,37 +21323,52 @@ Module fmt.
                               [ Ty.path "u8" ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| lut_ptr |); M.cast (Ty.path "usize") (M.read (| d1 |)) ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| lut_ptr |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.cast (Ty.path "usize") (M.read (| d1 |)))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| buf_ptr |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| M.deref (| M.read (| curr |) |) |);
-                                      Value.Integer IntegerKind.Usize 0
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.Usize 2
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| buf_ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          M.read (| M.deref (| M.read (| curr |) |) |);
+                                          Value.Integer IntegerKind.Usize 0
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 2) (Ty.path "usize")
                             ]
                           |) in
                         let~ _ : Ty.tuple [] :=
@@ -18880,37 +21380,52 @@ Module fmt.
                               [ Ty.path "u8" ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| lut_ptr |); M.cast (Ty.path "usize") (M.read (| d2 |)) ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| lut_ptr |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.cast (Ty.path "usize") (M.read (| d2 |)))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| buf_ptr |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| M.deref (| M.read (| curr |) |) |);
-                                      Value.Integer IntegerKind.Usize 2
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.Usize 2
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| buf_ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          M.read (| M.deref (| M.read (| curr |) |) |);
+                                          Value.Integer IntegerKind.Usize 2
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 2) (Ty.path "usize")
                             ]
                           |) in
                         let~ _ : Ty.tuple [] :=
@@ -18922,37 +21437,52 @@ Module fmt.
                               [ Ty.path "u8" ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| lut_ptr |); M.cast (Ty.path "usize") (M.read (| d3 |)) ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| lut_ptr |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.cast (Ty.path "usize") (M.read (| d3 |)))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| buf_ptr |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| M.deref (| M.read (| curr |) |) |);
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.Usize 2
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| buf_ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          M.read (| M.deref (| M.read (| curr |) |) |);
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 2) (Ty.path "usize")
                             ]
                           |) in
                         let~ _ : Ty.tuple [] :=
@@ -18964,37 +21494,52 @@ Module fmt.
                               [ Ty.path "u8" ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| lut_ptr |); M.cast (Ty.path "usize") (M.read (| d4 |)) ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| lut_ptr |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.cast (Ty.path "usize") (M.read (| d4 |)))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| buf_ptr |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| M.deref (| M.read (| curr |) |) |);
-                                      Value.Integer IntegerKind.Usize 6
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.Usize 2
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| buf_ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          M.read (| M.deref (| M.read (| curr |) |) |);
+                                          Value.Integer IntegerKind.Usize 6
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 2) (Ty.path "usize")
                             ]
                           |) in
                         let~ _ : Ty.tuple [] :=
@@ -19006,37 +21551,52 @@ Module fmt.
                               [ Ty.path "u8" ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| lut_ptr |); M.cast (Ty.path "usize") (M.read (| d5 |)) ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| lut_ptr |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.cast (Ty.path "usize") (M.read (| d5 |)))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| buf_ptr |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| M.deref (| M.read (| curr |) |) |);
-                                      Value.Integer IntegerKind.Usize 8
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.Usize 2
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| buf_ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          M.read (| M.deref (| M.read (| curr |) |) |);
+                                          Value.Integer IntegerKind.Usize 8
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 2) (Ty.path "usize")
                             ]
                           |) in
                         let~ _ : Ty.tuple [] :=
@@ -19048,37 +21608,52 @@ Module fmt.
                               [ Ty.path "u8" ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| lut_ptr |); M.cast (Ty.path "usize") (M.read (| d6 |)) ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| lut_ptr |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.cast (Ty.path "usize") (M.read (| d6 |)))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| buf_ptr |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| M.deref (| M.read (| curr |) |) |);
-                                      Value.Integer IntegerKind.Usize 10
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.Usize 2
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| buf_ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          M.read (| M.deref (| M.read (| curr |) |) |);
+                                          Value.Integer IntegerKind.Usize 10
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 2) (Ty.path "usize")
                             ]
                           |) in
                         let~ _ : Ty.tuple [] :=
@@ -19090,37 +21665,52 @@ Module fmt.
                               [ Ty.path "u8" ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| lut_ptr |); M.cast (Ty.path "usize") (M.read (| d7 |)) ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| lut_ptr |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.cast (Ty.path "usize") (M.read (| d7 |)))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| buf_ptr |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| M.deref (| M.read (| curr |) |) |);
-                                      Value.Integer IntegerKind.Usize 12
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.Usize 2
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| buf_ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          M.read (| M.deref (| M.read (| curr |) |) |);
+                                          Value.Integer IntegerKind.Usize 12
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 2) (Ty.path "usize")
                             ]
                           |) in
                         let~ _ : Ty.tuple [] :=
@@ -19132,37 +21722,52 @@ Module fmt.
                               [ Ty.path "u8" ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| lut_ptr |); M.cast (Ty.path "usize") (M.read (| d8 |)) ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| lut_ptr |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.cast (Ty.path "usize") (M.read (| d8 |)))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| buf_ptr |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| M.deref (| M.read (| curr |) |) |);
-                                      Value.Integer IntegerKind.Usize 14
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.Usize 2
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| buf_ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          M.read (| M.deref (| M.read (| curr |) |) |);
+                                          Value.Integer IntegerKind.Usize 14
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 2) (Ty.path "usize")
                             ]
                           |) in
                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -19325,37 +21930,52 @@ Module fmt.
                               [ Ty.path "u8" ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| lut_ptr |); M.cast (Ty.path "usize") (M.read (| d1 |)) ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| lut_ptr |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.cast (Ty.path "usize") (M.read (| d1 |)))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| buf_ptr |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| M.deref (| M.read (| curr |) |) |);
-                                      Value.Integer IntegerKind.Usize 0
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.Usize 2
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| buf_ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          M.read (| M.deref (| M.read (| curr |) |) |);
+                                          Value.Integer IntegerKind.Usize 0
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 2) (Ty.path "usize")
                             ]
                           |) in
                         let~ _ : Ty.tuple [] :=
@@ -19367,37 +21987,52 @@ Module fmt.
                               [ Ty.path "u8" ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| lut_ptr |); M.cast (Ty.path "usize") (M.read (| d2 |)) ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| lut_ptr |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.cast (Ty.path "usize") (M.read (| d2 |)))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| buf_ptr |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| M.deref (| M.read (| curr |) |) |);
-                                      Value.Integer IntegerKind.Usize 2
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.Usize 2
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| buf_ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          M.read (| M.deref (| M.read (| curr |) |) |);
+                                          Value.Integer IntegerKind.Usize 2
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 2) (Ty.path "usize")
                             ]
                           |) in
                         let~ _ : Ty.tuple [] :=
@@ -19409,37 +22044,52 @@ Module fmt.
                               [ Ty.path "u8" ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| lut_ptr |); M.cast (Ty.path "usize") (M.read (| d3 |)) ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| lut_ptr |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.cast (Ty.path "usize") (M.read (| d3 |)))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| buf_ptr |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| M.deref (| M.read (| curr |) |) |);
-                                      Value.Integer IntegerKind.Usize 4
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.Usize 2
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| buf_ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          M.read (| M.deref (| M.read (| curr |) |) |);
+                                          Value.Integer IntegerKind.Usize 4
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 2) (Ty.path "usize")
                             ]
                           |) in
                         let~ _ : Ty.tuple [] :=
@@ -19451,37 +22101,52 @@ Module fmt.
                               [ Ty.path "u8" ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| lut_ptr |); M.cast (Ty.path "usize") (M.read (| d4 |)) ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| lut_ptr |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.cast (Ty.path "usize") (M.read (| d4 |)))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| buf_ptr |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| M.deref (| M.read (| curr |) |) |);
-                                      Value.Integer IntegerKind.Usize 6
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.Usize 2
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| buf_ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          M.read (| M.deref (| M.read (| curr |) |) |);
+                                          Value.Integer IntegerKind.Usize 6
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 2) (Ty.path "usize")
                             ]
                           |) in
                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -19579,37 +22244,52 @@ Module fmt.
                               [ Ty.path "u8" ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| lut_ptr |); M.cast (Ty.path "usize") (M.read (| d1 |)) ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| lut_ptr |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.cast (Ty.path "usize") (M.read (| d1 |)))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| buf_ptr |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| M.deref (| M.read (| curr |) |) |);
-                                      Value.Integer IntegerKind.Usize 0
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.Usize 2
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| buf_ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          M.read (| M.deref (| M.read (| curr |) |) |);
+                                          Value.Integer IntegerKind.Usize 0
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 2) (Ty.path "usize")
                             ]
                           |) in
                         let~ _ : Ty.tuple [] :=
@@ -19621,37 +22301,52 @@ Module fmt.
                               [ Ty.path "u8" ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| lut_ptr |); M.cast (Ty.path "usize") (M.read (| d2 |)) ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| lut_ptr |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.cast (Ty.path "usize") (M.read (| d2 |)))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.read (| buf_ptr |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.add,
-                                    [
-                                      M.read (| M.deref (| M.read (| curr |) |) |);
-                                      Value.Integer IntegerKind.Usize 2
-                                    ]
-                                  |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.Usize 2
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| buf_ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.add,
+                                        [
+                                          M.read (| M.deref (| M.read (| curr |) |) |);
+                                          Value.Integer IntegerKind.Usize 2
+                                        ]
+                                      |))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 2) (Ty.path "usize")
                             ]
                           |) in
                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -19721,28 +22416,45 @@ Module fmt.
                               [ Ty.path "u8" ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| lut_ptr |); M.cast (Ty.path "usize") (M.read (| d1 |)) ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| lut_ptr |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.cast (Ty.path "usize") (M.read (| d1 |)))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| buf_ptr |); M.read (| M.deref (| M.read (| curr |) |) |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.Usize 2
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| buf_ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.read (| M.deref (| M.read (| curr |) |) |))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 2) (Ty.path "usize")
                             ]
                           |) in
                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -19791,7 +22503,13 @@ Module fmt.
                                   [],
                                   []
                                 |),
-                                [ M.read (| buf_ptr |); M.read (| M.deref (| M.read (| curr |) |) |)
+                                [
+                                  M.value_with_ty
+                                    (M.read (| buf_ptr |))
+                                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                  M.value_with_ty
+                                    (M.read (| M.deref (| M.read (| curr |) |) |))
+                                    (Ty.path "usize")
                                 ]
                               |)
                             |),
@@ -19834,28 +22552,45 @@ Module fmt.
                               [ Ty.path "u8" ]
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| lut_ptr |); M.cast (Ty.path "usize") (M.read (| d1 |)) ]
-                              |);
-                              M.call_closure (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| lut_ptr |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.cast (Ty.path "usize") (M.read (| d1 |)))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                  "add",
-                                  [],
-                                  []
-                                |),
-                                [ M.read (| buf_ptr |); M.read (| M.deref (| M.read (| curr |) |) |)
-                                ]
-                              |);
-                              Value.Integer IntegerKind.Usize 2
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                    "add",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| buf_ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.read (| M.deref (| M.read (| curr |) |) |))
+                                      (Ty.path "usize")
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (Value.Integer IntegerKind.Usize 2) (Ty.path "usize")
                             ]
                           |) in
                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -19894,9 +22629,11 @@ Module fmt.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_function (| "core::fmt::num::fmt_u128", [], [] |),
               [
-                M.read (| M.deref (| M.read (| self |) |) |);
-                Value.Bool true;
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "u128");
+                M.value_with_ty (Value.Bool true) (Ty.path "bool");
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -19960,7 +22697,11 @@ Module fmt.
                             [],
                             []
                           |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "i128" ])
+                          ]
                         |)));
                     fun γ =>
                       ltac:(M.monadic
@@ -19968,27 +22709,35 @@ Module fmt.
                           Ty.path "u128",
                           M.get_associated_function (| Ty.path "u128", "wrapping_add", [], [] |),
                           [
-                            M.call_closure (|
-                              Ty.path "u128",
-                              UnOp.not,
-                              [
-                                M.call_closure (|
-                                  Ty.path "u128",
-                                  M.get_trait_method (|
-                                    "core::fmt::num::DisplayInt",
-                                    Ty.path "i128",
-                                    [],
-                                    [],
-                                    "to_u128",
-                                    [],
-                                    []
-                                  |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                                  ]
-                                |)
-                              ]
-                            |);
-                            Value.Integer IntegerKind.U128 1
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "u128",
+                                UnOp.not,
+                                [
+                                  M.call_closure (|
+                                    Ty.path "u128",
+                                    M.get_trait_method (|
+                                      "core::fmt::num::DisplayInt",
+                                      Ty.path "i128",
+                                      [],
+                                      [],
+                                      "to_u128",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "i128" ])
+                                    ]
+                                  |)
+                                ]
+                              |))
+                              (Ty.path "u128");
+                            M.value_with_ty (Value.Integer IntegerKind.U128 1) (Ty.path "u128")
                           ]
                         |)))
                   ]
@@ -20005,9 +22754,11 @@ Module fmt.
                     [ Ty.tuple []; Ty.path "core::fmt::Error" ],
                   M.get_function (| "core::fmt::num::fmt_u128", [], [] |),
                   [
-                    M.read (| n |);
-                    M.read (| is_nonnegative |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |)
+                    M.value_with_ty (M.read (| n |)) (Ty.path "u128");
+                    M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ])
                   ]
                 |)
               |)
@@ -20118,38 +22869,9 @@ Module fmt.
                   []
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply
-                      (Ty.path "&")
-                      []
-                      [
-                        Ty.apply
-                          (Ty.path "slice")
-                          []
-                          [
-                            Ty.apply
-                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                              []
-                              [ Ty.path "u8" ]
-                          ]
-                      ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
-                        (Ty.path "&")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 39 ]
-                            [
-                              Ty.apply
-                                (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                []
-                                [ Ty.path "u8" ]
-                            ]
-                        ])
-                      (Ty.apply
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
                         (Ty.path "&")
                         []
                         [
@@ -20162,9 +22884,53 @@ Module fmt.
                                 []
                                 [ Ty.path "u8" ]
                             ]
-                        ]),
-                    [ M.borrow (| Pointer.Kind.Ref, buf |) ]
-                  |)
+                        ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 39 ]
+                              [
+                                Ty.apply
+                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                  []
+                                  [ Ty.path "u8" ]
+                              ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "slice")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                  []
+                                  [ Ty.path "u8" ]
+                              ]
+                          ]),
+                      [ M.borrow (| Pointer.Kind.Ref, buf |) ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "slice")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                              []
+                              [ Ty.path "u8" ]
+                          ]
+                      ])
                 ]
               |) in
             M.alloc (|
@@ -20182,7 +22948,7 @@ Module fmt.
                   M.call_closure (|
                     Ty.tuple [ Ty.path "u128"; Ty.path "u64" ],
                     M.get_function (| "core::fmt::num::udiv_1e19", [], [] |),
-                    [ M.read (| n |) ]
+                    [ M.value_with_ty (M.read (| n |)) (Ty.path "u128") ]
                   |)
                 |),
                 [
@@ -20202,15 +22968,32 @@ Module fmt.
                               []
                             |),
                             [
-                              M.read (| rem |);
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (| M.borrow (| Pointer.Kind.MutRef, curr |) |)
-                              |)
+                              M.value_with_ty (M.read (| rem |)) (Ty.path "u64");
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.borrow (| Pointer.Kind.MutRef, buf |) |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 39 ]
+                                      [
+                                        Ty.apply
+                                          (Ty.path "core::mem::maybe_uninit::MaybeUninit")
+                                          []
+                                          [ Ty.path "u8" ]
+                                      ]
+                                  ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (| M.borrow (| Pointer.Kind.MutRef, curr |) |)
+                                |))
+                                (Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ])
                             ]
                           |) in
                         let~ _ : Ty.tuple [] :=
@@ -20258,40 +23041,9 @@ Module fmt.
                                               []
                                             |),
                                             [
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "slice")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "core::mem::maybe_uninit::MaybeUninit")
-                                                          []
-                                                          [ Ty.path "u8" ]
-                                                      ]
-                                                  ],
-                                                M.pointer_coercion
-                                                  M.PointerCoercion.Unsize
-                                                  (Ty.apply
-                                                    (Ty.path "&")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 39 ]
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path
-                                                              "core::mem::maybe_uninit::MaybeUninit")
-                                                            []
-                                                            [ Ty.path "u8" ]
-                                                        ]
-                                                    ])
-                                                  (Ty.apply
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.apply
                                                     (Ty.path "&")
                                                     []
                                                     [
@@ -20305,9 +23057,56 @@ Module fmt.
                                                             []
                                                             [ Ty.path "u8" ]
                                                         ]
-                                                    ]),
-                                                [ M.borrow (| Pointer.Kind.Ref, buf |) ]
-                                              |)
+                                                    ],
+                                                  M.pointer_coercion
+                                                    M.PointerCoercion.Unsize
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "array")
+                                                          [ Value.Integer IntegerKind.Usize 39 ]
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::mem::maybe_uninit::MaybeUninit")
+                                                              []
+                                                              [ Ty.path "u8" ]
+                                                          ]
+                                                      ])
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::mem::maybe_uninit::MaybeUninit")
+                                                              []
+                                                              [ Ty.path "u8" ]
+                                                          ]
+                                                      ]),
+                                                  [ M.borrow (| Pointer.Kind.Ref, buf |) ]
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path "slice")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path
+                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                          []
+                                                          [ Ty.path "u8" ]
+                                                      ]
+                                                  ])
                                             ]
                                           |);
                                           Value.Integer IntegerKind.Usize 19
@@ -20324,100 +23123,135 @@ Module fmt.
                                               [ Ty.path "u8" ]
                                             |),
                                             [
-                                              M.call_closure (|
-                                                Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                M.get_associated_function (|
+                                              M.value_with_ty
+                                                (M.call_closure (|
                                                   Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                  "add",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.call_closure (|
+                                                  M.get_associated_function (|
                                                     Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                                    M.get_associated_function (|
-                                                      Ty.apply
-                                                        (Ty.path
-                                                          "core::mem::maybe_uninit::MaybeUninit")
-                                                        []
-                                                        [ Ty.path "u8" ],
-                                                      "slice_as_mut_ptr",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.call_closure (|
+                                                    "add",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.call_closure (|
                                                         Ty.apply
-                                                          (Ty.path "&mut")
+                                                          (Ty.path "*mut")
                                                           []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path "slice")
-                                                              []
-                                                              [
-                                                                Ty.apply
-                                                                  (Ty.path
-                                                                    "core::mem::maybe_uninit::MaybeUninit")
-                                                                  []
-                                                                  [ Ty.path "u8" ]
-                                                              ]
-                                                          ],
-                                                        M.pointer_coercion
-                                                          M.PointerCoercion.Unsize
-                                                          (Ty.apply
-                                                            (Ty.path "&mut")
+                                                          [ Ty.path "u8" ],
+                                                        M.get_associated_function (|
+                                                          Ty.apply
+                                                            (Ty.path
+                                                              "core::mem::maybe_uninit::MaybeUninit")
                                                             []
-                                                            [
+                                                            [ Ty.path "u8" ],
+                                                          "slice_as_mut_ptr",
+                                                          [],
+                                                          []
+                                                        |),
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
                                                               Ty.apply
-                                                                (Ty.path "array")
-                                                                [ Value.Integer IntegerKind.Usize 39
-                                                                ]
-                                                                [
-                                                                  Ty.apply
-                                                                    (Ty.path
-                                                                      "core::mem::maybe_uninit::MaybeUninit")
-                                                                    []
-                                                                    [ Ty.path "u8" ]
-                                                                ]
-                                                            ])
-                                                          (Ty.apply
-                                                            (Ty.path "&mut")
-                                                            []
-                                                            [
-                                                              Ty.apply
-                                                                (Ty.path "slice")
+                                                                (Ty.path "&mut")
                                                                 []
                                                                 [
                                                                   Ty.apply
-                                                                    (Ty.path
-                                                                      "core::mem::maybe_uninit::MaybeUninit")
+                                                                    (Ty.path "slice")
                                                                     []
-                                                                    [ Ty.path "u8" ]
-                                                                ]
-                                                            ]),
-                                                        [
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            M.deref (|
-                                                              M.borrow (|
-                                                                Pointer.Kind.MutRef,
-                                                                buf
-                                                              |)
-                                                            |)
-                                                          |)
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "core::mem::maybe_uninit::MaybeUninit")
+                                                                        []
+                                                                        [ Ty.path "u8" ]
+                                                                    ]
+                                                                ],
+                                                              M.pointer_coercion
+                                                                M.PointerCoercion.Unsize
+                                                                (Ty.apply
+                                                                  (Ty.path "&mut")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "array")
+                                                                      [
+                                                                        Value.Integer
+                                                                          IntegerKind.Usize
+                                                                          39
+                                                                      ]
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                                          []
+                                                                          [ Ty.path "u8" ]
+                                                                      ]
+                                                                  ])
+                                                                (Ty.apply
+                                                                  (Ty.path "&mut")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path "slice")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path
+                                                                            "core::mem::maybe_uninit::MaybeUninit")
+                                                                          []
+                                                                          [ Ty.path "u8" ]
+                                                                      ]
+                                                                  ]),
+                                                              [
+                                                                M.borrow (|
+                                                                  Pointer.Kind.MutRef,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.MutRef,
+                                                                      buf
+                                                                    |)
+                                                                  |)
+                                                                |)
+                                                              ]
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "slice")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "core::mem::maybe_uninit::MaybeUninit")
+                                                                      []
+                                                                      [ Ty.path "u8" ]
+                                                                  ]
+                                                              ])
                                                         ]
-                                                      |)
-                                                    ]
-                                                  |);
-                                                  M.read (| target |)
-                                                ]
-                                              |);
-                                              M.read (| UnsupportedLiteral |);
-                                              M.call_closure (|
-                                                Ty.path "usize",
-                                                BinOp.Wrap.sub,
-                                                [ M.read (| curr |); M.read (| target |) ]
-                                              |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "*mut")
+                                                        []
+                                                        [ Ty.path "u8" ]);
+                                                    M.value_with_ty
+                                                      (M.read (| target |))
+                                                      (Ty.path "usize")
+                                                  ]
+                                                |))
+                                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                              M.value_with_ty
+                                                (M.read (| UnsupportedLiteral |))
+                                                (Ty.path "u8");
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.path "usize",
+                                                  BinOp.Wrap.sub,
+                                                  [ M.read (| curr |); M.read (| target |) ]
+                                                |))
+                                                (Ty.path "usize")
                                             ]
                                           |) in
                                         M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -20437,7 +23271,7 @@ Module fmt.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| n |) ]
+                                            [ M.value_with_ty (M.read (| n |)) (Ty.path "u128") ]
                                           |)
                                         |),
                                         [
@@ -20458,19 +23292,42 @@ Module fmt.
                                                       []
                                                     |),
                                                     [
-                                                      M.read (| rem |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.deref (|
-                                                          M.borrow (| Pointer.Kind.MutRef, buf |)
-                                                        |)
-                                                      |);
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.deref (|
-                                                          M.borrow (| Pointer.Kind.MutRef, curr |)
-                                                        |)
-                                                      |)
+                                                      M.value_with_ty
+                                                        (M.read (| rem |))
+                                                        (Ty.path "u64");
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.MutRef,
+                                                          M.deref (|
+                                                            M.borrow (| Pointer.Kind.MutRef, buf |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&mut")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 39 ]
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::mem::maybe_uninit::MaybeUninit")
+                                                                  []
+                                                                  [ Ty.path "u8" ]
+                                                              ]
+                                                          ]);
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.MutRef,
+                                                          M.deref (|
+                                                            M.borrow (| Pointer.Kind.MutRef, curr |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&mut")
+                                                          []
+                                                          [ Ty.path "usize" ])
                                                     ]
                                                   |) in
                                                 M.alloc (|
@@ -20523,44 +23380,9 @@ Module fmt.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.call_closure (|
-                                                                        Ty.apply
-                                                                          (Ty.path "&")
-                                                                          []
-                                                                          [
-                                                                            Ty.apply
-                                                                              (Ty.path "slice")
-                                                                              []
-                                                                              [
-                                                                                Ty.apply
-                                                                                  (Ty.path
-                                                                                    "core::mem::maybe_uninit::MaybeUninit")
-                                                                                  []
-                                                                                  [ Ty.path "u8" ]
-                                                                              ]
-                                                                          ],
-                                                                        M.pointer_coercion
-                                                                          M.PointerCoercion.Unsize
-                                                                          (Ty.apply
-                                                                            (Ty.path "&")
-                                                                            []
-                                                                            [
-                                                                              Ty.apply
-                                                                                (Ty.path "array")
-                                                                                [
-                                                                                  Value.Integer
-                                                                                    IntegerKind.Usize
-                                                                                    39
-                                                                                ]
-                                                                                [
-                                                                                  Ty.apply
-                                                                                    (Ty.path
-                                                                                      "core::mem::maybe_uninit::MaybeUninit")
-                                                                                    []
-                                                                                    [ Ty.path "u8" ]
-                                                                                ]
-                                                                            ])
-                                                                          (Ty.apply
+                                                                      M.value_with_ty
+                                                                        (M.call_closure (|
+                                                                          Ty.apply
                                                                             (Ty.path "&")
                                                                             []
                                                                             [
@@ -20574,14 +23396,67 @@ Module fmt.
                                                                                     []
                                                                                     [ Ty.path "u8" ]
                                                                                 ]
-                                                                            ]),
-                                                                        [
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.Ref,
-                                                                            buf
-                                                                          |)
-                                                                        ]
-                                                                      |)
+                                                                            ],
+                                                                          M.pointer_coercion
+                                                                            M.PointerCoercion.Unsize
+                                                                            (Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path "array")
+                                                                                  [
+                                                                                    Value.Integer
+                                                                                      IntegerKind.Usize
+                                                                                      39
+                                                                                  ]
+                                                                                  [
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "core::mem::maybe_uninit::MaybeUninit")
+                                                                                      []
+                                                                                      [ Ty.path "u8"
+                                                                                      ]
+                                                                                  ]
+                                                                              ])
+                                                                            (Ty.apply
+                                                                              (Ty.path "&")
+                                                                              []
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path "slice")
+                                                                                  []
+                                                                                  [
+                                                                                    Ty.apply
+                                                                                      (Ty.path
+                                                                                        "core::mem::maybe_uninit::MaybeUninit")
+                                                                                      []
+                                                                                      [ Ty.path "u8"
+                                                                                      ]
+                                                                                  ]
+                                                                              ]),
+                                                                          [
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.Ref,
+                                                                              buf
+                                                                            |)
+                                                                          ]
+                                                                        |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "&")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "slice")
+                                                                              []
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path
+                                                                                    "core::mem::maybe_uninit::MaybeUninit")
+                                                                                  []
+                                                                                  [ Ty.path "u8" ]
+                                                                              ]
+                                                                          ])
                                                                     ]
                                                                   |);
                                                                   Value.Integer IntegerKind.Usize 38
@@ -20608,44 +23483,9 @@ Module fmt.
                                                                   []
                                                                 |),
                                                                 [
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "&mut")
-                                                                      []
-                                                                      [
-                                                                        Ty.apply
-                                                                          (Ty.path "slice")
-                                                                          []
-                                                                          [
-                                                                            Ty.apply
-                                                                              (Ty.path
-                                                                                "core::mem::maybe_uninit::MaybeUninit")
-                                                                              []
-                                                                              [ Ty.path "u8" ]
-                                                                          ]
-                                                                      ],
-                                                                    M.pointer_coercion
-                                                                      M.PointerCoercion.Unsize
-                                                                      (Ty.apply
-                                                                        (Ty.path "&mut")
-                                                                        []
-                                                                        [
-                                                                          Ty.apply
-                                                                            (Ty.path "array")
-                                                                            [
-                                                                              Value.Integer
-                                                                                IntegerKind.Usize
-                                                                                39
-                                                                            ]
-                                                                            [
-                                                                              Ty.apply
-                                                                                (Ty.path
-                                                                                  "core::mem::maybe_uninit::MaybeUninit")
-                                                                                []
-                                                                                [ Ty.path "u8" ]
-                                                                            ]
-                                                                        ])
-                                                                      (Ty.apply
+                                                                  M.value_with_ty
+                                                                    (M.call_closure (|
+                                                                      Ty.apply
                                                                         (Ty.path "&mut")
                                                                         []
                                                                         [
@@ -20659,19 +23499,70 @@ Module fmt.
                                                                                 []
                                                                                 [ Ty.path "u8" ]
                                                                             ]
-                                                                        ]),
-                                                                    [
-                                                                      M.borrow (|
-                                                                        Pointer.Kind.MutRef,
-                                                                        M.deref (|
-                                                                          M.borrow (|
-                                                                            Pointer.Kind.MutRef,
-                                                                            buf
+                                                                        ],
+                                                                      M.pointer_coercion
+                                                                        M.PointerCoercion.Unsize
+                                                                        (Ty.apply
+                                                                          (Ty.path "&mut")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "array")
+                                                                              [
+                                                                                Value.Integer
+                                                                                  IntegerKind.Usize
+                                                                                  39
+                                                                              ]
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path
+                                                                                    "core::mem::maybe_uninit::MaybeUninit")
+                                                                                  []
+                                                                                  [ Ty.path "u8" ]
+                                                                              ]
+                                                                          ])
+                                                                        (Ty.apply
+                                                                          (Ty.path "&mut")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path "slice")
+                                                                              []
+                                                                              [
+                                                                                Ty.apply
+                                                                                  (Ty.path
+                                                                                    "core::mem::maybe_uninit::MaybeUninit")
+                                                                                  []
+                                                                                  [ Ty.path "u8" ]
+                                                                              ]
+                                                                          ]),
+                                                                      [
+                                                                        M.borrow (|
+                                                                          Pointer.Kind.MutRef,
+                                                                          M.deref (|
+                                                                            M.borrow (|
+                                                                              Pointer.Kind.MutRef,
+                                                                              buf
+                                                                            |)
                                                                           |)
                                                                         |)
-                                                                      |)
-                                                                    ]
-                                                                  |)
+                                                                      ]
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&mut")
+                                                                      []
+                                                                      [
+                                                                        Ty.apply
+                                                                          (Ty.path "slice")
+                                                                          []
+                                                                          [
+                                                                            Ty.apply
+                                                                              (Ty.path
+                                                                                "core::mem::maybe_uninit::MaybeUninit")
+                                                                              []
+                                                                              [ Ty.path "u8" ]
+                                                                          ]
+                                                                      ])
                                                                 ]
                                                               |) in
                                                             let~ _ : Ty.tuple [] :=
@@ -20683,34 +23574,52 @@ Module fmt.
                                                                   [ Ty.path "u8" ]
                                                                 |),
                                                                 [
-                                                                  M.call_closure (|
-                                                                    Ty.apply
-                                                                      (Ty.path "*mut")
-                                                                      []
-                                                                      [ Ty.path "u8" ],
-                                                                    M.get_associated_function (|
+                                                                  M.value_with_ty
+                                                                    (M.call_closure (|
                                                                       Ty.apply
                                                                         (Ty.path "*mut")
                                                                         []
                                                                         [ Ty.path "u8" ],
-                                                                      "add",
-                                                                      [],
+                                                                      M.get_associated_function (|
+                                                                        Ty.apply
+                                                                          (Ty.path "*mut")
+                                                                          []
+                                                                          [ Ty.path "u8" ],
+                                                                        "add",
+                                                                        [],
+                                                                        []
+                                                                      |),
+                                                                      [
+                                                                        M.value_with_ty
+                                                                          (M.read (| buf_ptr |))
+                                                                          (Ty.apply
+                                                                            (Ty.path "*mut")
+                                                                            []
+                                                                            [ Ty.path "u8" ]);
+                                                                        M.value_with_ty
+                                                                          (M.read (| target |))
+                                                                          (Ty.path "usize")
+                                                                      ]
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "*mut")
                                                                       []
-                                                                    |),
-                                                                    [
-                                                                      M.read (| buf_ptr |);
-                                                                      M.read (| target |)
-                                                                    ]
-                                                                  |);
-                                                                  M.read (| UnsupportedLiteral |);
-                                                                  M.call_closure (|
-                                                                    Ty.path "usize",
-                                                                    BinOp.Wrap.sub,
-                                                                    [
-                                                                      M.read (| curr |);
-                                                                      M.read (| target |)
-                                                                    ]
-                                                                  |)
+                                                                      [ Ty.path "u8" ]);
+                                                                  M.value_with_ty
+                                                                    (M.read (|
+                                                                      UnsupportedLiteral
+                                                                    |))
+                                                                    (Ty.path "u8");
+                                                                  M.value_with_ty
+                                                                    (M.call_closure (|
+                                                                      Ty.path "usize",
+                                                                      BinOp.Wrap.sub,
+                                                                      [
+                                                                        M.read (| curr |);
+                                                                        M.read (| target |)
+                                                                      ]
+                                                                    |))
+                                                                    (Ty.path "usize")
                                                                 ]
                                                               |) in
                                                             let~ _ : Ty.tuple [] :=
@@ -20745,8 +23654,15 @@ Module fmt.
                                                                       []
                                                                     |),
                                                                     [
-                                                                      M.read (| buf_ptr |);
-                                                                      M.read (| curr |)
+                                                                      M.value_with_ty
+                                                                        (M.read (| buf_ptr |))
+                                                                        (Ty.apply
+                                                                          (Ty.path "*mut")
+                                                                          []
+                                                                          [ Ty.path "u8" ]);
+                                                                      M.value_with_ty
+                                                                        (M.read (| curr |))
+                                                                        (Ty.path "usize")
                                                                     ]
                                                                   |)
                                                                 |),
@@ -20783,83 +23699,170 @@ Module fmt.
                             Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                             M.get_function (| "core::str::converts::from_utf8_unchecked", [], [] |),
                             [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                    M.get_function (|
-                                      "core::slice::raw::from_raw_parts",
-                                      [],
-                                      [ Ty.path "u8" ]
-                                    |),
-                                    [
-                                      M.call_closure (|
-                                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                        M.pointer_coercion
-                                          M.PointerCoercion.MutToConstPointer
-                                          (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
-                                          (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
-                                        [
-                                          M.call_closure (|
-                                            Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                            M.get_associated_function (|
-                                              Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                              "add",
-                                              [],
-                                              []
-                                            |),
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                      M.get_function (|
+                                        "core::slice::raw::from_raw_parts",
+                                        [],
+                                        [ Ty.path "u8" ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                            M.pointer_coercion
+                                              M.PointerCoercion.MutToConstPointer
+                                              (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ])
+                                              (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]),
                                             [
                                               M.call_closure (|
                                                 Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
                                                 M.get_associated_function (|
-                                                  Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                    []
-                                                    [ Ty.path "u8" ],
-                                                  "slice_as_mut_ptr",
+                                                  Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                                  "add",
                                                   [],
                                                   []
                                                 |),
                                                 [
-                                                  M.call_closure (|
-                                                    Ty.apply
-                                                      (Ty.path "&mut")
-                                                      []
-                                                      [
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
+                                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                                      M.get_associated_function (|
                                                         Ty.apply
-                                                          (Ty.path "slice")
+                                                          (Ty.path
+                                                            "core::mem::maybe_uninit::MaybeUninit")
                                                           []
-                                                          [
-                                                            Ty.apply
-                                                              (Ty.path
-                                                                "core::mem::maybe_uninit::MaybeUninit")
-                                                              []
-                                                              [ Ty.path "u8" ]
-                                                          ]
-                                                      ],
-                                                    M.pointer_coercion
-                                                      M.PointerCoercion.Unsize
-                                                      (Ty.apply
-                                                        (Ty.path "&mut")
+                                                          [ Ty.path "u8" ],
+                                                        "slice_as_mut_ptr",
+                                                        [],
                                                         []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path "array")
-                                                            [ Value.Integer IntegerKind.Usize 39 ]
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "slice")
+                                                                  []
+                                                                  [
+                                                                    Ty.apply
+                                                                      (Ty.path
+                                                                        "core::mem::maybe_uninit::MaybeUninit")
+                                                                      []
+                                                                      [ Ty.path "u8" ]
+                                                                  ]
+                                                              ],
+                                                            M.pointer_coercion
+                                                              M.PointerCoercion.Unsize
+                                                              (Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "array")
+                                                                    [
+                                                                      Value.Integer
+                                                                        IntegerKind.Usize
+                                                                        39
+                                                                    ]
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "core::mem::maybe_uninit::MaybeUninit")
+                                                                        []
+                                                                        [ Ty.path "u8" ]
+                                                                    ]
+                                                                ])
+                                                              (Ty.apply
+                                                                (Ty.path "&mut")
+                                                                []
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path "slice")
+                                                                    []
+                                                                    [
+                                                                      Ty.apply
+                                                                        (Ty.path
+                                                                          "core::mem::maybe_uninit::MaybeUninit")
+                                                                        []
+                                                                        [ Ty.path "u8" ]
+                                                                    ]
+                                                                ]),
+                                                            [
+                                                              M.borrow (|
+                                                                Pointer.Kind.MutRef,
+                                                                M.deref (|
+                                                                  M.borrow (|
+                                                                    Pointer.Kind.MutRef,
+                                                                    buf
+                                                                  |)
+                                                                |)
+                                                              |)
+                                                            ]
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&mut")
+                                                            []
                                                             [
                                                               Ty.apply
-                                                                (Ty.path
-                                                                  "core::mem::maybe_uninit::MaybeUninit")
+                                                                (Ty.path "slice")
                                                                 []
-                                                                [ Ty.path "u8" ]
-                                                            ]
-                                                        ])
-                                                      (Ty.apply
-                                                        (Ty.path "&mut")
+                                                                [
+                                                                  Ty.apply
+                                                                    (Ty.path
+                                                                      "core::mem::maybe_uninit::MaybeUninit")
+                                                                    []
+                                                                    [ Ty.path "u8" ]
+                                                                ]
+                                                            ])
+                                                      ]
+                                                    |))
+                                                    (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                                  M.value_with_ty
+                                                    (M.read (| curr |))
+                                                    (Ty.path "usize")
+                                                ]
+                                              |)
+                                            ]
+                                          |))
+                                          (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                        M.value_with_ty
+                                          (M.call_closure (|
+                                            Ty.path "usize",
+                                            BinOp.Wrap.sub,
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                M.get_associated_function (|
+                                                  Ty.apply
+                                                    (Ty.path "slice")
+                                                    []
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path
+                                                          "core::mem::maybe_uninit::MaybeUninit")
+                                                        []
+                                                        [ Ty.path "u8" ]
+                                                    ],
+                                                  "len",
+                                                  [],
+                                                  []
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "&")
                                                         []
                                                         [
                                                           Ty.apply
@@ -20872,103 +23875,70 @@ Module fmt.
                                                                 []
                                                                 [ Ty.path "u8" ]
                                                             ]
-                                                        ]),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.MutRef,
-                                                        M.deref (|
-                                                          M.borrow (| Pointer.Kind.MutRef, buf |)
-                                                        |)
-                                                      |)
-                                                    ]
-                                                  |)
+                                                        ],
+                                                      M.pointer_coercion
+                                                        M.PointerCoercion.Unsize
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "array")
+                                                              [ Value.Integer IntegerKind.Usize 39 ]
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::mem::maybe_uninit::MaybeUninit")
+                                                                  []
+                                                                  [ Ty.path "u8" ]
+                                                              ]
+                                                          ])
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "slice")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path
+                                                                    "core::mem::maybe_uninit::MaybeUninit")
+                                                                  []
+                                                                  [ Ty.path "u8" ]
+                                                              ]
+                                                          ]),
+                                                      [ M.borrow (| Pointer.Kind.Ref, buf |) ]
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [
+                                                        Ty.apply
+                                                          (Ty.path "slice")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path
+                                                                "core::mem::maybe_uninit::MaybeUninit")
+                                                              []
+                                                              [ Ty.path "u8" ]
+                                                          ]
+                                                      ])
                                                 ]
                                               |);
                                               M.read (| curr |)
                                             ]
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "usize",
-                                        BinOp.Wrap.sub,
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "usize",
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "slice")
-                                                []
-                                                [
-                                                  Ty.apply
-                                                    (Ty.path "core::mem::maybe_uninit::MaybeUninit")
-                                                    []
-                                                    [ Ty.path "u8" ]
-                                                ],
-                                              "len",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&")
-                                                  []
-                                                  [
-                                                    Ty.apply
-                                                      (Ty.path "slice")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path
-                                                            "core::mem::maybe_uninit::MaybeUninit")
-                                                          []
-                                                          [ Ty.path "u8" ]
-                                                      ]
-                                                  ],
-                                                M.pointer_coercion
-                                                  M.PointerCoercion.Unsize
-                                                  (Ty.apply
-                                                    (Ty.path "&")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "array")
-                                                        [ Value.Integer IntegerKind.Usize 39 ]
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path
-                                                              "core::mem::maybe_uninit::MaybeUninit")
-                                                            []
-                                                            [ Ty.path "u8" ]
-                                                        ]
-                                                    ])
-                                                  (Ty.apply
-                                                    (Ty.path "&")
-                                                    []
-                                                    [
-                                                      Ty.apply
-                                                        (Ty.path "slice")
-                                                        []
-                                                        [
-                                                          Ty.apply
-                                                            (Ty.path
-                                                              "core::mem::maybe_uninit::MaybeUninit")
-                                                            []
-                                                            [ Ty.path "u8" ]
-                                                        ]
-                                                    ]),
-                                                [ M.borrow (| Pointer.Kind.Ref, buf |) ]
-                                              |)
-                                            ]
-                                          |);
-                                          M.read (| curr |)
-                                        ]
-                                      |)
-                                    ]
+                                          |))
+                                          (Ty.path "usize")
+                                      ]
+                                    |)
                                   |)
-                                |)
-                              |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                             ]
                           |) in
                         M.alloc (|
@@ -20988,10 +23958,19 @@ Module fmt.
                               []
                             |),
                             [
-                              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                              M.read (| is_nonnegative |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "" |) |) |);
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| buf_slice |) |) |)
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                              M.value_with_ty (M.read (| is_nonnegative |)) (Ty.path "bool");
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "" |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (| M.read (| buf_slice |) |)
+                                |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                             ]
                           |)
                         |)
@@ -21092,13 +24071,15 @@ Module fmt.
                             Ty.path "u128",
                             M.get_function (| "core::fmt::num::u128_mulhi", [], [] |),
                             [
-                              M.read (| n |);
-                              M.read (|
-                                get_constant (|
-                                  "core::fmt::num::udiv_1e19::FACTOR",
-                                  Ty.path "u128"
-                                |)
-                              |)
+                              M.value_with_ty (M.read (| n |)) (Ty.path "u128");
+                              M.value_with_ty
+                                (M.read (|
+                                  get_constant (|
+                                    "core::fmt::num::udiv_1e19::FACTOR",
+                                    Ty.path "u128"
+                                  |)
+                                |))
+                                (Ty.path "u128")
                             ]
                           |);
                           Value.Integer IntegerKind.I32 62

@@ -80,7 +80,7 @@ Module collections.
                       [],
                       []
                     |),
-                    [ M.read (| t |) ]
+                    [ M.value_with_ty (M.read (| t |)) (Ty.apply (Ty.path "&mut") [] [ T ]) ]
                   |) in
                 let~ new_ref : Ty.apply (Ty.path "&mut") [] [ T ] :=
                   M.borrow (|
@@ -97,7 +97,11 @@ Module collections.
                               [],
                               []
                             |),
-                            [ M.read (| ptr |) ]
+                            [
+                              M.value_with_ty
+                                (M.read (| ptr |))
+                                (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
+                            ]
                           |)
                         |)
                       |)
@@ -112,19 +116,23 @@ Module collections.
                   Value.Tuple
                     [
                       M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| new_ref |) |) |);
-                      Value.mkStructRecord
-                        "alloc::collections::btree::borrow::DormantMutRef"
-                        []
-                        [ T ]
-                        [
-                          ("ptr", M.read (| ptr |));
-                          ("_marker",
-                            Value.StructTuple
-                              "core::marker::PhantomData"
-                              []
-                              [ Ty.apply (Ty.path "&mut") [] [ T ] ]
-                              [])
-                        ]
+                      M.value_with_ty
+                        (Value.mkStructRecord
+                          "alloc::collections::btree::borrow::DormantMutRef"
+                          [
+                            ("ptr", M.read (| ptr |));
+                            ("_marker",
+                              M.value_with_ty
+                                (Value.StructTuple "core::marker::PhantomData" [])
+                                (Ty.apply
+                                  (Ty.path "core::marker::PhantomData")
+                                  []
+                                  [ Ty.apply (Ty.path "&mut") [] [ T ] ]))
+                          ])
+                        (Ty.apply
+                          (Ty.path "alloc::collections::btree::borrow::DormantMutRef")
+                          []
+                          [ T ])
                     ]
                 |)
               |)))
@@ -174,13 +182,15 @@ Module collections.
                                   []
                                 |),
                                 [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      self,
-                                      "alloc::collections::btree::borrow::DormantMutRef",
-                                      "ptr"
-                                    |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        self,
+                                        "alloc::collections::btree::borrow::DormantMutRef",
+                                        "ptr"
+                                      |)
+                                    |))
+                                    (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
                                 ]
                               |)
                             |)
@@ -241,13 +251,15 @@ Module collections.
                                   []
                                 |),
                                 [
-                                  M.read (|
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::btree::borrow::DormantMutRef",
-                                      "ptr"
-                                    |)
-                                  |)
+                                  M.value_with_ty
+                                    (M.read (|
+                                      M.SubPointer.get_struct_record_field (|
+                                        M.deref (| M.read (| self |) |),
+                                        "alloc::collections::btree::borrow::DormantMutRef",
+                                        "ptr"
+                                      |)
+                                    |))
+                                    (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
                                 ]
                               |)
                             |)
@@ -307,13 +319,15 @@ Module collections.
                           []
                         |),
                         [
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::collections::btree::borrow::DormantMutRef",
-                              "ptr"
-                            |)
-                          |)
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::collections::btree::borrow::DormantMutRef",
+                                "ptr"
+                              |)
+                            |))
+                            (Ty.apply (Ty.path "core::ptr::non_null::NonNull") [] [ T ])
                         ]
                       |)
                     |)

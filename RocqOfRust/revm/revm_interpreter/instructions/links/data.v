@@ -7,6 +7,7 @@ Require Import core.convert.links.mod.
 Require Import core.ops.links.range.
 Require Import core.links.array.
 Require Import core.links.result.
+Require Import core.num.links.error.
 Require Import core.num.links.mod.
 Require Import core.slice.links.index.
 Require Import core.slice.links.mod.

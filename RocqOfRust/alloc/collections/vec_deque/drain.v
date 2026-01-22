@@ -71,20 +71,22 @@ Module collections.
                     Ty.path "usize",
                     M.get_function (| "core::mem::replace", [], [ Ty.path "usize" ] |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (|
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| deque |) |),
-                              "alloc::collections::vec_deque::VecDeque",
-                              "len"
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| deque |) |),
+                                "alloc::collections::vec_deque::VecDeque",
+                                "len"
+                              |)
                             |)
                           |)
-                        |)
-                      |);
-                      M.read (| drain_start |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "usize" ]);
+                      M.value_with_ty (M.read (| drain_start |)) (Ty.path "usize")
                     ]
                   |) in
                 let~ new_len : Ty.path "usize" :=
@@ -95,24 +97,12 @@ Module collections.
                   |) in
                 M.alloc (|
                   Ty.apply (Ty.path "alloc::collections::vec_deque::drain::Drain") [] [ T; A ],
-                  Value.mkStructRecord
-                    "alloc::collections::vec_deque::drain::Drain"
-                    []
-                    [ T; A ]
-                    [
-                      ("deque",
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::ptr::non_null::NonNull")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "alloc::collections::vec_deque::VecDeque")
-                                []
-                                [ T; A ]
-                            ],
-                          M.get_trait_method (|
-                            "core::convert::From",
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "alloc::collections::vec_deque::drain::Drain"
+                      [
+                        ("deque",
+                          M.call_closure (|
                             Ty.apply
                               (Ty.path "core::ptr::non_null::NonNull")
                               []
@@ -122,35 +112,60 @@ Module collections.
                                   []
                                   [ T; A ]
                               ],
-                            [],
-                            [
+                            M.get_trait_method (|
+                              "core::convert::From",
                               Ty.apply
-                                (Ty.path "&mut")
+                                (Ty.path "core::ptr::non_null::NonNull")
                                 []
                                 [
                                   Ty.apply
                                     (Ty.path "alloc::collections::vec_deque::VecDeque")
                                     []
                                     [ T; A ]
-                                ]
-                            ],
-                            "from",
-                            [],
-                            []
-                          |),
-                          [ M.read (| deque |) ]
-                        |));
-                      ("drain_len", M.read (| drain_len |));
-                      ("idx", M.read (| drain_start |));
-                      ("new_len", M.read (| new_len |));
-                      ("remaining", M.read (| drain_len |));
-                      ("_marker",
-                        Value.StructTuple
-                          "core::marker::PhantomData"
-                          []
-                          [ Ty.apply (Ty.path "&") [] [ T ] ]
-                          [])
-                    ]
+                                ],
+                              [],
+                              [
+                                Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                      []
+                                      [ T; A ]
+                                  ]
+                              ],
+                              "from",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| deque |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                      []
+                                      [ T; A ]
+                                  ])
+                            ]
+                          |));
+                        ("drain_len", M.read (| drain_len |));
+                        ("idx", M.read (| drain_start |));
+                        ("new_len", M.read (| new_len |));
+                        ("remaining", M.read (| drain_len |));
+                        ("_marker",
+                          M.value_with_ty
+                            (Value.StructTuple "core::marker::PhantomData" [])
+                            (Ty.apply
+                              (Ty.path "core::marker::PhantomData")
+                              []
+                              [ Ty.apply (Ty.path "&") [] [ T ] ]))
+                      ])
+                    (Ty.apply (Ty.path "alloc::collections::vec_deque::drain::Drain") [] [ T; A ])
                 |)
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -223,53 +238,68 @@ Module collections.
                       []
                     |),
                     [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.SubPointer.get_struct_record_field (|
-                          M.deref (| M.read (| self |) |),
-                          "alloc::collections::vec_deque::drain::Drain",
-                          "deque"
-                        |)
-                      |)
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.SubPointer.get_struct_record_field (|
+                            M.deref (| M.read (| self |) |),
+                            "alloc::collections::vec_deque::drain::Drain",
+                            "deque"
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "core::ptr::non_null::NonNull")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                  []
+                                  [ T; A ]
+                              ]
+                          ])
                     ]
                   |) in
                 let~ logical_remaining_range :
                     Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] :=
-                  Value.mkStructRecord
-                    "core::ops::range::Range"
-                    []
-                    [ Ty.path "usize" ]
-                    [
-                      ("start",
-                        M.read (|
-                          M.SubPointer.get_struct_record_field (|
-                            M.deref (| M.read (| self |) |),
-                            "alloc::collections::vec_deque::drain::Drain",
-                            "idx"
-                          |)
-                        |));
-                      ("end_",
-                        M.call_closure (|
-                          Ty.path "usize",
-                          BinOp.Wrap.add,
-                          [
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::collections::vec_deque::drain::Drain",
-                                "idx"
-                              |)
-                            |);
-                            M.read (|
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "alloc::collections::vec_deque::drain::Drain",
-                                "remaining"
-                              |)
+                  M.value_with_ty
+                    (Value.mkStructRecord
+                      "core::ops::range::Range"
+                      [
+                        ("start",
+                          M.read (|
+                            M.SubPointer.get_struct_record_field (|
+                              M.deref (| M.read (| self |) |),
+                              "alloc::collections::vec_deque::drain::Drain",
+                              "idx"
                             |)
-                          ]
-                        |))
-                    ] in
+                          |));
+                        ("end_",
+                          M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.add,
+                            [
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloc::collections::vec_deque::drain::Drain",
+                                  "idx"
+                                |)
+                              |);
+                              M.read (|
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "alloc::collections::vec_deque::drain::Drain",
+                                  "remaining"
+                                |)
+                              |)
+                            ]
+                          |))
+                      ])
+                    (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]) in
                 M.alloc (|
                   Ty.tuple
                     [
@@ -301,27 +331,53 @@ Module collections.
                           [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ]
                         |),
                         [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| deque |) |) |);
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                            M.get_trait_method (|
-                              "core::clone::Clone",
-                              Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
-                              [],
-                              [],
-                              "clone",
-                              [],
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| deque |) |) |))
+                            (Ty.apply
+                              (Ty.path "&")
                               []
-                            |),
-                            [ M.borrow (| Pointer.Kind.Ref, logical_remaining_range |) ]
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              logical_remaining_range,
-                              "core::ops::range::Range",
-                              "end"
-                            |)
-                          |)
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                  []
+                                  [ T; A ]
+                              ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                              M.get_trait_method (|
+                                "core::clone::Clone",
+                                Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ],
+                                [],
+                                [],
+                                "clone",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, logical_remaining_range |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::ops::range::Range")
+                                        []
+                                        [ Ty.path "usize" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                logical_remaining_range,
+                                "core::ops::range::Range",
+                                "end"
+                              |)
+                            |))
+                            (Ty.path "usize")
                         ]
                       |)
                     |),
@@ -357,8 +413,26 @@ Module collections.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| deque |) |) |);
-                                  M.read (| a_range |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| deque |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                          []
+                                          [ T; A ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.read (| a_range |))
+                                    (Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ])
                                 ]
                               |);
                               M.call_closure (|
@@ -376,8 +450,26 @@ Module collections.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| deque |) |) |);
-                                  M.read (| b_range |)
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| deque |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                          []
+                                          [ T; A ]
+                                      ]);
+                                  M.value_with_ty
+                                    (M.read (| b_range |))
+                                    (Ty.apply
+                                      (Ty.path "core::ops::range::Range")
+                                      []
+                                      [ Ty.path "usize" ])
                                 ]
                               |)
                             ]))
@@ -437,89 +529,187 @@ Module collections.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ],
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::builders::DebugTuple",
-                          "field",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [ Ty.path "core::fmt::builders::DebugTuple" ],
-                                M.get_associated_function (|
-                                  Ty.path "core::fmt::builders::DebugTuple",
-                                  "field",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&mut")
-                                          []
-                                          [ Ty.path "core::fmt::builders::DebugTuple" ],
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::builders::DebugTuple",
-                                          "field",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.MutRef,
-                                            M.deref (|
-                                              M.call_closure (|
-                                                Ty.apply
-                                                  (Ty.path "&mut")
-                                                  []
-                                                  [ Ty.path "core::fmt::builders::DebugTuple" ],
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::builders::DebugTuple",
-                                                  "field",
-                                                  [],
-                                                  []
-                                                |),
-                                                [
-                                                  M.borrow (|
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&mut")
+                            []
+                            [ Ty.path "core::fmt::builders::DebugTuple" ],
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::builders::DebugTuple",
+                            "field",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.MutRef,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&mut")
+                                      []
+                                      [ Ty.path "core::fmt::builders::DebugTuple" ],
+                                    M.get_associated_function (|
+                                      Ty.path "core::fmt::builders::DebugTuple",
+                                      "field",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.MutRef,
+                                          M.deref (|
+                                            M.call_closure (|
+                                              Ty.apply
+                                                (Ty.path "&mut")
+                                                []
+                                                [ Ty.path "core::fmt::builders::DebugTuple" ],
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::builders::DebugTuple",
+                                                "field",
+                                                [],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
                                                     Pointer.Kind.MutRef,
-                                                    M.alloc (|
-                                                      Ty.path "core::fmt::builders::DebugTuple",
+                                                    M.deref (|
                                                       M.call_closure (|
-                                                        Ty.path "core::fmt::builders::DebugTuple",
+                                                        Ty.apply
+                                                          (Ty.path "&mut")
+                                                          []
+                                                          [
+                                                            Ty.path
+                                                              "core::fmt::builders::DebugTuple"
+                                                          ],
                                                         M.get_associated_function (|
-                                                          Ty.path "core::fmt::Formatter",
-                                                          "debug_tuple",
+                                                          Ty.path "core::fmt::builders::DebugTuple",
+                                                          "field",
                                                           [],
                                                           []
                                                         |),
                                                         [
-                                                          M.borrow (|
-                                                            Pointer.Kind.MutRef,
-                                                            M.deref (| M.read (| f |) |)
-                                                          |);
-                                                          M.borrow (|
-                                                            Pointer.Kind.Ref,
-                                                            M.deref (| mk_str (| "Drain" |) |)
-                                                          |)
+                                                          M.value_with_ty
+                                                            (M.borrow (|
+                                                              Pointer.Kind.MutRef,
+                                                              M.alloc (|
+                                                                Ty.path
+                                                                  "core::fmt::builders::DebugTuple",
+                                                                M.call_closure (|
+                                                                  Ty.path
+                                                                    "core::fmt::builders::DebugTuple",
+                                                                  M.get_associated_function (|
+                                                                    Ty.path "core::fmt::Formatter",
+                                                                    "debug_tuple",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.borrow (|
+                                                                        Pointer.Kind.MutRef,
+                                                                        M.deref (| M.read (| f |) |)
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&mut")
+                                                                        []
+                                                                        [
+                                                                          Ty.path
+                                                                            "core::fmt::Formatter"
+                                                                        ]);
+                                                                    M.value_with_ty
+                                                                      (M.borrow (|
+                                                                        Pointer.Kind.Ref,
+                                                                        M.deref (|
+                                                                          mk_str (| "Drain" |)
+                                                                        |)
+                                                                      |))
+                                                                      (Ty.apply
+                                                                        (Ty.path "&")
+                                                                        []
+                                                                        [ Ty.path "str" ])
+                                                                  ]
+                                                                |)
+                                                              |)
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&mut")
+                                                              []
+                                                              [
+                                                                Ty.path
+                                                                  "core::fmt::builders::DebugTuple"
+                                                              ]);
+                                                          M.value_with_ty
+                                                            (M.call_closure (|
+                                                              Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [
+                                                                  Ty.dyn
+                                                                    [
+                                                                      ("core::fmt::Debug::Trait",
+                                                                        [])
+                                                                    ]
+                                                                ],
+                                                              M.pointer_coercion
+                                                                M.PointerCoercion.Unsize
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "usize" ])
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [
+                                                                    Ty.dyn
+                                                                      [
+                                                                        ("core::fmt::Debug::Trait",
+                                                                          [])
+                                                                      ]
+                                                                  ]),
+                                                              [
+                                                                M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (|
+                                                                    M.borrow (|
+                                                                      Pointer.Kind.Ref,
+                                                                      M.SubPointer.get_struct_record_field (|
+                                                                        M.deref (|
+                                                                          M.read (| self |)
+                                                                        |),
+                                                                        "alloc::collections::vec_deque::drain::Drain",
+                                                                        "drain_len"
+                                                                      |)
+                                                                    |)
+                                                                  |)
+                                                                |)
+                                                              ]
+                                                            |))
+                                                            (Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.dyn
+                                                                  [ ("core::fmt::Debug::Trait", [])
+                                                                  ]
+                                                              ])
                                                         ]
                                                       |)
                                                     |)
-                                                  |);
-                                                  M.call_closure (|
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&mut")
+                                                    []
+                                                    [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                                                M.value_with_ty
+                                                  (M.call_closure (|
                                                     Ty.apply
                                                       (Ty.path "&")
                                                       []
@@ -545,113 +735,104 @@ Module collections.
                                                             M.SubPointer.get_struct_record_field (|
                                                               M.deref (| M.read (| self |) |),
                                                               "alloc::collections::vec_deque::drain::Drain",
-                                                              "drain_len"
+                                                              "idx"
                                                             |)
                                                           |)
                                                         |)
                                                       |)
                                                     ]
-                                                  |)
-                                                ]
-                                              |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                                              ]
                                             |)
-                                          |);
-                                          M.call_closure (|
-                                            Ty.apply
+                                          |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                          M.pointer_coercion
+                                            M.PointerCoercion.Unsize
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                            (Ty.apply
                                               (Ty.path "&")
                                               []
-                                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                            M.pointer_coercion
-                                              M.PointerCoercion.Unsize
-                                              (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
-                                              (Ty.apply
-                                                (Ty.path "&")
-                                                []
-                                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.SubPointer.get_struct_record_field (|
-                                                      M.deref (| M.read (| self |) |),
-                                                      "alloc::collections::vec_deque::drain::Drain",
-                                                      "idx"
-                                                    |)
+                                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                          [
+                                            M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.SubPointer.get_struct_record_field (|
+                                                    M.deref (| M.read (| self |) |),
+                                                    "alloc::collections::vec_deque::drain::Drain",
+                                                    "new_len"
                                                   |)
                                                 |)
                                               |)
-                                            ]
-                                          |)
-                                        ]
-                                      |)
-                                    |)
-                                  |);
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&")
-                                      []
-                                      [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                                    M.pointer_coercion
-                                      M.PointerCoercion.Unsize
-                                      (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
-                                      (Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.SubPointer.get_struct_record_field (|
-                                              M.deref (| M.read (| self |) |),
-                                              "alloc::collections::vec_deque::drain::Drain",
-                                              "new_len"
                                             |)
-                                          |)
-                                        |)
-                                      |)
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
                                     ]
                                   |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&mut")
+                                []
+                                [ Ty.path "core::fmt::builders::DebugTuple" ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                                M.pointer_coercion
+                                  M.PointerCoercion.Unsize
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                                [
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::collections::vec_deque::drain::Drain",
+                                          "remaining"
+                                        |)
+                                      |)
+                                    |)
+                                  |)
                                 ]
-                              |)
-                            |)
-                          |);
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                              |))
                               (Ty.apply
                                 (Ty.path "&")
                                 []
-                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::vec_deque::drain::Drain",
-                                      "remaining"
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
-                        ]
+                                [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugTuple" ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -860,11 +1041,14 @@ Module collections.
                       (Ty.path "alloc::collections::vec_deque::drain::drop::DropGuard")
                       []
                       [ T; A ] :=
-                  Value.StructTuple
-                    "alloc::collections::vec_deque::drain::drop::DropGuard"
-                    []
-                    [ T; A ]
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ] in
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "alloc::collections::vec_deque::drain::drop::DropGuard"
+                      [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ])
+                    (Ty.apply
+                      (Ty.path "alloc::collections::vec_deque::drain::drop::DropGuard")
+                      []
+                      [ T; A ]) in
                 let~ _ : Ty.tuple [] :=
                   M.match_operator (|
                     Ty.tuple [],
@@ -945,18 +1129,28 @@ Module collections.
                                   []
                                 |),
                                 [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.read (|
-                                        M.SubPointer.get_struct_tuple_field (|
-                                          guard,
-                                          "alloc::collections::vec_deque::drain::drop::DropGuard",
-                                          0
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (|
+                                        M.read (|
+                                          M.SubPointer.get_struct_tuple_field (|
+                                            guard,
+                                            "alloc::collections::vec_deque::drain::drop::DropGuard",
+                                            0
+                                          |)
                                         |)
                                       |)
-                                    |)
-                                  |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::vec_deque::drain::Drain")
+                                          []
+                                          [ T; A ]
+                                      ])
                                 ]
                               |)
                             |),
@@ -1015,7 +1209,14 @@ Module collections.
                                                 [],
                                                 []
                                               |),
-                                              [ M.read (| front |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| front |))
+                                                  (Ty.apply
+                                                    (Ty.path "*mut")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                              ]
                                             |)
                                           ]
                                         |)
@@ -1053,7 +1254,14 @@ Module collections.
                                                 [],
                                                 []
                                               |),
-                                              [ M.read (| front |) ]
+                                              [
+                                                M.value_with_ty
+                                                  (M.read (| front |))
+                                                  (Ty.apply
+                                                    (Ty.path "*mut")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                              ]
                                             |)
                                           ]
                                         |)
@@ -1066,7 +1274,14 @@ Module collections.
                                           [],
                                           [ Ty.apply (Ty.path "slice") [] [ T ] ]
                                         |),
-                                        [ M.read (| front |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| front |))
+                                            (Ty.apply
+                                              (Ty.path "*mut")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                        ]
                                       |) in
                                     let~ _ : Ty.tuple [] :=
                                       M.write (|
@@ -1093,7 +1308,14 @@ Module collections.
                                           [],
                                           [ Ty.apply (Ty.path "slice") [] [ T ] ]
                                         |),
-                                        [ M.read (| back |) ]
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| back |))
+                                            (Ty.apply
+                                              (Ty.path "*mut")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                                        ]
                                       |) in
                                     M.alloc (| Ty.tuple [], Value.Tuple [] |)
                                   |)))
@@ -1183,7 +1405,9 @@ Module collections.
                               M.never_to_any (|
                                 M.read (|
                                   M.return_ (|
-                                    Value.StructTuple "core::option::Option::None" [] [ T ] []
+                                    M.value_with_ty
+                                      (Value.StructTuple "core::option::Option::None" [])
+                                      (Ty.apply (Ty.path "core::option::Option") [] [ T ])
                                   |)
                                 |)
                               |)));
@@ -1200,22 +1424,13 @@ Module collections.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "alloc::collections::vec_deque::VecDeque")
-                                      []
-                                      [ T; A ]
-                                  ],
-                                M.get_associated_function (|
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
                                   Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    (Ty.path "&")
                                     []
                                     [
                                       Ty.apply
@@ -1223,30 +1438,66 @@ Module collections.
                                         []
                                         [ T; A ]
                                     ],
-                                  "as_ref",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::vec_deque::drain::Drain",
-                                      "deque"
-                                    |)
-                                  |)
-                                ]
+                                  M.get_associated_function (|
+                                    Ty.apply
+                                      (Ty.path "core::ptr::non_null::NonNull")
+                                      []
+                                      [
+                                        Ty.apply
+                                          (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                          []
+                                          [ T; A ]
+                                      ],
+                                    "as_ref",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "alloc::collections::vec_deque::drain::Drain",
+                                          "deque"
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ptr::non_null::NonNull")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                                []
+                                                [ T; A ]
+                                            ]
+                                        ])
+                                  ]
+                                |)
                               |)
-                            |)
-                          |);
-                          M.read (|
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "alloc::collections::vec_deque::drain::Drain",
-                              "idx"
-                            |)
-                          |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                  []
+                                  [ T; A ]
+                              ]);
+                          M.value_with_ty
+                            (M.read (|
+                              M.SubPointer.get_struct_record_field (|
+                                M.deref (| M.read (| self |) |),
+                                "alloc::collections::vec_deque::drain::Drain",
+                                "idx"
+                              |)
+                            |))
+                            (Ty.path "usize")
                         ]
                       |) in
                     let~ _ : Ty.tuple [] :=
@@ -1281,67 +1532,93 @@ Module collections.
                       |) in
                     M.alloc (|
                       Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ T ]
-                        [
-                          M.call_closure (|
-                            T,
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "alloc::collections::vec_deque::VecDeque")
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [
+                            M.call_closure (|
+                              T,
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                  []
+                                  [ T; A ],
+                                "buffer_read",
+                                [],
                                 []
-                                [ T; A ],
-                              "buffer_read",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "&mut")
-                                      []
-                                      [
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
                                         Ty.apply
-                                          (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                          (Ty.path "&mut")
                                           []
-                                          [ T; A ]
-                                      ],
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::ptr::non_null::NonNull")
-                                        []
-                                        [
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                              []
+                                              [ T; A ]
+                                          ],
+                                        M.get_associated_function (|
                                           Ty.apply
-                                            (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                            (Ty.path "core::ptr::non_null::NonNull")
                                             []
-                                            [ T; A ]
-                                        ],
-                                      "as_mut",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
-                                        M.SubPointer.get_struct_record_field (|
-                                          M.deref (| M.read (| self |) |),
-                                          "alloc::collections::vec_deque::drain::Drain",
-                                          "deque"
-                                        |)
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                                []
+                                                [ T; A ]
+                                            ],
+                                          "as_mut",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "alloc::collections::vec_deque::drain::Drain",
+                                                "deque"
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::ptr::non_null::NonNull")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "alloc::collections::vec_deque::VecDeque")
+                                                      []
+                                                      [ T; A ]
+                                                  ]
+                                              ])
+                                        ]
                                       |)
-                                    ]
-                                  |)
-                                |)
-                              |);
-                              M.read (| wrapped_idx |)
-                            ]
-                          |)
-                        ]
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                        []
+                                        [ T; A ]
+                                    ]);
+                                M.value_with_ty (M.read (| wrapped_idx |)) (Ty.path "usize")
+                              ]
+                            |)
+                          ])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ T ])
                     |)
                   |)))
               |)))
@@ -1391,11 +1668,9 @@ Module collections.
                   Value.Tuple
                     [
                       M.read (| len |);
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.path "usize" ]
-                        [ M.read (| len |) ]
+                      M.value_with_ty
+                        (Value.StructTuple "core::option::Option::Some" [ M.read (| len |) ])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
                     ]
                 |)
               |)))
@@ -1484,7 +1759,9 @@ Module collections.
                               M.never_to_any (|
                                 M.read (|
                                   M.return_ (|
-                                    Value.StructTuple "core::option::Option::None" [] [ T ] []
+                                    M.value_with_ty
+                                      (Value.StructTuple "core::option::Option::None" [])
+                                      (Ty.apply (Ty.path "core::option::Option") [] [ T ])
                                   |)
                                 |)
                               |)));
@@ -1516,22 +1793,13 @@ Module collections.
                           []
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [
-                                    Ty.apply
-                                      (Ty.path "alloc::collections::vec_deque::VecDeque")
-                                      []
-                                      [ T; A ]
-                                  ],
-                                M.get_associated_function (|
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
                                   Ty.apply
-                                    (Ty.path "core::ptr::non_null::NonNull")
+                                    (Ty.path "&")
                                     []
                                     [
                                       Ty.apply
@@ -1539,70 +1807,9 @@ Module collections.
                                         []
                                         [ T; A ]
                                     ],
-                                  "as_ref",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "alloc::collections::vec_deque::drain::Drain",
-                                      "deque"
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            |)
-                          |);
-                          M.call_closure (|
-                            Ty.path "usize",
-                            BinOp.Wrap.add,
-                            [
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "alloc::collections::vec_deque::drain::Drain",
-                                  "idx"
-                                |)
-                              |);
-                              M.read (|
-                                M.SubPointer.get_struct_record_field (|
-                                  M.deref (| M.read (| self |) |),
-                                  "alloc::collections::vec_deque::drain::Drain",
-                                  "remaining"
-                                |)
-                              |)
-                            ]
-                          |)
-                        ]
-                      |) in
-                    M.alloc (|
-                      Ty.apply (Ty.path "core::option::Option") [] [ T ],
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ T ]
-                        [
-                          M.call_closure (|
-                            T,
-                            M.get_associated_function (|
-                              Ty.apply
-                                (Ty.path "alloc::collections::vec_deque::VecDeque")
-                                []
-                                [ T; A ],
-                              "buffer_read",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.call_closure (|
+                                  M.get_associated_function (|
                                     Ty.apply
-                                      (Ty.path "&mut")
+                                      (Ty.path "core::ptr::non_null::NonNull")
                                       []
                                       [
                                         Ty.apply
@@ -1610,37 +1817,160 @@ Module collections.
                                           []
                                           [ T; A ]
                                       ],
-                                    M.get_associated_function (|
-                                      Ty.apply
-                                        (Ty.path "core::ptr::non_null::NonNull")
-                                        []
-                                        [
-                                          Ty.apply
-                                            (Ty.path "alloc::collections::vec_deque::VecDeque")
-                                            []
-                                            [ T; A ]
-                                        ],
-                                      "as_mut",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.MutRef,
+                                    "as_ref",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
                                         M.SubPointer.get_struct_record_field (|
                                           M.deref (| M.read (| self |) |),
                                           "alloc::collections::vec_deque::drain::Drain",
                                           "deque"
                                         |)
-                                      |)
-                                    ]
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ptr::non_null::NonNull")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                                []
+                                                [ T; A ]
+                                            ]
+                                        ])
+                                  ]
+                                |)
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                  []
+                                  [ T; A ]
+                              ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.add,
+                              [
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::collections::vec_deque::drain::Drain",
+                                    "idx"
+                                  |)
+                                |);
+                                M.read (|
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "alloc::collections::vec_deque::drain::Drain",
+                                    "remaining"
                                   |)
                                 |)
-                              |);
-                              M.read (| wrapped_idx |)
-                            ]
-                          |)
+                              ]
+                            |))
+                            (Ty.path "usize")
                         ]
+                      |) in
+                    M.alloc (|
+                      Ty.apply (Ty.path "core::option::Option") [] [ T ],
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [
+                            M.call_closure (|
+                              T,
+                              M.get_associated_function (|
+                                Ty.apply
+                                  (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                  []
+                                  [ T; A ],
+                                "buffer_read",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&mut")
+                                          []
+                                          [
+                                            Ty.apply
+                                              (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                              []
+                                              [ T; A ]
+                                          ],
+                                        M.get_associated_function (|
+                                          Ty.apply
+                                            (Ty.path "core::ptr::non_null::NonNull")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                                []
+                                                [ T; A ]
+                                            ],
+                                          "as_mut",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.MutRef,
+                                              M.SubPointer.get_struct_record_field (|
+                                                M.deref (| M.read (| self |) |),
+                                                "alloc::collections::vec_deque::drain::Drain",
+                                                "deque"
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&mut")
+                                              []
+                                              [
+                                                Ty.apply
+                                                  (Ty.path "core::ptr::non_null::NonNull")
+                                                  []
+                                                  [
+                                                    Ty.apply
+                                                      (Ty.path
+                                                        "alloc::collections::vec_deque::VecDeque")
+                                                      []
+                                                      [ T; A ]
+                                                  ]
+                                              ])
+                                        ]
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "alloc::collections::vec_deque::VecDeque")
+                                        []
+                                        [ T; A ]
+                                    ]);
+                                M.value_with_ty (M.read (| wrapped_idx |)) (Ty.path "usize")
+                              ]
+                            |)
+                          ])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ T ])
                     |)
                   |)))
               |)))

@@ -18,7 +18,7 @@ Module Eof.
   Instance IsLink : Link t := {
     Φ := Ty.path "revm_bytecode::eof::Eof";
     φ x :=
-      Value.StructRecord "revm_bytecode::eof::Eof" [] [] [
+      Value.StructRecord "revm_bytecode::eof::Eof" [
         ("body", φ x.(body));
         ("header", φ x.(header));
         ("raw", φ x.(raw))
@@ -36,7 +36,7 @@ Module Eof.
       (header' : Value.t) {H_header : OfValueWith.C (EofHeader.t) header'}
       (raw' : Value.t) {H_raw : OfValueWith.C (Bytes.t) raw'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_bytecode::eof::Eof" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_bytecode::eof::Eof" [
       ("body", body');
       ("header", header');
       ("raw", raw')
@@ -55,7 +55,7 @@ Module Eof.
       (header' : Value.t) {H_header : OfValueWith.C (EofHeader.t) header'}
       (raw' : Value.t) {H_raw : OfValueWith.C (Bytes.t) raw'}
       :
-    OfValue.C (Value.StructRecord "revm_bytecode::eof::Eof" [] [] [
+    OfValue.C (Value.StructRecord "revm_bytecode::eof::Eof" [
       ("body", body');
       ("header", header');
       ("raw", raw')
@@ -144,45 +144,45 @@ Module EofDecodeError.
     φ x :=
       match x with
       | MissingInput =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::MissingInput" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::MissingInput" []
       | MissingBodyWithoutData =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::MissingBodyWithoutData" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::MissingBodyWithoutData" []
       | DanglingData =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::DanglingData" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::DanglingData" []
       | InvalidCodeInfo =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeInfo" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeInfo" []
       | InvalidCodeInfoSize =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeInfoSize" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeInfoSize" []
       | InvalidEOFMagicNumber =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFMagicNumber" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFMagicNumber" []
       | InvalidEOFVersion =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFVersion" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFVersion" []
       | InvalidTypesKind =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidTypesKind" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidTypesKind" []
       | InvalidCodeKind =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeKind" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeKind" []
       | InvalidTerminalByte =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidTerminalByte" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidTerminalByte" []
       | InvalidDataKind =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidDataKind" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidDataKind" []
       | InvalidKindAfterCode =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidKindAfterCode" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidKindAfterCode" []
       | MismatchCodeAndInfoSize =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::MismatchCodeAndInfoSize" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::MismatchCodeAndInfoSize" []
       | NonSizes =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::NonSizes" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::NonSizes" []
       | ShortInputForSizes =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::ShortInputForSizes" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::ShortInputForSizes" []
       | ZeroSize =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::ZeroSize" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::ZeroSize" []
       | TooManyCodeSections =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::TooManyCodeSections" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::TooManyCodeSections" []
       | ZeroCodeSections =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::ZeroCodeSections" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::ZeroCodeSections" []
       | TooManyContainerSections =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::TooManyContainerSections" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::TooManyContainerSections" []
       | InvalidEOFSize =>
-          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFSize" [] [] []
+          Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFSize" []
       end
   }.
 
@@ -193,280 +193,280 @@ Module EofDecodeError.
   }.
 
   Instance IsOfValueWith_MissingInput :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::MissingInput" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::MissingInput" []) :=
   {
     value := MissingInput;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_MissingInput :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::MissingInput" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::MissingInput" []) :=
   {
     value := MissingInput;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_MissingBodyWithoutData :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::MissingBodyWithoutData" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::MissingBodyWithoutData" []) :=
   {
     value := MissingBodyWithoutData;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_MissingBodyWithoutData :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::MissingBodyWithoutData" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::MissingBodyWithoutData" []) :=
   {
     value := MissingBodyWithoutData;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_DanglingData :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::DanglingData" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::DanglingData" []) :=
   {
     value := DanglingData;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_DanglingData :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::DanglingData" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::DanglingData" []) :=
   {
     value := DanglingData;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_InvalidCodeInfo :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeInfo" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeInfo" []) :=
   {
     value := InvalidCodeInfo;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_InvalidCodeInfo :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeInfo" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeInfo" []) :=
   {
     value := InvalidCodeInfo;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_InvalidCodeInfoSize :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeInfoSize" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeInfoSize" []) :=
   {
     value := InvalidCodeInfoSize;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_InvalidCodeInfoSize :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeInfoSize" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeInfoSize" []) :=
   {
     value := InvalidCodeInfoSize;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_InvalidEOFMagicNumber :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFMagicNumber" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFMagicNumber" []) :=
   {
     value := InvalidEOFMagicNumber;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_InvalidEOFMagicNumber :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFMagicNumber" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFMagicNumber" []) :=
   {
     value := InvalidEOFMagicNumber;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_InvalidEOFVersion :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFVersion" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFVersion" []) :=
   {
     value := InvalidEOFVersion;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_InvalidEOFVersion :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFVersion" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFVersion" []) :=
   {
     value := InvalidEOFVersion;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_InvalidTypesKind :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidTypesKind" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidTypesKind" []) :=
   {
     value := InvalidTypesKind;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_InvalidTypesKind :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidTypesKind" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidTypesKind" []) :=
   {
     value := InvalidTypesKind;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_InvalidCodeKind :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeKind" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeKind" []) :=
   {
     value := InvalidCodeKind;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_InvalidCodeKind :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeKind" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidCodeKind" []) :=
   {
     value := InvalidCodeKind;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_InvalidTerminalByte :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidTerminalByte" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidTerminalByte" []) :=
   {
     value := InvalidTerminalByte;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_InvalidTerminalByte :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidTerminalByte" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidTerminalByte" []) :=
   {
     value := InvalidTerminalByte;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_InvalidDataKind :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidDataKind" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidDataKind" []) :=
   {
     value := InvalidDataKind;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_InvalidDataKind :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidDataKind" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidDataKind" []) :=
   {
     value := InvalidDataKind;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_InvalidKindAfterCode :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidKindAfterCode" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidKindAfterCode" []) :=
   {
     value := InvalidKindAfterCode;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_InvalidKindAfterCode :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidKindAfterCode" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidKindAfterCode" []) :=
   {
     value := InvalidKindAfterCode;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_MismatchCodeAndInfoSize :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::MismatchCodeAndInfoSize" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::MismatchCodeAndInfoSize" []) :=
   {
     value := MismatchCodeAndInfoSize;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_MismatchCodeAndInfoSize :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::MismatchCodeAndInfoSize" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::MismatchCodeAndInfoSize" []) :=
   {
     value := MismatchCodeAndInfoSize;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_NonSizes :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::NonSizes" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::NonSizes" []) :=
   {
     value := NonSizes;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_NonSizes :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::NonSizes" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::NonSizes" []) :=
   {
     value := NonSizes;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_ShortInputForSizes :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::ShortInputForSizes" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::ShortInputForSizes" []) :=
   {
     value := ShortInputForSizes;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_ShortInputForSizes :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::ShortInputForSizes" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::ShortInputForSizes" []) :=
   {
     value := ShortInputForSizes;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_ZeroSize :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::ZeroSize" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::ZeroSize" []) :=
   {
     value := ZeroSize;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_ZeroSize :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::ZeroSize" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::ZeroSize" []) :=
   {
     value := ZeroSize;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_TooManyCodeSections :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::TooManyCodeSections" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::TooManyCodeSections" []) :=
   {
     value := TooManyCodeSections;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_TooManyCodeSections :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::TooManyCodeSections" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::TooManyCodeSections" []) :=
   {
     value := TooManyCodeSections;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_ZeroCodeSections :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::ZeroCodeSections" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::ZeroCodeSections" []) :=
   {
     value := ZeroCodeSections;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_ZeroCodeSections :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::ZeroCodeSections" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::ZeroCodeSections" []) :=
   {
     value := ZeroCodeSections;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_TooManyContainerSections :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::TooManyContainerSections" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::TooManyContainerSections" []) :=
   {
     value := TooManyContainerSections;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_TooManyContainerSections :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::TooManyContainerSections" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::TooManyContainerSections" []) :=
   {
     value := TooManyContainerSections;
     eq := eq_refl;
   }.
 
   Instance IsOfValueWith_InvalidEOFSize :
-    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFSize" [] [] []) :=
+    OfValueWith.C t (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFSize" []) :=
   {
     value := InvalidEOFSize;
     eq := eq_refl;
   }.
 
   Instance IsOfValue_InvalidEOFSize :
-    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFSize" [] [] []) :=
+    OfValue.C (Value.StructTuple "revm_bytecode::eof::EofDecodeError::InvalidEOFSize" []) :=
   {
     value := InvalidEOFSize;
     eq := eq_refl;

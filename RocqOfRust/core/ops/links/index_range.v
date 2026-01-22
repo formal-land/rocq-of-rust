@@ -18,7 +18,7 @@ Module IndexRange.
   Instance IsLink : Link t := {
     Φ := Ty.path "core::ops::index_range::IndexRange";
     φ x :=
-      Value.StructRecord "core::ops::index_range::IndexRange" [] [] [
+      Value.StructRecord "core::ops::index_range::IndexRange" [
         ("end_", φ x.(end_));
         ("start", φ x.(start))
       ];
@@ -34,7 +34,7 @@ Module IndexRange.
       (end_' : Value.t) {H_end_ : OfValueWith.C (usize) end_'}
       (start' : Value.t) {H_start : OfValueWith.C (usize) start'}
       :
-    OfValueWith.C t (Value.StructRecord "core::ops::index_range::IndexRange" [] [] [
+    OfValueWith.C t (Value.StructRecord "core::ops::index_range::IndexRange" [
       ("end_", end_');
       ("start", start')
     ]) :=
@@ -50,7 +50,7 @@ Module IndexRange.
       (end_' : Value.t) {H_end_ : OfValueWith.C (usize) end_'}
       (start' : Value.t) {H_start : OfValueWith.C (usize) start'}
       :
-    OfValue.C (Value.StructRecord "core::ops::index_range::IndexRange" [] [] [
+    OfValue.C (Value.StructRecord "core::ops::index_range::IndexRange" [
       ("end_", end_');
       ("start", start')
     ]) :=

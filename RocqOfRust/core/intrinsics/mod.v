@@ -18,69 +18,93 @@ Module num.
               Ty.path "never",
               M.get_function (| "core::panicking::panic_fmt", [], [] |),
               [
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Arguments",
+                      "new_v1",
+                      [ Value.Integer IntegerKind.Usize 1; Value.Integer IntegerKind.Usize 1 ],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array
-                              [
-                                mk_str (|
-                                  "from_str_radix_int: must lie in the range `[2, 36]` - found "
-                                |)
-                              ]
-                          |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 1 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            Value.Array
-                              [
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_display",
-                                    [],
-                                    [ Ty.path "u32" ]
-                                  |),
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                Value.Array
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.borrow (| Pointer.Kind.Ref, radix |) |)
+                                    mk_str (|
+                                      "from_str_radix_int: must lie in the range `[2, 36]` - found "
                                     |)
                                   ]
-                                |)
-                              ]
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 1 ]
+                                  [ Ty.path "core::fmt::rt::Argument" ],
+                                Value.Array
+                                  [
+                                    M.call_closure (|
+                                      Ty.path "core::fmt::rt::Argument",
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        "new_display",
+                                        [],
+                                        [ Ty.path "u32" ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.borrow (| Pointer.Kind.Ref, radix |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                                      ]
+                                    |)
+                                  ]
+                              |)
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.path "core::fmt::rt::Argument" ]
+                          ])
+                    ]
+                  |))
+                  (Ty.path "core::fmt::Arguments")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -114,37 +138,49 @@ Module num.
                       Ty.path "never",
                       M.get_function (| "core::panicking::panic_fmt", [], [] |),
                       [
-                        M.call_closure (|
-                          Ty.path "core::fmt::Arguments",
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.path "core::fmt::Arguments",
-                            "new_const",
-                            [ Value.Integer IntegerKind.Usize 1 ],
-                            []
-                          |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.borrow (|
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::Arguments",
+                              "new_const",
+                              [ Value.Integer IntegerKind.Usize 1 ],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
                                   Pointer.Kind.Ref,
-                                  M.alloc (|
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 1 ]
+                                          [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                        Value.Array
+                                          [
+                                            mk_str (|
+                                              "from_str_radix_int: must lie in the range `[2, 36]`"
+                                            |)
+                                          ]
+                                      |)
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [
                                     Ty.apply
                                       (Ty.path "array")
                                       [ Value.Integer IntegerKind.Usize 1 ]
-                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                    Value.Array
-                                      [
-                                        mk_str (|
-                                          "from_str_radix_int: must lie in the range `[2, 36]`"
-                                        |)
-                                      ]
-                                  |)
-                                |)
-                              |)
-                            |)
-                          ]
-                        |)
+                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                  ])
+                            ]
+                          |))
+                          (Ty.path "core::fmt::Arguments")
                       ]
                     |)))
               ]
@@ -175,7 +211,7 @@ Module intrinsics.
         M.call_closure (|
           Ty.tuple [],
           M.get_function (| "core::ptr::drop_in_place", [], [ T ] |),
-          [ M.read (| to_drop |) ]
+          [ M.value_with_ty (M.read (| to_drop |)) (Ty.apply (Ty.path "*mut") [] [ T ]) ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -205,7 +241,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -236,7 +276,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -267,7 +311,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -298,7 +346,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -329,7 +381,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -360,7 +416,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -391,7 +451,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -422,7 +486,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -453,7 +521,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -484,7 +556,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -515,7 +591,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -542,7 +622,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -573,7 +657,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -604,7 +692,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -631,7 +723,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -666,7 +762,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -703,7 +803,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -740,7 +844,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -777,7 +885,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -814,7 +926,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -851,7 +967,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -888,7 +1008,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -925,7 +1049,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -962,7 +1090,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -999,7 +1131,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1036,7 +1172,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1069,7 +1209,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1106,7 +1250,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1143,7 +1291,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1176,7 +1328,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1203,7 +1359,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1228,7 +1388,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1253,7 +1417,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1278,7 +1446,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1304,7 +1476,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1330,7 +1506,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1356,7 +1536,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1382,7 +1566,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1408,7 +1596,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1434,7 +1626,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1460,7 +1656,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1486,7 +1686,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1512,7 +1716,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1538,7 +1746,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1564,7 +1776,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1590,7 +1806,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1616,7 +1836,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1642,7 +1866,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1668,7 +1896,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1694,7 +1926,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1720,7 +1956,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1746,7 +1986,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1772,7 +2016,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1798,7 +2046,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1824,7 +2076,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1850,7 +2106,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1876,7 +2136,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1902,7 +2166,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1928,7 +2196,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1954,7 +2226,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -1980,7 +2256,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2006,7 +2286,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2032,7 +2316,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2058,7 +2346,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2084,7 +2376,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2110,7 +2406,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2136,7 +2436,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2162,7 +2466,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2188,7 +2496,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2214,7 +2526,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2240,7 +2556,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2266,7 +2586,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2292,7 +2616,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2318,7 +2646,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2344,7 +2676,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2370,7 +2706,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2396,7 +2736,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2422,7 +2766,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2448,7 +2796,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2474,7 +2826,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2500,7 +2856,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2526,7 +2886,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2552,7 +2916,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2578,7 +2946,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2604,7 +2976,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2630,7 +3006,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2656,7 +3036,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2682,7 +3066,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2708,7 +3096,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2734,7 +3126,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2760,7 +3156,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2786,7 +3186,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2812,7 +3216,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2836,7 +3244,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2860,7 +3272,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2884,7 +3300,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2908,7 +3328,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2936,7 +3360,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2966,7 +3394,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -2996,7 +3428,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3026,7 +3462,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3054,7 +3494,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3080,7 +3524,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3106,7 +3554,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3132,7 +3584,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3156,7 +3612,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3187,7 +3647,11 @@ Module intrinsics.
                   M.call_closure (|
                     Ty.path "never",
                     M.get_function (| "core::panicking::panic", [], [] |),
-                    [ mk_str (| "internal error: entered unreachable code" |) ]
+                    [
+                      M.value_with_ty
+                        (mk_str (| "internal error: entered unreachable code" |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                    ]
                   |)
                 |)))
           ]
@@ -3212,7 +3676,11 @@ Module intrinsics.
         (M.call_closure (|
           Ty.path "never",
           M.get_function (| "core::panicking::panic", [], [] |),
-          [ mk_str (| "internal error: entered unreachable code" |) ]
+          [
+            M.value_with_ty
+              (mk_str (| "internal error: entered unreachable code" |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -3233,7 +3701,11 @@ Module intrinsics.
         (M.call_closure (|
           Ty.path "never",
           M.get_function (| "core::panicking::panic", [], [] |),
-          [ mk_str (| "internal error: entered unreachable code" |) ]
+          [
+            M.value_with_ty
+              (mk_str (| "internal error: entered unreachable code" |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+          ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
@@ -3430,7 +3902,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3454,7 +3930,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3482,7 +3962,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3508,7 +3992,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3539,7 +4027,11 @@ Module intrinsics.
                   M.call_closure (|
                     Ty.path "never",
                     M.get_function (| "core::panicking::panic", [], [] |),
-                    [ mk_str (| "internal error: entered unreachable code" |) ]
+                    [
+                      M.value_with_ty
+                        (mk_str (| "internal error: entered unreachable code" |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                    ]
                   |)
                 |)))
           ]
@@ -3565,7 +4057,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3590,7 +4086,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3614,7 +4114,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3640,7 +4144,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3665,7 +4173,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3691,7 +4203,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3722,7 +4238,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3751,7 +4271,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3778,7 +4302,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3803,7 +4331,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3829,7 +4361,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3854,7 +4390,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3880,7 +4420,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3905,7 +4449,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3929,7 +4477,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3953,7 +4505,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -3977,7 +4533,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4003,7 +4563,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4028,7 +4592,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4053,7 +4621,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4078,7 +4650,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4103,7 +4679,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4127,7 +4707,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4151,7 +4735,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4175,7 +4763,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4199,7 +4791,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4223,7 +4819,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4247,7 +4847,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4271,7 +4875,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4296,7 +4904,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4321,7 +4933,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4346,7 +4962,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4371,7 +4991,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4395,7 +5019,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4419,7 +5047,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4443,7 +5075,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4467,7 +5103,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4491,7 +5131,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4515,7 +5159,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4539,7 +5187,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4563,7 +5215,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4588,7 +5244,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4612,7 +5272,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4636,7 +5300,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4660,7 +5328,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4684,7 +5356,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4709,7 +5385,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4734,7 +5414,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4759,7 +5443,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4784,7 +5472,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4808,7 +5500,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4832,7 +5528,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4856,7 +5556,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4883,7 +5587,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4909,7 +5617,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4935,7 +5647,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4961,7 +5677,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -4987,7 +5707,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5014,7 +5738,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5041,7 +5769,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5068,7 +5800,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5093,7 +5829,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5118,7 +5858,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5143,7 +5887,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5168,7 +5916,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5193,7 +5945,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5217,7 +5973,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5241,7 +6001,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5265,7 +6029,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5290,7 +6058,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5315,7 +6087,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5340,7 +6116,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5365,7 +6145,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5390,7 +6174,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5414,7 +6202,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5438,7 +6230,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5462,7 +6258,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5487,7 +6287,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5512,7 +6316,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5537,7 +6345,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5562,7 +6374,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5587,7 +6403,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5612,7 +6432,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5637,7 +6461,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5662,7 +6490,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5687,7 +6519,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5712,7 +6548,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5737,7 +6577,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5762,7 +6606,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5788,7 +6636,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5814,7 +6666,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5840,7 +6696,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5866,7 +6726,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5892,7 +6756,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5917,7 +6785,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5943,7 +6815,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5969,7 +6845,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -5995,7 +6875,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6021,7 +6905,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6047,7 +6935,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6072,7 +6964,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6096,7 +6992,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6120,7 +7020,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6145,7 +7049,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6169,7 +7077,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6194,7 +7106,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6218,7 +7134,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6244,7 +7164,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6270,7 +7194,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6296,7 +7224,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6322,7 +7254,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6348,7 +7284,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6374,7 +7314,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6400,7 +7344,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6426,7 +7374,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6452,7 +7404,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6478,7 +7434,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6504,7 +7464,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6530,7 +7494,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6556,7 +7524,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6582,7 +7554,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6608,7 +7584,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6634,7 +7614,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6660,7 +7644,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6686,7 +7674,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6712,7 +7704,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6737,7 +7733,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6763,7 +7763,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6788,7 +7792,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6826,7 +7834,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6852,7 +7864,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6904,7 +7920,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6930,7 +7950,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6955,7 +7979,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -6990,7 +8018,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7038,7 +8070,11 @@ Module intrinsics.
             M.call_closure (|
               Ty.tuple [],
               M.get_function (| "core::ptr::swap_nonoverlapping", [], [ T ] |),
-              [ M.read (| x |); M.read (| y |); Value.Integer IntegerKind.Usize 1 ]
+              [
+                M.value_with_ty (M.read (| x |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                M.value_with_ty (M.read (| y |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                M.value_with_ty (Value.Integer IntegerKind.Usize 1) (Ty.path "usize")
+              ]
             |) in
           M.alloc (| Ty.tuple [], Value.Tuple [] |)
         |)))
@@ -7127,7 +8163,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7152,7 +8192,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7176,7 +8220,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7199,7 +8247,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7223,7 +8275,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7247,7 +8303,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7272,7 +8332,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7297,7 +8361,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7321,7 +8389,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7345,7 +8417,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7372,7 +8448,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7436,7 +8516,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "internal error: entered unreachable code" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "internal error: entered unreachable code" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7516,23 +8600,31 @@ Module intrinsics.
                             []
                           |),
                           [
-                            M.cast
-                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
-                              (M.read (| src |));
-                            M.cast
-                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                              (M.read (| dst |));
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_function (| "core::intrinsics::size_of", [], [ T ] |),
-                              []
-                            |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_function (| "core::mem::align_of", [], [ T ] |),
-                              []
-                            |);
-                            M.read (| count |)
+                            M.value_with_ty
+                              (M.cast
+                                (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                                (M.read (| src |)))
+                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                            M.value_with_ty
+                              (M.cast
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                (M.read (| dst |)))
+                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (| "core::intrinsics::size_of", [], [ T ] |),
+                                []
+                              |))
+                              (Ty.path "usize");
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (| "core::mem::align_of", [], [ T ] |),
+                                []
+                              |))
+                              (Ty.path "usize");
+                            M.value_with_ty (M.read (| count |)) (Ty.path "usize")
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -7549,7 +8641,11 @@ Module intrinsics.
                 [],
                 []
               |),
-              [ M.read (| src |); M.read (| dst |); M.read (| count |) ]
+              [
+                M.value_with_ty (M.read (| src |)) (Ty.apply (Ty.path "*const") [] [ T ]);
+                M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                M.value_with_ty (M.read (| count |)) (Ty.path "usize")
+              ]
             |)
           |)
         |)))
@@ -7578,7 +8674,11 @@ Module intrinsics.
             M.call_closure (|
               Ty.path "never",
               M.get_function (| "core::panicking::panic", [], [] |),
-              [ mk_str (| "internal error: entered unreachable code" |) ]
+              [
+                M.value_with_ty
+                  (mk_str (| "internal error: entered unreachable code" |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+              ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -7652,31 +8752,39 @@ Module intrinsics.
                           Ty.tuple [],
                           M.get_function (| "core::intrinsics::copy.precondition_check", [], [] |),
                           [
-                            M.cast
-                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
-                              (M.read (| src |));
-                            M.cast
-                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
-                              (M.read (| dst |));
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_function (| "core::mem::align_of", [], [ T ] |),
-                              []
-                            |);
-                            LogicalOp.or (|
-                              M.read (|
-                                get_constant (|
-                                  "core::mem::SizedTypeProperties::IS_ZST",
-                                  Ty.path "bool"
-                                |)
-                              |),
-                              ltac:(M.monadic
-                                (M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ M.read (| count |); Value.Integer IntegerKind.Usize 0 ]
-                                |)))
-                            |)
+                            M.value_with_ty
+                              (M.cast
+                                (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                                (M.read (| src |)))
+                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                            M.value_with_ty
+                              (M.cast
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                (M.read (| dst |)))
+                              (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (| "core::mem::align_of", [], [ T ] |),
+                                []
+                              |))
+                              (Ty.path "usize");
+                            M.value_with_ty
+                              (LogicalOp.or (|
+                                M.read (|
+                                  get_constant (|
+                                    "core::mem::SizedTypeProperties::IS_ZST",
+                                    Ty.path "bool"
+                                  |)
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.eq,
+                                    [ M.read (| count |); Value.Integer IntegerKind.Usize 0 ]
+                                  |)))
+                              |))
+                              (Ty.path "bool")
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -7689,7 +8797,11 @@ Module intrinsics.
             M.call_closure (|
               Ty.tuple [],
               M.get_function (| "core::intrinsics::copy.copy", [], [] |),
-              [ M.read (| src |); M.read (| dst |); M.read (| count |) ]
+              [
+                M.value_with_ty (M.read (| src |)) (Ty.apply (Ty.path "*const") [] [ T ]);
+                M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                M.value_with_ty (M.read (| count |)) (Ty.path "usize")
+              ]
             |)
           |)
         |)))
@@ -7717,7 +8829,11 @@ Module intrinsics.
             M.call_closure (|
               Ty.path "never",
               M.get_function (| "core::panicking::panic", [], [] |),
-              [ mk_str (| "internal error: entered unreachable code" |) ]
+              [
+                M.value_with_ty
+                  (mk_str (| "internal error: entered unreachable code" |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+              ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -7789,28 +8905,34 @@ Module intrinsics.
                             []
                           |),
                           [
-                            M.cast
-                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
-                              (M.read (| dst |));
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_function (| "core::mem::align_of", [], [ T ] |),
-                              []
-                            |);
-                            LogicalOp.or (|
-                              M.read (|
-                                get_constant (|
-                                  "core::mem::SizedTypeProperties::IS_ZST",
-                                  Ty.path "bool"
-                                |)
-                              |),
-                              ltac:(M.monadic
-                                (M.call_closure (|
-                                  Ty.path "bool",
-                                  BinOp.eq,
-                                  [ M.read (| count |); Value.Integer IntegerKind.Usize 0 ]
-                                |)))
-                            |)
+                            M.value_with_ty
+                              (M.cast
+                                (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                                (M.read (| dst |)))
+                              (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_function (| "core::mem::align_of", [], [ T ] |),
+                                []
+                              |))
+                              (Ty.path "usize");
+                            M.value_with_ty
+                              (LogicalOp.or (|
+                                M.read (|
+                                  get_constant (|
+                                    "core::mem::SizedTypeProperties::IS_ZST",
+                                    Ty.path "bool"
+                                  |)
+                                |),
+                                ltac:(M.monadic
+                                  (M.call_closure (|
+                                    Ty.path "bool",
+                                    BinOp.eq,
+                                    [ M.read (| count |); Value.Integer IntegerKind.Usize 0 ]
+                                  |)))
+                              |))
+                              (Ty.path "bool")
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -7823,7 +8945,11 @@ Module intrinsics.
             M.call_closure (|
               Ty.tuple [],
               M.get_function (| "core::intrinsics::write_bytes.write_bytes", [], [] |),
-              [ M.read (| dst |); M.read (| val |); M.read (| count |) ]
+              [
+                M.value_with_ty (M.read (| dst |)) (Ty.apply (Ty.path "*mut") [] [ T ]);
+                M.value_with_ty (M.read (| val |)) (Ty.path "u8");
+                M.value_with_ty (M.read (| count |)) (Ty.path "usize")
+              ]
             |)
           |)
         |)))
@@ -7852,7 +8978,11 @@ Module intrinsics.
             M.call_closure (|
               Ty.path "never",
               M.get_function (| "core::panicking::panic", [], [] |),
-              [ mk_str (| "internal error: entered unreachable code" |) ]
+              [
+                M.value_with_ty
+                  (mk_str (| "internal error: entered unreachable code" |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+              ]
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -7879,7 +9009,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7905,7 +9039,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7931,7 +9069,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7957,7 +9099,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -7983,7 +9129,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8009,7 +9159,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8035,7 +9189,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8061,7 +9219,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8086,7 +9248,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8110,7 +9276,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8134,7 +9304,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8158,7 +9332,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8184,7 +9362,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8210,7 +9392,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8236,7 +9422,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8262,7 +9452,11 @@ Module intrinsics.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -8335,7 +9529,10 @@ Module ub_checks.
                 [],
                 []
               |),
-              [ M.read (| ptr |); M.read (| align |) ]
+              [
+                M.value_with_ty (M.read (| ptr |)) (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ]);
+                M.value_with_ty (M.read (| align |)) (Ty.path "usize")
+              ]
             |),
             ltac:(M.monadic
               (LogicalOp.or (|
@@ -8353,7 +9550,11 @@ Module ub_checks.
                           [],
                           []
                         |),
-                        [ M.read (| ptr |) ]
+                        [
+                          M.value_with_ty
+                            (M.read (| ptr |))
+                            (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                        ]
                       |)
                     ]
                   |)))
@@ -8415,7 +9616,11 @@ Module ub_checks.
                                               [],
                                               []
                                             |),
-                                            [ M.read (| ptr |) ]
+                                            [
+                                              M.value_with_ty
+                                                (M.read (| ptr |))
+                                                (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                                            ]
                                           |)
                                         ]
                                       |)))
@@ -8459,7 +9664,11 @@ Module ub_checks.
                   [],
                   []
                 |),
-                [ M.read (| src |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| src |))
+                    (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                ]
               |) in
             let~ dst_usize : Ty.path "usize" :=
               M.call_closure (|
@@ -8470,7 +9679,11 @@ Module ub_checks.
                   [],
                   []
                 |),
-                [ M.read (| dst |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| dst |))
+                    (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                ]
               |) in
             M.alloc (|
               Ty.path "bool",
@@ -8481,7 +9694,10 @@ Module ub_checks.
                   M.call_closure (|
                     Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
                     M.get_associated_function (| Ty.path "usize", "checked_mul", [], [] |),
-                    [ M.read (| size |); M.read (| count |) ]
+                    [
+                      M.value_with_ty (M.read (| size |)) (Ty.path "usize");
+                      M.value_with_ty (M.read (| count |)) (Ty.path "usize")
+                    ]
                   |)
                 |),
                 [
@@ -8499,7 +9715,10 @@ Module ub_checks.
                           M.call_closure (|
                             Ty.path "usize",
                             M.get_associated_function (| Ty.path "usize", "abs_diff", [], [] |),
-                            [ M.read (| src_usize |); M.read (| dst_usize |) ]
+                            [
+                              M.value_with_ty (M.read (| src_usize |)) (Ty.path "usize");
+                              M.value_with_ty (M.read (| dst_usize |)) (Ty.path "usize")
+                            ]
                           |) in
                         M.alloc (|
                           Ty.path "bool",
@@ -8516,9 +9735,11 @@ Module ub_checks.
                         Ty.path "never",
                         M.get_function (| "core::panicking::panic_nounwind", [], [] |),
                         [
-                          mk_str (|
-                            "is_nonoverlapping: `size_of::<T>() * count` overflows a usize"
-                          |)
+                          M.value_with_ty
+                            (mk_str (|
+                              "is_nonoverlapping: `size_of::<T>() * count` overflows a usize"
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                         ]
                       |)))
                 ]
@@ -8608,36 +9829,70 @@ Module char.
                 Ty.path "never",
                 M.get_function (| "core::panicking::panic_fmt", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.path "core::fmt::Arguments",
-                      "new_v1_formatted",
-                      [],
-                      []
-                    |),
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new_v1_formatted",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.apply
-                              (Ty.path "slice")
+                              (Ty.path "&")
                               []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                          ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                              ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 3 ]
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]),
                             [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 3 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                            ])
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 3 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [
+                                          mk_str (| "encode_utf8: need " |);
+                                          mk_str (| " bytes to encode U+" |);
+                                          mk_str (| " but buffer has just " |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |)
+                            ]
+                          |))
                           (Ty.apply
                             (Ty.path "&")
                             []
@@ -8646,249 +9901,308 @@ Module char.
                                 (Ty.path "slice")
                                 []
                                 [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                            ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
+                            ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ]
+                              ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 3 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (| "encode_utf8: need " |);
-                                      mk_str (| " bytes to encode U+" |);
-                                      mk_str (| " but buffer has just " |)
-                                    ]
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ]),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 3 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      Value.Array
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [ Ty.path "usize" ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, len |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                            ]
+                                          |);
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_upper_hex",
+                                              [],
+                                              [ Ty.path "u32" ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, code |)
+                                                  |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                                            ]
+                                          |);
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [ Ty.path "usize" ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, dst_len |)
+                                                  |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                            ]
+                                          |)
+                                        ]
+                                    |)
+                                  |)
                                 |)
                               |)
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 3 ]
-                                [ Ty.path "core::fmt::rt::Argument" ]
-                            ])
+                            ]
+                          |))
                           (Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ]
-                            ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
+                            ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [ Ty.path "core::fmt::rt::Placeholder" ]
+                              ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 3 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.path "usize" ]
-                                        |),
+                                    [ Ty.path "core::fmt::rt::Placeholder" ]
+                                ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.path "core::fmt::rt::Placeholder" ]
+                                ]),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 3 ]
+                                        [ Ty.path "core::fmt::rt::Placeholder" ],
+                                      Value.Array
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, len |) |)
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Placeholder",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Placeholder",
+                                              "new",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.Usize 0)
+                                                (Ty.path "usize");
+                                              M.value_with_ty
+                                                (Value.UnicodeChar 32)
+                                                (Ty.path "char");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::fmt::rt::Alignment::Unknown"
+                                                    [])
+                                                  (Ty.path "core::fmt::rt::Alignment"))
+                                                (Ty.path "core::fmt::rt::Alignment");
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.U32 0)
+                                                (Ty.path "u32");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::fmt::rt::Count::Implied"
+                                                    [])
+                                                  (Ty.path "core::fmt::rt::Count"))
+                                                (Ty.path "core::fmt::rt::Count");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::fmt::rt::Count::Implied"
+                                                    [])
+                                                  (Ty.path "core::fmt::rt::Count"))
+                                                (Ty.path "core::fmt::rt::Count")
+                                            ]
+                                          |);
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Placeholder",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Placeholder",
+                                              "new",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.Usize 1)
+                                                (Ty.path "usize");
+                                              M.value_with_ty
+                                                (Value.UnicodeChar 32)
+                                                (Ty.path "char");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::fmt::rt::Alignment::Unknown"
+                                                    [])
+                                                  (Ty.path "core::fmt::rt::Alignment"))
+                                                (Ty.path "core::fmt::rt::Alignment");
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.U32 8)
+                                                (Ty.path "u32");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::fmt::rt::Count::Implied"
+                                                    [])
+                                                  (Ty.path "core::fmt::rt::Count"))
+                                                (Ty.path "core::fmt::rt::Count");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::fmt::rt::Count::Is"
+                                                    [ Value.Integer IntegerKind.Usize 4 ])
+                                                  (Ty.path "core::fmt::rt::Count"))
+                                                (Ty.path "core::fmt::rt::Count")
+                                            ]
+                                          |);
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Placeholder",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Placeholder",
+                                              "new",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.Usize 2)
+                                                (Ty.path "usize");
+                                              M.value_with_ty
+                                                (Value.UnicodeChar 32)
+                                                (Ty.path "char");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::fmt::rt::Alignment::Unknown"
+                                                    [])
+                                                  (Ty.path "core::fmt::rt::Alignment"))
+                                                (Ty.path "core::fmt::rt::Alignment");
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.U32 0)
+                                                (Ty.path "u32");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::fmt::rt::Count::Implied"
+                                                    [])
+                                                  (Ty.path "core::fmt::rt::Count"))
+                                                (Ty.path "core::fmt::rt::Count");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::fmt::rt::Count::Implied"
+                                                    [])
+                                                  (Ty.path "core::fmt::rt::Count"))
+                                                (Ty.path "core::fmt::rt::Count")
+                                            ]
                                           |)
                                         ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_upper_hex",
-                                          [],
-                                          [ Ty.path "u32" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, code |) |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.path "usize" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, dst_len |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
+                                    |)
+                                  |)
                                 |)
                               |)
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ]
-                          ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 3 ]
-                                [ Ty.path "core::fmt::rt::Placeholder" ]
-                            ])
+                            ]
+                          |))
                           (Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ]
-                            ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 3 ]
-                                    [ Ty.path "core::fmt::rt::Placeholder" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Placeholder",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Placeholder",
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          Value.Integer IntegerKind.Usize 0;
-                                          Value.UnicodeChar 32;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Alignment::Unknown"
-                                            []
-                                            []
-                                            [];
-                                          Value.Integer IntegerKind.U32 0;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Count::Implied"
-                                            []
-                                            []
-                                            [];
-                                          Value.StructTuple "core::fmt::rt::Count::Implied" [] [] []
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Placeholder",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Placeholder",
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          Value.Integer IntegerKind.Usize 1;
-                                          Value.UnicodeChar 32;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Alignment::Unknown"
-                                            []
-                                            []
-                                            [];
-                                          Value.Integer IntegerKind.U32 8;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Count::Implied"
-                                            []
-                                            []
-                                            [];
-                                          Value.StructTuple
-                                            "core::fmt::rt::Count::Is"
-                                            []
-                                            []
-                                            [ Value.Integer IntegerKind.Usize 4 ]
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Placeholder",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Placeholder",
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          Value.Integer IntegerKind.Usize 2;
-                                          Value.UnicodeChar 32;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Alignment::Unknown"
-                                            []
-                                            []
-                                            [];
-                                          Value.Integer IntegerKind.U32 0;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Count::Implied"
-                                            []
-                                            []
-                                            [];
-                                          Value.StructTuple "core::fmt::rt::Count::Implied" [] [] []
-                                        ]
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::rt::UnsafeArg",
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::rt::UnsafeArg",
-                          "new",
-                          [],
-                          []
-                        |),
-                        []
-                      |)
-                    ]
-                  |)
+                            ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.path "core::fmt::rt::UnsafeArg",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::UnsafeArg",
+                              "new",
+                              [],
+                              []
+                            |),
+                            []
+                          |))
+                          (Ty.path "core::fmt::rt::UnsafeArg")
+                      ]
+                    |))
+                    (Ty.path "core::fmt::Arguments")
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -8936,21 +10250,46 @@ Module char.
                                         Ty.path "never",
                                         M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                         [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::Arguments",
-                                            M.get_associated_function (|
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.path "core::fmt::Arguments",
-                                              "new_const",
-                                              [ Value.Integer IntegerKind.Usize 1 ],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::Arguments",
+                                                "new_const",
+                                                [ Value.Integer IntegerKind.Usize 1 ],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
                                                     Pointer.Kind.Ref,
-                                                    M.alloc (|
+                                                    M.deref (|
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.alloc (|
+                                                          Ty.apply
+                                                            (Ty.path "array")
+                                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [ Ty.path "str" ]
+                                                            ],
+                                                          Value.Array
+                                                            [
+                                                              mk_str (|
+                                                                "encode_utf8: buffer does not have enough bytes to encode code point"
+                                                              |)
+                                                            ]
+                                                        |)
+                                                      |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
                                                       Ty.apply
                                                         (Ty.path "array")
                                                         [ Value.Integer IntegerKind.Usize 1 ]
@@ -8959,19 +10298,11 @@ Module char.
                                                             (Ty.path "&")
                                                             []
                                                             [ Ty.path "str" ]
-                                                        ],
-                                                      Value.Array
-                                                        [
-                                                          mk_str (|
-                                                            "encode_utf8: buffer does not have enough bytes to encode code point"
-                                                          |)
                                                         ]
-                                                    |)
-                                                  |)
-                                                |)
-                                              |)
-                                            ]
-                                          |)
+                                                    ])
+                                              ]
+                                            |))
+                                            (Ty.path "core::fmt::Arguments")
                                         ]
                                       |)))
                                 ]
@@ -9008,36 +10339,70 @@ Module char.
                 Ty.path "never",
                 M.get_function (| "core::panicking::panic_fmt", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.path "core::fmt::Arguments",
-                      "new_v1_formatted",
-                      [],
-                      []
-                    |),
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new_v1_formatted",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.apply
-                              (Ty.path "slice")
+                              (Ty.path "&")
                               []
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                          ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                              ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 3 ]
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]),
                             [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 3 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                            ])
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 3 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [
+                                          mk_str (| "encode_utf16: need " |);
+                                          mk_str (| " bytes to encode U+" |);
+                                          mk_str (| " but buffer has just " |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |)
+                            ]
+                          |))
                           (Ty.apply
                             (Ty.path "&")
                             []
@@ -9046,249 +10411,308 @@ Module char.
                                 (Ty.path "slice")
                                 []
                                 [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                            ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
+                            ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ]
+                              ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 3 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (| "encode_utf16: need " |);
-                                      mk_str (| " bytes to encode U+" |);
-                                      mk_str (| " but buffer has just " |)
-                                    ]
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ]),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 3 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      Value.Array
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [ Ty.path "usize" ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, len |) |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                            ]
+                                          |);
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_upper_hex",
+                                              [],
+                                              [ Ty.path "u32" ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, code |)
+                                                  |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "u32" ])
+                                            ]
+                                          |);
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_display",
+                                              [],
+                                              [ Ty.path "usize" ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, dst_len |)
+                                                  |)
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                            ]
+                                          |)
+                                        ]
+                                    |)
+                                  |)
                                 |)
                               |)
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ] ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 3 ]
-                                [ Ty.path "core::fmt::rt::Argument" ]
-                            ])
+                            ]
+                          |))
                           (Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Argument" ]
-                            ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
+                            ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "slice")
+                                  []
+                                  [ Ty.path "core::fmt::rt::Placeholder" ]
+                              ],
+                            M.pointer_coercion
+                              M.PointerCoercion.Unsize
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 3 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.path "usize" ]
-                                        |),
+                                    [ Ty.path "core::fmt::rt::Placeholder" ]
+                                ])
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.apply
+                                    (Ty.path "slice")
+                                    []
+                                    [ Ty.path "core::fmt::rt::Placeholder" ]
+                                ]),
+                            [
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 3 ]
+                                        [ Ty.path "core::fmt::rt::Placeholder" ],
+                                      Value.Array
                                         [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, len |) |)
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Placeholder",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Placeholder",
+                                              "new",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.Usize 0)
+                                                (Ty.path "usize");
+                                              M.value_with_ty
+                                                (Value.UnicodeChar 32)
+                                                (Ty.path "char");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::fmt::rt::Alignment::Unknown"
+                                                    [])
+                                                  (Ty.path "core::fmt::rt::Alignment"))
+                                                (Ty.path "core::fmt::rt::Alignment");
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.U32 0)
+                                                (Ty.path "u32");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::fmt::rt::Count::Implied"
+                                                    [])
+                                                  (Ty.path "core::fmt::rt::Count"))
+                                                (Ty.path "core::fmt::rt::Count");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::fmt::rt::Count::Implied"
+                                                    [])
+                                                  (Ty.path "core::fmt::rt::Count"))
+                                                (Ty.path "core::fmt::rt::Count")
+                                            ]
+                                          |);
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Placeholder",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Placeholder",
+                                              "new",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.Usize 1)
+                                                (Ty.path "usize");
+                                              M.value_with_ty
+                                                (Value.UnicodeChar 32)
+                                                (Ty.path "char");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::fmt::rt::Alignment::Unknown"
+                                                    [])
+                                                  (Ty.path "core::fmt::rt::Alignment"))
+                                                (Ty.path "core::fmt::rt::Alignment");
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.U32 8)
+                                                (Ty.path "u32");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::fmt::rt::Count::Implied"
+                                                    [])
+                                                  (Ty.path "core::fmt::rt::Count"))
+                                                (Ty.path "core::fmt::rt::Count");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::fmt::rt::Count::Is"
+                                                    [ Value.Integer IntegerKind.Usize 4 ])
+                                                  (Ty.path "core::fmt::rt::Count"))
+                                                (Ty.path "core::fmt::rt::Count")
+                                            ]
+                                          |);
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Placeholder",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Placeholder",
+                                              "new",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.Usize 2)
+                                                (Ty.path "usize");
+                                              M.value_with_ty
+                                                (Value.UnicodeChar 32)
+                                                (Ty.path "char");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::fmt::rt::Alignment::Unknown"
+                                                    [])
+                                                  (Ty.path "core::fmt::rt::Alignment"))
+                                                (Ty.path "core::fmt::rt::Alignment");
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.U32 0)
+                                                (Ty.path "u32");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::fmt::rt::Count::Implied"
+                                                    [])
+                                                  (Ty.path "core::fmt::rt::Count"))
+                                                (Ty.path "core::fmt::rt::Count");
+                                              M.value_with_ty
+                                                (M.value_with_ty
+                                                  (Value.StructTuple
+                                                    "core::fmt::rt::Count::Implied"
+                                                    [])
+                                                  (Ty.path "core::fmt::rt::Count"))
+                                                (Ty.path "core::fmt::rt::Count")
+                                            ]
                                           |)
                                         ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_upper_hex",
-                                          [],
-                                          [ Ty.path "u32" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, code |) |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_display",
-                                          [],
-                                          [ Ty.path "usize" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, dst_len |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
+                                    |)
+                                  |)
                                 |)
                               |)
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ]
-                          ],
-                        M.pointer_coercion
-                          M.PointerCoercion.Unsize
-                          (Ty.apply
-                            (Ty.path "&")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "array")
-                                [ Value.Integer IntegerKind.Usize 3 ]
-                                [ Ty.path "core::fmt::rt::Placeholder" ]
-                            ])
+                            ]
+                          |))
                           (Ty.apply
                             (Ty.path "&")
                             []
                             [ Ty.apply (Ty.path "slice") [] [ Ty.path "core::fmt::rt::Placeholder" ]
-                            ]),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.alloc (|
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 3 ]
-                                    [ Ty.path "core::fmt::rt::Placeholder" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Placeholder",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Placeholder",
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          Value.Integer IntegerKind.Usize 0;
-                                          Value.UnicodeChar 32;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Alignment::Unknown"
-                                            []
-                                            []
-                                            [];
-                                          Value.Integer IntegerKind.U32 0;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Count::Implied"
-                                            []
-                                            []
-                                            [];
-                                          Value.StructTuple "core::fmt::rt::Count::Implied" [] [] []
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Placeholder",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Placeholder",
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          Value.Integer IntegerKind.Usize 1;
-                                          Value.UnicodeChar 32;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Alignment::Unknown"
-                                            []
-                                            []
-                                            [];
-                                          Value.Integer IntegerKind.U32 8;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Count::Implied"
-                                            []
-                                            []
-                                            [];
-                                          Value.StructTuple
-                                            "core::fmt::rt::Count::Is"
-                                            []
-                                            []
-                                            [ Value.Integer IntegerKind.Usize 4 ]
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Placeholder",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Placeholder",
-                                          "new",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          Value.Integer IntegerKind.Usize 2;
-                                          Value.UnicodeChar 32;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Alignment::Unknown"
-                                            []
-                                            []
-                                            [];
-                                          Value.Integer IntegerKind.U32 0;
-                                          Value.StructTuple
-                                            "core::fmt::rt::Count::Implied"
-                                            []
-                                            []
-                                            [];
-                                          Value.StructTuple "core::fmt::rt::Count::Implied" [] [] []
-                                        ]
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |);
-                      M.call_closure (|
-                        Ty.path "core::fmt::rt::UnsafeArg",
-                        M.get_associated_function (|
-                          Ty.path "core::fmt::rt::UnsafeArg",
-                          "new",
-                          [],
-                          []
-                        |),
-                        []
-                      |)
-                    ]
-                  |)
+                            ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.path "core::fmt::rt::UnsafeArg",
+                            M.get_associated_function (|
+                              Ty.path "core::fmt::rt::UnsafeArg",
+                              "new",
+                              [],
+                              []
+                            |),
+                            []
+                          |))
+                          (Ty.path "core::fmt::rt::UnsafeArg")
+                      ]
+                    |))
+                    (Ty.path "core::fmt::Arguments")
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -9336,21 +10760,46 @@ Module char.
                                         Ty.path "never",
                                         M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                         [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::Arguments",
-                                            M.get_associated_function (|
+                                          M.value_with_ty
+                                            (M.call_closure (|
                                               Ty.path "core::fmt::Arguments",
-                                              "new_const",
-                                              [ Value.Integer IntegerKind.Usize 1 ],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (|
+                                              M.get_associated_function (|
+                                                Ty.path "core::fmt::Arguments",
+                                                "new_const",
+                                                [ Value.Integer IntegerKind.Usize 1 ],
+                                                []
+                                              |),
+                                              [
+                                                M.value_with_ty
+                                                  (M.borrow (|
                                                     Pointer.Kind.Ref,
-                                                    M.alloc (|
+                                                    M.deref (|
+                                                      M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.alloc (|
+                                                          Ty.apply
+                                                            (Ty.path "array")
+                                                            [ Value.Integer IntegerKind.Usize 1 ]
+                                                            [
+                                                              Ty.apply
+                                                                (Ty.path "&")
+                                                                []
+                                                                [ Ty.path "str" ]
+                                                            ],
+                                                          Value.Array
+                                                            [
+                                                              mk_str (|
+                                                                "encode_utf16: buffer does not have enough bytes to encode code point"
+                                                              |)
+                                                            ]
+                                                        |)
+                                                      |)
+                                                    |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [
                                                       Ty.apply
                                                         (Ty.path "array")
                                                         [ Value.Integer IntegerKind.Usize 1 ]
@@ -9359,19 +10808,11 @@ Module char.
                                                             (Ty.path "&")
                                                             []
                                                             [ Ty.path "str" ]
-                                                        ],
-                                                      Value.Array
-                                                        [
-                                                          mk_str (|
-                                                            "encode_utf16: buffer does not have enough bytes to encode code point"
-                                                          |)
                                                         ]
-                                                    |)
-                                                  |)
-                                                |)
-                                              |)
-                                            ]
-                                          |)
+                                                    ])
+                                              ]
+                                            |))
+                                            (Ty.path "core::fmt::Arguments")
                                         ]
                                       |)))
                                 ]
@@ -9408,7 +10849,7 @@ Module ffi.
             M.call_closure (|
               Ty.path "usize",
               M.get_function (| "core::ffi::c_str::strlen::runtime::strlen", [], [] |),
-              [ M.read (| s |) ]
+              [ M.value_with_ty (M.read (| s |)) (Ty.apply (Ty.path "*const") [] [ Ty.path "i8" ]) ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
@@ -9476,7 +10917,17 @@ Module ffi.
                                                           [],
                                                           []
                                                         |),
-                                                        [ M.read (| s |); M.read (| len |) ]
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.read (| s |))
+                                                            (Ty.apply
+                                                              (Ty.path "*const")
+                                                              []
+                                                              [ Ty.path "i8" ]);
+                                                          M.value_with_ty
+                                                            (M.read (| len |))
+                                                            (Ty.path "usize")
+                                                        ]
                                                       |)
                                                     |)
                                                   |);
@@ -9575,27 +11026,31 @@ Module panicking.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (| M.borrow (| Pointer.Kind.Ref, fmt |) |)
-                  |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::location::Location" ],
-                        M.get_associated_function (|
-                          Ty.path "core::panic::location::Location",
-                          "caller",
-                          [],
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, fmt |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::fmt::Arguments" ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::location::Location" ],
+                          M.get_associated_function (|
+                            Ty.path "core::panic::location::Location",
+                            "caller",
+                            [],
+                            []
+                          |),
                           []
-                        |),
-                        []
+                        |)
                       |)
-                    |)
-                  |);
-                  Value.Bool false;
-                  M.read (| force_no_backtrace |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::location::Location" ]);
+                  M.value_with_ty (Value.Bool false) (Ty.path "bool");
+                  M.value_with_ty (M.read (| force_no_backtrace |)) (Ty.path "bool")
                 ]
               |) in
             M.alloc (|
@@ -9607,7 +11062,13 @@ Module panicking.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.borrow (| Pointer.Kind.Ref, pi |) |) |)
+                [
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (| M.borrow (| Pointer.Kind.Ref, pi |) |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "core::panic::panic_info::PanicInfo" ])
                 ]
               |)
             |)
@@ -9649,7 +11110,7 @@ Module panicking.
                           (M.call_closure (|
                             Ty.path "never",
                             M.get_function (| "core::panicking::panic_fmt", [], [] |),
-                            [ M.read (| fmt |) ]
+                            [ M.value_with_ty (M.read (| fmt |)) (Ty.path "core::fmt::Arguments") ]
                           |)))
                     ]
                   |)))
@@ -9695,7 +11156,14 @@ Module slice.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| text |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| text |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                      ]
                     |) in
                   let~ ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
                     M.call_closure (|
@@ -9706,7 +11174,14 @@ Module slice.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| text |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| text |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                      ]
                     |) in
                   let~ offset : Ty.path "usize" :=
                     M.call_closure (|
@@ -9718,10 +11193,14 @@ Module slice.
                         []
                       |),
                       [
-                        M.read (| ptr |);
-                        M.read (|
-                          get_constant (| "core::slice::memchr::USIZE_BYTES", Ty.path "usize" |)
-                        |)
+                        M.value_with_ty
+                          (M.read (| ptr |))
+                          (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                        M.value_with_ty
+                          (M.read (|
+                            get_constant (| "core::slice::memchr::USIZE_BYTES", Ty.path "usize" |)
+                          |))
+                          (Ty.path "usize")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -9758,7 +11237,10 @@ Module slice.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| offset |); M.read (| len |) ]
+                                    [
+                                      M.value_with_ty (M.read (| offset |)) (Ty.path "usize");
+                                      M.value_with_ty (M.read (| len |)) (Ty.path "usize")
+                                    ]
                                   |)
                                 |) in
                               let~ slice :
@@ -9789,15 +11271,28 @@ Module slice.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| text |) |)
-                                        |);
-                                        Value.mkStructRecord
-                                          "core::ops::range::RangeTo"
-                                          []
-                                          [ Ty.path "usize" ]
-                                          [ ("end_", M.read (| offset |)) ]
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| text |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.mkStructRecord
+                                              "core::ops::range::RangeTo"
+                                              [ ("end_", M.read (| offset |)) ])
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::RangeTo")
+                                              []
+                                              [ Ty.path "usize" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ])
                                       ]
                                     |)
                                   |)
@@ -9827,11 +11322,17 @@ Module slice.
                                                 []
                                               |),
                                               [
-                                                M.read (| x |);
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| slice |) |)
-                                                |)
+                                                M.value_with_ty (M.read (| x |)) (Ty.path "u8");
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| slice |) |)
+                                                  |))
+                                                  (Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                    ])
                                               ]
                                             |)
                                           |) in
@@ -9845,11 +11346,14 @@ Module slice.
                                         M.never_to_any (|
                                           M.read (|
                                             M.return_ (|
-                                              Value.StructTuple
-                                                "core::option::Option::Some"
-                                                []
-                                                [ Ty.path "usize" ]
-                                                [ M.read (| index |) ]
+                                              M.value_with_ty
+                                                (Value.StructTuple
+                                                  "core::option::Option::Some"
+                                                  [ M.read (| index |) ])
+                                                (Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [ Ty.path "usize" ])
                                             |)
                                           |)
                                         |)));
@@ -9865,7 +11369,7 @@ Module slice.
                     M.call_closure (|
                       Ty.path "usize",
                       M.get_associated_function (| Ty.path "usize", "repeat_u8", [], [] |),
-                      [ M.read (| x |) ]
+                      [ M.value_with_ty (M.read (| x |)) (Ty.path "u8") ]
                     |) in
                   let~ _ : Ty.tuple [] :=
                     M.read (|
@@ -9939,7 +11443,17 @@ Module slice.
                                                       [],
                                                       []
                                                     |),
-                                                    [ M.read (| ptr |); M.read (| offset |) ]
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.read (| ptr |))
+                                                        (Ty.apply
+                                                          (Ty.path "*const")
+                                                          []
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (M.read (| offset |))
+                                                        (Ty.path "usize")
+                                                    ]
                                                   |))
                                               |)
                                             |) in
@@ -9963,20 +11477,27 @@ Module slice.
                                                       []
                                                     |),
                                                     [
-                                                      M.read (| ptr |);
-                                                      M.call_closure (|
-                                                        Ty.path "usize",
-                                                        BinOp.Wrap.add,
-                                                        [
-                                                          M.read (| offset |);
-                                                          M.read (|
-                                                            get_constant (|
-                                                              "core::slice::memchr::USIZE_BYTES",
-                                                              Ty.path "usize"
+                                                      M.value_with_ty
+                                                        (M.read (| ptr |))
+                                                        (Ty.apply
+                                                          (Ty.path "*const")
+                                                          []
+                                                          [ Ty.path "u8" ]);
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
+                                                          Ty.path "usize",
+                                                          BinOp.Wrap.add,
+                                                          [
+                                                            M.read (| offset |);
+                                                            M.read (|
+                                                              get_constant (|
+                                                                "core::slice::memchr::USIZE_BYTES",
+                                                                Ty.path "usize"
+                                                              |)
                                                             |)
-                                                          |)
-                                                        ]
-                                                      |)
+                                                          ]
+                                                        |))
+                                                        (Ty.path "usize")
                                                     ]
                                                   |))
                                               |)
@@ -9990,11 +11511,13 @@ Module slice.
                                                 []
                                               |),
                                               [
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  BinOp.Wrap.bit_xor,
-                                                  [ M.read (| u |); M.read (| repeated_x |) ]
-                                                |)
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.bit_xor,
+                                                    [ M.read (| u |); M.read (| repeated_x |) ]
+                                                  |))
+                                                  (Ty.path "usize")
                                               ]
                                             |) in
                                           let~ zv : Ty.path "bool" :=
@@ -10006,11 +11529,13 @@ Module slice.
                                                 []
                                               |),
                                               [
-                                                M.call_closure (|
-                                                  Ty.path "usize",
-                                                  BinOp.Wrap.bit_xor,
-                                                  [ M.read (| v |); M.read (| repeated_x |) ]
-                                                |)
+                                                M.value_with_ty
+                                                  (M.call_closure (|
+                                                    Ty.path "usize",
+                                                    BinOp.Wrap.bit_xor,
+                                                    [ M.read (| v |); M.read (| repeated_x |) ]
+                                                  |))
+                                                  (Ty.path "usize")
                                               ]
                                             |) in
                                           M.alloc (|
@@ -10093,45 +11618,71 @@ Module slice.
                       Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
                       M.get_function (| "core::slice::raw::from_raw_parts", [], [ Ty.path "u8" ] |),
                       [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                          M.get_associated_function (|
+                        M.value_with_ty
+                          (M.call_closure (|
                             Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                            "add",
-                            [],
-                            []
-                          |),
-                          [
-                            M.call_closure (|
+                            M.get_associated_function (|
                               Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                "as_ptr",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| text |) |) |) ]
-                            |);
-                            M.read (| offset |)
-                          ]
-                        |);
-                        M.call_closure (|
-                          Ty.path "usize",
-                          BinOp.Wrap.sub,
-                          [
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                "len",
-                                [],
-                                []
-                              |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| text |) |) |) ]
-                            |);
-                            M.read (| offset |)
-                          ]
-                        |)
+                              "add",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.call_closure (|
+                                  Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                    "as_ptr",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| text |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (M.read (| offset |)) (Ty.path "usize")
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.path "usize",
+                            BinOp.Wrap.sub,
+                            [
+                              M.call_closure (|
+                                Ty.path "usize",
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                  "len",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| text |) |)
+                                    |))
+                                    (Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                ]
+                              |);
+                              M.read (| offset |)
+                            ]
+                          |))
+                          (Ty.path "usize")
                       ]
                     |) in
                   M.alloc (|
@@ -10149,11 +11700,16 @@ Module slice.
                                   Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
                                   M.get_function (| "core::slice::memchr::memchr_naive", [], [] |),
                                   [
-                                    M.read (| x |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.read (| slice |) |)
-                                    |)
+                                    M.value_with_ty (M.read (| x |)) (Ty.path "u8");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| slice |) |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                   ]
                                 |)
                               |) in
@@ -10164,24 +11720,22 @@ Module slice.
                                 0
                               |) in
                             let i := M.copy (| Ty.path "usize", γ0_0 |) in
-                            Value.StructTuple
-                              "core::option::Option::Some"
-                              []
-                              [ Ty.path "usize" ]
-                              [
-                                M.call_closure (|
-                                  Ty.path "usize",
-                                  BinOp.Wrap.add,
-                                  [ M.read (| offset |); M.read (| i |) ]
-                                |)
-                              ]));
+                            M.value_with_ty
+                              (Value.StructTuple
+                                "core::option::Option::Some"
+                                [
+                                  M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.add,
+                                    [ M.read (| offset |); M.read (| i |) ]
+                                  |)
+                                ])
+                              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])));
                         fun γ =>
                           ltac:(M.monadic
-                            (Value.StructTuple
-                              "core::option::Option::None"
-                              []
-                              [ Ty.path "usize" ]
-                              []))
+                            (M.value_with_ty
+                              (Value.StructTuple "core::option::Option::None" [])
+                              (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])))
                       ]
                     |)
                   |)
@@ -10229,8 +11783,13 @@ Module slice.
                               Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
                               M.get_function (| "core::slice::memchr::memchr_naive", [], [] |),
                               [
-                                M.read (| x |);
-                                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| text |) |) |)
+                                M.value_with_ty (M.read (| x |)) (Ty.path "u8");
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| text |) |) |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                               ]
                             |)))
                       ]
@@ -10275,7 +11834,14 @@ Module slice.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                      ]
                     |) in
                   let~ align_offset : Ty.path "usize" :=
                     M.call_closure (|
@@ -10287,22 +11853,33 @@ Module slice.
                         []
                       |),
                       [
-                        M.call_closure (|
-                          Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                          M.get_associated_function (|
-                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                            "as_ptr",
-                            [],
-                            []
-                          |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
-                        |);
-                        M.read (|
-                          get_constant (|
-                            "core::slice::ascii::is_ascii::runtime::USIZE_SIZE",
-                            Ty.path "usize"
-                          |)
-                        |)
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                              "as_ptr",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                            ]
+                          |))
+                          (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                        M.value_with_ty
+                          (M.read (|
+                            get_constant (|
+                              "core::slice::ascii::is_ascii::runtime::USIZE_SIZE",
+                              Ty.path "usize"
+                            |)
+                          |))
+                          (Ty.path "usize")
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -10374,7 +11951,16 @@ Module slice.
                                       [],
                                       []
                                     |),
-                                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |)
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| s |) |)
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                                     ]
                                   |)
                                 |)
@@ -10420,7 +12006,14 @@ Module slice.
                         [],
                         []
                       |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                      ]
                     |) in
                   let~ first_word : Ty.path "usize" :=
                     M.call_closure (|
@@ -10432,9 +12025,11 @@ Module slice.
                         []
                       |),
                       [
-                        M.cast
+                        M.value_with_ty
+                          (M.cast
+                            (Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ])
+                            (M.read (| start |)))
                           (Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ])
-                          (M.read (| start |))
                       ]
                     |) in
                   let~ _ : Ty.tuple [] :=
@@ -10455,7 +12050,7 @@ Module slice.
                                       [],
                                       []
                                     |),
-                                    [ M.read (| first_word |) ]
+                                    [ M.value_with_ty (M.read (| first_word |)) (Ty.path "usize") ]
                                   |)
                                 |)) in
                             let _ :=
@@ -10511,9 +12106,11 @@ Module slice.
                                             Ty.path "never",
                                             M.get_function (| "core::panicking::panic", [], [] |),
                                             [
-                                              mk_str (|
-                                                "assertion failed: offset_to_aligned <= len"
-                                              |)
+                                              M.value_with_ty
+                                                (mk_str (|
+                                                  "assertion failed: offset_to_aligned <= len"
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                             ]
                                           |)
                                         |)));
@@ -10536,7 +12133,12 @@ Module slice.
                           [],
                           []
                         |),
-                        [ M.read (| start |); M.read (| offset_to_aligned |) ]
+                        [
+                          M.value_with_ty
+                            (M.read (| start |))
+                            (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                          M.value_with_ty (M.read (| offset_to_aligned |)) (Ty.path "usize")
+                        ]
                       |)) in
                   let~ byte_pos : Ty.path "usize" := M.read (| offset_to_aligned |) in
                   let~ _ : Ty.tuple [] :=
@@ -10577,16 +12179,23 @@ Module slice.
                                                       []
                                                     |),
                                                     [
-                                                      M.read (| word_ptr |);
-                                                      M.call_closure (|
-                                                        Ty.path "usize",
-                                                        M.get_function (|
-                                                          "core::mem::align_of",
-                                                          [],
-                                                          [ Ty.path "usize" ]
-                                                        |),
-                                                        []
-                                                      |)
+                                                      M.value_with_ty
+                                                        (M.read (| word_ptr |))
+                                                        (Ty.apply
+                                                          (Ty.path "*const")
+                                                          []
+                                                          [ Ty.path "usize" ]);
+                                                      M.value_with_ty
+                                                        (M.call_closure (|
+                                                          Ty.path "usize",
+                                                          M.get_function (|
+                                                            "core::mem::align_of",
+                                                            [],
+                                                            [ Ty.path "usize" ]
+                                                          |),
+                                                          []
+                                                        |))
+                                                        (Ty.path "usize")
                                                     ]
                                                   |)
                                                 ]
@@ -10602,9 +12211,11 @@ Module slice.
                                             Ty.path "never",
                                             M.get_function (| "core::panicking::panic", [], [] |),
                                             [
-                                              mk_str (|
-                                                "assertion failed: word_ptr.is_aligned_to(mem::align_of::<usize>())"
-                                              |)
+                                              M.value_with_ty
+                                                (mk_str (|
+                                                  "assertion failed: word_ptr.is_aligned_to(mem::align_of::<usize>())"
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                             ]
                                           |)
                                         |)));
@@ -10731,9 +12342,14 @@ Module slice.
                                                                   []
                                                                 |),
                                                                 [
-                                                                  mk_str (|
-                                                                    "assertion failed: byte_pos + USIZE_SIZE <= len"
-                                                                  |)
+                                                                  M.value_with_ty
+                                                                    (mk_str (|
+                                                                      "assertion failed: byte_pos + USIZE_SIZE <= len"
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [ Ty.path "str" ])
                                                                 ]
                                                               |)
                                                             |)));
@@ -10797,7 +12413,16 @@ Module slice.
                                                                               [],
                                                                               [ Ty.path "u8" ]
                                                                             |),
-                                                                            [ M.read (| word_ptr |)
+                                                                            [
+                                                                              M.value_with_ty
+                                                                                (M.read (|
+                                                                                  word_ptr
+                                                                                |))
+                                                                                (Ty.apply
+                                                                                  (Ty.path "*const")
+                                                                                  []
+                                                                                  [ Ty.path "usize"
+                                                                                  ])
                                                                             ]
                                                                           |);
                                                                           M.call_closure (|
@@ -10815,8 +12440,17 @@ Module slice.
                                                                               []
                                                                             |),
                                                                             [
-                                                                              M.read (| start |);
-                                                                              M.read (| byte_pos |)
+                                                                              M.value_with_ty
+                                                                                (M.read (| start |))
+                                                                                (Ty.apply
+                                                                                  (Ty.path "*const")
+                                                                                  []
+                                                                                  [ Ty.path "u8" ]);
+                                                                              M.value_with_ty
+                                                                                (M.read (|
+                                                                                  byte_pos
+                                                                                |))
+                                                                                (Ty.path "usize")
                                                                             ]
                                                                           |)
                                                                         ]
@@ -10838,9 +12472,14 @@ Module slice.
                                                                   []
                                                                 |),
                                                                 [
-                                                                  mk_str (|
-                                                                    "assertion failed: word_ptr.cast::<u8>() == start.wrapping_add(byte_pos)"
-                                                                  |)
+                                                                  M.value_with_ty
+                                                                    (mk_str (|
+                                                                      "assertion failed: word_ptr.cast::<u8>() == start.wrapping_add(byte_pos)"
+                                                                    |))
+                                                                    (Ty.apply
+                                                                      (Ty.path "&")
+                                                                      []
+                                                                      [ Ty.path "str" ])
                                                                 ]
                                                               |)
                                                             |)));
@@ -10861,7 +12500,11 @@ Module slice.
                                             [],
                                             []
                                           |),
-                                          [ M.read (| word_ptr |) ]
+                                          [
+                                            M.value_with_ty
+                                              (M.read (| word_ptr |))
+                                              (Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ])
+                                          ]
                                         |) in
                                       let~ _ : Ty.tuple [] :=
                                         M.match_operator (|
@@ -10881,7 +12524,11 @@ Module slice.
                                                           [],
                                                           []
                                                         |),
-                                                        [ M.read (| word |) ]
+                                                        [
+                                                          M.value_with_ty
+                                                            (M.read (| word |))
+                                                            (Ty.path "usize")
+                                                        ]
                                                       |)
                                                     |)) in
                                                 let _ :=
@@ -10925,8 +12572,15 @@ Module slice.
                                               []
                                             |),
                                             [
-                                              M.read (| word_ptr |);
-                                              Value.Integer IntegerKind.Usize 1
+                                              M.value_with_ty
+                                                (M.read (| word_ptr |))
+                                                (Ty.apply
+                                                  (Ty.path "*const")
+                                                  []
+                                                  [ Ty.path "usize" ]);
+                                              M.value_with_ty
+                                                (Value.Integer IntegerKind.Usize 1)
+                                                (Ty.path "usize")
                                             ]
                                           |)
                                         |) in
@@ -11013,9 +12667,11 @@ Module slice.
                                             Ty.path "never",
                                             M.get_function (| "core::panicking::panic", [], [] |),
                                             [
-                                              mk_str (|
-                                                "assertion failed: byte_pos <= len && len - byte_pos <= USIZE_SIZE"
-                                              |)
+                                              M.value_with_ty
+                                                (mk_str (|
+                                                  "assertion failed: byte_pos <= len && len - byte_pos <= USIZE_SIZE"
+                                                |))
+                                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                             ]
                                           |)
                                         |)));
@@ -11037,33 +12693,39 @@ Module slice.
                         []
                       |),
                       [
-                        M.cast
-                          (Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ])
-                          (M.call_closure (|
-                            Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                            M.get_associated_function (|
+                        M.value_with_ty
+                          (M.cast
+                            (Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ])
+                            (M.call_closure (|
                               Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                              "add",
-                              [],
-                              []
-                            |),
-                            [
-                              M.read (| start |);
-                              M.call_closure (|
-                                Ty.path "usize",
-                                BinOp.Wrap.sub,
-                                [
-                                  M.read (| len |);
-                                  M.read (|
-                                    get_constant (|
-                                      "core::slice::ascii::is_ascii::runtime::USIZE_SIZE",
-                                      Ty.path "usize"
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            ]
-                          |))
+                              M.get_associated_function (|
+                                Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                "add",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| start |))
+                                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.path "usize",
+                                    BinOp.Wrap.sub,
+                                    [
+                                      M.read (| len |);
+                                      M.read (|
+                                        get_constant (|
+                                          "core::slice::ascii::is_ascii::runtime::USIZE_SIZE",
+                                          Ty.path "usize"
+                                        |)
+                                      |)
+                                    ]
+                                  |))
+                                  (Ty.path "usize")
+                              ]
+                            |)))
+                          (Ty.apply (Ty.path "*const") [] [ Ty.path "usize" ])
                       ]
                     |) in
                   M.alloc (|
@@ -11075,7 +12737,7 @@ Module slice.
                         M.call_closure (|
                           Ty.path "bool",
                           M.get_function (| "core::slice::ascii::contains_nonascii", [], [] |),
-                          [ M.read (| last_word |) ]
+                          [ M.value_with_ty (M.read (| last_word |)) (Ty.path "usize") ]
                         |)
                       ]
                     |)
@@ -11116,7 +12778,14 @@ Module slice.
                     (M.call_closure (|
                       Ty.path "bool",
                       M.get_function (| "core::slice::ascii::is_ascii_simple", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                      ]
                     |)))
               ]
             |)))
@@ -11148,83 +12817,109 @@ Module slice.
                 Ty.path "never",
                 M.get_function (| "core::panicking::panic_fmt", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new_v1",
+                        [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 2 ]
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                  Value.Array
+                                    [
+                                      mk_str (| "range start index " |);
+                                      mk_str (| " out of range for slice of length " |)
+                                    ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array
-                                [
-                                  mk_str (| "range start index " |);
-                                  mk_str (| " out of range for slice of length " |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            ]);
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 2 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ],
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.path "usize" ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.borrow (| Pointer.Kind.Ref, index |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                        ]
+                                      |);
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.path "usize" ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.borrow (| Pointer.Kind.Ref, len |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                        ]
+                                      |)
+                                    ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "usize" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.borrow (| Pointer.Kind.Ref, index |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "usize" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.borrow (| Pointer.Kind.Ref, len |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
+                                [ Ty.path "core::fmt::rt::Argument" ]
+                            ])
+                      ]
+                    |))
+                    (Ty.path "core::fmt::Arguments")
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -11267,37 +12962,49 @@ Module slice.
                                 Ty.path "never",
                                 M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                 [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::Arguments",
-                                    M.get_associated_function (|
+                                  M.value_with_ty
+                                    (M.call_closure (|
                                       Ty.path "core::fmt::Arguments",
-                                      "new_const",
-                                      [ Value.Integer IntegerKind.Usize 1 ],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::Arguments",
+                                        "new_const",
+                                        [ Value.Integer IntegerKind.Usize 1 ],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
                                             Pointer.Kind.Ref,
-                                            M.alloc (|
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.alloc (|
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                                  Value.Array
+                                                    [
+                                                      mk_str (|
+                                                        "slice start index is out of range for slice"
+                                                      |)
+                                                    ]
+                                                |)
+                                              |)
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "array")
                                                 [ Value.Integer IntegerKind.Usize 1 ]
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                              Value.Array
-                                                [
-                                                  mk_str (|
-                                                    "slice start index is out of range for slice"
-                                                  |)
-                                                ]
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                            ])
+                                      ]
+                                    |))
+                                    (Ty.path "core::fmt::Arguments")
                                 ]
                               |)))
                         ]
@@ -11333,83 +13040,109 @@ Module slice.
                 Ty.path "never",
                 M.get_function (| "core::panicking::panic_fmt", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new_v1",
+                        [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 2 ]
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                  Value.Array
+                                    [
+                                      mk_str (| "range end index " |);
+                                      mk_str (| " out of range for slice of length " |)
+                                    ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array
-                                [
-                                  mk_str (| "range end index " |);
-                                  mk_str (| " out of range for slice of length " |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            ]);
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 2 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ],
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.path "usize" ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.borrow (| Pointer.Kind.Ref, index |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                        ]
+                                      |);
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.path "usize" ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.borrow (| Pointer.Kind.Ref, len |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                        ]
+                                      |)
+                                    ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "usize" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.borrow (| Pointer.Kind.Ref, index |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "usize" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.borrow (| Pointer.Kind.Ref, len |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
+                                [ Ty.path "core::fmt::rt::Argument" ]
+                            ])
+                      ]
+                    |))
+                    (Ty.path "core::fmt::Arguments")
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -11450,37 +13183,49 @@ Module slice.
                                 Ty.path "never",
                                 M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                 [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::Arguments",
-                                    M.get_associated_function (|
+                                  M.value_with_ty
+                                    (M.call_closure (|
                                       Ty.path "core::fmt::Arguments",
-                                      "new_const",
-                                      [ Value.Integer IntegerKind.Usize 1 ],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::Arguments",
+                                        "new_const",
+                                        [ Value.Integer IntegerKind.Usize 1 ],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
                                             Pointer.Kind.Ref,
-                                            M.alloc (|
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.alloc (|
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                                  Value.Array
+                                                    [
+                                                      mk_str (|
+                                                        "slice end index is out of range for slice"
+                                                      |)
+                                                    ]
+                                                |)
+                                              |)
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "array")
                                                 [ Value.Integer IntegerKind.Usize 1 ]
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                              Value.Array
-                                                [
-                                                  mk_str (|
-                                                    "slice end index is out of range for slice"
-                                                  |)
-                                                ]
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                            ])
+                                      ]
+                                    |))
+                                    (Ty.path "core::fmt::Arguments")
                                 ]
                               |)))
                         ]
@@ -11516,83 +13261,109 @@ Module slice.
                 Ty.path "never",
                 M.get_function (| "core::panicking::panic_fmt", [], [] |),
                 [
-                  M.call_closure (|
-                    Ty.path "core::fmt::Arguments",
-                    M.get_associated_function (|
+                  M.value_with_ty
+                    (M.call_closure (|
                       Ty.path "core::fmt::Arguments",
-                      "new_v1",
-                      [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Arguments",
+                        "new_v1",
+                        [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 2 ],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 2 ]
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                  Value.Array
+                                    [
+                                      mk_str (| "slice index starts at " |);
+                                      mk_str (| " but ends at " |)
+                                    ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                              Value.Array
-                                [
-                                  mk_str (| "slice index starts at " |);
-                                  mk_str (| " but ends at " |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.borrow (|
+                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                            ]);
+                        M.value_with_ty
+                          (M.borrow (|
                             Pointer.Kind.Ref,
-                            M.alloc (|
+                            M.deref (|
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.alloc (|
+                                  Ty.apply
+                                    (Ty.path "array")
+                                    [ Value.Integer IntegerKind.Usize 2 ]
+                                    [ Ty.path "core::fmt::rt::Argument" ],
+                                  Value.Array
+                                    [
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.path "usize" ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.borrow (| Pointer.Kind.Ref, index |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                        ]
+                                      |);
+                                      M.call_closure (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::rt::Argument",
+                                          "new_display",
+                                          [],
+                                          [ Ty.path "usize" ]
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.borrow (| Pointer.Kind.Ref, end_ |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                        ]
+                                      |)
+                                    ]
+                                |)
+                              |)
+                            |)
+                          |))
+                          (Ty.apply
+                            (Ty.path "&")
+                            []
+                            [
                               Ty.apply
                                 (Ty.path "array")
                                 [ Value.Integer IntegerKind.Usize 2 ]
-                                [ Ty.path "core::fmt::rt::Argument" ],
-                              Value.Array
-                                [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "usize" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.borrow (| Pointer.Kind.Ref, index |) |)
-                                      |)
-                                    ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    M.get_associated_function (|
-                                      Ty.path "core::fmt::rt::Argument",
-                                      "new_display",
-                                      [],
-                                      [ Ty.path "usize" ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.borrow (| Pointer.Kind.Ref, end_ |) |)
-                                      |)
-                                    ]
-                                  |)
-                                ]
-                            |)
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
+                                [ Ty.path "core::fmt::rt::Argument" ]
+                            ])
+                      ]
+                    |))
+                    (Ty.path "core::fmt::Arguments")
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -11633,37 +13404,49 @@ Module slice.
                                 Ty.path "never",
                                 M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                 [
-                                  M.call_closure (|
-                                    Ty.path "core::fmt::Arguments",
-                                    M.get_associated_function (|
+                                  M.value_with_ty
+                                    (M.call_closure (|
                                       Ty.path "core::fmt::Arguments",
-                                      "new_const",
-                                      [ Value.Integer IntegerKind.Usize 1 ],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.borrow (|
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::Arguments",
+                                        "new_const",
+                                        [ Value.Integer IntegerKind.Usize 1 ],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
                                             Pointer.Kind.Ref,
-                                            M.alloc (|
+                                            M.deref (|
+                                              M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.alloc (|
+                                                  Ty.apply
+                                                    (Ty.path "array")
+                                                    [ Value.Integer IntegerKind.Usize 1 ]
+                                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                                  Value.Array
+                                                    [
+                                                      mk_str (|
+                                                        "slice index start is larger than end"
+                                                      |)
+                                                    ]
+                                                |)
+                                              |)
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
                                               Ty.apply
                                                 (Ty.path "array")
                                                 [ Value.Integer IntegerKind.Usize 1 ]
-                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                              Value.Array
-                                                [
-                                                  mk_str (|
-                                                    "slice index start is larger than end"
-                                                  |)
-                                                ]
-                                            |)
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                            ])
+                                      ]
+                                    |))
+                                    (Ty.path "core::fmt::Arguments")
                                 ]
                               |)))
                         ]
@@ -11710,22 +13493,33 @@ Module str.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                    "as_ptr",
-                    [],
-                    []
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |) ]
-                |);
-                M.read (|
-                  get_constant (|
-                    "core::str::validations::run_utf8_validation::USIZE_BYTES",
-                    Ty.path "usize"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                      "as_ptr",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| v |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                M.value_with_ty
+                  (M.read (|
+                    get_constant (|
+                      "core::str::validations::run_utf8_validation::USIZE_BYTES",
+                      Ty.path "usize"
+                    |)
+                  |))
+                  (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

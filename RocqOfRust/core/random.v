@@ -44,7 +44,11 @@ Module random.
                       [],
                       [ impl_RandomSource__plus___Sized ]
                     |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ])
+                    ]
                   |);
                   Value.Integer IntegerKind.U8 1
                 ]
@@ -89,7 +93,13 @@ Module random.
               M.call_closure (|
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 1 ] [ Ty.path "u8" ],
                 M.get_associated_function (| Ty.path "u8", "to_ne_bytes", [], [] |),
-                [ M.read (| M.use (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 0 |)) |) ]
+                [
+                  M.value_with_ty
+                    (M.read (|
+                      M.use (M.alloc (| Ty.path "u8", Value.Integer IntegerKind.U8 0 |))
+                    |))
+                    (Ty.path "u8")
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
@@ -104,31 +114,41 @@ Module random.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
                         (Ty.path "&mut")
                         []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.path "u8" ]
-                        ])
-                      (Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
-                      |)
-                    ]
-                  |)
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.path "u8" ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
+                        |)
+                      ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                 ]
               |) in
             M.alloc (|
@@ -136,7 +156,14 @@ Module random.
               M.call_closure (|
                 Ty.path "u8",
                 M.get_associated_function (| Ty.path "u8", "from_ne_bytes", [], [] |),
-                [ M.read (| bytes |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| bytes |))
+                    (Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 1 ]
+                      [ Ty.path "u8" ])
+                ]
               |)
             |)
           |)))
@@ -177,7 +204,13 @@ Module random.
               M.call_closure (|
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 1 ] [ Ty.path "u8" ],
                 M.get_associated_function (| Ty.path "i8", "to_ne_bytes", [], [] |),
-                [ M.read (| M.use (M.alloc (| Ty.path "i8", Value.Integer IntegerKind.I8 0 |)) |) ]
+                [
+                  M.value_with_ty
+                    (M.read (|
+                      M.use (M.alloc (| Ty.path "i8", Value.Integer IntegerKind.I8 0 |))
+                    |))
+                    (Ty.path "i8")
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
@@ -192,31 +225,41 @@ Module random.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
                         (Ty.path "&mut")
                         []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.path "u8" ]
-                        ])
-                      (Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
-                      |)
-                    ]
-                  |)
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.path "u8" ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
+                        |)
+                      ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                 ]
               |) in
             M.alloc (|
@@ -224,7 +267,14 @@ Module random.
               M.call_closure (|
                 Ty.path "i8",
                 M.get_associated_function (| Ty.path "i8", "from_ne_bytes", [], [] |),
-                [ M.read (| bytes |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| bytes |))
+                    (Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 1 ]
+                      [ Ty.path "u8" ])
+                ]
               |)
             |)
           |)))
@@ -265,7 +315,12 @@ Module random.
               M.call_closure (|
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 2 ] [ Ty.path "u8" ],
                 M.get_associated_function (| Ty.path "u16", "to_ne_bytes", [], [] |),
-                [ M.read (| M.use (M.alloc (| Ty.path "u16", Value.Integer IntegerKind.U16 0 |)) |)
+                [
+                  M.value_with_ty
+                    (M.read (|
+                      M.use (M.alloc (| Ty.path "u16", Value.Integer IntegerKind.U16 0 |))
+                    |))
+                    (Ty.path "u16")
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -281,31 +336,41 @@ Module random.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
                         (Ty.path "&mut")
                         []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 2 ]
-                            [ Ty.path "u8" ]
-                        ])
-                      (Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
-                      |)
-                    ]
-                  |)
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 2 ]
+                              [ Ty.path "u8" ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
+                        |)
+                      ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                 ]
               |) in
             M.alloc (|
@@ -313,7 +378,14 @@ Module random.
               M.call_closure (|
                 Ty.path "u16",
                 M.get_associated_function (| Ty.path "u16", "from_ne_bytes", [], [] |),
-                [ M.read (| bytes |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| bytes |))
+                    (Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 2 ]
+                      [ Ty.path "u8" ])
+                ]
               |)
             |)
           |)))
@@ -354,7 +426,12 @@ Module random.
               M.call_closure (|
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 2 ] [ Ty.path "u8" ],
                 M.get_associated_function (| Ty.path "i16", "to_ne_bytes", [], [] |),
-                [ M.read (| M.use (M.alloc (| Ty.path "i16", Value.Integer IntegerKind.I16 0 |)) |)
+                [
+                  M.value_with_ty
+                    (M.read (|
+                      M.use (M.alloc (| Ty.path "i16", Value.Integer IntegerKind.I16 0 |))
+                    |))
+                    (Ty.path "i16")
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -370,31 +447,41 @@ Module random.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
                         (Ty.path "&mut")
                         []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 2 ]
-                            [ Ty.path "u8" ]
-                        ])
-                      (Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
-                      |)
-                    ]
-                  |)
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 2 ]
+                              [ Ty.path "u8" ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
+                        |)
+                      ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                 ]
               |) in
             M.alloc (|
@@ -402,7 +489,14 @@ Module random.
               M.call_closure (|
                 Ty.path "i16",
                 M.get_associated_function (| Ty.path "i16", "from_ne_bytes", [], [] |),
-                [ M.read (| bytes |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| bytes |))
+                    (Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 2 ]
+                      [ Ty.path "u8" ])
+                ]
               |)
             |)
           |)))
@@ -443,7 +537,12 @@ Module random.
               M.call_closure (|
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
                 M.get_associated_function (| Ty.path "u32", "to_ne_bytes", [], [] |),
-                [ M.read (| M.use (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 0 |)) |)
+                [
+                  M.value_with_ty
+                    (M.read (|
+                      M.use (M.alloc (| Ty.path "u32", Value.Integer IntegerKind.U32 0 |))
+                    |))
+                    (Ty.path "u32")
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -459,31 +558,41 @@ Module random.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
                         (Ty.path "&mut")
                         []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 4 ]
-                            [ Ty.path "u8" ]
-                        ])
-                      (Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
-                      |)
-                    ]
-                  |)
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 4 ]
+                              [ Ty.path "u8" ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
+                        |)
+                      ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                 ]
               |) in
             M.alloc (|
@@ -491,7 +600,14 @@ Module random.
               M.call_closure (|
                 Ty.path "u32",
                 M.get_associated_function (| Ty.path "u32", "from_ne_bytes", [], [] |),
-                [ M.read (| bytes |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| bytes |))
+                    (Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 4 ]
+                      [ Ty.path "u8" ])
+                ]
               |)
             |)
           |)))
@@ -532,7 +648,12 @@ Module random.
               M.call_closure (|
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 4 ] [ Ty.path "u8" ],
                 M.get_associated_function (| Ty.path "i32", "to_ne_bytes", [], [] |),
-                [ M.read (| M.use (M.alloc (| Ty.path "i32", Value.Integer IntegerKind.I32 0 |)) |)
+                [
+                  M.value_with_ty
+                    (M.read (|
+                      M.use (M.alloc (| Ty.path "i32", Value.Integer IntegerKind.I32 0 |))
+                    |))
+                    (Ty.path "i32")
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -548,31 +669,41 @@ Module random.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
                         (Ty.path "&mut")
                         []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 4 ]
-                            [ Ty.path "u8" ]
-                        ])
-                      (Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
-                      |)
-                    ]
-                  |)
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 4 ]
+                              [ Ty.path "u8" ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
+                        |)
+                      ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                 ]
               |) in
             M.alloc (|
@@ -580,7 +711,14 @@ Module random.
               M.call_closure (|
                 Ty.path "i32",
                 M.get_associated_function (| Ty.path "i32", "from_ne_bytes", [], [] |),
-                [ M.read (| bytes |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| bytes |))
+                    (Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 4 ]
+                      [ Ty.path "u8" ])
+                ]
               |)
             |)
           |)))
@@ -621,7 +759,12 @@ Module random.
               M.call_closure (|
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
                 M.get_associated_function (| Ty.path "u64", "to_ne_bytes", [], [] |),
-                [ M.read (| M.use (M.alloc (| Ty.path "u64", Value.Integer IntegerKind.U64 0 |)) |)
+                [
+                  M.value_with_ty
+                    (M.read (|
+                      M.use (M.alloc (| Ty.path "u64", Value.Integer IntegerKind.U64 0 |))
+                    |))
+                    (Ty.path "u64")
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -637,31 +780,41 @@ Module random.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
                         (Ty.path "&mut")
                         []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 8 ]
-                            [ Ty.path "u8" ]
-                        ])
-                      (Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
-                      |)
-                    ]
-                  |)
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 8 ]
+                              [ Ty.path "u8" ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
+                        |)
+                      ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                 ]
               |) in
             M.alloc (|
@@ -669,7 +822,14 @@ Module random.
               M.call_closure (|
                 Ty.path "u64",
                 M.get_associated_function (| Ty.path "u64", "from_ne_bytes", [], [] |),
-                [ M.read (| bytes |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| bytes |))
+                    (Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 8 ]
+                      [ Ty.path "u8" ])
+                ]
               |)
             |)
           |)))
@@ -710,7 +870,12 @@ Module random.
               M.call_closure (|
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
                 M.get_associated_function (| Ty.path "i64", "to_ne_bytes", [], [] |),
-                [ M.read (| M.use (M.alloc (| Ty.path "i64", Value.Integer IntegerKind.I64 0 |)) |)
+                [
+                  M.value_with_ty
+                    (M.read (|
+                      M.use (M.alloc (| Ty.path "i64", Value.Integer IntegerKind.I64 0 |))
+                    |))
+                    (Ty.path "i64")
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -726,31 +891,41 @@ Module random.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
                         (Ty.path "&mut")
                         []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 8 ]
-                            [ Ty.path "u8" ]
-                        ])
-                      (Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
-                      |)
-                    ]
-                  |)
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 8 ]
+                              [ Ty.path "u8" ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
+                        |)
+                      ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                 ]
               |) in
             M.alloc (|
@@ -758,7 +933,14 @@ Module random.
               M.call_closure (|
                 Ty.path "i64",
                 M.get_associated_function (| Ty.path "i64", "from_ne_bytes", [], [] |),
-                [ M.read (| bytes |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| bytes |))
+                    (Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 8 ]
+                      [ Ty.path "u8" ])
+                ]
               |)
             |)
           |)))
@@ -803,9 +985,11 @@ Module random.
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u8" ],
                 M.get_associated_function (| Ty.path "u128", "to_ne_bytes", [], [] |),
                 [
-                  M.read (|
-                    M.use (M.alloc (| Ty.path "u128", Value.Integer IntegerKind.U128 0 |))
-                  |)
+                  M.value_with_ty
+                    (M.read (|
+                      M.use (M.alloc (| Ty.path "u128", Value.Integer IntegerKind.U128 0 |))
+                    |))
+                    (Ty.path "u128")
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -821,31 +1005,41 @@ Module random.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
                         (Ty.path "&mut")
                         []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 16 ]
-                            [ Ty.path "u8" ]
-                        ])
-                      (Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
-                      |)
-                    ]
-                  |)
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 16 ]
+                              [ Ty.path "u8" ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
+                        |)
+                      ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                 ]
               |) in
             M.alloc (|
@@ -853,7 +1047,14 @@ Module random.
               M.call_closure (|
                 Ty.path "u128",
                 M.get_associated_function (| Ty.path "u128", "from_ne_bytes", [], [] |),
-                [ M.read (| bytes |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| bytes |))
+                    (Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 16 ]
+                      [ Ty.path "u8" ])
+                ]
               |)
             |)
           |)))
@@ -898,9 +1099,11 @@ Module random.
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 16 ] [ Ty.path "u8" ],
                 M.get_associated_function (| Ty.path "i128", "to_ne_bytes", [], [] |),
                 [
-                  M.read (|
-                    M.use (M.alloc (| Ty.path "i128", Value.Integer IntegerKind.I128 0 |))
-                  |)
+                  M.value_with_ty
+                    (M.read (|
+                      M.use (M.alloc (| Ty.path "i128", Value.Integer IntegerKind.I128 0 |))
+                    |))
+                    (Ty.path "i128")
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -916,31 +1119,41 @@ Module random.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
                         (Ty.path "&mut")
                         []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 16 ]
-                            [ Ty.path "u8" ]
-                        ])
-                      (Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
-                      |)
-                    ]
-                  |)
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 16 ]
+                              [ Ty.path "u8" ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
+                        |)
+                      ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                 ]
               |) in
             M.alloc (|
@@ -948,7 +1161,14 @@ Module random.
               M.call_closure (|
                 Ty.path "i128",
                 M.get_associated_function (| Ty.path "i128", "from_ne_bytes", [], [] |),
-                [ M.read (| bytes |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| bytes |))
+                    (Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 16 ]
+                      [ Ty.path "u8" ])
+                ]
               |)
             |)
           |)))
@@ -990,9 +1210,11 @@ Module random.
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
                 M.get_associated_function (| Ty.path "usize", "to_ne_bytes", [], [] |),
                 [
-                  M.read (|
-                    M.use (M.alloc (| Ty.path "usize", Value.Integer IntegerKind.Usize 0 |))
-                  |)
+                  M.value_with_ty
+                    (M.read (|
+                      M.use (M.alloc (| Ty.path "usize", Value.Integer IntegerKind.Usize 0 |))
+                    |))
+                    (Ty.path "usize")
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -1008,31 +1230,41 @@ Module random.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
                         (Ty.path "&mut")
                         []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 8 ]
-                            [ Ty.path "u8" ]
-                        ])
-                      (Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
-                      |)
-                    ]
-                  |)
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 8 ]
+                              [ Ty.path "u8" ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
+                        |)
+                      ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                 ]
               |) in
             M.alloc (|
@@ -1040,7 +1272,14 @@ Module random.
               M.call_closure (|
                 Ty.path "usize",
                 M.get_associated_function (| Ty.path "usize", "from_ne_bytes", [], [] |),
-                [ M.read (| bytes |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| bytes |))
+                    (Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 8 ]
+                      [ Ty.path "u8" ])
+                ]
               |)
             |)
           |)))
@@ -1082,9 +1321,11 @@ Module random.
                 Ty.apply (Ty.path "array") [ Value.Integer IntegerKind.Usize 8 ] [ Ty.path "u8" ],
                 M.get_associated_function (| Ty.path "isize", "to_ne_bytes", [], [] |),
                 [
-                  M.read (|
-                    M.use (M.alloc (| Ty.path "isize", Value.Integer IntegerKind.Isize 0 |))
-                  |)
+                  M.value_with_ty
+                    (M.read (|
+                      M.use (M.alloc (| Ty.path "isize", Value.Integer IntegerKind.Isize 0 |))
+                    |))
+                    (Ty.path "isize")
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -1100,31 +1341,41 @@ Module random.
                   []
                 |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |);
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.pointer_coercion
-                      M.PointerCoercion.Unsize
-                      (Ty.apply
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| source |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ impl_RandomSource__plus___Sized ]);
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
                         (Ty.path "&mut")
                         []
-                        [
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 8 ]
-                            [ Ty.path "u8" ]
-                        ])
-                      (Ty.apply
-                        (Ty.path "&mut")
-                        []
-                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.MutRef,
-                        M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
-                      |)
-                    ]
-                  |)
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.pointer_coercion
+                        M.PointerCoercion.Unsize
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 8 ]
+                              [ Ty.path "u8" ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "&mut")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                      [
+                        M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.deref (| M.borrow (| Pointer.Kind.MutRef, bytes |) |)
+                        |)
+                      ]
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                 ]
               |) in
             M.alloc (|
@@ -1132,7 +1383,14 @@ Module random.
               M.call_closure (|
                 Ty.path "isize",
                 M.get_associated_function (| Ty.path "isize", "from_ne_bytes", [], [] |),
-                [ M.read (| bytes |) ]
+                [
+                  M.value_with_ty
+                    (M.read (| bytes |))
+                    (Ty.apply
+                      (Ty.path "array")
+                      [ Value.Integer IntegerKind.Usize 8 ]
+                      [ Ty.path "u8" ])
+                ]
               |)
             |)
           |)))

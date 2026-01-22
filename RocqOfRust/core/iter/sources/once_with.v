@@ -14,14 +14,16 @@ Module iter.
         | [], [ A; F ], [ gen ] =>
           ltac:(M.monadic
             (let gen := M.alloc (| F, gen |) in
-            Value.mkStructRecord
-              "core::iter::sources::once_with::OnceWith"
-              []
-              [ F ]
-              [
-                ("gen",
-                  Value.StructTuple "core::option::Option::Some" [] [ F ] [ M.read (| gen |) ])
-              ]))
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::iter::sources::once_with::OnceWith"
+                [
+                  ("gen",
+                    M.value_with_ty
+                      (Value.StructTuple "core::option::Option::Some" [ M.read (| gen |) ])
+                      (Ty.apply (Ty.path "core::option::Option") [] [ F ]))
+                ])
+              (Ty.apply (Ty.path "core::iter::sources::once_with::OnceWith") [] [ F ])))
         | _, _, _ => M.impossible "wrong number of arguments"
         end.
       
@@ -56,40 +58,45 @@ Module iter.
                     [ Ty.apply (Ty.path "core::iter::sources::once_with::OnceWith") [] [ F ] ],
                   self
                 |) in
-              Value.mkStructRecord
-                "core::iter::sources::once_with::OnceWith"
-                []
-                [ F ]
-                [
-                  ("gen",
-                    M.call_closure (|
-                      Ty.apply (Ty.path "core::option::Option") [] [ F ],
-                      M.get_trait_method (|
-                        "core::clone::Clone",
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "core::iter::sources::once_with::OnceWith"
+                  [
+                    ("gen",
+                      M.call_closure (|
                         Ty.apply (Ty.path "core::option::Option") [] [ F ],
-                        [],
-                        [],
-                        "clone",
-                        [],
-                        []
-                      |),
-                      [
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.deref (|
-                            M.borrow (|
+                        M.get_trait_method (|
+                          "core::clone::Clone",
+                          Ty.apply (Ty.path "core::option::Option") [] [ F ],
+                          [],
+                          [],
+                          "clone",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
                               Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_record_field (|
-                                M.deref (| M.read (| self |) |),
-                                "core::iter::sources::once_with::OnceWith",
-                                "gen"
+                              M.deref (|
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.SubPointer.get_struct_record_field (|
+                                    M.deref (| M.read (| self |) |),
+                                    "core::iter::sources::once_with::OnceWith",
+                                    "gen"
+                                  |)
+                                |)
                               |)
-                            |)
-                          |)
-                        |)
-                      ]
-                    |))
-                ]))
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "core::option::Option") [] [ F ] ])
+                        ]
+                      |))
+                  ])
+                (Ty.apply (Ty.path "core::iter::sources::once_with::OnceWith") [] [ F ])))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
         
@@ -153,14 +160,19 @@ Module iter.
                                 []
                               |),
                               [
-                                M.borrow (|
-                                  Pointer.Kind.Ref,
-                                  M.SubPointer.get_struct_record_field (|
-                                    M.deref (| M.read (| self |) |),
-                                    "core::iter::sources::once_with::OnceWith",
-                                    "gen"
-                                  |)
-                                |)
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.SubPointer.get_struct_record_field (|
+                                      M.deref (| M.read (| self |) |),
+                                      "core::iter::sources::once_with::OnceWith",
+                                      "gen"
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "core::option::Option") [] [ F ] ])
                               ]
                             |)
                           |)) in
@@ -177,11 +189,15 @@ Module iter.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| mk_str (| "OnceWith(Some(_))" |) |)
-                          |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| mk_str (| "OnceWith(Some(_))" |) |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                         ]
                       |)));
                   fun γ =>
@@ -198,11 +214,15 @@ Module iter.
                           []
                         |),
                         [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (| mk_str (| "OnceWith(None)" |) |)
-                          |)
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                            (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (| mk_str (| "OnceWith(None)" |) |)
+                            |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                         ]
                       |)))
                 ]
@@ -284,25 +304,32 @@ Module iter.
                               []
                             |),
                             [
-                              M.call_closure (|
-                                Ty.apply (Ty.path "core::option::Option") [] [ F ],
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.apply (Ty.path "core::option::Option") [] [ F ],
-                                  "take",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.SubPointer.get_struct_record_field (|
-                                      M.deref (| M.read (| self |) |),
-                                      "core::iter::sources::once_with::OnceWith",
-                                      "gen"
-                                    |)
-                                  |)
-                                ]
-                              |)
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "core::option::Option") [] [ F ],
+                                    "take",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.MutRef,
+                                        M.SubPointer.get_struct_record_field (|
+                                          M.deref (| M.read (| self |) |),
+                                          "core::iter::sources::once_with::OnceWith",
+                                          "gen"
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&mut")
+                                        []
+                                        [ Ty.apply (Ty.path "core::option::Option") [] [ F ] ])
+                                  ]
+                                |))
+                                (Ty.apply (Ty.path "core::option::Option") [] [ F ])
                             ]
                           |)
                         |),
@@ -342,7 +369,14 @@ Module iter.
                                         [],
                                         []
                                       |),
-                                      [ M.read (| residual |) ]
+                                      [
+                                        M.value_with_ty
+                                          (M.read (| residual |))
+                                          (Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::convert::Infallible" ])
+                                      ]
                                     |)
                                   |)
                                 |)
@@ -361,25 +395,28 @@ Module iter.
                       |) in
                     M.alloc (|
                       Ty.apply (Ty.path "core::option::Option") [] [ A ],
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ A ]
-                        [
-                          M.call_closure (|
-                            A,
-                            M.get_trait_method (|
-                              "core::ops::function::FnOnce",
-                              F,
-                              [],
-                              [ Ty.tuple [] ],
-                              "call_once",
-                              [],
-                              []
-                            |),
-                            [ M.read (| f |); Value.Tuple [] ]
-                          |)
-                        ]
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [
+                            M.call_closure (|
+                              A,
+                              M.get_trait_method (|
+                                "core::ops::function::FnOnce",
+                                F,
+                                [],
+                                [ Ty.tuple [] ],
+                                "call_once",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty (M.read (| f |)) F;
+                                M.value_with_ty (Value.Tuple []) (Ty.tuple [])
+                              ]
+                            |)
+                          ])
+                        (Ty.apply (Ty.path "core::option::Option") [] [ A ])
                     |)
                   |)))
               |)))
@@ -425,31 +462,38 @@ Module iter.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.alloc (|
-                      Ty.apply (Ty.path "core::option::Iter") [] [ F ],
-                      M.call_closure (|
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.alloc (|
                         Ty.apply (Ty.path "core::option::Iter") [] [ F ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "core::option::Option") [] [ F ],
-                          "iter",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::iter::sources::once_with::OnceWith",
-                              "gen"
-                            |)
-                          |)
-                        ]
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::option::Iter") [] [ F ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::option::Option") [] [ F ],
+                            "iter",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::iter::sources::once_with::OnceWith",
+                                  "gen"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "core::option::Option") [] [ F ] ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::option::Iter") [] [ F ] ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
@@ -508,7 +552,14 @@ Module iter.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "core::iter::sources::once_with::OnceWith") [] [ F ] ])
+                ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"
           end.
@@ -557,31 +608,38 @@ Module iter.
                   []
                 |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.alloc (|
-                      Ty.apply (Ty.path "core::option::Iter") [] [ F ],
-                      M.call_closure (|
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.alloc (|
                         Ty.apply (Ty.path "core::option::Iter") [] [ F ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "core::option::Option") [] [ F ],
-                          "iter",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.SubPointer.get_struct_record_field (|
-                              M.deref (| M.read (| self |) |),
-                              "core::iter::sources::once_with::OnceWith",
-                              "gen"
-                            |)
-                          |)
-                        ]
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::option::Iter") [] [ F ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "core::option::Option") [] [ F ],
+                            "iter",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_record_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "core::iter::sources::once_with::OnceWith",
+                                  "gen"
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "core::option::Option") [] [ F ] ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "core::option::Iter") [] [ F ] ])
                 ]
               |)))
           | _, _, _ => M.impossible "wrong number of arguments"

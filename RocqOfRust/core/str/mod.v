@@ -32,9 +32,20 @@ Module str.
             ]
           |),
           [
-            Value.Tuple [ M.read (| s |); M.read (| begin |); M.read (| end_ |) ];
-            M.get_function (| "core::str::slice_error_fail_ct", [], [] |);
-            M.get_function (| "core::str::slice_error_fail_rt", [], [] |)
+            M.value_with_ty
+              (Value.Tuple [ M.read (| s |); M.read (| begin |); M.read (| end_ |) ])
+              (Ty.tuple
+                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]; Ty.path "usize"; Ty.path "usize" ]);
+            M.value_with_ty
+              (M.get_function (| "core::str::slice_error_fail_ct", [], [] |))
+              (Ty.function
+                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]; Ty.path "usize"; Ty.path "usize" ]
+                (Ty.path "never"));
+            M.value_with_ty
+              (M.get_function (| "core::str::slice_error_fail_rt", [], [] |))
+              (Ty.function
+                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]; Ty.path "usize"; Ty.path "usize" ]
+                (Ty.path "never"))
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -79,33 +90,46 @@ Module str.
                                   Ty.path "never",
                                   M.get_function (| "core::panicking::panic_fmt", [], [] |),
                                   [
-                                    M.call_closure (|
-                                      Ty.path "core::fmt::Arguments",
-                                      M.get_associated_function (|
+                                    M.value_with_ty
+                                      (M.call_closure (|
                                         Ty.path "core::fmt::Arguments",
-                                        "new_const",
-                                        [ Value.Integer IntegerKind.Usize 1 ],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (|
-                                            M.borrow (|
+                                        M.get_associated_function (|
+                                          Ty.path "core::fmt::Arguments",
+                                          "new_const",
+                                          [ Value.Integer IntegerKind.Usize 1 ],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
                                               Pointer.Kind.Ref,
-                                              M.alloc (|
+                                              M.deref (|
+                                                M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.alloc (|
+                                                    Ty.apply
+                                                      (Ty.path "array")
+                                                      [ Value.Integer IntegerKind.Usize 1 ]
+                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                                                      ],
+                                                    Value.Array
+                                                      [ mk_str (| "failed to slice string" |) ]
+                                                  |)
+                                                |)
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [
                                                 Ty.apply
                                                   (Ty.path "array")
                                                   [ Value.Integer IntegerKind.Usize 1 ]
-                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                                Value.Array
-                                                  [ mk_str (| "failed to slice string" |) ]
-                                              |)
-                                            |)
-                                          |)
-                                        |)
-                                      ]
-                                    |)
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                              ])
+                                        ]
+                                      |))
+                                      (Ty.path "core::fmt::Arguments")
                                   ]
                                 |)))
                           ]
@@ -171,13 +195,17 @@ Module str.
               Ty.path "usize",
               M.get_associated_function (| Ty.path "str", "floor_char_boundary", [], [] |),
               [
-                M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |);
-                M.read (|
-                  get_constant (|
-                    "core::str::slice_error_fail_rt::MAX_DISPLAY_LENGTH",
-                    Ty.path "usize"
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.read (|
+                    get_constant (|
+                      "core::str::slice_error_fail_rt::MAX_DISPLAY_LENGTH",
+                      Ty.path "usize"
+                    |)
+                  |))
+                  (Ty.path "usize")
               ]
             |) in
           let~ s_trunc : Ty.apply (Ty.path "&") [] [ Ty.path "str" ] :=
@@ -196,12 +224,16 @@ Module str.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |);
-                    Value.mkStructRecord
-                      "core::ops::range::RangeTo"
-                      []
-                      [ Ty.path "usize" ]
-                      [ ("end_", M.read (| trunc_len |)) ]
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.mkStructRecord
+                          "core::ops::range::RangeTo"
+                          [ ("end_", M.read (| trunc_len |)) ])
+                        (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ]))
+                      (Ty.apply (Ty.path "core::ops::range::RangeTo") [] [ Ty.path "usize" ])
                   ]
                 |)
               |)
@@ -225,7 +257,11 @@ Module str.
                               M.call_closure (|
                                 Ty.path "usize",
                                 M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                ]
                               |)
                             ]
                           |)
@@ -256,7 +292,14 @@ Module str.
                                 M.call_closure (|
                                   Ty.path "usize",
                                   M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| s |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                  ]
                                 |)
                               ]
                             |),
@@ -269,7 +312,13 @@ Module str.
                                   M.call_closure (|
                                     Ty.path "usize",
                                     M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |)
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| s |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                     ]
                                   |)
                                 ]
@@ -304,10 +353,12 @@ Module str.
                                                 []
                                               |),
                                               [
-                                                M.borrow (|
-                                                  Pointer.Kind.Ref,
-                                                  M.deref (| M.read (| s |) |)
-                                                |)
+                                                M.value_with_ty
+                                                  (M.borrow (|
+                                                    Pointer.Kind.Ref,
+                                                    M.deref (| M.read (| s |) |)
+                                                  |))
+                                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                               ]
                                             |)
                                           ]
@@ -328,108 +379,163 @@ Module str.
                             Ty.path "never",
                             M.get_function (| "core::panicking::panic_fmt", [], [] |),
                             [
-                              M.call_closure (|
-                                Ty.path "core::fmt::Arguments",
-                                M.get_associated_function (|
+                              M.value_with_ty
+                                (M.call_closure (|
                                   Ty.path "core::fmt::Arguments",
-                                  "new_v1",
+                                  M.get_associated_function (|
+                                    Ty.path "core::fmt::Arguments",
+                                    "new_v1",
+                                    [
+                                      Value.Integer IntegerKind.Usize 3;
+                                      Value.Integer IntegerKind.Usize 3
+                                    ],
+                                    []
+                                  |),
                                   [
-                                    Value.Integer IntegerKind.Usize 3;
-                                    Value.Integer IntegerKind.Usize 3
-                                  ],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
+                                    M.value_with_ty
+                                      (M.borrow (|
                                         Pointer.Kind.Ref,
-                                        M.alloc (|
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.alloc (|
+                                              Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 3 ]
+                                                [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                              Value.Array
+                                                [
+                                                  mk_str (| "byte index " |);
+                                                  mk_str (| " is out of bounds of `" |);
+                                                  mk_str (| "`" |)
+                                                ]
+                                            |)
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
                                           Ty.apply
                                             (Ty.path "array")
                                             [ Value.Integer IntegerKind.Usize 3 ]
-                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                          Value.Array
-                                            [
-                                              mk_str (| "byte index " |);
-                                              mk_str (| " is out of bounds of `" |);
-                                              mk_str (| "`" |)
-                                            ]
-                                        |)
-                                      |)
-                                    |)
-                                  |);
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.borrow (|
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                        ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
                                         Pointer.Kind.Ref,
-                                        M.alloc (|
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.alloc (|
+                                              Ty.apply
+                                                (Ty.path "array")
+                                                [ Value.Integer IntegerKind.Usize 3 ]
+                                                [ Ty.path "core::fmt::rt::Argument" ],
+                                              Value.Array
+                                                [
+                                                  M.call_closure (|
+                                                    Ty.path "core::fmt::rt::Argument",
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::fmt::rt::Argument",
+                                                      "new_display",
+                                                      [],
+                                                      [ Ty.path "usize" ]
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              oob_index
+                                                            |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [ Ty.path "usize" ])
+                                                    ]
+                                                  |);
+                                                  M.call_closure (|
+                                                    Ty.path "core::fmt::rt::Argument",
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::fmt::rt::Argument",
+                                                      "new_display",
+                                                      [],
+                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                                                      ]
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.borrow (| Pointer.Kind.Ref, s_trunc |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "str" ]
+                                                          ])
+                                                    ]
+                                                  |);
+                                                  M.call_closure (|
+                                                    Ty.path "core::fmt::rt::Argument",
+                                                    M.get_associated_function (|
+                                                      Ty.path "core::fmt::rt::Argument",
+                                                      "new_display",
+                                                      [],
+                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                                                      ]
+                                                    |),
+                                                    [
+                                                      M.value_with_ty
+                                                        (M.borrow (|
+                                                          Pointer.Kind.Ref,
+                                                          M.deref (|
+                                                            M.borrow (|
+                                                              Pointer.Kind.Ref,
+                                                              ellipsis
+                                                            |)
+                                                          |)
+                                                        |))
+                                                        (Ty.apply
+                                                          (Ty.path "&")
+                                                          []
+                                                          [
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [ Ty.path "str" ]
+                                                          ])
+                                                    ]
+                                                  |)
+                                                ]
+                                            |)
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [
                                           Ty.apply
                                             (Ty.path "array")
                                             [ Value.Integer IntegerKind.Usize 3 ]
-                                            [ Ty.path "core::fmt::rt::Argument" ],
-                                          Value.Array
-                                            [
-                                              M.call_closure (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::rt::Argument",
-                                                  "new_display",
-                                                  [],
-                                                  [ Ty.path "usize" ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (| Pointer.Kind.Ref, oob_index |)
-                                                    |)
-                                                  |)
-                                                ]
-                                              |);
-                                              M.call_closure (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::rt::Argument",
-                                                  "new_display",
-                                                  [],
-                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (| Pointer.Kind.Ref, s_trunc |)
-                                                    |)
-                                                  |)
-                                                ]
-                                              |);
-                                              M.call_closure (|
-                                                Ty.path "core::fmt::rt::Argument",
-                                                M.get_associated_function (|
-                                                  Ty.path "core::fmt::rt::Argument",
-                                                  "new_display",
-                                                  [],
-                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                                |),
-                                                [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (|
-                                                      M.borrow (| Pointer.Kind.Ref, ellipsis |)
-                                                    |)
-                                                  |)
-                                                ]
-                                              |)
-                                            ]
-                                        |)
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
+                                            [ Ty.path "core::fmt::rt::Argument" ]
+                                        ])
+                                  ]
+                                |))
+                                (Ty.path "core::fmt::Arguments")
                             ]
                           |)
                         |)
@@ -467,120 +573,164 @@ Module str.
                         Ty.path "never",
                         M.get_function (| "core::panicking::panic_fmt", [], [] |),
                         [
-                          M.call_closure (|
-                            Ty.path "core::fmt::Arguments",
-                            M.get_associated_function (|
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.path "core::fmt::Arguments",
-                              "new_v1",
-                              [ Value.Integer IntegerKind.Usize 4; Value.Integer IntegerKind.Usize 4
-                              ],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                              M.get_associated_function (|
+                                Ty.path "core::fmt::Arguments",
+                                "new_v1",
+                                [
+                                  Value.Integer IntegerKind.Usize 4;
+                                  Value.Integer IntegerKind.Usize 4
+                                ],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 4 ]
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                          Value.Array
+                                            [
+                                              mk_str (| "begin <= end (" |);
+                                              mk_str (| " <= " |);
+                                              mk_str (| ") when slicing `" |);
+                                              mk_str (| "`" |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 4 ]
-                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                      Value.Array
-                                        [
-                                          mk_str (| "begin <= end (" |);
-                                          mk_str (| " <= " |);
-                                          mk_str (| ") when slicing `" |);
-                                          mk_str (| "`" |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.borrow (|
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.borrow (|
                                     Pointer.Kind.Ref,
-                                    M.alloc (|
+                                    M.deref (|
+                                      M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.alloc (|
+                                          Ty.apply
+                                            (Ty.path "array")
+                                            [ Value.Integer IntegerKind.Usize 4 ]
+                                            [ Ty.path "core::fmt::rt::Argument" ],
+                                          Value.Array
+                                            [
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.path "usize" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.Ref, begin |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                                ]
+                                              |);
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.path "usize" ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.Ref, end_ |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                                ]
+                                              |);
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.Ref, s_trunc |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                                                      ])
+                                                ]
+                                              |);
+                                              M.call_closure (|
+                                                Ty.path "core::fmt::rt::Argument",
+                                                M.get_associated_function (|
+                                                  Ty.path "core::fmt::rt::Argument",
+                                                  "new_display",
+                                                  [],
+                                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                                |),
+                                                [
+                                                  M.value_with_ty
+                                                    (M.borrow (|
+                                                      Pointer.Kind.Ref,
+                                                      M.deref (|
+                                                        M.borrow (| Pointer.Kind.Ref, ellipsis |)
+                                                      |)
+                                                    |))
+                                                    (Ty.apply
+                                                      (Ty.path "&")
+                                                      []
+                                                      [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                                                      ])
+                                                ]
+                                              |)
+                                            ]
+                                        |)
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [
                                       Ty.apply
                                         (Ty.path "array")
                                         [ Value.Integer IntegerKind.Usize 4 ]
-                                        [ Ty.path "core::fmt::rt::Argument" ],
-                                      Value.Array
-                                        [
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.path "usize" ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, begin |) |)
-                                              |)
-                                            ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.path "usize" ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (| M.borrow (| Pointer.Kind.Ref, end_ |) |)
-                                              |)
-                                            ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (| Pointer.Kind.Ref, s_trunc |)
-                                                |)
-                                              |)
-                                            ]
-                                          |);
-                                          M.call_closure (|
-                                            Ty.path "core::fmt::rt::Argument",
-                                            M.get_associated_function (|
-                                              Ty.path "core::fmt::rt::Argument",
-                                              "new_display",
-                                              [],
-                                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.borrow (| Pointer.Kind.Ref, ellipsis |)
-                                                |)
-                                              |)
-                                            ]
-                                          |)
-                                        ]
-                                    |)
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                                        [ Ty.path "core::fmt::rt::Argument" ]
+                                    ])
+                              ]
+                            |))
+                            (Ty.path "core::fmt::Arguments")
                         ]
                       |)
                     |)));
@@ -611,8 +761,10 @@ Module str.
                                   []
                                 |),
                                 [
-                                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |);
-                                  M.read (| begin |)
+                                  M.value_with_ty
+                                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                  M.value_with_ty (M.read (| begin |)) (Ty.path "usize")
                                 ]
                               |)
                             ]
@@ -627,7 +779,12 @@ Module str.
             M.call_closure (|
               Ty.path "usize",
               M.get_associated_function (| Ty.path "str", "floor_char_boundary", [], [] |),
-              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |); M.read (| index |) ]
+              [
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty (M.read (| index |)) (Ty.path "usize")
+              ]
             |) in
           let~ ch : Ty.path "char" :=
             M.call_closure (|
@@ -639,221 +796,288 @@ Module str.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ],
-                  M.get_trait_method (|
-                    "core::iter::traits::iterator::Iterator",
-                    Ty.path "core::str::iter::Chars",
-                    [],
-                    [],
-                    "next",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.MutRef,
-                      M.alloc (|
-                        Ty.path "core::str::iter::Chars",
-                        M.call_closure (|
-                          Ty.path "core::str::iter::Chars",
-                          M.get_associated_function (| Ty.path "str", "chars", [], [] |),
-                          [
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.deref (|
-                                M.call_closure (|
-                                  Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                  M.get_trait_method (|
-                                    "core::ops::index::Index",
-                                    Ty.path "str",
-                                    [],
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::ops::range::RangeFrom")
-                                        []
-                                        [ Ty.path "usize" ]
-                                    ],
-                                    "index",
-                                    [],
-                                    []
-                                  |),
-                                  [
-                                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |);
-                                    Value.mkStructRecord
-                                      "core::ops::range::RangeFrom"
-                                      []
-                                      [ Ty.path "usize" ]
-                                      [ ("start", M.read (| char_start |)) ]
-                                  ]
-                                |)
-                              |)
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ],
+                    M.get_trait_method (|
+                      "core::iter::traits::iterator::Iterator",
+                      Ty.path "core::str::iter::Chars",
+                      [],
+                      [],
+                      "next",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.MutRef,
+                          M.alloc (|
+                            Ty.path "core::str::iter::Chars",
+                            M.call_closure (|
+                              Ty.path "core::str::iter::Chars",
+                              M.get_associated_function (| Ty.path "str", "chars", [], [] |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                        M.get_trait_method (|
+                                          "core::ops::index::Index",
+                                          Ty.path "str",
+                                          [],
+                                          [
+                                            Ty.apply
+                                              (Ty.path "core::ops::range::RangeFrom")
+                                              []
+                                              [ Ty.path "usize" ]
+                                          ],
+                                          "index",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| s |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                          M.value_with_ty
+                                            (M.value_with_ty
+                                              (Value.mkStructRecord
+                                                "core::ops::range::RangeFrom"
+                                                [ ("start", M.read (| char_start |)) ])
+                                              (Ty.apply
+                                                (Ty.path "core::ops::range::RangeFrom")
+                                                []
+                                                [ Ty.path "usize" ]))
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::RangeFrom")
+                                              []
+                                              [ Ty.path "usize" ])
+                                        ]
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                              ]
                             |)
-                          ]
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
+                          |)
+                        |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::str::iter::Chars" ])
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ])
               ]
             |) in
           let~ char_range : Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] :=
-            Value.mkStructRecord
-              "core::ops::range::Range"
-              []
-              [ Ty.path "usize" ]
-              [
-                ("start", M.read (| char_start |));
-                ("end_",
-                  M.call_closure (|
-                    Ty.path "usize",
-                    BinOp.Wrap.add,
-                    [
-                      M.read (| char_start |);
-                      M.call_closure (|
-                        Ty.path "usize",
-                        M.get_associated_function (| Ty.path "char", "len_utf8", [], [] |),
-                        [ M.read (| ch |) ]
-                      |)
-                    ]
-                  |))
-              ] in
+            M.value_with_ty
+              (Value.mkStructRecord
+                "core::ops::range::Range"
+                [
+                  ("start", M.read (| char_start |));
+                  ("end_",
+                    M.call_closure (|
+                      Ty.path "usize",
+                      BinOp.Wrap.add,
+                      [
+                        M.read (| char_start |);
+                        M.call_closure (|
+                          Ty.path "usize",
+                          M.get_associated_function (| Ty.path "char", "len_utf8", [], [] |),
+                          [ M.value_with_ty (M.read (| ch |)) (Ty.path "char") ]
+                        |)
+                      ]
+                    |))
+                ])
+              (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]) in
           M.alloc (|
             Ty.path "never",
             M.call_closure (|
               Ty.path "never",
               M.get_function (| "core::panicking::panic_fmt", [], [] |),
               [
-                M.call_closure (|
-                  Ty.path "core::fmt::Arguments",
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.path "core::fmt::Arguments",
-                    "new_v1",
-                    [ Value.Integer IntegerKind.Usize 5; Value.Integer IntegerKind.Usize 5 ],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
+                    M.get_associated_function (|
+                      Ty.path "core::fmt::Arguments",
+                      "new_v1",
+                      [ Value.Integer IntegerKind.Usize 5; Value.Integer IntegerKind.Usize 5 ],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
                           Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply
-                              (Ty.path "array")
-                              [ Value.Integer IntegerKind.Usize 5 ]
-                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                            Value.Array
-                              [
-                                mk_str (| "byte index " |);
-                                mk_str (| " is not a char boundary; it is inside " |);
-                                mk_str (| " (bytes " |);
-                                mk_str (| ") of `" |);
-                                mk_str (| "`" |)
-                              ]
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 5 ]
+                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                Value.Array
+                                  [
+                                    mk_str (| "byte index " |);
+                                    mk_str (| " is not a char boundary; it is inside " |);
+                                    mk_str (| " (bytes " |);
+                                    mk_str (| ") of `" |);
+                                    mk_str (| "`" |)
+                                  ]
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 5 ]
-                              [ Ty.path "core::fmt::rt::Argument" ],
-                            Value.Array
-                              [
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_display",
-                                    [],
-                                    [ Ty.path "usize" ]
-                                  |),
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.alloc (|
+                                Ty.apply
+                                  (Ty.path "array")
+                                  [ Value.Integer IntegerKind.Usize 5 ]
+                                  [ Ty.path "core::fmt::rt::Argument" ],
+                                Value.Array
                                   [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.borrow (| Pointer.Kind.Ref, index |) |)
-                                    |)
-                                  ]
-                                |);
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_debug",
-                                    [],
-                                    [ Ty.path "char" ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.borrow (| Pointer.Kind.Ref, ch |) |)
-                                    |)
-                                  ]
-                                |);
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_debug",
-                                    [],
-                                    [
-                                      Ty.apply
-                                        (Ty.path "core::ops::range::Range")
-                                        []
+                                    M.call_closure (|
+                                      Ty.path "core::fmt::rt::Argument",
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        "new_display",
+                                        [],
                                         [ Ty.path "usize" ]
-                                    ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.borrow (| Pointer.Kind.Ref, char_range |) |)
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.borrow (| Pointer.Kind.Ref, index |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "usize" ])
+                                      ]
+                                    |);
+                                    M.call_closure (|
+                                      Ty.path "core::fmt::rt::Argument",
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        "new_debug",
+                                        [],
+                                        [ Ty.path "char" ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.borrow (| Pointer.Kind.Ref, ch |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "char" ])
+                                      ]
+                                    |);
+                                    M.call_closure (|
+                                      Ty.path "core::fmt::rt::Argument",
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        "new_debug",
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::Range")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (|
+                                              M.borrow (| Pointer.Kind.Ref, char_range |)
+                                            |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::ops::range::Range")
+                                                []
+                                                [ Ty.path "usize" ]
+                                            ])
+                                      ]
+                                    |);
+                                    M.call_closure (|
+                                      Ty.path "core::fmt::rt::Argument",
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        "new_display",
+                                        [],
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.borrow (| Pointer.Kind.Ref, s_trunc |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])
+                                      ]
+                                    |);
+                                    M.call_closure (|
+                                      Ty.path "core::fmt::rt::Argument",
+                                      M.get_associated_function (|
+                                        Ty.path "core::fmt::rt::Argument",
+                                        "new_display",
+                                        [],
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.borrow (| Pointer.Kind.Ref, ellipsis |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&")
+                                            []
+                                            [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ])
+                                      ]
                                     |)
                                   ]
-                                |);
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_display",
-                                    [],
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.borrow (| Pointer.Kind.Ref, s_trunc |) |)
-                                    |)
-                                  ]
-                                |);
-                                M.call_closure (|
-                                  Ty.path "core::fmt::rt::Argument",
-                                  M.get_associated_function (|
-                                    Ty.path "core::fmt::rt::Argument",
-                                    "new_display",
-                                    [],
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
-                                  |),
-                                  [
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (| M.borrow (| Pointer.Kind.Ref, ellipsis |) |)
-                                    |)
-                                  ]
-                                |)
-                              ]
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |)
-                  ]
-                |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 5 ]
+                              [ Ty.path "core::fmt::rt::Argument" ]
+                          ])
+                    ]
+                  |))
+                  (Ty.path "core::fmt::Arguments")
               ]
             |)
           |)
@@ -898,16 +1122,22 @@ Module str.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -934,7 +1164,11 @@ Module str.
               M.call_closure (|
                 Ty.path "usize",
                 M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                ]
               |);
               Value.Integer IntegerKind.Usize 0
             ]
@@ -1025,10 +1259,12 @@ Module str.
                                       Ty.path "usize",
                                       M.get_associated_function (| Ty.path "str", "len", [], [] |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                                       ]
                                     |)
                                   ]
@@ -1044,7 +1280,14 @@ Module str.
                               M.call_closure (|
                                 Ty.path "usize",
                                 M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                ]
                               |)
                             ]
                           |)));
@@ -1059,31 +1302,35 @@ Module str.
                               []
                             |),
                             [
-                              M.read (|
-                                M.SubPointer.get_array_field (|
-                                  M.deref (|
-                                    M.call_closure (|
-                                      Ty.apply
-                                        (Ty.path "&")
-                                        []
-                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                      M.get_associated_function (|
-                                        Ty.path "str",
-                                        "as_bytes",
-                                        [],
-                                        []
-                                      |),
-                                      [
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| self |) |)
-                                        |)
-                                      ]
-                                    |)
-                                  |),
-                                  M.read (| index |)
-                                |)
-                              |)
+                              M.value_with_ty
+                                (M.read (|
+                                  M.SubPointer.get_array_field (|
+                                    M.deref (|
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "&")
+                                          []
+                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                        M.get_associated_function (|
+                                          Ty.path "str",
+                                          "as_bytes",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                        ]
+                                      |)
+                                    |),
+                                    M.read (| index |)
+                                  |)
+                                |))
+                                (Ty.path "u8")
                             ]
                           |)))
                     ]
@@ -1138,7 +1385,11 @@ Module str.
                             M.call_closure (|
                               Ty.path "usize",
                               M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                              ]
                             |)
                           ]
                         |)
@@ -1147,7 +1398,11 @@ Module str.
                   M.call_closure (|
                     Ty.path "usize",
                     M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -1156,7 +1411,10 @@ Module str.
                       M.call_closure (|
                         Ty.path "usize",
                         M.get_associated_function (| Ty.path "usize", "saturating_sub", [], [] |),
-                        [ M.read (| index |); Value.Integer IntegerKind.Usize 3 ]
+                        [
+                          M.value_with_ty (M.read (| index |)) (Ty.path "usize");
+                          M.value_with_ty (Value.Integer IntegerKind.Usize 3) (Ty.path "usize")
+                        ]
                       |) in
                     let~ new_index :
                         Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ] :=
@@ -1176,121 +1434,169 @@ Module str.
                           ]
                         |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.alloc (|
-                              Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
-                              M.call_closure (|
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.alloc (|
                                 Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
-                                M.get_associated_function (|
-                                  Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                  "iter",
-                                  [],
-                                  []
-                                |),
-                                [
-                                  M.borrow (|
-                                    Pointer.Kind.Ref,
-                                    M.deref (|
-                                      M.call_closure (|
-                                        Ty.apply
-                                          (Ty.path "&")
-                                          []
-                                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                        M.get_trait_method (|
-                                          "core::ops::index::Index",
-                                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                          [],
-                                          [
+                                M.call_closure (|
+                                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
+                                  M.get_associated_function (|
+                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                    "iter",
+                                    [],
+                                    []
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.call_closure (|
                                             Ty.apply
-                                              (Ty.path "core::ops::range::RangeInclusive")
+                                              (Ty.path "&")
                                               []
-                                              [ Ty.path "usize" ]
-                                          ],
-                                          "index",
-                                          [],
-                                          []
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (|
-                                              M.call_closure (|
+                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                            M.get_trait_method (|
+                                              "core::ops::index::Index",
+                                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                              [],
+                                              [
                                                 Ty.apply
+                                                  (Ty.path "core::ops::range::RangeInclusive")
+                                                  []
+                                                  [ Ty.path "usize" ]
+                                              ],
+                                              "index",
+                                              [],
+                                              []
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.call_closure (|
+                                                      Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "slice")
+                                                            []
+                                                            [ Ty.path "u8" ]
+                                                        ],
+                                                      M.get_associated_function (|
+                                                        Ty.path "str",
+                                                        "as_bytes",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.borrow (|
+                                                            Pointer.Kind.Ref,
+                                                            M.deref (| M.read (| self |) |)
+                                                          |))
+                                                          (Ty.apply
+                                                            (Ty.path "&")
+                                                            []
+                                                            [ Ty.path "str" ])
+                                                      ]
+                                                    |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
                                                   (Ty.path "&")
                                                   []
                                                   [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
-                                                  ],
+                                                  ]);
+                                              M.value_with_ty
+                                                (M.call_closure (|
+                                                  Ty.apply
+                                                    (Ty.path "core::ops::range::RangeInclusive")
+                                                    []
+                                                    [ Ty.path "usize" ],
+                                                  M.get_associated_function (|
+                                                    Ty.apply
+                                                      (Ty.path "core::ops::range::RangeInclusive")
+                                                      []
+                                                      [ Ty.path "usize" ],
+                                                    "new",
+                                                    [],
+                                                    []
+                                                  |),
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.read (| lower_bound |))
+                                                      (Ty.path "usize");
+                                                    M.value_with_ty
+                                                      (M.read (| index |))
+                                                      (Ty.path "usize")
+                                                  ]
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "core::ops::range::RangeInclusive")
+                                                  []
+                                                  [ Ty.path "usize" ])
+                                            ]
+                                          |)
+                                        |)
+                                      |))
+                                      (Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                  ]
+                                |)
+                              |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ] ]);
+                          M.value_with_ty
+                            (M.closure
+                              (fun γ =>
+                                ltac:(M.monadic
+                                  match γ with
+                                  | [ α0 ] =>
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "bool",
+                                        M.alloc (|
+                                          Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                          α0
+                                        |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let b :=
+                                                M.copy (|
+                                                  Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                                  γ
+                                                |) in
+                                              M.call_closure (|
+                                                Ty.path "bool",
                                                 M.get_associated_function (|
-                                                  Ty.path "str",
-                                                  "as_bytes",
+                                                  Ty.path "u8",
+                                                  "is_utf8_char_boundary",
                                                   [],
                                                   []
                                                 |),
                                                 [
-                                                  M.borrow (|
-                                                    Pointer.Kind.Ref,
-                                                    M.deref (| M.read (| self |) |)
-                                                  |)
+                                                  M.value_with_ty
+                                                    (M.read (| M.deref (| M.read (| b |) |) |))
+                                                    (Ty.path "u8")
                                                 ]
-                                              |)
-                                            |)
-                                          |);
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "core::ops::range::RangeInclusive")
-                                              []
-                                              [ Ty.path "usize" ],
-                                            M.get_associated_function (|
-                                              Ty.apply
-                                                (Ty.path "core::ops::range::RangeInclusive")
-                                                []
-                                                [ Ty.path "usize" ],
-                                              "new",
-                                              [],
-                                              []
-                                            |),
-                                            [ M.read (| lower_bound |); M.read (| index |) ]
-                                          |)
+                                              |)))
                                         ]
-                                      |)
-                                    |)
-                                  |)
-                                ]
-                              |)
-                            |)
-                          |);
-                          M.closure
-                            (fun γ =>
-                              ltac:(M.monadic
-                                match γ with
-                                | [ α0 ] =>
-                                  ltac:(M.monadic
-                                    (M.match_operator (|
-                                      Ty.path "bool",
-                                      M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "u8" ], α0 |),
-                                      [
-                                        fun γ =>
-                                          ltac:(M.monadic
-                                            (let b :=
-                                              M.copy (|
-                                                Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                                                γ
-                                              |) in
-                                            M.call_closure (|
-                                              Ty.path "bool",
-                                              M.get_associated_function (|
-                                                Ty.path "u8",
-                                                "is_utf8_char_boundary",
-                                                [],
-                                                []
-                                              |),
-                                              [ M.read (| M.deref (| M.read (| b |) |) |) ]
-                                            |)))
-                                      ]
-                                    |)))
-                                | _ => M.impossible "wrong number of arguments"
-                                end))
+                                      |)))
+                                  | _ => M.impossible "wrong number of arguments"
+                                  end)))
+                            (Ty.function
+                              [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ]
+                              (Ty.path "bool"))
                         ]
                       |) in
                     M.alloc (|
@@ -1308,7 +1614,11 @@ Module str.
                               [],
                               []
                             |),
-                            [ M.read (| new_index |) ]
+                            [
+                              M.value_with_ty
+                                (M.read (| new_index |))
+                                (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ])
+                            ]
                           |)
                         ]
                       |)
@@ -1361,7 +1671,11 @@ Module str.
                             M.call_closure (|
                               Ty.path "usize",
                               M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                              ]
                             |)
                           ]
                         |)
@@ -1370,7 +1684,11 @@ Module str.
                   M.call_closure (|
                     Ty.path "usize",
                     M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                    ]
                   |)));
               fun γ =>
                 ltac:(M.monadic
@@ -1388,16 +1706,24 @@ Module str.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.path "usize",
-                            BinOp.Wrap.add,
-                            [ M.read (| index |); Value.Integer IntegerKind.Usize 4 ]
-                          |);
-                          M.call_closure (|
-                            Ty.path "usize",
-                            M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              BinOp.Wrap.add,
+                              [ M.read (| index |); Value.Integer IntegerKind.Usize 4 ]
+                            |))
+                            (Ty.path "usize");
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.path "usize",
+                              M.get_associated_function (| Ty.path "str", "len", [], [] |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                              ]
+                            |))
+                            (Ty.path "usize")
                         ]
                       |) in
                     M.alloc (|
@@ -1411,164 +1737,220 @@ Module str.
                           [ Ty.path "usize"; Ty.function [ Ty.path "usize" ] (Ty.path "usize") ]
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
-                            M.get_trait_method (|
-                              "core::iter::traits::iterator::Iterator",
-                              Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
-                              [],
-                              [],
-                              "position",
-                              [],
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ],
+                              M.get_trait_method (|
+                                "core::iter::traits::iterator::Iterator",
+                                Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
+                                [],
+                                [],
+                                "position",
+                                [],
+                                [
+                                  Ty.function
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ]
+                                    (Ty.path "bool")
+                                ]
+                              |),
                               [
-                                Ty.function
-                                  [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ]
-                                  (Ty.path "bool")
-                              ]
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.alloc (|
-                                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
-                                  M.call_closure (|
-                                    Ty.apply
-                                      (Ty.path "core::slice::iter::Iter")
-                                      []
-                                      [ Ty.path "u8" ],
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                      "iter",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (|
-                                          M.call_closure (|
-                                            Ty.apply
-                                              (Ty.path "&")
-                                              []
-                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                            M.get_trait_method (|
-                                              "core::ops::index::Index",
-                                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                                              [],
-                                              [
-                                                Ty.apply
-                                                  (Ty.path "core::ops::range::Range")
-                                                  []
-                                                  [ Ty.path "usize" ]
-                                              ],
-                                              "index",
-                                              [],
-                                              []
-                                            |),
-                                            [
-                                              M.borrow (|
-                                                Pointer.Kind.Ref,
-                                                M.deref (|
-                                                  M.call_closure (|
-                                                    Ty.apply
-                                                      (Ty.path "&")
-                                                      []
-                                                      [
-                                                        Ty.apply
-                                                          (Ty.path "slice")
-                                                          []
-                                                          [ Ty.path "u8" ]
-                                                      ],
-                                                    M.get_associated_function (|
-                                                      Ty.path "str",
-                                                      "as_bytes",
-                                                      [],
-                                                      []
-                                                    |),
-                                                    [
-                                                      M.borrow (|
-                                                        Pointer.Kind.Ref,
-                                                        M.deref (| M.read (| self |) |)
-                                                      |)
-                                                    ]
-                                                  |)
-                                                |)
-                                              |);
-                                              Value.mkStructRecord
-                                                "core::ops::range::Range"
-                                                []
-                                                [ Ty.path "usize" ]
-                                                [
-                                                  ("start", M.read (| index |));
-                                                  ("end_", M.read (| upper_bound |))
-                                                ]
-                                            ]
-                                          |)
-                                        |)
-                                      |)
-                                    ]
-                                  |)
-                                |)
-                              |);
-                              M.closure
-                                (fun γ =>
-                                  ltac:(M.monadic
-                                    match γ with
-                                    | [ α0 ] =>
-                                      ltac:(M.monadic
-                                        (M.match_operator (|
-                                          Ty.path "bool",
-                                          M.alloc (|
-                                            Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                                            α0
-                                          |),
-                                          [
-                                            fun γ =>
-                                              ltac:(M.monadic
-                                                (let b :=
-                                                  M.copy (|
-                                                    Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
-                                                    γ
-                                                  |) in
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "core::slice::iter::Iter")
+                                        []
+                                        [ Ty.path "u8" ],
+                                      M.call_closure (|
+                                        Ty.apply
+                                          (Ty.path "core::slice::iter::Iter")
+                                          []
+                                          [ Ty.path "u8" ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                          "iter",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (|
                                                 M.call_closure (|
-                                                  Ty.path "bool",
-                                                  M.get_associated_function (|
-                                                    Ty.path "u8",
-                                                    "is_utf8_char_boundary",
+                                                  Ty.apply
+                                                    (Ty.path "&")
+                                                    []
+                                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ]
+                                                    ],
+                                                  M.get_trait_method (|
+                                                    "core::ops::index::Index",
+                                                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                                                    [],
+                                                    [
+                                                      Ty.apply
+                                                        (Ty.path "core::ops::range::Range")
+                                                        []
+                                                        [ Ty.path "usize" ]
+                                                    ],
+                                                    "index",
                                                     [],
                                                     []
                                                   |),
-                                                  [ M.read (| M.deref (| M.read (| b |) |) |) ]
-                                                |)))
-                                          ]
-                                        |)))
-                                    | _ => M.impossible "wrong number of arguments"
-                                    end))
-                            ]
-                          |);
-                          M.read (| upper_bound |);
-                          M.closure
-                            (fun γ =>
-                              ltac:(M.monadic
-                                match γ with
-                                | [ α0 ] =>
-                                  ltac:(M.monadic
-                                    (M.match_operator (|
-                                      Ty.path "usize",
-                                      M.alloc (| Ty.path "usize", α0 |),
-                                      [
-                                        fun γ =>
+                                                  [
+                                                    M.value_with_ty
+                                                      (M.borrow (|
+                                                        Pointer.Kind.Ref,
+                                                        M.deref (|
+                                                          M.call_closure (|
+                                                            Ty.apply
+                                                              (Ty.path "&")
+                                                              []
+                                                              [
+                                                                Ty.apply
+                                                                  (Ty.path "slice")
+                                                                  []
+                                                                  [ Ty.path "u8" ]
+                                                              ],
+                                                            M.get_associated_function (|
+                                                              Ty.path "str",
+                                                              "as_bytes",
+                                                              [],
+                                                              []
+                                                            |),
+                                                            [
+                                                              M.value_with_ty
+                                                                (M.borrow (|
+                                                                  Pointer.Kind.Ref,
+                                                                  M.deref (| M.read (| self |) |)
+                                                                |))
+                                                                (Ty.apply
+                                                                  (Ty.path "&")
+                                                                  []
+                                                                  [ Ty.path "str" ])
+                                                            ]
+                                                          |)
+                                                        |)
+                                                      |))
+                                                      (Ty.apply
+                                                        (Ty.path "&")
+                                                        []
+                                                        [
+                                                          Ty.apply
+                                                            (Ty.path "slice")
+                                                            []
+                                                            [ Ty.path "u8" ]
+                                                        ]);
+                                                    M.value_with_ty
+                                                      (M.value_with_ty
+                                                        (Value.mkStructRecord
+                                                          "core::ops::range::Range"
+                                                          [
+                                                            ("start", M.read (| index |));
+                                                            ("end_", M.read (| upper_bound |))
+                                                          ])
+                                                        (Ty.apply
+                                                          (Ty.path "core::ops::range::Range")
+                                                          []
+                                                          [ Ty.path "usize" ]))
+                                                      (Ty.apply
+                                                        (Ty.path "core::ops::range::Range")
+                                                        []
+                                                        [ Ty.path "usize" ])
+                                                  ]
+                                                |)
+                                              |)
+                                            |))
+                                            (Ty.apply
+                                              (Ty.path "&")
+                                              []
+                                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                                        ]
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.apply
+                                        (Ty.path "core::slice::iter::Iter")
+                                        []
+                                        [ Ty.path "u8" ]
+                                    ]);
+                                M.value_with_ty
+                                  (M.closure
+                                    (fun γ =>
+                                      ltac:(M.monadic
+                                        match γ with
+                                        | [ α0 ] =>
                                           ltac:(M.monadic
-                                            (let pos := M.copy (| Ty.path "usize", γ |) in
-                                            M.call_closure (|
-                                              Ty.path "usize",
-                                              BinOp.Wrap.add,
-                                              [ M.read (| pos |); M.read (| index |) ]
+                                            (M.match_operator (|
+                                              Ty.path "bool",
+                                              M.alloc (|
+                                                Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                                α0
+                                              |),
+                                              [
+                                                fun γ =>
+                                                  ltac:(M.monadic
+                                                    (let b :=
+                                                      M.copy (|
+                                                        Ty.apply (Ty.path "&") [] [ Ty.path "u8" ],
+                                                        γ
+                                                      |) in
+                                                    M.call_closure (|
+                                                      Ty.path "bool",
+                                                      M.get_associated_function (|
+                                                        Ty.path "u8",
+                                                        "is_utf8_char_boundary",
+                                                        [],
+                                                        []
+                                                      |),
+                                                      [
+                                                        M.value_with_ty
+                                                          (M.read (|
+                                                            M.deref (| M.read (| b |) |)
+                                                          |))
+                                                          (Ty.path "u8")
+                                                      ]
+                                                    |)))
+                                              ]
                                             |)))
-                                      ]
-                                    |)))
-                                | _ => M.impossible "wrong number of arguments"
-                                end))
+                                        | _ => M.impossible "wrong number of arguments"
+                                        end)))
+                                  (Ty.function
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "u8" ] ]
+                                    (Ty.path "bool"))
+                              ]
+                            |))
+                            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "usize" ]);
+                          M.value_with_ty (M.read (| upper_bound |)) (Ty.path "usize");
+                          M.value_with_ty
+                            (M.closure
+                              (fun γ =>
+                                ltac:(M.monadic
+                                  match γ with
+                                  | [ α0 ] =>
+                                    ltac:(M.monadic
+                                      (M.match_operator (|
+                                        Ty.path "usize",
+                                        M.alloc (| Ty.path "usize", α0 |),
+                                        [
+                                          fun γ =>
+                                            ltac:(M.monadic
+                                              (let pos := M.copy (| Ty.path "usize", γ |) in
+                                              M.call_closure (|
+                                                Ty.path "usize",
+                                                BinOp.Wrap.add,
+                                                [ M.read (| pos |); M.read (| index |) ]
+                                              |)))
+                                        ]
+                                      |)))
+                                  | _ => M.impossible "wrong number of arguments"
+                                  end)))
+                            (Ty.function [ Ty.path "usize" ] (Ty.path "usize"))
                         ]
                       |)
                     |)
@@ -1604,7 +1986,7 @@ Module str.
                 Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
               ]
             |),
-            [ M.read (| self |) ]
+            [ M.value_with_ty (M.read (| self |)) (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]) ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1760,7 +2142,12 @@ Module str.
               [],
               []
             |),
-            [ M.read (| i |); M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+            [
+              M.value_with_ty (M.read (| i |)) I;
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1806,7 +2193,12 @@ Module str.
               [],
               []
             |),
-            [ M.read (| i |); M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+            [
+              M.value_with_ty (M.read (| i |)) I;
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -1857,8 +2249,10 @@ Module str.
                       []
                     |),
                     [
-                      M.read (| i |);
-                      M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| self |) |) |)
+                      M.value_with_ty (M.read (| i |)) I;
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "*const") [] [ Ty.path "str" ])
                     ]
                   |)
                 |)
@@ -1921,11 +2315,13 @@ Module str.
                               []
                             |),
                             [
-                              M.read (| i |);
-                              M.borrow (|
-                                Pointer.Kind.MutPointer,
-                                M.deref (| M.read (| self |) |)
-                              |)
+                              M.value_with_ty (M.read (| i |)) I;
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutPointer,
+                                  M.deref (| M.read (| self |) |)
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
                             ]
                           |)
                         |)
@@ -1977,12 +2373,16 @@ Module str.
                       []
                     |),
                     [
-                      Value.mkStructRecord
-                        "core::ops::range::Range"
-                        []
-                        [ Ty.path "usize" ]
-                        [ ("start", M.read (| begin |)); ("end_", M.read (| end_ |)) ];
-                      M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| self |) |) |)
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.mkStructRecord
+                            "core::ops::range::Range"
+                            [ ("start", M.read (| begin |)); ("end_", M.read (| end_ |)) ])
+                          (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]))
+                        (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.ConstPointer, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "*const") [] [ Ty.path "str" ])
                     ]
                   |)
                 |)
@@ -2036,15 +2436,25 @@ Module str.
                               []
                             |),
                             [
-                              Value.mkStructRecord
-                                "core::ops::range::Range"
-                                []
-                                [ Ty.path "usize" ]
-                                [ ("start", M.read (| begin |)); ("end_", M.read (| end_ |)) ];
-                              M.borrow (|
-                                Pointer.Kind.MutPointer,
-                                M.deref (| M.read (| self |) |)
-                              |)
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.mkStructRecord
+                                    "core::ops::range::Range"
+                                    [ ("start", M.read (| begin |)); ("end_", M.read (| end_ |)) ])
+                                  (Ty.apply
+                                    (Ty.path "core::ops::range::Range")
+                                    []
+                                    [ Ty.path "usize" ]))
+                                (Ty.apply
+                                  (Ty.path "core::ops::range::Range")
+                                  []
+                                  [ Ty.path "usize" ]);
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.MutPointer,
+                                  M.deref (| M.read (| self |) |)
+                                |))
+                                (Ty.apply (Ty.path "*mut") [] [ Ty.path "str" ])
                             ]
                           |)
                         |)
@@ -2106,7 +2516,11 @@ Module str.
                       ]
                   ],
                 M.get_associated_function (| Ty.path "str", "split_at_checked", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |); M.read (| mid |)
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
                 ]
               |)
             |),
@@ -2119,9 +2533,11 @@ Module str.
                       Ty.path "never",
                       M.get_function (| "core::str::slice_error_fail", [], [] |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        Value.Integer IntegerKind.Usize 0;
-                        M.read (| mid |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize");
+                        M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
                       ]
                     |)
                   |)));
@@ -2183,8 +2599,10 @@ Module str.
                           Ty.path "bool",
                           M.get_associated_function (| Ty.path "str", "is_char_boundary", [], [] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            M.read (| mid |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                            M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
                           ]
                         |)
                       |)) in
@@ -2197,8 +2615,10 @@ Module str.
                       ],
                     M.get_associated_function (| Ty.path "str", "split_at_mut_unchecked", [], [] |),
                     [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                      M.read (| mid |)
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ]);
+                      M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
                     ]
                   |)));
               fun γ =>
@@ -2208,9 +2628,11 @@ Module str.
                       Ty.path "never",
                       M.get_function (| "core::str::slice_error_fail", [], [] |),
                       [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        Value.Integer IntegerKind.Usize 0;
-                        M.read (| mid |)
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                        M.value_with_ty (Value.Integer IntegerKind.Usize 0) (Ty.path "usize");
+                        M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
                       ]
                     |)
                   |)))
@@ -2264,49 +2686,62 @@ Module str.
                           Ty.path "bool",
                           M.get_associated_function (| Ty.path "str", "is_char_boundary", [], [] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            M.read (| mid |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                            M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
                           ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
-                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                        ]
-                    ]
-                    [
-                      M.call_closure (|
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.call_closure (|
+                          Ty.tuple
+                            [
+                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                            ],
+                          M.get_associated_function (|
+                            Ty.path "str",
+                            "split_at_unchecked",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                            M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
                         Ty.tuple
                           [
                             Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
                             Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                          ],
-                        M.get_associated_function (| Ty.path "str", "split_at_unchecked", [], [] |),
-                        [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                          M.read (| mid |)
-                        ]
-                      |)
-                    ]));
+                          ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
-                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                        ]
-                    ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                            Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                          ]
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2357,54 +2792,62 @@ Module str.
                           Ty.path "bool",
                           M.get_associated_function (| Ty.path "str", "is_char_boundary", [], [] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                            M.read (| mid |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                            M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
                           ]
                         |)
                       |)) in
                   let _ := is_constant_or_break_match (| M.read (| γ |), Value.Bool true |) in
-                  Value.StructTuple
-                    "core::option::Option::Some"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ];
-                          Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ]
-                        ]
-                    ]
-                    [
-                      M.call_closure (|
+                  M.value_with_ty
+                    (Value.StructTuple
+                      "core::option::Option::Some"
+                      [
+                        M.call_closure (|
+                          Ty.tuple
+                            [
+                              Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ];
+                              Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ]
+                            ],
+                          M.get_associated_function (|
+                            Ty.path "str",
+                            "split_at_mut_unchecked",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ]);
+                            M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
+                          ]
+                        |)
+                      ])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
                         Ty.tuple
                           [
                             Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ];
                             Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ]
-                          ],
-                        M.get_associated_function (|
-                          Ty.path "str",
-                          "split_at_mut_unchecked",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                          M.read (| mid |)
-                        ]
-                      |)
-                    ]));
+                          ]
+                      ])));
               fun γ =>
                 ltac:(M.monadic
-                  (Value.StructTuple
-                    "core::option::Option::None"
-                    []
-                    [
-                      Ty.tuple
-                        [
-                          Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ];
-                          Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ]
-                        ]
-                    ]
-                    []))
+                  (M.value_with_ty
+                    (Value.StructTuple "core::option::Option::None" [])
+                    (Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [
+                        Ty.tuple
+                          [
+                            Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ];
+                            Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ]
+                          ]
+                      ])))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -2439,13 +2882,21 @@ Module str.
               M.call_closure (|
                 Ty.path "usize",
                 M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                ]
               |) in
             let~ ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
               M.call_closure (|
                 Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
                 M.get_associated_function (| Ty.path "str", "as_ptr", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                ]
               |) in
             M.alloc (|
               Ty.tuple
@@ -2462,23 +2913,33 @@ Module str.
                         Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                         M.get_function (| "core::str::converts::from_utf8_unchecked", [], [] |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                M.get_function (|
-                                  "core::slice::raw::from_raw_parts",
-                                  [],
-                                  [ Ty.path "u8" ]
-                                |),
-                                [ M.read (| ptr |); M.read (| mid |) ]
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                  M.get_function (|
+                                    "core::slice::raw::from_raw_parts",
+                                    [],
+                                    [ Ty.path "u8" ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| ptr |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
+                                  ]
+                                |)
                               |)
-                            |)
-                          |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                         ]
                       |)
                     |)
@@ -2490,39 +2951,53 @@ Module str.
                         Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                         M.get_function (| "core::str::converts::from_utf8_unchecked", [], [] |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                M.get_function (|
-                                  "core::slice::raw::from_raw_parts",
-                                  [],
-                                  [ Ty.path "u8" ]
-                                |),
-                                [
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
-                                      "add",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| ptr |); M.read (| mid |) ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.sub,
-                                    [ M.read (| len |); M.read (| mid |) ]
-                                  |)
-                                ]
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                  M.get_function (|
+                                    "core::slice::raw::from_raw_parts",
+                                    [],
+                                    [ Ty.path "u8" ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ],
+                                          "add",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| ptr |))
+                                            (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                          M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
+                                        ]
+                                      |))
+                                      (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.sub,
+                                        [ M.read (| len |); M.read (| mid |) ]
+                                      |))
+                                      (Ty.path "usize")
+                                  ]
+                                |)
                               |)
-                            |)
-                          |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                         ]
                       |)
                     |)
@@ -2562,13 +3037,21 @@ Module str.
               M.call_closure (|
                 Ty.path "usize",
                 M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                ]
               |) in
             let~ ptr : Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ] :=
               M.call_closure (|
                 Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
                 M.get_associated_function (| Ty.path "str", "as_mut_ptr", [], [] |),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ])
+                ]
               |) in
             M.alloc (|
               Ty.tuple
@@ -2585,23 +3068,33 @@ Module str.
                         Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ],
                         M.get_function (| "core::str::converts::from_utf8_unchecked_mut", [], [] |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                M.get_function (|
-                                  "core::slice::raw::from_raw_parts_mut",
-                                  [],
-                                  [ Ty.path "u8" ]
-                                |),
-                                [ M.read (| ptr |); M.read (| mid |) ]
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                  M.get_function (|
+                                    "core::slice::raw::from_raw_parts_mut",
+                                    [],
+                                    [ Ty.path "u8" ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| ptr |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
+                                  ]
+                                |)
                               |)
-                            |)
-                          |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                         ]
                       |)
                     |)
@@ -2613,39 +3106,53 @@ Module str.
                         Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ],
                         M.get_function (| "core::str::converts::from_utf8_unchecked_mut", [], [] |),
                         [
-                          M.borrow (|
-                            Pointer.Kind.MutRef,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&mut")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                M.get_function (|
-                                  "core::slice::raw::from_raw_parts_mut",
-                                  [],
-                                  [ Ty.path "u8" ]
-                                |),
-                                [
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                    M.get_associated_function (|
-                                      Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
-                                      "add",
-                                      [],
-                                      []
-                                    |),
-                                    [ M.read (| ptr |); M.read (| mid |) ]
-                                  |);
-                                  M.call_closure (|
-                                    Ty.path "usize",
-                                    BinOp.Wrap.sub,
-                                    [ M.read (| len |); M.read (| mid |) ]
-                                  |)
-                                ]
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.MutRef,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                  M.get_function (|
+                                    "core::slice::raw::from_raw_parts_mut",
+                                    [],
+                                    [ Ty.path "u8" ]
+                                  |),
+                                  [
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                        M.get_associated_function (|
+                                          Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ],
+                                          "add",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty
+                                            (M.read (| ptr |))
+                                            (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                          M.value_with_ty (M.read (| mid |)) (Ty.path "usize")
+                                        ]
+                                      |))
+                                      (Ty.apply (Ty.path "*mut") [] [ Ty.path "u8" ]);
+                                    M.value_with_ty
+                                      (M.call_closure (|
+                                        Ty.path "usize",
+                                        BinOp.Wrap.sub,
+                                        [ M.read (| len |); M.read (| mid |) ]
+                                      |))
+                                      (Ty.path "usize")
+                                  ]
+                                |)
                               |)
-                            |)
-                          |)
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                         ]
                       |)
                     |)
@@ -2671,37 +3178,46 @@ Module str.
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
-          Value.mkStructRecord
-            "core::str::iter::Chars"
-            []
-            []
-            [
-              ("iter",
-                M.call_closure (|
-                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
-                  M.get_associated_function (|
-                    Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                    "iter",
-                    [],
-                    []
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                          [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                        |)
-                      |)
-                    |)
-                  ]
-                |))
-            ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::str::iter::Chars"
+              [
+                ("iter",
+                  M.call_closure (|
+                    Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
+                    M.get_associated_function (|
+                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                      "iter",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                              M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                              ]
+                            |)
+                          |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                    ]
+                  |))
+              ])
+            (Ty.path "core::str::iter::Chars")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2719,19 +3235,23 @@ Module str.
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
-          Value.mkStructRecord
-            "core::str::iter::CharIndices"
-            []
-            []
-            [
-              ("front_offset", Value.Integer IntegerKind.Usize 0);
-              ("iter",
-                M.call_closure (|
-                  Ty.path "core::str::iter::Chars",
-                  M.get_associated_function (| Ty.path "str", "chars", [], [] |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                |))
-            ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::str::iter::CharIndices"
+              [
+                ("front_offset", Value.Integer IntegerKind.Usize 0);
+                ("iter",
+                  M.call_closure (|
+                    Ty.path "core::str::iter::Chars",
+                    M.get_associated_function (| Ty.path "str", "chars", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                    ]
+                  |))
+              ])
+            (Ty.path "core::str::iter::CharIndices")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2750,53 +3270,67 @@ Module str.
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
-          Value.StructTuple
-            "core::str::iter::Bytes"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "core::iter::adapters::copied::Copied")
-                  []
-                  [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ] ],
-                M.get_trait_method (|
-                  "core::iter::traits::iterator::Iterator",
-                  Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
-                  [],
-                  [],
-                  "copied",
-                  [],
-                  [ Ty.path "u8" ]
-                |),
-                [
-                  M.call_closure (|
+          M.value_with_ty
+            (Value.StructTuple
+              "core::str::iter::Bytes"
+              [
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::iter::adapters::copied::Copied")
+                    []
+                    [ Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ] ],
+                  M.get_trait_method (|
+                    "core::iter::traits::iterator::Iterator",
                     Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
-                    M.get_associated_function (|
-                      Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                      "iter",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (|
-                          M.call_closure (|
-                            Ty.apply
+                    [],
+                    [],
+                    "copied",
+                    [],
+                    [ Ty.path "u8" ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ],
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                          "iter",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (|
+                              Pointer.Kind.Ref,
+                              M.deref (|
+                                M.call_closure (|
+                                  Ty.apply
+                                    (Ty.path "&")
+                                    []
+                                    [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                  M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                  ]
+                                |)
+                              |)
+                            |))
+                            (Ty.apply
                               (Ty.path "&")
                               []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                            M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                          |)
-                        |)
-                      |)
-                    ]
-                  |)
-                ]
-              |)
-            ]))
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "core::slice::iter::Iter") [] [ Ty.path "u8" ])
+                  ]
+                |)
+              ])
+            (Ty.path "core::str::iter::Bytes")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2814,56 +3348,71 @@ Module str.
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
-          Value.mkStructRecord
-            "core::str::iter::SplitWhitespace"
-            []
-            []
-            [
-              ("inner",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "core::iter::adapters::filter::Filter")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "core::str::iter::Split")
-                        []
-                        [ Ty.path "core::str::IsWhitespace" ];
-                      Ty.path "core::str::IsNotEmpty"
-                    ],
-                  M.get_trait_method (|
-                    "core::iter::traits::iterator::Iterator",
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::str::iter::SplitWhitespace"
+              [
+                ("inner",
+                  M.call_closure (|
                     Ty.apply
-                      (Ty.path "core::str::iter::Split")
+                      (Ty.path "core::iter::adapters::filter::Filter")
                       []
-                      [ Ty.path "core::str::IsWhitespace" ],
-                    [],
-                    [],
-                    "filter",
-                    [],
-                    [ Ty.path "core::str::IsNotEmpty" ]
-                  |),
-                  [
-                    M.call_closure (|
+                      [
+                        Ty.apply
+                          (Ty.path "core::str::iter::Split")
+                          []
+                          [ Ty.path "core::str::IsWhitespace" ];
+                        Ty.path "core::str::IsNotEmpty"
+                      ],
+                    M.get_trait_method (|
+                      "core::iter::traits::iterator::Iterator",
                       Ty.apply
                         (Ty.path "core::str::iter::Split")
                         []
                         [ Ty.path "core::str::IsWhitespace" ],
-                      M.get_associated_function (|
-                        Ty.path "str",
-                        "split",
-                        [],
-                        [ Ty.path "core::str::IsWhitespace" ]
-                      |),
-                      [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        Value.StructTuple "core::str::IsWhitespace" [] [] []
-                      ]
-                    |);
-                    Value.StructTuple "core::str::IsNotEmpty" [] [] []
-                  ]
-                |))
-            ]))
+                      [],
+                      [],
+                      "filter",
+                      [],
+                      [ Ty.path "core::str::IsNotEmpty" ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.apply
+                            (Ty.path "core::str::iter::Split")
+                            []
+                            [ Ty.path "core::str::IsWhitespace" ],
+                          M.get_associated_function (|
+                            Ty.path "str",
+                            "split",
+                            [],
+                            [ Ty.path "core::str::IsWhitespace" ]
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                            M.value_with_ty
+                              (M.value_with_ty
+                                (Value.StructTuple "core::str::IsWhitespace" [])
+                                (Ty.path "core::str::IsWhitespace"))
+                              (Ty.path "core::str::IsWhitespace")
+                          ]
+                        |))
+                        (Ty.apply
+                          (Ty.path "core::str::iter::Split")
+                          []
+                          [ Ty.path "core::str::IsWhitespace" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::str::IsNotEmpty" [])
+                          (Ty.path "core::str::IsNotEmpty"))
+                        (Ty.path "core::str::IsNotEmpty")
+                    ]
+                  |))
+              ])
+            (Ty.path "core::str::iter::SplitWhitespace")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -2941,8 +3490,93 @@ Module str.
                   ]
                 |),
                 [
-                  M.call_closure (|
-                    Ty.apply
+                  M.value_with_ty
+                    (M.call_closure (|
+                      Ty.apply
+                        (Ty.path "core::iter::adapters::filter::Filter")
+                        []
+                        [
+                          Ty.apply
+                            (Ty.path "core::slice::iter::Split")
+                            []
+                            [ Ty.path "u8"; Ty.path "core::str::IsAsciiWhitespace" ];
+                          Ty.path "core::str::BytesIsNotEmpty"
+                        ],
+                      M.get_trait_method (|
+                        "core::iter::traits::iterator::Iterator",
+                        Ty.apply
+                          (Ty.path "core::slice::iter::Split")
+                          []
+                          [ Ty.path "u8"; Ty.path "core::str::IsAsciiWhitespace" ],
+                        [],
+                        [],
+                        "filter",
+                        [],
+                        [ Ty.path "core::str::BytesIsNotEmpty" ]
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::slice::iter::Split")
+                              []
+                              [ Ty.path "u8"; Ty.path "core::str::IsAsciiWhitespace" ],
+                            M.get_associated_function (|
+                              Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                              "split",
+                              [],
+                              [ Ty.path "core::str::IsAsciiWhitespace" ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply
+                                        (Ty.path "&")
+                                        []
+                                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                      M.get_associated_function (|
+                                        Ty.path "str",
+                                        "as_bytes",
+                                        [],
+                                        []
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                      ]
+                                    |)
+                                  |)
+                                |))
+                                (Ty.apply
+                                  (Ty.path "&")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+                              M.value_with_ty
+                                (M.value_with_ty
+                                  (Value.StructTuple "core::str::IsAsciiWhitespace" [])
+                                  (Ty.path "core::str::IsAsciiWhitespace"))
+                                (Ty.path "core::str::IsAsciiWhitespace")
+                            ]
+                          |))
+                          (Ty.apply
+                            (Ty.path "core::slice::iter::Split")
+                            []
+                            [ Ty.path "u8"; Ty.path "core::str::IsAsciiWhitespace" ]);
+                        M.value_with_ty
+                          (M.value_with_ty
+                            (Value.StructTuple "core::str::BytesIsNotEmpty" [])
+                            (Ty.path "core::str::BytesIsNotEmpty"))
+                          (Ty.path "core::str::BytesIsNotEmpty")
+                      ]
+                    |))
+                    (Ty.apply
                       (Ty.path "core::iter::adapters::filter::Filter")
                       []
                       [
@@ -2951,61 +3585,21 @@ Module str.
                           []
                           [ Ty.path "u8"; Ty.path "core::str::IsAsciiWhitespace" ];
                         Ty.path "core::str::BytesIsNotEmpty"
-                      ],
-                    M.get_trait_method (|
-                      "core::iter::traits::iterator::Iterator",
-                      Ty.apply
-                        (Ty.path "core::slice::iter::Split")
-                        []
-                        [ Ty.path "u8"; Ty.path "core::str::IsAsciiWhitespace" ],
-                      [],
-                      [],
-                      "filter",
-                      [],
-                      [ Ty.path "core::str::BytesIsNotEmpty" ]
-                    |),
-                    [
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "core::slice::iter::Split")
-                          []
-                          [ Ty.path "u8"; Ty.path "core::str::IsAsciiWhitespace" ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                          "split",
-                          [],
-                          [ Ty.path "core::str::IsAsciiWhitespace" ]
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                              |)
-                            |)
-                          |);
-                          Value.StructTuple "core::str::IsAsciiWhitespace" [] [] []
-                        ]
-                      |);
-                      Value.StructTuple "core::str::BytesIsNotEmpty" [] [] []
-                    ]
-                  |);
-                  Value.StructTuple "core::str::UnsafeBytesToStr" [] [] []
+                      ]);
+                  M.value_with_ty
+                    (M.value_with_ty
+                      (Value.StructTuple "core::str::UnsafeBytesToStr" [])
+                      (Ty.path "core::str::UnsafeBytesToStr"))
+                    (Ty.path "core::str::UnsafeBytesToStr")
                 ]
               |) in
             M.alloc (|
               Ty.path "core::str::iter::SplitAsciiWhitespace",
-              Value.mkStructRecord
-                "core::str::iter::SplitAsciiWhitespace"
-                []
-                []
-                [ ("inner", M.read (| inner |)) ]
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "core::str::iter::SplitAsciiWhitespace"
+                  [ ("inner", M.read (| inner |)) ])
+                (Ty.path "core::str::iter::SplitAsciiWhitespace")
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3026,46 +3620,54 @@ Module str.
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
-          Value.StructTuple
-            "core::str::iter::Lines"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.apply
-                  (Ty.path "core::iter::adapters::map::Map")
-                  []
-                  [
-                    Ty.apply (Ty.path "core::str::iter::SplitInclusive") [] [ Ty.path "char" ];
-                    Ty.path "core::str::LinesMap"
-                  ],
-                M.get_trait_method (|
-                  "core::iter::traits::iterator::Iterator",
-                  Ty.apply (Ty.path "core::str::iter::SplitInclusive") [] [ Ty.path "char" ],
-                  [],
-                  [],
-                  "map",
-                  [],
-                  [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]; Ty.path "core::str::LinesMap" ]
-                |),
-                [
-                  M.call_closure (|
-                    Ty.apply (Ty.path "core::str::iter::SplitInclusive") [] [ Ty.path "char" ],
-                    M.get_associated_function (|
-                      Ty.path "str",
-                      "split_inclusive",
-                      [],
-                      [ Ty.path "char" ]
-                    |),
+          M.value_with_ty
+            (Value.StructTuple
+              "core::str::iter::Lines"
+              [
+                M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::iter::adapters::map::Map")
+                    []
                     [
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                      Value.UnicodeChar 10
-                    ]
-                  |);
-                  Value.StructTuple "core::str::LinesMap" [] [] []
-                ]
-              |)
-            ]))
+                      Ty.apply (Ty.path "core::str::iter::SplitInclusive") [] [ Ty.path "char" ];
+                      Ty.path "core::str::LinesMap"
+                    ],
+                  M.get_trait_method (|
+                    "core::iter::traits::iterator::Iterator",
+                    Ty.apply (Ty.path "core::str::iter::SplitInclusive") [] [ Ty.path "char" ],
+                    [],
+                    [],
+                    "map",
+                    [],
+                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ]; Ty.path "core::str::LinesMap" ]
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.apply (Ty.path "core::str::iter::SplitInclusive") [] [ Ty.path "char" ],
+                        M.get_associated_function (|
+                          Ty.path "str",
+                          "split_inclusive",
+                          [],
+                          [ Ty.path "char" ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                          M.value_with_ty (Value.UnicodeChar 10) (Ty.path "char")
+                        ]
+                      |))
+                      (Ty.apply (Ty.path "core::str::iter::SplitInclusive") [] [ Ty.path "char" ]);
+                    M.value_with_ty
+                      (M.value_with_ty
+                        (Value.StructTuple "core::str::LinesMap" [])
+                        (Ty.path "core::str::LinesMap"))
+                      (Ty.path "core::str::LinesMap")
+                  ]
+                |)
+              ])
+            (Ty.path "core::str::iter::Lines")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3083,17 +3685,21 @@ Module str.
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
-          Value.StructTuple
-            "core::str::iter::LinesAny"
-            []
-            []
-            [
-              M.call_closure (|
-                Ty.path "core::str::iter::Lines",
-                M.get_associated_function (| Ty.path "str", "lines", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-              |)
-            ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "core::str::iter::LinesAny"
+              [
+                M.call_closure (|
+                  Ty.path "core::str::iter::Lines",
+                  M.get_associated_function (| Ty.path "str", "lines", [], [] |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                  ]
+                |)
+              ])
+            (Ty.path "core::str::iter::LinesAny")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3112,19 +3718,23 @@ Module str.
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
-          Value.mkStructRecord
-            "core::str::iter::EncodeUtf16"
-            []
-            []
-            [
-              ("chars",
-                M.call_closure (|
-                  Ty.path "core::str::iter::Chars",
-                  M.get_associated_function (| Ty.path "str", "chars", [], [] |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                |));
-              ("extra", Value.Integer IntegerKind.U16 0)
-            ]))
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::str::iter::EncodeUtf16"
+              [
+                ("chars",
+                  M.call_closure (|
+                    Ty.path "core::str::iter::Chars",
+                    M.get_associated_function (| Ty.path "str", "chars", [], [] |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                    ]
+                  |));
+                ("extra", Value.Integer IntegerKind.U16 0)
+              ])
+            (Ty.path "core::str::iter::EncodeUtf16")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3155,7 +3765,12 @@ Module str.
               [],
               []
             |),
-            [ M.read (| pat |); M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+            [
+              M.value_with_ty (M.read (| pat |)) P;
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -3186,7 +3801,12 @@ Module str.
               [],
               []
             |),
-            [ M.read (| pat |); M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+            [
+              M.value_with_ty (M.read (| pat |)) P;
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -3221,7 +3841,12 @@ Module str.
               [],
               []
             |),
-            [ M.read (| pat |); M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+            [
+              M.value_with_ty (M.read (| pat |)) P;
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -3257,65 +3882,79 @@ Module str.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.tuple [ Ty.path "usize"; Ty.path "usize" ] ],
+                  M.get_trait_method (|
+                    "core::str::pattern::Searcher",
+                    Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
+                    [],
+                    [],
+                    "next_match",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.alloc (|
+                          Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
+                          M.call_closure (|
+                            Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
+                            M.get_trait_method (|
+                              "core::str::pattern::Pattern",
+                              P,
+                              [],
+                              [],
+                              "into_searcher",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty (M.read (| pat |)) P;
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                            ]
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher" ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::option::Option")
                   []
-                  [ Ty.tuple [ Ty.path "usize"; Ty.path "usize" ] ],
-                M.get_trait_method (|
-                  "core::str::pattern::Searcher",
-                  Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
-                  [],
-                  [],
-                  "next_match",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.alloc (|
-                      Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
-                      M.call_closure (|
-                        Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
-                        M.get_trait_method (|
-                          "core::str::pattern::Pattern",
-                          P,
-                          [],
-                          [],
-                          "into_searcher",
-                          [],
-                          []
-                        |),
-                        [
-                          M.read (| pat |);
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                        ]
-                      |)
-                    |)
-                  |)
-                ]
-              |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.path "usize",
-                          M.alloc (| Ty.tuple [ Ty.path "usize"; Ty.path "usize" ], α0 |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                                let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                                let i := M.copy (| Ty.path "usize", γ0_0 |) in
-                                M.read (| i |)))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+                  [ Ty.tuple [ Ty.path "usize"; Ty.path "usize" ] ]);
+              M.value_with_ty
+                (M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.path "usize",
+                            M.alloc (| Ty.tuple [ Ty.path "usize"; Ty.path "usize" ], α0 |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                                  let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                  let i := M.copy (| Ty.path "usize", γ0_0 |) in
+                                  M.read (| i |)))
+                            ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end)))
+                (Ty.function [ Ty.tuple [ Ty.path "usize"; Ty.path "usize" ] ] (Ty.path "usize"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3354,65 +3993,79 @@ Module str.
               ]
             |),
             [
-              M.call_closure (|
-                Ty.apply
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.tuple [ Ty.path "usize"; Ty.path "usize" ] ],
+                  M.get_trait_method (|
+                    "core::str::pattern::ReverseSearcher",
+                    Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
+                    [],
+                    [],
+                    "next_match_back",
+                    [],
+                    []
+                  |),
+                  [
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.MutRef,
+                        M.alloc (|
+                          Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
+                          M.call_closure (|
+                            Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
+                            M.get_trait_method (|
+                              "core::str::pattern::Pattern",
+                              P,
+                              [],
+                              [],
+                              "into_searcher",
+                              [],
+                              []
+                            |),
+                            [
+                              M.value_with_ty (M.read (| pat |)) P;
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                            ]
+                          |)
+                        |)
+                      |))
+                      (Ty.apply
+                        (Ty.path "&mut")
+                        []
+                        [ Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher" ])
+                  ]
+                |))
+                (Ty.apply
                   (Ty.path "core::option::Option")
                   []
-                  [ Ty.tuple [ Ty.path "usize"; Ty.path "usize" ] ],
-                M.get_trait_method (|
-                  "core::str::pattern::ReverseSearcher",
-                  Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
-                  [],
-                  [],
-                  "next_match_back",
-                  [],
-                  []
-                |),
-                [
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.alloc (|
-                      Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
-                      M.call_closure (|
-                        Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
-                        M.get_trait_method (|
-                          "core::str::pattern::Pattern",
-                          P,
-                          [],
-                          [],
-                          "into_searcher",
-                          [],
-                          []
-                        |),
-                        [
-                          M.read (| pat |);
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                        ]
-                      |)
-                    |)
-                  |)
-                ]
-              |);
-              M.closure
-                (fun γ =>
-                  ltac:(M.monadic
-                    match γ with
-                    | [ α0 ] =>
-                      ltac:(M.monadic
-                        (M.match_operator (|
-                          Ty.path "usize",
-                          M.alloc (| Ty.tuple [ Ty.path "usize"; Ty.path "usize" ], α0 |),
-                          [
-                            fun γ =>
-                              ltac:(M.monadic
-                                (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
-                                let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
-                                let i := M.copy (| Ty.path "usize", γ0_0 |) in
-                                M.read (| i |)))
-                          ]
-                        |)))
-                    | _ => M.impossible "wrong number of arguments"
-                    end))
+                  [ Ty.tuple [ Ty.path "usize"; Ty.path "usize" ] ]);
+              M.value_with_ty
+                (M.closure
+                  (fun γ =>
+                    ltac:(M.monadic
+                      match γ with
+                      | [ α0 ] =>
+                        ltac:(M.monadic
+                          (M.match_operator (|
+                            Ty.path "usize",
+                            M.alloc (| Ty.tuple [ Ty.path "usize"; Ty.path "usize" ], α0 |),
+                            [
+                              fun γ =>
+                                ltac:(M.monadic
+                                  (let γ0_0 := M.SubPointer.get_tuple_field (| γ, 0 |) in
+                                  let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
+                                  let i := M.copy (| Ty.path "usize", γ0_0 |) in
+                                  M.read (| i |)))
+                            ]
+                          |)))
+                      | _ => M.impossible "wrong number of arguments"
+                      end)))
+                (Ty.function [ Ty.tuple [ Ty.path "usize"; Ty.path "usize" ] ] (Ty.path "usize"))
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -3439,44 +4092,50 @@ Module str.
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
           let pat := M.alloc (| P, pat |) in
-          Value.StructTuple
-            "core::str::iter::Split"
-            []
-            [ P ]
-            [
-              Value.mkStructRecord
-                "core::str::iter::SplitInternal"
-                []
-                [ P ]
-                [
-                  ("start", Value.Integer IntegerKind.Usize 0);
-                  ("end_",
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |));
-                  ("matcher",
-                    M.call_closure (|
-                      Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
-                      M.get_trait_method (|
-                        "core::str::pattern::Pattern",
-                        P,
-                        [],
-                        [],
-                        "into_searcher",
-                        [],
-                        []
-                      |),
-                      [
-                        M.read (| pat |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                      ]
-                    |));
-                  ("allow_trailing_empty", Value.Bool true);
-                  ("finished", Value.Bool false)
-                ]
-            ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "core::str::iter::Split"
+              [
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::str::iter::SplitInternal"
+                    [
+                      ("start", Value.Integer IntegerKind.Usize 0);
+                      ("end_",
+                        M.call_closure (|
+                          Ty.path "usize",
+                          M.get_associated_function (| Ty.path "str", "len", [], [] |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
+                        |));
+                      ("matcher",
+                        M.call_closure (|
+                          Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
+                          M.get_trait_method (|
+                            "core::str::pattern::Pattern",
+                            P,
+                            [],
+                            [],
+                            "into_searcher",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty (M.read (| pat |)) P;
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
+                        |));
+                      ("allow_trailing_empty", Value.Bool true);
+                      ("finished", Value.Bool false)
+                    ])
+                  (Ty.apply (Ty.path "core::str::iter::SplitInternal") [] [ P ])
+              ])
+            (Ty.apply (Ty.path "core::str::iter::Split") [] [ P ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3501,44 +4160,50 @@ Module str.
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
           let pat := M.alloc (| P, pat |) in
-          Value.StructTuple
-            "core::str::iter::SplitInclusive"
-            []
-            [ P ]
-            [
-              Value.mkStructRecord
-                "core::str::iter::SplitInternal"
-                []
-                [ P ]
-                [
-                  ("start", Value.Integer IntegerKind.Usize 0);
-                  ("end_",
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |));
-                  ("matcher",
-                    M.call_closure (|
-                      Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
-                      M.get_trait_method (|
-                        "core::str::pattern::Pattern",
-                        P,
-                        [],
-                        [],
-                        "into_searcher",
-                        [],
-                        []
-                      |),
-                      [
-                        M.read (| pat |);
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                      ]
-                    |));
-                  ("allow_trailing_empty", Value.Bool false);
-                  ("finished", Value.Bool false)
-                ]
-            ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "core::str::iter::SplitInclusive"
+              [
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::str::iter::SplitInternal"
+                    [
+                      ("start", Value.Integer IntegerKind.Usize 0);
+                      ("end_",
+                        M.call_closure (|
+                          Ty.path "usize",
+                          M.get_associated_function (| Ty.path "str", "len", [], [] |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
+                        |));
+                      ("matcher",
+                        M.call_closure (|
+                          Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
+                          M.get_trait_method (|
+                            "core::str::pattern::Pattern",
+                            P,
+                            [],
+                            [],
+                            "into_searcher",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty (M.read (| pat |)) P;
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
+                        |));
+                      ("allow_trailing_empty", Value.Bool false);
+                      ("finished", Value.Bool false)
+                    ])
+                  (Ty.apply (Ty.path "core::str::iter::SplitInternal") [] [ P ])
+              ])
+            (Ty.apply (Ty.path "core::str::iter::SplitInclusive") [] [ P ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3561,29 +4226,31 @@ Module str.
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
           let pat := M.alloc (| P, pat |) in
-          Value.StructTuple
-            "core::str::iter::RSplit"
-            []
-            [ P ]
-            [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (|
-                  M.alloc (|
-                    Ty.apply (Ty.path "core::str::iter::Split") [] [ P ],
-                    M.call_closure (|
+          M.value_with_ty
+            (Value.StructTuple
+              "core::str::iter::RSplit"
+              [
+                M.read (|
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.alloc (|
                       Ty.apply (Ty.path "core::str::iter::Split") [] [ P ],
-                      M.get_associated_function (| Ty.path "str", "split", [], [ P ] |),
-                      [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.read (| pat |)
-                      ]
-                    |)
-                  |),
-                  "core::str::iter::Split",
-                  0
+                      M.call_closure (|
+                        Ty.apply (Ty.path "core::str::iter::Split") [] [ P ],
+                        M.get_associated_function (| Ty.path "str", "split", [], [ P ] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                          M.value_with_ty (M.read (| pat |)) P
+                        ]
+                      |)
+                    |),
+                    "core::str::iter::Split",
+                    0
+                  |)
                 |)
-              |)
-            ]))
+              ])
+            (Ty.apply (Ty.path "core::str::iter::RSplit") [] [ P ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3602,31 +4269,33 @@ Module str.
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
           let pat := M.alloc (| P, pat |) in
-          Value.StructTuple
-            "core::str::iter::SplitTerminator"
-            []
-            [ P ]
-            [
-              M.struct_record_update
-                (M.read (|
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.alloc (|
-                      Ty.apply (Ty.path "core::str::iter::Split") [] [ P ],
-                      M.call_closure (|
+          M.value_with_ty
+            (Value.StructTuple
+              "core::str::iter::SplitTerminator"
+              [
+                M.struct_record_update
+                  (M.read (|
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.alloc (|
                         Ty.apply (Ty.path "core::str::iter::Split") [] [ P ],
-                        M.get_associated_function (| Ty.path "str", "split", [], [ P ] |),
-                        [
-                          M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                          M.read (| pat |)
-                        ]
-                      |)
-                    |),
-                    "core::str::iter::Split",
-                    0
-                  |)
-                |))
-                [ ("allow_trailing_empty", Value.Bool false) ]
-            ]))
+                        M.call_closure (|
+                          Ty.apply (Ty.path "core::str::iter::Split") [] [ P ],
+                          M.get_associated_function (| Ty.path "str", "split", [], [ P ] |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                            M.value_with_ty (M.read (| pat |)) P
+                          ]
+                        |)
+                      |),
+                      "core::str::iter::Split",
+                      0
+                    |)
+                  |))
+                  [ ("allow_trailing_empty", Value.Bool false) ]
+              ])
+            (Ty.apply (Ty.path "core::str::iter::SplitTerminator") [] [ P ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3649,29 +4318,36 @@ Module str.
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
           let pat := M.alloc (| P, pat |) in
-          Value.StructTuple
-            "core::str::iter::RSplitTerminator"
-            []
-            [ P ]
-            [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (|
-                  M.alloc (|
-                    Ty.apply (Ty.path "core::str::iter::SplitTerminator") [] [ P ],
-                    M.call_closure (|
+          M.value_with_ty
+            (Value.StructTuple
+              "core::str::iter::RSplitTerminator"
+              [
+                M.read (|
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.alloc (|
                       Ty.apply (Ty.path "core::str::iter::SplitTerminator") [] [ P ],
-                      M.get_associated_function (| Ty.path "str", "split_terminator", [], [ P ] |),
-                      [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.read (| pat |)
-                      ]
-                    |)
-                  |),
-                  "core::str::iter::SplitTerminator",
-                  0
+                      M.call_closure (|
+                        Ty.apply (Ty.path "core::str::iter::SplitTerminator") [] [ P ],
+                        M.get_associated_function (|
+                          Ty.path "str",
+                          "split_terminator",
+                          [],
+                          [ P ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                          M.value_with_ty (M.read (| pat |)) P
+                        ]
+                      |)
+                    |),
+                    "core::str::iter::SplitTerminator",
+                    0
+                  |)
                 |)
-              |)
-            ]))
+              ])
+            (Ty.apply (Ty.path "core::str::iter::RSplitTerminator") [] [ P ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3692,37 +4368,42 @@ Module str.
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
           let n := M.alloc (| Ty.path "usize", n |) in
           let pat := M.alloc (| P, pat |) in
-          Value.StructTuple
-            "core::str::iter::SplitN"
-            []
-            [ P ]
-            [
-              Value.mkStructRecord
-                "core::str::iter::SplitNInternal"
-                []
-                [ P ]
-                [
-                  ("iter",
-                    M.read (|
-                      M.SubPointer.get_struct_tuple_field (|
-                        M.alloc (|
-                          Ty.apply (Ty.path "core::str::iter::Split") [] [ P ],
-                          M.call_closure (|
-                            Ty.apply (Ty.path "core::str::iter::Split") [] [ P ],
-                            M.get_associated_function (| Ty.path "str", "split", [], [ P ] |),
-                            [
-                              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                              M.read (| pat |)
-                            ]
+          M.value_with_ty
+            (Value.StructTuple
+              "core::str::iter::SplitN"
+              [
+                M.value_with_ty
+                  (Value.mkStructRecord
+                    "core::str::iter::SplitNInternal"
+                    [
+                      ("iter",
+                        M.read (|
+                          M.SubPointer.get_struct_tuple_field (|
+                            M.alloc (|
+                              Ty.apply (Ty.path "core::str::iter::Split") [] [ P ],
+                              M.call_closure (|
+                                Ty.apply (Ty.path "core::str::iter::Split") [] [ P ],
+                                M.get_associated_function (| Ty.path "str", "split", [], [ P ] |),
+                                [
+                                  M.value_with_ty
+                                    (M.borrow (|
+                                      Pointer.Kind.Ref,
+                                      M.deref (| M.read (| self |) |)
+                                    |))
+                                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                  M.value_with_ty (M.read (| pat |)) P
+                                ]
+                              |)
+                            |),
+                            "core::str::iter::Split",
+                            0
                           |)
-                        |),
-                        "core::str::iter::Split",
-                        0
-                      |)
-                    |));
-                  ("count", M.read (| n |))
-                ]
-            ]))
+                        |));
+                      ("count", M.read (| n |))
+                    ])
+                  (Ty.apply (Ty.path "core::str::iter::SplitNInternal") [] [ P ])
+              ])
+            (Ty.apply (Ty.path "core::str::iter::SplitN") [] [ P ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3745,30 +4426,32 @@ Module str.
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
           let n := M.alloc (| Ty.path "usize", n |) in
           let pat := M.alloc (| P, pat |) in
-          Value.StructTuple
-            "core::str::iter::RSplitN"
-            []
-            [ P ]
-            [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (|
-                  M.alloc (|
-                    Ty.apply (Ty.path "core::str::iter::SplitN") [] [ P ],
-                    M.call_closure (|
+          M.value_with_ty
+            (Value.StructTuple
+              "core::str::iter::RSplitN"
+              [
+                M.read (|
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.alloc (|
                       Ty.apply (Ty.path "core::str::iter::SplitN") [] [ P ],
-                      M.get_associated_function (| Ty.path "str", "splitn", [], [ P ] |),
-                      [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.read (| n |);
-                        M.read (| pat |)
-                      ]
-                    |)
-                  |),
-                  "core::str::iter::SplitN",
-                  0
+                      M.call_closure (|
+                        Ty.apply (Ty.path "core::str::iter::SplitN") [] [ P ],
+                        M.get_associated_function (| Ty.path "str", "splitn", [], [ P ] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                          M.value_with_ty (M.read (| n |)) (Ty.path "usize");
+                          M.value_with_ty (M.read (| pat |)) P
+                        ]
+                      |)
+                    |),
+                    "core::str::iter::SplitN",
+                    0
+                  |)
                 |)
-              |)
-            ]))
+              ])
+            (Ty.apply (Ty.path "core::str::iter::RSplitN") [] [ P ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -3851,63 +4534,82 @@ Module str.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.tuple [ Ty.path "usize"; Ty.path "usize" ] ],
+                              M.get_trait_method (|
+                                "core::str::pattern::Searcher",
+                                Ty.associated_in_trait
+                                  "core::str::pattern::Pattern"
+                                  []
+                                  []
+                                  P
+                                  "Searcher",
+                                [],
+                                [],
+                                "next_match",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.alloc (|
+                                      Ty.associated_in_trait
+                                        "core::str::pattern::Pattern"
+                                        []
+                                        []
+                                        P
+                                        "Searcher",
+                                      M.call_closure (|
+                                        Ty.associated_in_trait
+                                          "core::str::pattern::Pattern"
+                                          []
+                                          []
+                                          P
+                                          "Searcher",
+                                        M.get_trait_method (|
+                                          "core::str::pattern::Pattern",
+                                          P,
+                                          [],
+                                          [],
+                                          "into_searcher",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty (M.read (| delimiter |)) P;
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                        ]
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "core::str::pattern::Pattern"
+                                        []
+                                        []
+                                        P
+                                        "Searcher"
+                                    ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::option::Option")
                               []
-                              [ Ty.tuple [ Ty.path "usize"; Ty.path "usize" ] ],
-                            M.get_trait_method (|
-                              "core::str::pattern::Searcher",
-                              Ty.associated_in_trait
-                                "core::str::pattern::Pattern"
-                                []
-                                []
-                                P
-                                "Searcher",
-                              [],
-                              [],
-                              "next_match",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.alloc (|
-                                  Ty.associated_in_trait
-                                    "core::str::pattern::Pattern"
-                                    []
-                                    []
-                                    P
-                                    "Searcher",
-                                  M.call_closure (|
-                                    Ty.associated_in_trait
-                                      "core::str::pattern::Pattern"
-                                      []
-                                      []
-                                      P
-                                      "Searcher",
-                                    M.get_trait_method (|
-                                      "core::str::pattern::Pattern",
-                                      P,
-                                      [],
-                                      [],
-                                      "into_searcher",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.read (| delimiter |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                              [ Ty.tuple [ Ty.path "usize"; Ty.path "usize" ] ])
                         ]
                       |)
                     |),
@@ -3965,7 +4667,14 @@ Module str.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -3991,81 +4700,104 @@ Module str.
                       let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                       let start := M.copy (| Ty.path "usize", γ0_0 |) in
                       let end_ := M.copy (| Ty.path "usize", γ0_1 |) in
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [
-                          Ty.tuple
-                            [
-                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
-                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                            ]
-                        ]
-                        [
-                          Value.Tuple
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                    M.get_associated_function (|
-                                      Ty.path "str",
-                                      "get_unchecked",
-                                      [],
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [
+                            Value.Tuple
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                      M.get_associated_function (|
+                                        Ty.path "str",
+                                        "get_unchecked",
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ]
+                                      |),
                                       [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeTo")
-                                          []
-                                          [ Ty.path "usize" ]
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.mkStructRecord
+                                              "core::ops::range::RangeTo"
+                                              [ ("end_", M.read (| start |)) ])
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::RangeTo")
+                                              []
+                                              [ Ty.path "usize" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ])
                                       ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeTo"
-                                        []
-                                        [ Ty.path "usize" ]
-                                        [ ("end_", M.read (| start |)) ]
-                                    ]
+                                    |)
+                                  |)
+                                |);
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                      M.get_associated_function (|
+                                        Ty.path "str",
+                                        "get_unchecked",
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeFrom")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.mkStructRecord
+                                              "core::ops::range::RangeFrom"
+                                              [ ("start", M.read (| end_ |)) ])
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::RangeFrom")
+                                              []
+                                              [ Ty.path "usize" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::ops::range::RangeFrom")
+                                            []
+                                            [ Ty.path "usize" ])
+                                      ]
+                                    |)
                                   |)
                                 |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                    M.get_associated_function (|
-                                      Ty.path "str",
-                                      "get_unchecked",
-                                      [],
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeFrom")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeFrom"
-                                        []
-                                        [ Ty.path "usize" ]
-                                        [ ("start", M.read (| end_ |)) ]
-                                    ]
-                                  |)
-                                |)
-                              |)
-                            ]
-                        ]))
+                              ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [
+                            Ty.tuple
+                              [
+                                Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                                Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                              ]
+                          ])))
                 ]
               |)))
           |)))
@@ -4155,63 +4887,82 @@ Module str.
                           []
                         |),
                         [
-                          M.call_closure (|
-                            Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::option::Option")
+                                []
+                                [ Ty.tuple [ Ty.path "usize"; Ty.path "usize" ] ],
+                              M.get_trait_method (|
+                                "core::str::pattern::ReverseSearcher",
+                                Ty.associated_in_trait
+                                  "core::str::pattern::Pattern"
+                                  []
+                                  []
+                                  P
+                                  "Searcher",
+                                [],
+                                [],
+                                "next_match_back",
+                                [],
+                                []
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.borrow (|
+                                    Pointer.Kind.MutRef,
+                                    M.alloc (|
+                                      Ty.associated_in_trait
+                                        "core::str::pattern::Pattern"
+                                        []
+                                        []
+                                        P
+                                        "Searcher",
+                                      M.call_closure (|
+                                        Ty.associated_in_trait
+                                          "core::str::pattern::Pattern"
+                                          []
+                                          []
+                                          P
+                                          "Searcher",
+                                        M.get_trait_method (|
+                                          "core::str::pattern::Pattern",
+                                          P,
+                                          [],
+                                          [],
+                                          "into_searcher",
+                                          [],
+                                          []
+                                        |),
+                                        [
+                                          M.value_with_ty (M.read (| delimiter |)) P;
+                                          M.value_with_ty
+                                            (M.borrow (|
+                                              Pointer.Kind.Ref,
+                                              M.deref (| M.read (| self |) |)
+                                            |))
+                                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                        ]
+                                      |)
+                                    |)
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "&mut")
+                                    []
+                                    [
+                                      Ty.associated_in_trait
+                                        "core::str::pattern::Pattern"
+                                        []
+                                        []
+                                        P
+                                        "Searcher"
+                                    ])
+                              ]
+                            |))
+                            (Ty.apply
                               (Ty.path "core::option::Option")
                               []
-                              [ Ty.tuple [ Ty.path "usize"; Ty.path "usize" ] ],
-                            M.get_trait_method (|
-                              "core::str::pattern::ReverseSearcher",
-                              Ty.associated_in_trait
-                                "core::str::pattern::Pattern"
-                                []
-                                []
-                                P
-                                "Searcher",
-                              [],
-                              [],
-                              "next_match_back",
-                              [],
-                              []
-                            |),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.alloc (|
-                                  Ty.associated_in_trait
-                                    "core::str::pattern::Pattern"
-                                    []
-                                    []
-                                    P
-                                    "Searcher",
-                                  M.call_closure (|
-                                    Ty.associated_in_trait
-                                      "core::str::pattern::Pattern"
-                                      []
-                                      []
-                                      P
-                                      "Searcher",
-                                    M.get_trait_method (|
-                                      "core::str::pattern::Pattern",
-                                      P,
-                                      [],
-                                      [],
-                                      "into_searcher",
-                                      [],
-                                      []
-                                    |),
-                                    [
-                                      M.read (| delimiter |);
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |)
-                                    ]
-                                  |)
-                                |)
-                              |)
-                            ]
-                          |)
+                              [ Ty.tuple [ Ty.path "usize"; Ty.path "usize" ] ])
                         ]
                       |)
                     |),
@@ -4269,7 +5020,14 @@ Module str.
                                     [],
                                     []
                                   |),
-                                  [ M.read (| residual |) ]
+                                  [
+                                    M.value_with_ty
+                                      (M.read (| residual |))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::convert::Infallible" ])
+                                  ]
                                 |)
                               |)
                             |)
@@ -4295,81 +5053,104 @@ Module str.
                       let γ0_1 := M.SubPointer.get_tuple_field (| γ, 1 |) in
                       let start := M.copy (| Ty.path "usize", γ0_0 |) in
                       let end_ := M.copy (| Ty.path "usize", γ0_1 |) in
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [
-                          Ty.tuple
-                            [
-                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
-                              Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
-                            ]
-                        ]
-                        [
-                          Value.Tuple
-                            [
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                    M.get_associated_function (|
-                                      Ty.path "str",
-                                      "get_unchecked",
-                                      [],
+                      M.value_with_ty
+                        (Value.StructTuple
+                          "core::option::Option::Some"
+                          [
+                            Value.Tuple
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                      M.get_associated_function (|
+                                        Ty.path "str",
+                                        "get_unchecked",
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ]
+                                      |),
                                       [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeTo")
-                                          []
-                                          [ Ty.path "usize" ]
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.mkStructRecord
+                                              "core::ops::range::RangeTo"
+                                              [ ("end_", M.read (| start |)) ])
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::RangeTo")
+                                              []
+                                              [ Ty.path "usize" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::ops::range::RangeTo")
+                                            []
+                                            [ Ty.path "usize" ])
                                       ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeTo"
-                                        []
-                                        [ Ty.path "usize" ]
-                                        [ ("end_", M.read (| start |)) ]
-                                    ]
+                                    |)
+                                  |)
+                                |);
+                                M.borrow (|
+                                  Pointer.Kind.Ref,
+                                  M.deref (|
+                                    M.call_closure (|
+                                      Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                                      M.get_associated_function (|
+                                        Ty.path "str",
+                                        "get_unchecked",
+                                        [],
+                                        [
+                                          Ty.apply
+                                            (Ty.path "core::ops::range::RangeFrom")
+                                            []
+                                            [ Ty.path "usize" ]
+                                        ]
+                                      |),
+                                      [
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| self |) |)
+                                          |))
+                                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                                        M.value_with_ty
+                                          (M.value_with_ty
+                                            (Value.mkStructRecord
+                                              "core::ops::range::RangeFrom"
+                                              [ ("start", M.read (| end_ |)) ])
+                                            (Ty.apply
+                                              (Ty.path "core::ops::range::RangeFrom")
+                                              []
+                                              [ Ty.path "usize" ]))
+                                          (Ty.apply
+                                            (Ty.path "core::ops::range::RangeFrom")
+                                            []
+                                            [ Ty.path "usize" ])
+                                      ]
+                                    |)
                                   |)
                                 |)
-                              |);
-                              M.borrow (|
-                                Pointer.Kind.Ref,
-                                M.deref (|
-                                  M.call_closure (|
-                                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-                                    M.get_associated_function (|
-                                      Ty.path "str",
-                                      "get_unchecked",
-                                      [],
-                                      [
-                                        Ty.apply
-                                          (Ty.path "core::ops::range::RangeFrom")
-                                          []
-                                          [ Ty.path "usize" ]
-                                      ]
-                                    |),
-                                    [
-                                      M.borrow (|
-                                        Pointer.Kind.Ref,
-                                        M.deref (| M.read (| self |) |)
-                                      |);
-                                      Value.mkStructRecord
-                                        "core::ops::range::RangeFrom"
-                                        []
-                                        [ Ty.path "usize" ]
-                                        [ ("start", M.read (| end_ |)) ]
-                                    ]
-                                  |)
-                                |)
-                              |)
-                            ]
-                        ]))
+                              ]
+                          ])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [
+                            Ty.tuple
+                              [
+                                Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                                Ty.apply (Ty.path "&") [] [ Ty.path "str" ]
+                              ]
+                          ])))
                 ]
               |)))
           |)))
@@ -4392,34 +5173,36 @@ Module str.
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
           let pat := M.alloc (| P, pat |) in
-          Value.StructTuple
-            "core::str::iter::Matches"
-            []
-            [ P ]
-            [
-              Value.StructTuple
-                "core::str::iter::MatchesInternal"
-                []
-                [ P ]
-                [
-                  M.call_closure (|
-                    Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
-                    M.get_trait_method (|
-                      "core::str::pattern::Pattern",
-                      P,
-                      [],
-                      [],
-                      "into_searcher",
-                      [],
-                      []
-                    |),
+          M.value_with_ty
+            (Value.StructTuple
+              "core::str::iter::Matches"
+              [
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::str::iter::MatchesInternal"
                     [
-                      M.read (| pat |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                    ]
-                  |)
-                ]
-            ]))
+                      M.call_closure (|
+                        Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
+                        M.get_trait_method (|
+                          "core::str::pattern::Pattern",
+                          P,
+                          [],
+                          [],
+                          "into_searcher",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty (M.read (| pat |)) P;
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                        ]
+                      |)
+                    ])
+                  (Ty.apply (Ty.path "core::str::iter::MatchesInternal") [] [ P ])
+              ])
+            (Ty.apply (Ty.path "core::str::iter::Matches") [] [ P ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -4441,29 +5224,31 @@ Module str.
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
           let pat := M.alloc (| P, pat |) in
-          Value.StructTuple
-            "core::str::iter::RMatches"
-            []
-            [ P ]
-            [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (|
-                  M.alloc (|
-                    Ty.apply (Ty.path "core::str::iter::Matches") [] [ P ],
-                    M.call_closure (|
+          M.value_with_ty
+            (Value.StructTuple
+              "core::str::iter::RMatches"
+              [
+                M.read (|
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.alloc (|
                       Ty.apply (Ty.path "core::str::iter::Matches") [] [ P ],
-                      M.get_associated_function (| Ty.path "str", "matches", [], [ P ] |),
-                      [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.read (| pat |)
-                      ]
-                    |)
-                  |),
-                  "core::str::iter::Matches",
-                  0
+                      M.call_closure (|
+                        Ty.apply (Ty.path "core::str::iter::Matches") [] [ P ],
+                        M.get_associated_function (| Ty.path "str", "matches", [], [ P ] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                          M.value_with_ty (M.read (| pat |)) P
+                        ]
+                      |)
+                    |),
+                    "core::str::iter::Matches",
+                    0
+                  |)
                 |)
-              |)
-            ]))
+              ])
+            (Ty.apply (Ty.path "core::str::iter::RMatches") [] [ P ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -4482,34 +5267,36 @@ Module str.
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
           let pat := M.alloc (| P, pat |) in
-          Value.StructTuple
-            "core::str::iter::MatchIndices"
-            []
-            [ P ]
-            [
-              Value.StructTuple
-                "core::str::iter::MatchIndicesInternal"
-                []
-                [ P ]
-                [
-                  M.call_closure (|
-                    Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
-                    M.get_trait_method (|
-                      "core::str::pattern::Pattern",
-                      P,
-                      [],
-                      [],
-                      "into_searcher",
-                      [],
-                      []
-                    |),
+          M.value_with_ty
+            (Value.StructTuple
+              "core::str::iter::MatchIndices"
+              [
+                M.value_with_ty
+                  (Value.StructTuple
+                    "core::str::iter::MatchIndicesInternal"
                     [
-                      M.read (| pat |);
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
-                    ]
-                  |)
-                ]
-            ]))
+                      M.call_closure (|
+                        Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher",
+                        M.get_trait_method (|
+                          "core::str::pattern::Pattern",
+                          P,
+                          [],
+                          [],
+                          "into_searcher",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty (M.read (| pat |)) P;
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                        ]
+                      |)
+                    ])
+                  (Ty.apply (Ty.path "core::str::iter::MatchIndicesInternal") [] [ P ])
+              ])
+            (Ty.apply (Ty.path "core::str::iter::MatchIndices") [] [ P ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -4532,29 +5319,31 @@ Module str.
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
           let pat := M.alloc (| P, pat |) in
-          Value.StructTuple
-            "core::str::iter::RMatchIndices"
-            []
-            [ P ]
-            [
-              M.read (|
-                M.SubPointer.get_struct_tuple_field (|
-                  M.alloc (|
-                    Ty.apply (Ty.path "core::str::iter::MatchIndices") [] [ P ],
-                    M.call_closure (|
+          M.value_with_ty
+            (Value.StructTuple
+              "core::str::iter::RMatchIndices"
+              [
+                M.read (|
+                  M.SubPointer.get_struct_tuple_field (|
+                    M.alloc (|
                       Ty.apply (Ty.path "core::str::iter::MatchIndices") [] [ P ],
-                      M.get_associated_function (| Ty.path "str", "match_indices", [], [ P ] |),
-                      [
-                        M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                        M.read (| pat |)
-                      ]
-                    |)
-                  |),
-                  "core::str::iter::MatchIndices",
-                  0
+                      M.call_closure (|
+                        Ty.apply (Ty.path "core::str::iter::MatchIndices") [] [ P ],
+                        M.get_associated_function (| Ty.path "str", "match_indices", [], [ P ] |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                          M.value_with_ty (M.read (| pat |)) P
+                        ]
+                      |)
+                    |),
+                    "core::str::iter::MatchIndices",
+                    0
+                  |)
                 |)
-              |)
-            ]))
+              ])
+            (Ty.apply (Ty.path "core::str::iter::RMatchIndices") [] [ P ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -4585,34 +5374,38 @@ Module str.
                   [ Ty.function [ Ty.path "char" ] (Ty.path "bool") ]
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "bool",
-                              M.alloc (| Ty.path "char", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let c := M.copy (| Ty.path "char", γ |) in
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "char",
-                                        "is_whitespace",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| c |) ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "bool",
+                                M.alloc (| Ty.path "char", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let c := M.copy (| Ty.path "char", γ |) in
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        M.get_associated_function (|
+                                          Ty.path "char",
+                                          "is_whitespace",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.value_with_ty (M.read (| c |)) (Ty.path "char") ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "char" ] (Ty.path "bool"))
                 ]
               |)
             |)
@@ -4646,34 +5439,38 @@ Module str.
                   [ Ty.function [ Ty.path "char" ] (Ty.path "bool") ]
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "bool",
-                              M.alloc (| Ty.path "char", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let c := M.copy (| Ty.path "char", γ |) in
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "char",
-                                        "is_whitespace",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| c |) ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "bool",
+                                M.alloc (| Ty.path "char", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let c := M.copy (| Ty.path "char", γ |) in
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        M.get_associated_function (|
+                                          Ty.path "char",
+                                          "is_whitespace",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.value_with_ty (M.read (| c |)) (Ty.path "char") ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "char" ] (Ty.path "bool"))
                 ]
               |)
             |)
@@ -4708,34 +5505,38 @@ Module str.
                   [ Ty.function [ Ty.path "char" ] (Ty.path "bool") ]
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                  M.closure
-                    (fun γ =>
-                      ltac:(M.monadic
-                        match γ with
-                        | [ α0 ] =>
-                          ltac:(M.monadic
-                            (M.match_operator (|
-                              Ty.path "bool",
-                              M.alloc (| Ty.path "char", α0 |),
-                              [
-                                fun γ =>
-                                  ltac:(M.monadic
-                                    (let c := M.copy (| Ty.path "char", γ |) in
-                                    M.call_closure (|
-                                      Ty.path "bool",
-                                      M.get_associated_function (|
-                                        Ty.path "char",
-                                        "is_whitespace",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.read (| c |) ]
-                                    |)))
-                              ]
-                            |)))
-                        | _ => M.impossible "wrong number of arguments"
-                        end))
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty
+                    (M.closure
+                      (fun γ =>
+                        ltac:(M.monadic
+                          match γ with
+                          | [ α0 ] =>
+                            ltac:(M.monadic
+                              (M.match_operator (|
+                                Ty.path "bool",
+                                M.alloc (| Ty.path "char", α0 |),
+                                [
+                                  fun γ =>
+                                    ltac:(M.monadic
+                                      (let c := M.copy (| Ty.path "char", γ |) in
+                                      M.call_closure (|
+                                        Ty.path "bool",
+                                        M.get_associated_function (|
+                                          Ty.path "char",
+                                          "is_whitespace",
+                                          [],
+                                          []
+                                        |),
+                                        [ M.value_with_ty (M.read (| c |)) (Ty.path "char") ]
+                                      |)))
+                                ]
+                              |)))
+                          | _ => M.impossible "wrong number of arguments"
+                          end)))
+                    (Ty.function [ Ty.path "char" ] (Ty.path "bool"))
                 ]
               |)
             |)
@@ -4763,7 +5564,11 @@ Module str.
               M.call_closure (|
                 Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                 M.get_associated_function (| Ty.path "str", "trim_start", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                ]
               |)
             |)
           |)))
@@ -4791,7 +5596,11 @@ Module str.
               M.call_closure (|
                 Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                 M.get_associated_function (| Ty.path "str", "trim_end", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                ]
               |)
             |)
           |)))
@@ -4845,7 +5654,11 @@ Module str.
                   [],
                   []
                 |),
-                [ M.read (| pat |); M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                [
+                  M.value_with_ty (M.read (| pat |)) P;
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -4880,7 +5693,21 @@ Module str.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.MutRef, matcher |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.MutRef, matcher |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::str::pattern::Pattern"
+                                      []
+                                      []
+                                      P
+                                      "Searcher"
+                                  ])
+                            ]
                           |)
                         |) in
                       let γ0_0 :=
@@ -4933,7 +5760,21 @@ Module str.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.MutRef, matcher |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.MutRef, matcher |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::str::pattern::Pattern"
+                                      []
+                                      []
+                                      P
+                                      "Searcher"
+                                  ])
+                            ]
                           |)
                         |) in
                       let γ0_0 :=
@@ -4966,12 +5807,16 @@ Module str.
                       [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ]
                     |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                      Value.mkStructRecord
-                        "core::ops::range::Range"
-                        []
-                        [ Ty.path "usize" ]
-                        [ ("start", M.read (| i |)); ("end_", M.read (| j |)) ]
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.mkStructRecord
+                            "core::ops::range::Range"
+                            [ ("start", M.read (| i |)); ("end_", M.read (| j |)) ])
+                          (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]))
+                        (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ])
                     ]
                   |)
                 |)
@@ -5008,7 +5853,11 @@ Module str.
               M.call_closure (|
                 Ty.path "usize",
                 M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                ]
               |) in
             let~ matcher :
                 Ty.associated_in_trait "core::str::pattern::Pattern" [] [] P "Searcher" :=
@@ -5023,7 +5872,11 @@ Module str.
                   [],
                   []
                 |),
-                [ M.read (| pat |); M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                [
+                  M.value_with_ty (M.read (| pat |)) P;
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -5058,7 +5911,21 @@ Module str.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.MutRef, matcher |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.MutRef, matcher |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::str::pattern::Pattern"
+                                      []
+                                      []
+                                      P
+                                      "Searcher"
+                                  ])
+                            ]
                           |)
                         |) in
                       let γ0_0 :=
@@ -5091,20 +5958,31 @@ Module str.
                       [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ]
                     |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                      Value.mkStructRecord
-                        "core::ops::range::Range"
-                        []
-                        [ Ty.path "usize" ]
-                        [
-                          ("start", M.read (| i |));
-                          ("end_",
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_associated_function (| Ty.path "str", "len", [], [] |),
-                              [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                            |))
-                        ]
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.mkStructRecord
+                            "core::ops::range::Range"
+                            [
+                              ("start", M.read (| i |));
+                              ("end_",
+                                M.call_closure (|
+                                  Ty.path "usize",
+                                  M.get_associated_function (| Ty.path "str", "len", [], [] |),
+                                  [
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (| M.read (| self |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                  ]
+                                |))
+                            ])
+                          (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]))
+                        (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ])
                     ]
                   |)
                 |)
@@ -5144,7 +6022,11 @@ Module str.
               [],
               []
             |),
-            [ M.read (| prefix |); M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+            [
+              M.value_with_ty (M.read (| prefix |)) P;
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5183,7 +6065,11 @@ Module str.
               [],
               []
             |),
-            [ M.read (| suffix |); M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+            [
+              M.value_with_ty (M.read (| suffix |)) P;
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5229,7 +6115,11 @@ Module str.
                   [],
                   []
                 |),
-                [ M.read (| pat |); M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                [
+                  M.value_with_ty (M.read (| pat |)) P;
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -5264,7 +6154,21 @@ Module str.
                               [],
                               []
                             |),
-                            [ M.borrow (| Pointer.Kind.MutRef, matcher |) ]
+                            [
+                              M.value_with_ty
+                                (M.borrow (| Pointer.Kind.MutRef, matcher |))
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.associated_in_trait
+                                      "core::str::pattern::Pattern"
+                                      []
+                                      []
+                                      P
+                                      "Searcher"
+                                  ])
+                            ]
                           |)
                         |) in
                       let γ0_0 :=
@@ -5297,12 +6201,17 @@ Module str.
                       [ Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ] ]
                     |),
                     [
-                      M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                      Value.mkStructRecord
-                        "core::ops::range::Range"
-                        []
-                        [ Ty.path "usize" ]
-                        [ ("start", Value.Integer IntegerKind.Usize 0); ("end_", M.read (| j |)) ]
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.mkStructRecord
+                            "core::ops::range::Range"
+                            [ ("start", Value.Integer IntegerKind.Usize 0); ("end_", M.read (| j |))
+                            ])
+                          (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ]))
+                        (Ty.apply (Ty.path "core::ops::range::Range") [] [ Ty.path "usize" ])
                     ]
                   |)
                 |)
@@ -5334,7 +6243,11 @@ Module str.
               M.call_closure (|
                 Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                 M.get_associated_function (| Ty.path "str", "trim_start_matches", [], [ P ] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |); M.read (| pat |)
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty (M.read (| pat |)) P
                 ]
               |)
             |)
@@ -5367,7 +6280,11 @@ Module str.
               M.call_closure (|
                 Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                 M.get_associated_function (| Ty.path "str", "trim_end_matches", [], [ P ] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |); M.read (| pat |)
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                  M.value_with_ty (M.read (| pat |)) P
                 ]
               |)
             |)
@@ -5396,7 +6313,11 @@ Module str.
               []
               [ F; Ty.associated_in_trait "core::str::traits::FromStr" [] [] F "Err" ],
             M.get_trait_method (| "core::str::traits::FromStr", F, [], [], "from_str", [], [] |),
-            [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+            [
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
@@ -5427,16 +6348,22 @@ Module str.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5474,16 +6401,22 @@ Module str.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5513,26 +6446,38 @@ Module str.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |) ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| other |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -5564,7 +6509,11 @@ Module str.
                   M.call_closure (|
                     Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
                     M.get_associated_function (| Ty.path "str", "as_bytes_mut", [], [] |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ])
+                    ]
                   |)
                 |)
               |) in
@@ -5578,7 +6527,14 @@ Module str.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| me |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| me |) |) |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                ]
               |)
             |)
           |)))
@@ -5611,7 +6567,11 @@ Module str.
                   M.call_closure (|
                     Ty.apply (Ty.path "&mut") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
                     M.get_associated_function (| Ty.path "str", "as_bytes_mut", [], [] |),
-                    [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ])
+                    ]
                   |)
                 |)
               |) in
@@ -5625,7 +6585,14 @@ Module str.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| me |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| me |) |) |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                ]
               |)
             |)
           |)))
@@ -5656,38 +6623,57 @@ Module str.
                 Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                 M.get_function (| "core::str::converts::from_utf8_unchecked", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                          "trim_ascii_start",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                              |)
-                            |)
-                          |)
-                        ]
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                            "trim_ascii_start",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                    M.get_associated_function (|
+                                      Ty.path "str",
+                                      "as_bytes",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                    ]
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                 ]
               |)
             |)
@@ -5719,38 +6705,57 @@ Module str.
                 Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                 M.get_function (| "core::str::converts::from_utf8_unchecked", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                          "trim_ascii_end",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                              |)
-                            |)
-                          |)
-                        ]
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                            "trim_ascii_end",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                    M.get_associated_function (|
+                                      Ty.path "str",
+                                      "as_bytes",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                    ]
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                 ]
               |)
             |)
@@ -5782,38 +6787,57 @@ Module str.
                 Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
                 M.get_function (| "core::str::converts::from_utf8_unchecked", [], [] |),
                 [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                        M.get_associated_function (|
-                          Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
-                          "trim_ascii",
-                          [],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.call_closure (|
-                                Ty.apply
-                                  (Ty.path "&")
-                                  []
-                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                                M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                              |)
-                            |)
-                          |)
-                        ]
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                          M.get_associated_function (|
+                            Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ],
+                            "trim_ascii",
+                            [],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.deref (|
+                                  M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "&")
+                                      []
+                                      [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                                    M.get_associated_function (|
+                                      Ty.path "str",
+                                      "as_bytes",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.borrow (|
+                                          Pointer.Kind.Ref,
+                                          M.deref (| M.read (| self |) |)
+                                        |))
+                                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                                    ]
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                 ]
               |)
             |)
@@ -5849,67 +6873,44 @@ Module str.
               M.call_closure (|
                 Ty.path "core::str::iter::Chars",
                 M.get_associated_function (| Ty.path "str", "chars", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                ]
               |) in
             M.alloc (|
               Ty.path "core::str::iter::EscapeDebug",
-              Value.mkStructRecord
-                "core::str::iter::EscapeDebug"
-                []
-                []
-                [
-                  ("inner",
-                    M.call_closure (|
-                      Ty.apply
-                        (Ty.path "core::iter::adapters::chain::Chain")
-                        []
-                        [
-                          Ty.apply
-                            (Ty.path "core::iter::adapters::flatten::Flatten")
-                            []
-                            [
-                              Ty.apply
-                                (Ty.path "core::option::IntoIter")
-                                []
-                                [ Ty.path "core::char::EscapeDebug" ]
-                            ];
-                          Ty.apply
-                            (Ty.path "core::iter::adapters::flatten::FlatMap")
-                            []
-                            [
-                              Ty.path "core::str::iter::Chars";
-                              Ty.path "core::char::EscapeDebug";
-                              Ty.path "core::str::CharEscapeDebugContinue"
-                            ]
-                        ],
-                      M.get_trait_method (|
-                        "core::iter::traits::iterator::Iterator",
+              M.value_with_ty
+                (Value.mkStructRecord
+                  "core::str::iter::EscapeDebug"
+                  [
+                    ("inner",
+                      M.call_closure (|
                         Ty.apply
-                          (Ty.path "core::iter::adapters::flatten::Flatten")
+                          (Ty.path "core::iter::adapters::chain::Chain")
                           []
                           [
                             Ty.apply
-                              (Ty.path "core::option::IntoIter")
+                              (Ty.path "core::iter::adapters::flatten::Flatten")
                               []
-                              [ Ty.path "core::char::EscapeDebug" ]
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::IntoIter")
+                                  []
+                                  [ Ty.path "core::char::EscapeDebug" ]
+                              ];
+                            Ty.apply
+                              (Ty.path "core::iter::adapters::flatten::FlatMap")
+                              []
+                              [
+                                Ty.path "core::str::iter::Chars";
+                                Ty.path "core::char::EscapeDebug";
+                                Ty.path "core::str::CharEscapeDebugContinue"
+                              ]
                           ],
-                        [],
-                        [],
-                        "chain",
-                        [],
-                        [
-                          Ty.apply
-                            (Ty.path "core::iter::adapters::flatten::FlatMap")
-                            []
-                            [
-                              Ty.path "core::str::iter::Chars";
-                              Ty.path "core::char::EscapeDebug";
-                              Ty.path "core::str::CharEscapeDebugContinue"
-                            ]
-                        ]
-                      |),
-                      [
-                        M.call_closure (|
+                        M.get_trait_method (|
+                          "core::iter::traits::iterator::Iterator",
                           Ty.apply
                             (Ty.path "core::iter::adapters::flatten::Flatten")
                             []
@@ -5919,144 +6920,230 @@ Module str.
                                 []
                                 [ Ty.path "core::char::EscapeDebug" ]
                             ],
-                          M.get_trait_method (|
-                            "core::iter::traits::iterator::Iterator",
-                            Ty.apply
-                              (Ty.path "core::option::IntoIter")
-                              []
-                              [ Ty.path "core::char::EscapeDebug" ],
-                            [],
-                            [],
-                            "flatten",
-                            [],
-                            []
-                          |),
+                          [],
+                          [],
+                          "chain",
+                          [],
                           [
-                            M.call_closure (|
+                            Ty.apply
+                              (Ty.path "core::iter::adapters::flatten::FlatMap")
+                              []
+                              [
+                                Ty.path "core::str::iter::Chars";
+                                Ty.path "core::char::EscapeDebug";
+                                Ty.path "core::str::CharEscapeDebugContinue"
+                              ]
+                          ]
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.call_closure (|
                               Ty.apply
-                                (Ty.path "core::option::IntoIter")
+                                (Ty.path "core::iter::adapters::flatten::Flatten")
                                 []
-                                [ Ty.path "core::char::EscapeDebug" ],
+                                [
+                                  Ty.apply
+                                    (Ty.path "core::option::IntoIter")
+                                    []
+                                    [ Ty.path "core::char::EscapeDebug" ]
+                                ],
                               M.get_trait_method (|
-                                "core::iter::traits::collect::IntoIterator",
+                                "core::iter::traits::iterator::Iterator",
                                 Ty.apply
-                                  (Ty.path "core::option::Option")
+                                  (Ty.path "core::option::IntoIter")
                                   []
                                   [ Ty.path "core::char::EscapeDebug" ],
                                 [],
                                 [],
-                                "into_iter",
+                                "flatten",
                                 [],
                                 []
                               |),
                               [
-                                M.call_closure (|
-                                  Ty.apply
-                                    (Ty.path "core::option::Option")
-                                    []
-                                    [ Ty.path "core::char::EscapeDebug" ],
-                                  M.get_associated_function (|
-                                    Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "char" ],
-                                    "map",
-                                    [],
-                                    [
-                                      Ty.path "core::char::EscapeDebug";
-                                      Ty.function
-                                        [ Ty.path "char" ]
-                                        (Ty.path "core::char::EscapeDebug")
-                                    ]
-                                  |),
-                                  [
-                                    M.call_closure (|
+                                M.value_with_ty
+                                  (M.call_closure (|
+                                    Ty.apply
+                                      (Ty.path "core::option::IntoIter")
+                                      []
+                                      [ Ty.path "core::char::EscapeDebug" ],
+                                    M.get_trait_method (|
+                                      "core::iter::traits::collect::IntoIterator",
                                       Ty.apply
                                         (Ty.path "core::option::Option")
                                         []
-                                        [ Ty.path "char" ],
-                                      M.get_trait_method (|
-                                        "core::iter::traits::iterator::Iterator",
-                                        Ty.path "core::str::iter::Chars",
-                                        [],
-                                        [],
-                                        "next",
-                                        [],
-                                        []
-                                      |),
-                                      [ M.borrow (| Pointer.Kind.MutRef, chars |) ]
-                                    |);
-                                    M.closure
-                                      (fun γ =>
-                                        ltac:(M.monadic
-                                          match γ with
-                                          | [ α0 ] =>
-                                            ltac:(M.monadic
-                                              (M.match_operator (|
-                                                Ty.path "core::char::EscapeDebug",
-                                                M.alloc (| Ty.path "char", α0 |),
+                                        [ Ty.path "core::char::EscapeDebug" ],
+                                      [],
+                                      [],
+                                      "into_iter",
+                                      [],
+                                      []
+                                    |),
+                                    [
+                                      M.value_with_ty
+                                        (M.call_closure (|
+                                          Ty.apply
+                                            (Ty.path "core::option::Option")
+                                            []
+                                            [ Ty.path "core::char::EscapeDebug" ],
+                                          M.get_associated_function (|
+                                            Ty.apply
+                                              (Ty.path "core::option::Option")
+                                              []
+                                              [ Ty.path "char" ],
+                                            "map",
+                                            [],
+                                            [
+                                              Ty.path "core::char::EscapeDebug";
+                                              Ty.function
+                                                [ Ty.path "char" ]
+                                                (Ty.path "core::char::EscapeDebug")
+                                            ]
+                                          |),
+                                          [
+                                            M.value_with_ty
+                                              (M.call_closure (|
+                                                Ty.apply
+                                                  (Ty.path "core::option::Option")
+                                                  []
+                                                  [ Ty.path "char" ],
+                                                M.get_trait_method (|
+                                                  "core::iter::traits::iterator::Iterator",
+                                                  Ty.path "core::str::iter::Chars",
+                                                  [],
+                                                  [],
+                                                  "next",
+                                                  [],
+                                                  []
+                                                |),
                                                 [
-                                                  fun γ =>
-                                                    ltac:(M.monadic
-                                                      (let first :=
-                                                        M.copy (| Ty.path "char", γ |) in
-                                                      M.call_closure (|
-                                                        Ty.path "core::char::EscapeDebug",
-                                                        M.get_associated_function (|
-                                                          Ty.path "char",
-                                                          "escape_debug_ext",
-                                                          [],
-                                                          []
-                                                        |),
-                                                        [
-                                                          M.read (| first |);
-                                                          M.read (|
-                                                            get_associated_constant (|
-                                                              Ty.path
-                                                                "core::char::methods::EscapeDebugExtArgs",
-                                                              "ESCAPE_ALL",
-                                                              Ty.path
-                                                                "core::char::methods::EscapeDebugExtArgs"
-                                                            |)
-                                                          |)
-                                                        ]
-                                                      |)))
+                                                  M.value_with_ty
+                                                    (M.borrow (| Pointer.Kind.MutRef, chars |))
+                                                    (Ty.apply
+                                                      (Ty.path "&mut")
+                                                      []
+                                                      [ Ty.path "core::str::iter::Chars" ])
                                                 ]
-                                              |)))
-                                          | _ => M.impossible "wrong number of arguments"
-                                          end))
-                                  ]
-                                |)
+                                              |))
+                                              (Ty.apply
+                                                (Ty.path "core::option::Option")
+                                                []
+                                                [ Ty.path "char" ]);
+                                            M.value_with_ty
+                                              (M.closure
+                                                (fun γ =>
+                                                  ltac:(M.monadic
+                                                    match γ with
+                                                    | [ α0 ] =>
+                                                      ltac:(M.monadic
+                                                        (M.match_operator (|
+                                                          Ty.path "core::char::EscapeDebug",
+                                                          M.alloc (| Ty.path "char", α0 |),
+                                                          [
+                                                            fun γ =>
+                                                              ltac:(M.monadic
+                                                                (let first :=
+                                                                  M.copy (| Ty.path "char", γ |) in
+                                                                M.call_closure (|
+                                                                  Ty.path "core::char::EscapeDebug",
+                                                                  M.get_associated_function (|
+                                                                    Ty.path "char",
+                                                                    "escape_debug_ext",
+                                                                    [],
+                                                                    []
+                                                                  |),
+                                                                  [
+                                                                    M.value_with_ty
+                                                                      (M.read (| first |))
+                                                                      (Ty.path "char");
+                                                                    M.value_with_ty
+                                                                      (M.read (|
+                                                                        get_associated_constant (|
+                                                                          Ty.path
+                                                                            "core::char::methods::EscapeDebugExtArgs",
+                                                                          "ESCAPE_ALL",
+                                                                          Ty.path
+                                                                            "core::char::methods::EscapeDebugExtArgs"
+                                                                        |)
+                                                                      |))
+                                                                      (Ty.path
+                                                                        "core::char::methods::EscapeDebugExtArgs")
+                                                                  ]
+                                                                |)))
+                                                          ]
+                                                        |)))
+                                                    | _ => M.impossible "wrong number of arguments"
+                                                    end)))
+                                              (Ty.function
+                                                [ Ty.path "char" ]
+                                                (Ty.path "core::char::EscapeDebug"))
+                                          ]
+                                        |))
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::char::EscapeDebug" ])
+                                    ]
+                                  |))
+                                  (Ty.apply
+                                    (Ty.path "core::option::IntoIter")
+                                    []
+                                    [ Ty.path "core::char::EscapeDebug" ])
                               ]
-                            |)
-                          ]
-                        |);
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "core::iter::adapters::flatten::FlatMap")
-                            []
-                            [
-                              Ty.path "core::str::iter::Chars";
-                              Ty.path "core::char::EscapeDebug";
-                              Ty.path "core::str::CharEscapeDebugContinue"
-                            ],
-                          M.get_trait_method (|
-                            "core::iter::traits::iterator::Iterator",
-                            Ty.path "core::str::iter::Chars",
-                            [],
-                            [],
-                            "flat_map",
-                            [],
-                            [
-                              Ty.path "core::char::EscapeDebug";
-                              Ty.path "core::str::CharEscapeDebugContinue"
-                            ]
-                          |),
-                          [
-                            M.read (| chars |);
-                            Value.StructTuple "core::str::CharEscapeDebugContinue" [] [] []
-                          ]
-                        |)
-                      ]
-                    |))
-                ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "core::iter::adapters::flatten::Flatten")
+                              []
+                              [
+                                Ty.apply
+                                  (Ty.path "core::option::IntoIter")
+                                  []
+                                  [ Ty.path "core::char::EscapeDebug" ]
+                              ]);
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
+                                (Ty.path "core::iter::adapters::flatten::FlatMap")
+                                []
+                                [
+                                  Ty.path "core::str::iter::Chars";
+                                  Ty.path "core::char::EscapeDebug";
+                                  Ty.path "core::str::CharEscapeDebugContinue"
+                                ],
+                              M.get_trait_method (|
+                                "core::iter::traits::iterator::Iterator",
+                                Ty.path "core::str::iter::Chars",
+                                [],
+                                [],
+                                "flat_map",
+                                [],
+                                [
+                                  Ty.path "core::char::EscapeDebug";
+                                  Ty.path "core::str::CharEscapeDebugContinue"
+                                ]
+                              |),
+                              [
+                                M.value_with_ty
+                                  (M.read (| chars |))
+                                  (Ty.path "core::str::iter::Chars");
+                                M.value_with_ty
+                                  (M.value_with_ty
+                                    (Value.StructTuple "core::str::CharEscapeDebugContinue" [])
+                                    (Ty.path "core::str::CharEscapeDebugContinue"))
+                                  (Ty.path "core::str::CharEscapeDebugContinue")
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "core::iter::adapters::flatten::FlatMap")
+                              []
+                              [
+                                Ty.path "core::str::iter::Chars";
+                                Ty.path "core::char::EscapeDebug";
+                                Ty.path "core::str::CharEscapeDebugContinue"
+                              ])
+                        ]
+                      |))
+                  ])
+                (Ty.path "core::str::iter::EscapeDebug")
             |)
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -6077,40 +7164,51 @@ Module str.
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
-          Value.mkStructRecord
-            "core::str::iter::EscapeDefault"
-            []
-            []
-            [
-              ("inner",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "core::iter::adapters::flatten::FlatMap")
-                    []
-                    [
-                      Ty.path "core::str::iter::Chars";
-                      Ty.path "core::char::EscapeDefault";
-                      Ty.path "core::str::CharEscapeDefault"
-                    ],
-                  M.get_trait_method (|
-                    "core::iter::traits::iterator::Iterator",
-                    Ty.path "core::str::iter::Chars",
-                    [],
-                    [],
-                    "flat_map",
-                    [],
-                    [ Ty.path "core::char::EscapeDefault"; Ty.path "core::str::CharEscapeDefault" ]
-                  |),
-                  [
-                    M.call_closure (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::str::iter::EscapeDefault"
+              [
+                ("inner",
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::iter::adapters::flatten::FlatMap")
+                      []
+                      [
+                        Ty.path "core::str::iter::Chars";
+                        Ty.path "core::char::EscapeDefault";
+                        Ty.path "core::str::CharEscapeDefault"
+                      ],
+                    M.get_trait_method (|
+                      "core::iter::traits::iterator::Iterator",
                       Ty.path "core::str::iter::Chars",
-                      M.get_associated_function (| Ty.path "str", "chars", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |);
-                    Value.StructTuple "core::str::CharEscapeDefault" [] [] []
-                  ]
-                |))
-            ]))
+                      [],
+                      [],
+                      "flat_map",
+                      [],
+                      [ Ty.path "core::char::EscapeDefault"; Ty.path "core::str::CharEscapeDefault"
+                      ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "core::str::iter::Chars",
+                          M.get_associated_function (| Ty.path "str", "chars", [], [] |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
+                        |))
+                        (Ty.path "core::str::iter::Chars");
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::str::CharEscapeDefault" [])
+                          (Ty.path "core::str::CharEscapeDefault"))
+                        (Ty.path "core::str::CharEscapeDefault")
+                    ]
+                  |))
+              ])
+            (Ty.path "core::str::iter::EscapeDefault")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -6129,40 +7227,51 @@ Module str.
       | [], [], [ self ] =>
         ltac:(M.monadic
           (let self := M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "str" ], self |) in
-          Value.mkStructRecord
-            "core::str::iter::EscapeUnicode"
-            []
-            []
-            [
-              ("inner",
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "core::iter::adapters::flatten::FlatMap")
-                    []
-                    [
-                      Ty.path "core::str::iter::Chars";
-                      Ty.path "core::char::EscapeUnicode";
-                      Ty.path "core::str::CharEscapeUnicode"
-                    ],
-                  M.get_trait_method (|
-                    "core::iter::traits::iterator::Iterator",
-                    Ty.path "core::str::iter::Chars",
-                    [],
-                    [],
-                    "flat_map",
-                    [],
-                    [ Ty.path "core::char::EscapeUnicode"; Ty.path "core::str::CharEscapeUnicode" ]
-                  |),
-                  [
-                    M.call_closure (|
+          M.value_with_ty
+            (Value.mkStructRecord
+              "core::str::iter::EscapeUnicode"
+              [
+                ("inner",
+                  M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::iter::adapters::flatten::FlatMap")
+                      []
+                      [
+                        Ty.path "core::str::iter::Chars";
+                        Ty.path "core::char::EscapeUnicode";
+                        Ty.path "core::str::CharEscapeUnicode"
+                      ],
+                    M.get_trait_method (|
+                      "core::iter::traits::iterator::Iterator",
                       Ty.path "core::str::iter::Chars",
-                      M.get_associated_function (| Ty.path "str", "chars", [], [] |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |);
-                    Value.StructTuple "core::str::CharEscapeUnicode" [] [] []
-                  ]
-                |))
-            ]))
+                      [],
+                      [],
+                      "flat_map",
+                      [],
+                      [ Ty.path "core::char::EscapeUnicode"; Ty.path "core::str::CharEscapeUnicode"
+                      ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.call_closure (|
+                          Ty.path "core::str::iter::Chars",
+                          M.get_associated_function (| Ty.path "str", "chars", [], [] |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
+                        |))
+                        (Ty.path "core::str::iter::Chars");
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "core::str::CharEscapeUnicode" [])
+                          (Ty.path "core::str::CharEscapeUnicode"))
+                        (Ty.path "core::str::CharEscapeUnicode")
+                    ]
+                  |))
+              ])
+            (Ty.path "core::str::iter::EscapeUnicode")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -6194,26 +7303,38 @@ Module str.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
+                    |)
                   |)
-                |)
-              |);
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (|
-                  M.call_closure (|
-                    Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                    M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| substr |) |) |) ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]);
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (|
+                    M.call_closure (|
+                      Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                      M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| substr |) |) |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -6262,7 +7383,11 @@ Module str.
               M.call_closure (|
                 Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
                 M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                ]
               |)
             |)
           |)))
@@ -6328,44 +7453,49 @@ Module str.
                         Ty.apply (Ty.path "&mut") [] [ Ty.path "str" ],
                         M.get_function (| "core::str::converts::from_utf8_unchecked_mut", [], [] |),
                         [
-                          M.call_closure (|
-                            Ty.apply
-                              (Ty.path "&mut")
-                              []
-                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                            M.pointer_coercion
-                              M.PointerCoercion.Unsize
-                              (Ty.apply
+                          M.value_with_ty
+                            (M.call_closure (|
+                              Ty.apply
                                 (Ty.path "&mut")
                                 []
-                                [
-                                  Ty.apply
-                                    (Ty.path "array")
-                                    [ Value.Integer IntegerKind.Usize 0 ]
-                                    [ Ty.path "u8" ]
-                                ])
-                              (Ty.apply
-                                (Ty.path "&mut")
-                                []
-                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                            [
-                              M.borrow (|
-                                Pointer.Kind.MutRef,
-                                M.deref (|
-                                  M.borrow (|
-                                    Pointer.Kind.MutRef,
-                                    M.alloc (|
-                                      Ty.apply
-                                        (Ty.path "array")
-                                        [ Value.Integer IntegerKind.Usize 0 ]
-                                        [ Ty.path "u8" ],
-                                      Value.Array []
+                                [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                              M.pointer_coercion
+                                M.PointerCoercion.Unsize
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [
+                                    Ty.apply
+                                      (Ty.path "array")
+                                      [ Value.Integer IntegerKind.Usize 0 ]
+                                      [ Ty.path "u8" ]
+                                  ])
+                                (Ty.apply
+                                  (Ty.path "&mut")
+                                  []
+                                  [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                              [
+                                M.borrow (|
+                                  Pointer.Kind.MutRef,
+                                  M.deref (|
+                                    M.borrow (|
+                                      Pointer.Kind.MutRef,
+                                      M.alloc (|
+                                        Ty.apply
+                                          (Ty.path "array")
+                                          [ Value.Integer IntegerKind.Usize 0 ]
+                                          [ Ty.path "u8" ],
+                                        Value.Array []
+                                      |)
                                     |)
                                   |)
                                 |)
-                              |)
-                            ]
-                          |)
+                              ]
+                            |))
+                            (Ty.apply
+                              (Ty.path "&mut")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                         ]
                       |)
                     |)
@@ -6396,7 +7526,9 @@ Module str.
         ltac:(M.monadic
           (let self :=
             M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::str::LinesMap" ], self |) in
-          Value.StructTuple "core::str::LinesMap" [] [] []))
+          M.value_with_ty
+            (Value.StructTuple "core::str::LinesMap" [])
+            (Ty.path "core::str::LinesMap")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -6422,7 +7554,9 @@ Module str.
               Ty.apply (Ty.path "&") [] [ Ty.path "core::str::CharEscapeDebugContinue" ],
               self
             |) in
-          Value.StructTuple "core::str::CharEscapeDebugContinue" [] [] []))
+          M.value_with_ty
+            (Value.StructTuple "core::str::CharEscapeDebugContinue" [])
+            (Ty.path "core::str::CharEscapeDebugContinue")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -6448,7 +7582,9 @@ Module str.
               Ty.apply (Ty.path "&") [] [ Ty.path "core::str::CharEscapeUnicode" ],
               self
             |) in
-          Value.StructTuple "core::str::CharEscapeUnicode" [] [] []))
+          M.value_with_ty
+            (Value.StructTuple "core::str::CharEscapeUnicode" [])
+            (Ty.path "core::str::CharEscapeUnicode")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -6474,7 +7610,9 @@ Module str.
               Ty.apply (Ty.path "&") [] [ Ty.path "core::str::CharEscapeDefault" ],
               self
             |) in
-          Value.StructTuple "core::str::CharEscapeDefault" [] [] []))
+          M.value_with_ty
+            (Value.StructTuple "core::str::CharEscapeDefault" [])
+            (Ty.path "core::str::CharEscapeDefault")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -6497,7 +7635,9 @@ Module str.
         ltac:(M.monadic
           (let self :=
             M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::str::IsWhitespace" ], self |) in
-          Value.StructTuple "core::str::IsWhitespace" [] [] []))
+          M.value_with_ty
+            (Value.StructTuple "core::str::IsWhitespace" [])
+            (Ty.path "core::str::IsWhitespace")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -6523,7 +7663,9 @@ Module str.
               Ty.apply (Ty.path "&") [] [ Ty.path "core::str::IsAsciiWhitespace" ],
               self
             |) in
-          Value.StructTuple "core::str::IsAsciiWhitespace" [] [] []))
+          M.value_with_ty
+            (Value.StructTuple "core::str::IsAsciiWhitespace" [])
+            (Ty.path "core::str::IsAsciiWhitespace")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -6546,7 +7688,9 @@ Module str.
         ltac:(M.monadic
           (let self :=
             M.alloc (| Ty.apply (Ty.path "&") [] [ Ty.path "core::str::IsNotEmpty" ], self |) in
-          Value.StructTuple "core::str::IsNotEmpty" [] [] []))
+          M.value_with_ty
+            (Value.StructTuple "core::str::IsNotEmpty" [])
+            (Ty.path "core::str::IsNotEmpty")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -6572,7 +7716,9 @@ Module str.
               Ty.apply (Ty.path "&") [] [ Ty.path "core::str::BytesIsNotEmpty" ],
               self
             |) in
-          Value.StructTuple "core::str::BytesIsNotEmpty" [] [] []))
+          M.value_with_ty
+            (Value.StructTuple "core::str::BytesIsNotEmpty" [])
+            (Ty.path "core::str::BytesIsNotEmpty")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -6598,7 +7744,9 @@ Module str.
               Ty.apply (Ty.path "&") [] [ Ty.path "core::str::UnsafeBytesToStr" ],
               self
             |) in
-          Value.StructTuple "core::str::UnsafeBytesToStr" [] [] []))
+          M.value_with_ty
+            (Value.StructTuple "core::str::UnsafeBytesToStr" [])
+            (Ty.path "core::str::UnsafeBytesToStr")))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     

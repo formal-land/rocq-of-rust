@@ -17,25 +17,25 @@ Module Impl_core_default_Default_for_e2e_call_runtime_AccountId.
     match ε, τ, α with
     | [], [], [] =>
       ltac:(M.monadic
-        (Value.StructTuple
-          "e2e_call_runtime::AccountId"
-          []
-          []
-          [
-            M.call_closure (|
-              Ty.path "u128",
-              M.get_trait_method (|
-                "core::default::Default",
+        (M.value_with_ty
+          (Value.StructTuple
+            "e2e_call_runtime::AccountId"
+            [
+              M.call_closure (|
                 Ty.path "u128",
-                [],
-                [],
-                "default",
-                [],
+                M.get_trait_method (|
+                  "core::default::Default",
+                  Ty.path "u128",
+                  [],
+                  [],
+                  "default",
+                  [],
+                  []
+                |),
                 []
-              |),
-              []
-            |)
-          ]))
+              |)
+            ])
+          (Ty.path "e2e_call_runtime::AccountId")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -115,7 +115,11 @@ Module Impl_e2e_call_runtime_Env.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -140,7 +144,11 @@ Module Impl_core_default_Default_for_e2e_call_runtime_Contract.
   (* Default *)
   Definition default (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [] => ltac:(M.monadic (Value.StructTuple "e2e_call_runtime::Contract" [] [] []))
+    | [], [], [] =>
+      ltac:(M.monadic
+        (M.value_with_ty
+          (Value.StructTuple "e2e_call_runtime::Contract" [])
+          (Ty.path "e2e_call_runtime::Contract")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -169,7 +177,11 @@ Module Impl_e2e_call_runtime_Contract.
           M.call_closure (|
             Ty.path "never",
             M.get_function (| "core::panicking::panic", [], [] |),
-            [ mk_str (| "not implemented" |) ]
+            [
+              M.value_with_ty
+                (mk_str (| "not implemented" |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+            ]
           |)
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -209,7 +221,11 @@ Module Impl_e2e_call_runtime_Contract.
   *)
   Definition new (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     match ε, τ, α with
-    | [], [], [] => ltac:(M.monadic (Value.StructTuple "e2e_call_runtime::Contract" [] [] []))
+    | [], [], [] =>
+      ltac:(M.monadic
+        (M.value_with_ty
+          (Value.StructTuple "e2e_call_runtime::Contract" [])
+          (Ty.path "e2e_call_runtime::Contract")))
     | _, _, _ => M.impossible "wrong number of arguments"
     end.
   
@@ -232,22 +248,28 @@ Module Impl_e2e_call_runtime_Contract.
           Ty.path "u128",
           M.get_associated_function (| Ty.path "e2e_call_runtime::Env", "balance", [], [] |),
           [
-            M.borrow (|
-              Pointer.Kind.Ref,
-              M.alloc (|
-                Ty.path "e2e_call_runtime::Env",
-                M.call_closure (|
+            M.value_with_ty
+              (M.borrow (|
+                Pointer.Kind.Ref,
+                M.alloc (|
                   Ty.path "e2e_call_runtime::Env",
-                  M.get_associated_function (|
-                    Ty.path "e2e_call_runtime::Contract",
-                    "env",
-                    [],
-                    []
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                  M.call_closure (|
+                    Ty.path "e2e_call_runtime::Env",
+                    M.get_associated_function (|
+                      Ty.path "e2e_call_runtime::Contract",
+                      "env",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "e2e_call_runtime::Contract" ])
+                    ]
+                  |)
                 |)
-              |)
-            |)
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "e2e_call_runtime::Env" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"

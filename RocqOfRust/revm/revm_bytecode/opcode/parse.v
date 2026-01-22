@@ -38,36 +38,42 @@ Module opcode.
                 []
               |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OpCodeError" |) |) |);
-                M.call_closure (|
-                  Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
-                  M.pointer_coercion
-                    M.PointerCoercion.Unsize
-                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ])
-                    (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.borrow (|
-                          Pointer.Kind.Ref,
-                          M.alloc (|
-                            Ty.apply (Ty.path "&") [] [ Ty.tuple [] ],
-                            M.borrow (|
-                              Pointer.Kind.Ref,
-                              M.SubPointer.get_struct_tuple_field (|
-                                M.deref (| M.read (| self |) |),
-                                "revm_bytecode::opcode::parse::OpCodeError",
-                                0
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "OpCodeError" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ]);
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ],
+                    M.pointer_coercion
+                      M.PointerCoercion.Unsize
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "&") [] [ Ty.tuple [] ] ])
+                      (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ]),
+                    [
+                      M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.alloc (|
+                              Ty.apply (Ty.path "&") [] [ Ty.tuple [] ],
+                              M.borrow (|
+                                Pointer.Kind.Ref,
+                                M.SubPointer.get_struct_tuple_field (|
+                                  M.deref (| M.read (| self |) |),
+                                  "revm_bytecode::opcode::parse::OpCodeError",
+                                  0
+                                |)
                               |)
                             |)
                           |)
                         |)
                       |)
-                    |)
-                  ]
-                |)
+                    ]
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.dyn [ ("core::fmt::Debug::Trait", []) ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -124,22 +130,26 @@ Module opcode.
                 []
               |),
               [
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| self |) |),
-                    "revm_bytecode::opcode::parse::OpCodeError",
-                    0
-                  |)
-                |);
-                M.borrow (|
-                  Pointer.Kind.Ref,
-                  M.SubPointer.get_struct_tuple_field (|
-                    M.deref (| M.read (| other |) |),
-                    "revm_bytecode::opcode::parse::OpCodeError",
-                    0
-                  |)
-                |)
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| self |) |),
+                      "revm_bytecode::opcode::parse::OpCodeError",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.tuple [] ]);
+                M.value_with_ty
+                  (M.borrow (|
+                    Pointer.Kind.Ref,
+                    M.SubPointer.get_struct_tuple_field (|
+                      M.deref (| M.read (| other |) |),
+                      "revm_bytecode::opcode::parse::OpCodeError",
+                      0
+                    |)
+                  |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.tuple [] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -215,8 +225,12 @@ Module opcode.
                 [ Ty.tuple []; Ty.path "core::fmt::Error" ],
               M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "invalid opcode" |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "invalid opcode" |) |) |))
+                  (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -277,24 +291,35 @@ Module opcode.
                 [ Ty.path "revm_bytecode::opcode::parse::OpCodeError" ]
               |),
               [
-                M.call_closure (|
-                  Ty.apply
+                M.value_with_ty
+                  (M.call_closure (|
+                    Ty.apply
+                      (Ty.path "core::option::Option")
+                      []
+                      [ Ty.path "revm_bytecode::opcode::OpCode" ],
+                    M.get_associated_function (|
+                      Ty.path "revm_bytecode::opcode::OpCode",
+                      "parse",
+                      [],
+                      []
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                    ]
+                  |))
+                  (Ty.apply
                     (Ty.path "core::option::Option")
                     []
-                    [ Ty.path "revm_bytecode::opcode::OpCode" ],
-                  M.get_associated_function (|
-                    Ty.path "revm_bytecode::opcode::OpCode",
-                    "parse",
-                    [],
-                    []
-                  |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
-                |);
-                Value.StructTuple
-                  "revm_bytecode::opcode::parse::OpCodeError"
-                  []
-                  []
-                  [ Value.Tuple [] ]
+                    [ Ty.path "revm_bytecode::opcode::OpCode" ]);
+                M.value_with_ty
+                  (M.value_with_ty
+                    (Value.StructTuple
+                      "revm_bytecode::opcode::parse::OpCodeError"
+                      [ Value.Tuple [] ])
+                    (Ty.path "revm_bytecode::opcode::parse::OpCodeError"))
+                  (Ty.path "revm_bytecode::opcode::parse::OpCodeError")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -338,49 +363,69 @@ Module opcode.
                 []
               |),
               [
-                M.call_closure (|
-                  Ty.apply
-                    (Ty.path "core::option::Option")
-                    []
-                    [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::opcode::OpCode" ] ],
-                  M.get_associated_function (|
+                M.value_with_ty
+                  (M.call_closure (|
                     Ty.apply
-                      (Ty.path "phf::map::Map")
+                      (Ty.path "core::option::Option")
                       []
-                      [
-                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
-                        Ty.path "revm_bytecode::opcode::OpCode"
-                      ],
-                    "get",
-                    [],
-                    [ Ty.path "str" ]
-                  |),
-                  [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.read (|
-                          get_constant (|
-                            "revm_bytecode::opcode::NAME_TO_OPCODE",
-                            Ty.apply
-                              (Ty.path "&")
-                              []
-                              [
+                      [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::opcode::OpCode" ] ],
+                    M.get_associated_function (|
+                      Ty.apply
+                        (Ty.path "phf::map::Map")
+                        []
+                        [
+                          Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                          Ty.path "revm_bytecode::opcode::OpCode"
+                        ],
+                      "get",
+                      [],
+                      [ Ty.path "str" ]
+                    |),
+                    [
+                      M.value_with_ty
+                        (M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.deref (|
+                            M.read (|
+                              get_constant (|
+                                "revm_bytecode::opcode::NAME_TO_OPCODE",
                                 Ty.apply
-                                  (Ty.path "phf::map::Map")
+                                  (Ty.path "&")
                                   []
                                   [
-                                    Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
-                                    Ty.path "revm_bytecode::opcode::OpCode"
+                                    Ty.apply
+                                      (Ty.path "phf::map::Map")
+                                      []
+                                      [
+                                        Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                                        Ty.path "revm_bytecode::opcode::OpCode"
+                                      ]
                                   ]
-                              ]
+                              |)
+                            |)
                           |)
-                        |)
-                      |)
-                    |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |)
-                  ]
-                |)
+                        |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [
+                            Ty.apply
+                              (Ty.path "phf::map::Map")
+                              []
+                              [
+                                Ty.apply (Ty.path "&") [] [ Ty.path "str" ];
+                                Ty.path "revm_bytecode::opcode::OpCode"
+                              ]
+                          ]);
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                        (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                    ]
+                  |))
+                  (Ty.apply
+                    (Ty.path "core::option::Option")
+                    []
+                    [ Ty.apply (Ty.path "&") [] [ Ty.path "revm_bytecode::opcode::OpCode" ] ])
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"

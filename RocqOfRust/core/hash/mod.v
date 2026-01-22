@@ -33,7 +33,11 @@ Module hash.
                         [],
                         []
                       |),
-                      [ M.read (| data |) ]
+                      [
+                        M.value_with_ty
+                          (M.read (| data |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Self ] ])
+                      ]
                     |)
                   |),
                   [
@@ -68,10 +72,20 @@ Module hash.
                                         []
                                       |),
                                       [
-                                        M.borrow (|
-                                          Pointer.Kind.MutRef,
-                                          M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
-                                        |)
+                                        M.value_with_ty
+                                          (M.borrow (|
+                                            Pointer.Kind.MutRef,
+                                            M.deref (| M.borrow (| Pointer.Kind.MutRef, iter |) |)
+                                          |))
+                                          (Ty.apply
+                                            (Ty.path "&mut")
+                                            []
+                                            [
+                                              Ty.apply
+                                                (Ty.path "core::slice::iter::Iter")
+                                                []
+                                                [ Self ]
+                                            ])
                                       ]
                                     |)
                                   |),
@@ -103,14 +117,18 @@ Module hash.
                                             [ H ]
                                           |),
                                           [
-                                            M.borrow (|
-                                              Pointer.Kind.Ref,
-                                              M.deref (| M.read (| piece |) |)
-                                            |);
-                                            M.borrow (|
-                                              Pointer.Kind.MutRef,
-                                              M.deref (| M.read (| state |) |)
-                                            |)
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.Ref,
+                                                M.deref (| M.read (| piece |) |)
+                                              |))
+                                              (Ty.apply (Ty.path "&") [] [ Self ]);
+                                            M.value_with_ty
+                                              (M.borrow (|
+                                                Pointer.Kind.MutRef,
+                                                M.deref (| M.read (| state |) |)
+                                              |))
+                                              (Ty.apply (Ty.path "&mut") [] [ H ])
                                           ]
                                         |)))
                                   ]
@@ -140,39 +158,43 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", Self, [], [], "write", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 1 ]
-                        [ Ty.path "u8" ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 1 ]
-                            [ Ty.path "u8" ],
-                          Value.Array [ M.read (| i |) ]
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Self ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 1 ]
+                          [ Ty.path "u8" ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
+                            Ty.apply
+                              (Ty.path "array")
+                              [ Value.Integer IntegerKind.Usize 1 ]
+                              [ Ty.path "u8" ],
+                            Value.Array [ M.read (| i |) ]
+                          |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -189,46 +211,50 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", Self, [], [], "write", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 2 ]
-                        [ Ty.path "u8" ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 2 ]
-                            [ Ty.path "u8" ],
-                          M.call_closure (|
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Self ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 2 ]
+                          [ Ty.path "u8" ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 2 ]
                               [ Ty.path "u8" ],
-                            M.get_associated_function (| Ty.path "u16", "to_ne_bytes", [], [] |),
-                            [ M.read (| i |) ]
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 2 ]
+                                [ Ty.path "u8" ],
+                              M.get_associated_function (| Ty.path "u16", "to_ne_bytes", [], [] |),
+                              [ M.value_with_ty (M.read (| i |)) (Ty.path "u16") ]
+                            |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -245,46 +271,50 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", Self, [], [], "write", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 4 ]
-                        [ Ty.path "u8" ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 4 ]
-                            [ Ty.path "u8" ],
-                          M.call_closure (|
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Self ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 4 ]
+                          [ Ty.path "u8" ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 4 ]
                               [ Ty.path "u8" ],
-                            M.get_associated_function (| Ty.path "u32", "to_ne_bytes", [], [] |),
-                            [ M.read (| i |) ]
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 4 ]
+                                [ Ty.path "u8" ],
+                              M.get_associated_function (| Ty.path "u32", "to_ne_bytes", [], [] |),
+                              [ M.value_with_ty (M.read (| i |)) (Ty.path "u32") ]
+                            |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -301,46 +331,50 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", Self, [], [], "write", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 8 ]
-                        [ Ty.path "u8" ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 8 ]
-                            [ Ty.path "u8" ],
-                          M.call_closure (|
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Self ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 8 ]
+                          [ Ty.path "u8" ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 8 ]
                               [ Ty.path "u8" ],
-                            M.get_associated_function (| Ty.path "u64", "to_ne_bytes", [], [] |),
-                            [ M.read (| i |) ]
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 8 ]
+                                [ Ty.path "u8" ],
+                              M.get_associated_function (| Ty.path "u64", "to_ne_bytes", [], [] |),
+                              [ M.value_with_ty (M.read (| i |)) (Ty.path "u64") ]
+                            |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -357,46 +391,50 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", Self, [], [], "write", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 16 ]
-                        [ Ty.path "u8" ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 16 ]
-                            [ Ty.path "u8" ],
-                          M.call_closure (|
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Self ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 16 ]
+                          [ Ty.path "u8" ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 16 ]
                               [ Ty.path "u8" ],
-                            M.get_associated_function (| Ty.path "u128", "to_ne_bytes", [], [] |),
-                            [ M.read (| i |) ]
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 16 ]
+                                [ Ty.path "u8" ],
+                              M.get_associated_function (| Ty.path "u128", "to_ne_bytes", [], [] |),
+                              [ M.value_with_ty (M.read (| i |)) (Ty.path "u128") ]
+                            |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -419,46 +457,55 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", Self, [], [], "write", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-              M.call_closure (|
-                Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                M.pointer_coercion
-                  M.PointerCoercion.Unsize
-                  (Ty.apply
-                    (Ty.path "&")
-                    []
-                    [
-                      Ty.apply
-                        (Ty.path "array")
-                        [ Value.Integer IntegerKind.Usize 8 ]
-                        [ Ty.path "u8" ]
-                    ])
-                  (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
-                [
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.alloc (|
-                          Ty.apply
-                            (Ty.path "array")
-                            [ Value.Integer IntegerKind.Usize 8 ]
-                            [ Ty.path "u8" ],
-                          M.call_closure (|
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Self ]);
+              M.value_with_ty
+                (M.call_closure (|
+                  Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                  M.pointer_coercion
+                    M.PointerCoercion.Unsize
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [
+                        Ty.apply
+                          (Ty.path "array")
+                          [ Value.Integer IntegerKind.Usize 8 ]
+                          [ Ty.path "u8" ]
+                      ])
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]),
+                  [
+                    M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.borrow (|
+                          Pointer.Kind.Ref,
+                          M.alloc (|
                             Ty.apply
                               (Ty.path "array")
                               [ Value.Integer IntegerKind.Usize 8 ]
                               [ Ty.path "u8" ],
-                            M.get_associated_function (| Ty.path "usize", "to_ne_bytes", [], [] |),
-                            [ M.read (| i |) ]
+                            M.call_closure (|
+                              Ty.apply
+                                (Ty.path "array")
+                                [ Value.Integer IntegerKind.Usize 8 ]
+                                [ Ty.path "u8" ],
+                              M.get_associated_function (|
+                                Ty.path "usize",
+                                "to_ne_bytes",
+                                [],
+                                []
+                              |),
+                              [ M.value_with_ty (M.read (| i |)) (Ty.path "usize") ]
+                            |)
                           |)
                         |)
                       |)
                     |)
-                  |)
-                ]
-              |)
+                  ]
+                |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -476,8 +523,10 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", Self, [], [], "write_u8", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-              M.cast (Ty.path "u8") (M.read (| i |))
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Self ]);
+              M.value_with_ty (M.cast (Ty.path "u8") (M.read (| i |))) (Ty.path "u8")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -494,8 +543,10 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", Self, [], [], "write_u16", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-              M.cast (Ty.path "u16") (M.read (| i |))
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Self ]);
+              M.value_with_ty (M.cast (Ty.path "u16") (M.read (| i |))) (Ty.path "u16")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -512,8 +563,10 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", Self, [], [], "write_u32", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-              M.cast (Ty.path "u32") (M.read (| i |))
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Self ]);
+              M.value_with_ty (M.cast (Ty.path "u32") (M.read (| i |))) (Ty.path "u32")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -530,8 +583,10 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", Self, [], [], "write_u64", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-              M.cast (Ty.path "u64") (M.read (| i |))
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Self ]);
+              M.value_with_ty (M.cast (Ty.path "u64") (M.read (| i |))) (Ty.path "u64")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -548,8 +603,10 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", Self, [], [], "write_u128", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-              M.cast (Ty.path "u128") (M.read (| i |))
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Self ]);
+              M.value_with_ty (M.cast (Ty.path "u128") (M.read (| i |))) (Ty.path "u128")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -572,8 +629,10 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", Self, [], [], "write_usize", [], [] |),
             [
-              M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-              M.cast (Ty.path "usize") (M.read (| i |))
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                (Ty.apply (Ty.path "&mut") [] [ Self ]);
+              M.value_with_ty (M.cast (Ty.path "usize") (M.read (| i |))) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -598,8 +657,10 @@ Module hash.
                 Ty.tuple [],
                 M.get_trait_method (| "core::hash::Hasher", Self, [], [], "write_usize", [], [] |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.read (| len |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Self ]);
+                  M.value_with_ty (M.read (| len |)) (Ty.path "usize")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -621,20 +682,28 @@ Module hash.
                 Ty.tuple [],
                 M.get_trait_method (| "core::hash::Hasher", Self, [], [], "write", [], [] |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  M.borrow (|
-                    Pointer.Kind.Ref,
-                    M.deref (|
-                      M.call_closure (|
-                        Ty.apply
-                          (Ty.path "&")
-                          []
-                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                        M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
-                        [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |) ]
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Self ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.Ref,
+                      M.deref (|
+                        M.call_closure (|
+                          Ty.apply
+                            (Ty.path "&")
+                            []
+                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                          M.get_associated_function (| Ty.path "str", "as_bytes", [], [] |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                          ]
+                        |)
                       |)
-                    |)
-                  |)
+                    |))
+                    (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                 ]
               |) in
             let~ _ : Ty.tuple [] :=
@@ -642,8 +711,10 @@ Module hash.
                 Ty.tuple [],
                 M.get_trait_method (| "core::hash::Hasher", Self, [], [], "write_u8", [], [] |),
                 [
-                  M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |);
-                  Value.Integer IntegerKind.U8 255
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&mut") [] [ Self ]);
+                  M.value_with_ty (Value.Integer IntegerKind.U8 255) (Ty.path "u8")
                 ]
               |) in
             M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -673,10 +744,12 @@ Module hash.
             Ty.path "u64",
             M.get_trait_method (| "core::hash::Hasher", H, [], [], "finish", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.Ref,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.Ref,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&") [] [ H ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -706,11 +779,15 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", H, [], [], "write", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytes |) |) |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ H ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| bytes |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -736,11 +813,13 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_u8", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| i |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ H ]);
+              M.value_with_ty (M.read (| i |)) (Ty.path "u8")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -766,11 +845,13 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_u16", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| i |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ H ]);
+              M.value_with_ty (M.read (| i |)) (Ty.path "u16")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -796,11 +877,13 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_u32", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| i |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ H ]);
+              M.value_with_ty (M.read (| i |)) (Ty.path "u32")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -826,11 +909,13 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_u64", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| i |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ H ]);
+              M.value_with_ty (M.read (| i |)) (Ty.path "u64")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -856,11 +941,13 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_u128", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| i |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ H ]);
+              M.value_with_ty (M.read (| i |)) (Ty.path "u128")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -886,11 +973,13 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_usize", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| i |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ H ]);
+              M.value_with_ty (M.read (| i |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -916,11 +1005,13 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_i8", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| i |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ H ]);
+              M.value_with_ty (M.read (| i |)) (Ty.path "i8")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -946,11 +1037,13 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_i16", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| i |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ H ]);
+              M.value_with_ty (M.read (| i |)) (Ty.path "i16")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -976,11 +1069,13 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_i32", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| i |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ H ]);
+              M.value_with_ty (M.read (| i |)) (Ty.path "i32")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1006,11 +1101,13 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_i64", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| i |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ H ]);
+              M.value_with_ty (M.read (| i |)) (Ty.path "i64")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1036,11 +1133,13 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_i128", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| i |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ H ]);
+              M.value_with_ty (M.read (| i |)) (Ty.path "i128")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1066,11 +1165,13 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_isize", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| i |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ H ]);
+              M.value_with_ty (M.read (| i |)) (Ty.path "isize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1101,11 +1202,13 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_length_prefix", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.read (| len |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ H ]);
+              M.value_with_ty (M.read (| len |)) (Ty.path "usize")
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1131,11 +1234,15 @@ Module hash.
             Ty.tuple [],
             M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_str", [], [] |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-              |);
-              M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |)
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ H ]);
+              M.value_with_ty
+                (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| s |) |) |))
+                (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1190,7 +1297,11 @@ Module hash.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                    (Ty.apply (Ty.path "&") [] [ Self ])
+                ]
               |) in
             let~ _ : Ty.tuple [] :=
               M.call_closure (|
@@ -1205,11 +1316,18 @@ Module hash.
                   [ Ty.associated_in_trait "core::hash::BuildHasher" [] [] Self "Hasher" ]
                 |),
                 [
-                  M.borrow (| Pointer.Kind.Ref, x |);
-                  M.borrow (|
-                    Pointer.Kind.MutRef,
-                    M.deref (| M.borrow (| Pointer.Kind.MutRef, hasher |) |)
-                  |)
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, x |))
+                    (Ty.apply (Ty.path "&") [] [ T ]);
+                  M.value_with_ty
+                    (M.borrow (|
+                      Pointer.Kind.MutRef,
+                      M.deref (| M.borrow (| Pointer.Kind.MutRef, hasher |) |)
+                    |))
+                    (Ty.apply
+                      (Ty.path "&mut")
+                      []
+                      [ Ty.associated_in_trait "core::hash::BuildHasher" [] [] Self "Hasher" ])
                 ]
               |) in
             M.alloc (|
@@ -1225,7 +1343,14 @@ Module hash.
                   [],
                   []
                 |),
-                [ M.borrow (| Pointer.Kind.Ref, hasher |) ]
+                [
+                  M.value_with_ty
+                    (M.borrow (| Pointer.Kind.Ref, hasher |))
+                    (Ty.apply
+                      (Ty.path "&")
+                      []
+                      [ Ty.associated_in_trait "core::hash::BuildHasher" [] [] Self "Hasher" ])
+                ]
               |)
             |)
           |)))
@@ -1258,11 +1383,15 @@ Module hash.
       match ε, τ, α with
       | [], [], [] =>
         ltac:(M.monadic
-          (Value.StructTuple
-            "core::hash::BuildHasherDefault"
-            []
-            [ H ]
-            [ Value.StructTuple "core::marker::PhantomData" [] [ Ty.function [] H ] [] ]))
+          (M.value_with_ty
+            (Value.StructTuple
+              "core::hash::BuildHasherDefault"
+              [
+                M.value_with_ty
+                  (Value.StructTuple "core::marker::PhantomData" [])
+                  (Ty.apply (Ty.path "core::marker::PhantomData") [] [ Ty.function [] H ])
+              ])
+            (Ty.apply (Ty.path "core::hash::BuildHasherDefault") [] [ H ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1309,28 +1438,34 @@ Module hash.
               []
             |),
             [
-              M.borrow (|
-                Pointer.Kind.MutRef,
-                M.alloc (|
-                  Ty.path "core::fmt::builders::DebugStruct",
-                  M.call_closure (|
+              M.value_with_ty
+                (M.borrow (|
+                  Pointer.Kind.MutRef,
+                  M.alloc (|
                     Ty.path "core::fmt::builders::DebugStruct",
-                    M.get_associated_function (|
-                      Ty.path "core::fmt::Formatter",
-                      "debug_struct",
-                      [],
-                      []
-                    |),
-                    [
-                      M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-                      M.borrow (|
-                        Pointer.Kind.Ref,
-                        M.deref (| mk_str (| "BuildHasherDefault" |) |)
-                      |)
-                    ]
+                    M.call_closure (|
+                      Ty.path "core::fmt::builders::DebugStruct",
+                      M.get_associated_function (|
+                        Ty.path "core::fmt::Formatter",
+                        "debug_struct",
+                        [],
+                        []
+                      |),
+                      [
+                        M.value_with_ty
+                          (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+                          (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+                        M.value_with_ty
+                          (M.borrow (|
+                            Pointer.Kind.Ref,
+                            M.deref (| mk_str (| "BuildHasherDefault" |) |)
+                          |))
+                          (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
+                      ]
+                    |)
                   |)
-                |)
-              |)
+                |))
+                (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::builders::DebugStruct" ])
             ]
           |)))
       | _, _, _ => M.impossible "wrong number of arguments"
@@ -1415,11 +1550,15 @@ Module hash.
                 [ Ty.apply (Ty.path "core::hash::BuildHasherDefault") [] [ H ] ],
               self
             |) in
-          Value.StructTuple
-            "core::hash::BuildHasherDefault"
-            []
-            [ H ]
-            [ Value.StructTuple "core::marker::PhantomData" [] [ Ty.function [] H ] [] ]))
+          M.value_with_ty
+            (Value.StructTuple
+              "core::hash::BuildHasherDefault"
+              [
+                M.value_with_ty
+                  (Value.StructTuple "core::marker::PhantomData" [])
+                  (Ty.apply (Ty.path "core::marker::PhantomData") [] [ Ty.function [] H ])
+              ])
+            (Ty.apply (Ty.path "core::hash::BuildHasherDefault") [] [ H ])))
       | _, _, _ => M.impossible "wrong number of arguments"
       end.
     
@@ -1548,8 +1687,10 @@ Module hash.
               Ty.tuple [],
               M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_u8", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                M.read (| M.deref (| M.read (| self |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ H ]);
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "u8")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1585,7 +1726,11 @@ Module hash.
                     [],
                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                  ]
                 |) in
               let~ ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
                 M.cast
@@ -1598,7 +1743,14 @@ Module hash.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
+                    ]
                   |)) in
               M.alloc (|
                 Ty.tuple [],
@@ -1606,24 +1758,33 @@ Module hash.
                   Ty.tuple [],
                   M.get_trait_method (| "core::hash::Hasher", H, [], [], "write", [], [] |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_function (|
-                            "core::slice::raw::from_raw_parts",
-                            [],
-                            [ Ty.path "u8" ]
-                          |),
-                          [ M.read (| ptr |); M.read (| newlen |) ]
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            M.get_function (|
+                              "core::slice::raw::from_raw_parts",
+                              [],
+                              [ Ty.path "u8" ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| ptr |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (M.read (| newlen |)) (Ty.path "usize")
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |)
               |)
@@ -1659,8 +1820,10 @@ Module hash.
               Ty.tuple [],
               M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_u16", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                M.read (| M.deref (| M.read (| self |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ H ]);
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "u16")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1696,7 +1859,14 @@ Module hash.
                     [],
                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ] ])
+                  ]
                 |) in
               let~ ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
                 M.cast
@@ -1709,7 +1879,14 @@ Module hash.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u16" ] ])
+                    ]
                   |)) in
               M.alloc (|
                 Ty.tuple [],
@@ -1717,24 +1894,33 @@ Module hash.
                   Ty.tuple [],
                   M.get_trait_method (| "core::hash::Hasher", H, [], [], "write", [], [] |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_function (|
-                            "core::slice::raw::from_raw_parts",
-                            [],
-                            [ Ty.path "u8" ]
-                          |),
-                          [ M.read (| ptr |); M.read (| newlen |) ]
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            M.get_function (|
+                              "core::slice::raw::from_raw_parts",
+                              [],
+                              [ Ty.path "u8" ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| ptr |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (M.read (| newlen |)) (Ty.path "usize")
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |)
               |)
@@ -1770,8 +1956,10 @@ Module hash.
               Ty.tuple [],
               M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_u32", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                M.read (| M.deref (| M.read (| self |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ H ]);
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "u32")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1807,7 +1995,14 @@ Module hash.
                     [],
                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u32" ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u32" ] ])
+                  ]
                 |) in
               let~ ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
                 M.cast
@@ -1820,7 +2015,14 @@ Module hash.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u32" ] ])
+                    ]
                   |)) in
               M.alloc (|
                 Ty.tuple [],
@@ -1828,24 +2030,33 @@ Module hash.
                   Ty.tuple [],
                   M.get_trait_method (| "core::hash::Hasher", H, [], [], "write", [], [] |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_function (|
-                            "core::slice::raw::from_raw_parts",
-                            [],
-                            [ Ty.path "u8" ]
-                          |),
-                          [ M.read (| ptr |); M.read (| newlen |) ]
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            M.get_function (|
+                              "core::slice::raw::from_raw_parts",
+                              [],
+                              [ Ty.path "u8" ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| ptr |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (M.read (| newlen |)) (Ty.path "usize")
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |)
               |)
@@ -1881,8 +2092,10 @@ Module hash.
               Ty.tuple [],
               M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_u64", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                M.read (| M.deref (| M.read (| self |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ H ]);
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "u64")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -1918,7 +2131,14 @@ Module hash.
                     [],
                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ])
+                  ]
                 |) in
               let~ ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
                 M.cast
@@ -1931,7 +2151,14 @@ Module hash.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u64" ] ])
+                    ]
                   |)) in
               M.alloc (|
                 Ty.tuple [],
@@ -1939,24 +2166,33 @@ Module hash.
                   Ty.tuple [],
                   M.get_trait_method (| "core::hash::Hasher", H, [], [], "write", [], [] |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_function (|
-                            "core::slice::raw::from_raw_parts",
-                            [],
-                            [ Ty.path "u8" ]
-                          |),
-                          [ M.read (| ptr |); M.read (| newlen |) ]
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            M.get_function (|
+                              "core::slice::raw::from_raw_parts",
+                              [],
+                              [ Ty.path "u8" ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| ptr |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (M.read (| newlen |)) (Ty.path "usize")
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |)
               |)
@@ -1992,8 +2228,10 @@ Module hash.
               Ty.tuple [],
               M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_usize", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                M.read (| M.deref (| M.read (| self |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ H ]);
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "usize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2029,7 +2267,14 @@ Module hash.
                     [],
                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "usize" ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "usize" ] ])
+                  ]
                 |) in
               let~ ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
                 M.cast
@@ -2042,7 +2287,14 @@ Module hash.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "usize" ] ])
+                    ]
                   |)) in
               M.alloc (|
                 Ty.tuple [],
@@ -2050,24 +2302,33 @@ Module hash.
                   Ty.tuple [],
                   M.get_trait_method (| "core::hash::Hasher", H, [], [], "write", [], [] |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_function (|
-                            "core::slice::raw::from_raw_parts",
-                            [],
-                            [ Ty.path "u8" ]
-                          |),
-                          [ M.read (| ptr |); M.read (| newlen |) ]
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            M.get_function (|
+                              "core::slice::raw::from_raw_parts",
+                              [],
+                              [ Ty.path "u8" ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| ptr |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (M.read (| newlen |)) (Ty.path "usize")
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |)
               |)
@@ -2103,8 +2364,10 @@ Module hash.
               Ty.tuple [],
               M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_i8", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                M.read (| M.deref (| M.read (| self |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ H ]);
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "i8")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2140,7 +2403,11 @@ Module hash.
                     [],
                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "i8" ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "i8" ] ])
+                  ]
                 |) in
               let~ ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
                 M.cast
@@ -2153,7 +2420,14 @@ Module hash.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "i8" ] ])
+                    ]
                   |)) in
               M.alloc (|
                 Ty.tuple [],
@@ -2161,24 +2435,33 @@ Module hash.
                   Ty.tuple [],
                   M.get_trait_method (| "core::hash::Hasher", H, [], [], "write", [], [] |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_function (|
-                            "core::slice::raw::from_raw_parts",
-                            [],
-                            [ Ty.path "u8" ]
-                          |),
-                          [ M.read (| ptr |); M.read (| newlen |) ]
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            M.get_function (|
+                              "core::slice::raw::from_raw_parts",
+                              [],
+                              [ Ty.path "u8" ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| ptr |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (M.read (| newlen |)) (Ty.path "usize")
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |)
               |)
@@ -2214,8 +2497,10 @@ Module hash.
               Ty.tuple [],
               M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_i16", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                M.read (| M.deref (| M.read (| self |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ H ]);
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "i16")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2251,7 +2536,14 @@ Module hash.
                     [],
                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "i16" ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "i16" ] ])
+                  ]
                 |) in
               let~ ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
                 M.cast
@@ -2264,7 +2556,14 @@ Module hash.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "i16" ] ])
+                    ]
                   |)) in
               M.alloc (|
                 Ty.tuple [],
@@ -2272,24 +2571,33 @@ Module hash.
                   Ty.tuple [],
                   M.get_trait_method (| "core::hash::Hasher", H, [], [], "write", [], [] |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_function (|
-                            "core::slice::raw::from_raw_parts",
-                            [],
-                            [ Ty.path "u8" ]
-                          |),
-                          [ M.read (| ptr |); M.read (| newlen |) ]
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            M.get_function (|
+                              "core::slice::raw::from_raw_parts",
+                              [],
+                              [ Ty.path "u8" ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| ptr |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (M.read (| newlen |)) (Ty.path "usize")
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |)
               |)
@@ -2325,8 +2633,10 @@ Module hash.
               Ty.tuple [],
               M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_i32", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                M.read (| M.deref (| M.read (| self |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ H ]);
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "i32")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2362,7 +2672,14 @@ Module hash.
                     [],
                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "i32" ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "i32" ] ])
+                  ]
                 |) in
               let~ ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
                 M.cast
@@ -2375,7 +2692,14 @@ Module hash.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "i32" ] ])
+                    ]
                   |)) in
               M.alloc (|
                 Ty.tuple [],
@@ -2383,24 +2707,33 @@ Module hash.
                   Ty.tuple [],
                   M.get_trait_method (| "core::hash::Hasher", H, [], [], "write", [], [] |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_function (|
-                            "core::slice::raw::from_raw_parts",
-                            [],
-                            [ Ty.path "u8" ]
-                          |),
-                          [ M.read (| ptr |); M.read (| newlen |) ]
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            M.get_function (|
+                              "core::slice::raw::from_raw_parts",
+                              [],
+                              [ Ty.path "u8" ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| ptr |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (M.read (| newlen |)) (Ty.path "usize")
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |)
               |)
@@ -2436,8 +2769,10 @@ Module hash.
               Ty.tuple [],
               M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_i64", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                M.read (| M.deref (| M.read (| self |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ H ]);
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "i64")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2473,7 +2808,14 @@ Module hash.
                     [],
                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "i64" ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "i64" ] ])
+                  ]
                 |) in
               let~ ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
                 M.cast
@@ -2486,7 +2828,14 @@ Module hash.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "i64" ] ])
+                    ]
                   |)) in
               M.alloc (|
                 Ty.tuple [],
@@ -2494,24 +2843,33 @@ Module hash.
                   Ty.tuple [],
                   M.get_trait_method (| "core::hash::Hasher", H, [], [], "write", [], [] |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_function (|
-                            "core::slice::raw::from_raw_parts",
-                            [],
-                            [ Ty.path "u8" ]
-                          |),
-                          [ M.read (| ptr |); M.read (| newlen |) ]
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            M.get_function (|
+                              "core::slice::raw::from_raw_parts",
+                              [],
+                              [ Ty.path "u8" ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| ptr |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (M.read (| newlen |)) (Ty.path "usize")
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |)
               |)
@@ -2547,8 +2905,10 @@ Module hash.
               Ty.tuple [],
               M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_isize", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                M.read (| M.deref (| M.read (| self |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ H ]);
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "isize")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2584,7 +2944,14 @@ Module hash.
                     [],
                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "isize" ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "isize" ] ])
+                  ]
                 |) in
               let~ ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
                 M.cast
@@ -2597,7 +2964,14 @@ Module hash.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "isize" ] ])
+                    ]
                   |)) in
               M.alloc (|
                 Ty.tuple [],
@@ -2605,24 +2979,33 @@ Module hash.
                   Ty.tuple [],
                   M.get_trait_method (| "core::hash::Hasher", H, [], [], "write", [], [] |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_function (|
-                            "core::slice::raw::from_raw_parts",
-                            [],
-                            [ Ty.path "u8" ]
-                          |),
-                          [ M.read (| ptr |); M.read (| newlen |) ]
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            M.get_function (|
+                              "core::slice::raw::from_raw_parts",
+                              [],
+                              [ Ty.path "u8" ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| ptr |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (M.read (| newlen |)) (Ty.path "usize")
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |)
               |)
@@ -2658,8 +3041,10 @@ Module hash.
               Ty.tuple [],
               M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_u128", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                M.read (| M.deref (| M.read (| self |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ H ]);
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "u128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2695,7 +3080,14 @@ Module hash.
                     [],
                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "u128" ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "u128" ] ])
+                  ]
                 |) in
               let~ ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
                 M.cast
@@ -2708,7 +3100,14 @@ Module hash.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "u128" ] ])
+                    ]
                   |)) in
               M.alloc (|
                 Ty.tuple [],
@@ -2716,24 +3115,33 @@ Module hash.
                   Ty.tuple [],
                   M.get_trait_method (| "core::hash::Hasher", H, [], [], "write", [], [] |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_function (|
-                            "core::slice::raw::from_raw_parts",
-                            [],
-                            [ Ty.path "u8" ]
-                          |),
-                          [ M.read (| ptr |); M.read (| newlen |) ]
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            M.get_function (|
+                              "core::slice::raw::from_raw_parts",
+                              [],
+                              [ Ty.path "u8" ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| ptr |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (M.read (| newlen |)) (Ty.path "usize")
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |)
               |)
@@ -2769,8 +3177,10 @@ Module hash.
               Ty.tuple [],
               M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_i128", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                M.read (| M.deref (| M.read (| self |) |) |)
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ H ]);
+                M.value_with_ty (M.read (| M.deref (| M.read (| self |) |) |)) (Ty.path "i128")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2806,7 +3216,14 @@ Module hash.
                     [],
                     [ Ty.apply (Ty.path "slice") [] [ Ty.path "i128" ] ]
                   |),
-                  [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                      (Ty.apply
+                        (Ty.path "&")
+                        []
+                        [ Ty.apply (Ty.path "slice") [] [ Ty.path "i128" ] ])
+                  ]
                 |) in
               let~ ptr : Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ] :=
                 M.cast
@@ -2819,7 +3236,14 @@ Module hash.
                       [],
                       []
                     |),
-                    [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |) ]
+                    [
+                      M.value_with_ty
+                        (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| data |) |) |))
+                        (Ty.apply
+                          (Ty.path "&")
+                          []
+                          [ Ty.apply (Ty.path "slice") [] [ Ty.path "i128" ] ])
+                    ]
                   |)) in
               M.alloc (|
                 Ty.tuple [],
@@ -2827,24 +3251,33 @@ Module hash.
                   Ty.tuple [],
                   M.get_trait_method (| "core::hash::Hasher", H, [], [], "write", [], [] |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (|
-                        M.call_closure (|
-                          Ty.apply
-                            (Ty.path "&")
-                            []
-                            [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
-                          M.get_function (|
-                            "core::slice::raw::from_raw_parts",
-                            [],
-                            [ Ty.path "u8" ]
-                          |),
-                          [ M.read (| ptr |); M.read (| newlen |) ]
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ]);
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (|
+                          M.call_closure (|
+                            Ty.apply
+                              (Ty.path "&")
+                              []
+                              [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ],
+                            M.get_function (|
+                              "core::slice::raw::from_raw_parts",
+                              [],
+                              [ Ty.path "u8" ]
+                            |),
+                            [
+                              M.value_with_ty
+                                (M.read (| ptr |))
+                                (Ty.apply (Ty.path "*const") [] [ Ty.path "u8" ]);
+                              M.value_with_ty (M.read (| newlen |)) (Ty.path "usize")
+                            ]
+                          |)
                         |)
-                      |)
-                    |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ Ty.path "u8" ] ])
                   ]
                 |)
               |)
@@ -2880,8 +3313,12 @@ Module hash.
               Ty.tuple [],
               M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_u8", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                M.cast (Ty.path "u8") (M.read (| M.deref (| M.read (| self |) |) |))
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ H ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u8") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u8")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2914,8 +3351,12 @@ Module hash.
               Ty.tuple [],
               M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_u32", [], [] |),
               [
-                M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                M.cast (Ty.path "u32") (M.read (| M.deref (| M.read (| self |) |) |))
+                M.value_with_ty
+                  (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                  (Ty.apply (Ty.path "&mut") [] [ H ]);
+                M.value_with_ty
+                  (M.cast (Ty.path "u32") (M.read (| M.deref (| M.read (| self |) |) |)))
+                  (Ty.path "u32")
               ]
             |)))
         | _, _, _ => M.impossible "wrong number of arguments"
@@ -2950,8 +3391,12 @@ Module hash.
                   Ty.tuple [],
                   M.get_trait_method (| "core::hash::Hasher", H, [], [], "write_str", [], [] |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3056,8 +3501,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ T ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3109,8 +3558,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ T ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3118,8 +3571,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", B, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ B ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3173,8 +3630,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ T ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3182,8 +3643,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", B, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ B ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3191,8 +3656,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", C, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ C ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3249,8 +3718,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ T ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3258,8 +3731,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", B, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ B ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3267,8 +3744,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", C, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ C ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3276,8 +3757,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", D, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_D |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_D |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ D ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3341,8 +3826,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ T ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3350,8 +3839,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", B, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ B ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3359,8 +3852,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", C, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ C ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3368,8 +3865,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", D, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_D |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_D |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ D ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3377,8 +3878,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", E, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_E |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_E |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ E ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3444,8 +3949,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ T ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3453,8 +3962,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", B, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ B ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3462,8 +3975,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", C, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ C ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3471,8 +3988,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", D, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_D |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_D |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ D ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3480,8 +4001,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", E, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_E |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_E |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ E ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3489,8 +4014,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", F, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_F |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_F |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ F ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3558,8 +4087,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ T ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3567,8 +4100,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", B, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ B ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3576,8 +4113,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", C, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ C ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3585,8 +4126,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", D, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_D |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_D |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ D ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3594,8 +4139,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", E, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_E |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_E |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ E ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3603,8 +4152,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", F, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_F |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_F |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ F ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3612,8 +4165,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", G, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_G |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_G |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ G ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3686,8 +4243,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ T ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3695,8 +4256,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", B, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ B ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3704,8 +4269,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", C, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ C ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3713,8 +4282,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", D, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_D |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_D |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ D ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3722,8 +4295,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", E, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_E |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_E |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ E ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3731,8 +4308,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", F, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_F |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_F |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ F ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3740,8 +4321,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", G, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_G |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_G |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ G ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3749,8 +4334,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", H, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_H |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_H |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ H ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3825,8 +4414,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ T ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3834,8 +4427,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", B, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ B ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3843,8 +4440,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", C, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ C ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3852,8 +4453,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", D, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_D |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_D |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ D ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3861,8 +4466,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", E, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_E |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_E |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ E ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3870,8 +4479,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", F, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_F |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_F |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ F ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3879,8 +4492,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", G, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_G |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_G |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ G ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3888,8 +4505,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", H, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_H |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_H |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ H ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3897,8 +4518,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", I, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_I |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_I |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ I ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -3976,8 +4601,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ T ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3985,8 +4614,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", B, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ B ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -3994,8 +4627,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", C, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ C ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4003,8 +4640,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", D, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_D |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_D |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ D ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4012,8 +4653,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", E, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_E |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_E |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ E ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4021,8 +4666,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", F, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_F |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_F |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ F ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4030,8 +4679,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", G, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_G |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_G |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ G ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4039,8 +4692,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", H, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_H |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_H |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ H ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4048,8 +4705,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", I, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_I |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_I |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ I ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4057,8 +4718,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", J, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_J |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_J |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ J ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4138,8 +4803,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ T ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4147,8 +4816,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", B, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ B ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4156,8 +4829,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", C, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ C ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4165,8 +4842,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", D, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_D |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_D |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ D ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4174,8 +4855,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", E, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_E |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_E |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ E ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4183,8 +4868,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", F, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_F |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_F |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ F ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4192,8 +4881,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", G, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_G |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_G |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ G ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4201,8 +4894,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", H, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_H |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_H |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ H ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4210,8 +4907,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", I, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_I |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_I |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ I ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4219,8 +4920,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", J, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_J |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_J |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ J ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4228,8 +4933,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", K, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_K |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_K |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ K ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4311,8 +5020,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_T |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ T ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4320,8 +5033,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", B, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_B |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ B ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4329,8 +5046,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", C, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_C |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ C ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4338,8 +5059,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", D, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_D |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_D |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ D ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4347,8 +5072,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", E, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_E |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_E |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ E ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4356,8 +5085,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", F, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_F |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_F |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ F ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4365,8 +5098,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", G, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_G |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_G |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ G ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4374,8 +5111,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", H, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_H |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_H |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ H ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4383,8 +5124,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", I, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_I |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_I |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ I ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4392,8 +5137,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", J, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_J |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_J |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ J ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4401,8 +5150,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", K, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_K |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_K |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ K ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4410,8 +5163,12 @@ Module hash.
                           Ty.tuple [],
                           M.get_trait_method (| "core::hash::Hash", L, [], [], "hash", [], [ S ] |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_L |) |) |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| value_L |) |) |))
+                              (Ty.apply (Ty.path "&") [] [ L ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ S ])
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4465,17 +5222,25 @@ Module hash.
                     []
                   |),
                   [
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                    M.call_closure (|
-                      Ty.path "usize",
-                      M.get_associated_function (|
-                        Ty.apply (Ty.path "slice") [] [ T ],
-                        "len",
-                        [],
-                        []
-                      |),
-                      [ M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |) ]
-                    |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ]);
+                    M.value_with_ty
+                      (M.call_closure (|
+                        Ty.path "usize",
+                        M.get_associated_function (|
+                          Ty.apply (Ty.path "slice") [] [ T ],
+                          "len",
+                          [],
+                          []
+                        |),
+                        [
+                          M.value_with_ty
+                            (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                            (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ])
+                        ]
+                      |))
+                      (Ty.path "usize")
                   ]
                 |) in
               M.alloc (|
@@ -4484,8 +5249,12 @@ Module hash.
                   Ty.tuple [],
                   M.get_trait_method (| "core::hash::Hash", T, [], [], "hash_slice", [], [ H ] |),
                   [
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.Ref, M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "&") [] [ Ty.apply (Ty.path "slice") [] [ T ] ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ])
                   ]
                 |)
               |)
@@ -4525,11 +5294,15 @@ Module hash.
                   Ty.tuple [],
                   M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ H ] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ])
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4572,11 +5345,15 @@ Module hash.
                   Ty.tuple [],
                   M.get_trait_method (| "core::hash::Hash", T, [], [], "hash", [], [ H ] |),
                   [
-                    M.borrow (|
-                      Pointer.Kind.Ref,
-                      M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
-                    |);
-                    M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                    M.value_with_ty
+                      (M.borrow (|
+                        Pointer.Kind.Ref,
+                        M.deref (| M.read (| M.deref (| M.read (| self |) |) |) |)
+                      |))
+                      (Ty.apply (Ty.path "&") [] [ T ]);
+                    M.value_with_ty
+                      (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                      (Ty.apply (Ty.path "&mut") [] [ H ])
                   ]
                 |) in
               M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4635,7 +5412,11 @@ Module hash.
                     [],
                     []
                   |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "*const") [] [ T ])
+                  ]
                 |)
               |),
               [
@@ -4664,17 +5445,25 @@ Module hash.
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
-                                "addr",
-                                [],
-                                []
-                              |),
-                              [ M.read (| address |) ]
-                            |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ H ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ],
+                                  "addr",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| address |))
+                                    (Ty.apply (Ty.path "*const") [] [ Ty.tuple [] ])
+                                ]
+                              |))
+                              (Ty.path "usize")
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4695,8 +5484,22 @@ Module hash.
                             [ H ]
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, metadata |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, metadata |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "core::ptr::metadata::Pointee"
+                                    []
+                                    []
+                                    T
+                                    "Metadata"
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ H ])
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -4757,7 +5560,11 @@ Module hash.
                     [],
                     []
                   |),
-                  [ M.read (| M.deref (| M.read (| self |) |) |) ]
+                  [
+                    M.value_with_ty
+                      (M.read (| M.deref (| M.read (| self |) |) |))
+                      (Ty.apply (Ty.path "*mut") [] [ T ])
+                  ]
                 |)
               |),
               [
@@ -4786,17 +5593,25 @@ Module hash.
                             []
                           |),
                           [
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |);
-                            M.call_closure (|
-                              Ty.path "usize",
-                              M.get_associated_function (|
-                                Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ],
-                                "addr",
-                                [],
-                                []
-                              |),
-                              [ M.read (| address |) ]
-                            |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ H ]);
+                            M.value_with_ty
+                              (M.call_closure (|
+                                Ty.path "usize",
+                                M.get_associated_function (|
+                                  Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ],
+                                  "addr",
+                                  [],
+                                  []
+                                |),
+                                [
+                                  M.value_with_ty
+                                    (M.read (| address |))
+                                    (Ty.apply (Ty.path "*mut") [] [ Ty.tuple [] ])
+                                ]
+                              |))
+                              (Ty.path "usize")
                           ]
                         |) in
                       let~ _ : Ty.tuple [] :=
@@ -4817,8 +5632,22 @@ Module hash.
                             [ H ]
                           |),
                           [
-                            M.borrow (| Pointer.Kind.Ref, metadata |);
-                            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |)
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.Ref, metadata |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
+                                  Ty.associated_in_trait
+                                    "core::ptr::metadata::Pointee"
+                                    []
+                                    []
+                                    T
+                                    "Metadata"
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| state |) |) |))
+                              (Ty.apply (Ty.path "&mut") [] [ H ])
                           ]
                         |) in
                       M.alloc (| Ty.tuple [], Value.Tuple [] |)

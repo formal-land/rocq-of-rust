@@ -29,11 +29,11 @@ Module EOFCreateKind.
     φ x :=
       match x with
       | Tx initdata =>
-          Value.StructRecord "eof_create_inputs::EOFCreateKind::Tx" [] [] [
+          Value.StructRecord "eof_create_inputs::EOFCreateKind::Tx" [
             ("initdata", φ initdata)
           ]
       | Opcode initcode input created_address =>
-          Value.StructRecord "eof_create_inputs::EOFCreateKind::Opcode" [] [] [
+          Value.StructRecord "eof_create_inputs::EOFCreateKind::Opcode" [
             ("created_address", φ created_address);
             ("initcode", φ initcode);
             ("input", φ input)
@@ -50,7 +50,7 @@ Module EOFCreateKind.
   Instance IsOfValueWith_Tx
       (initdata' : Value.t) {H_initdata : OfValueWith.C (Bytes.t) initdata'}
       :
-    OfValueWith.C t (Value.StructRecord "eof_create_inputs::EOFCreateKind::Tx" [] [] [
+    OfValueWith.C t (Value.StructRecord "eof_create_inputs::EOFCreateKind::Tx" [
       ("initdata", initdata')
     ]) :=
   {
@@ -63,7 +63,7 @@ Module EOFCreateKind.
   Instance IsOfValue_Tx
       (initdata' : Value.t) {H_initdata : OfValueWith.C (Bytes.t) initdata'}
       :
-    OfValue.C (Value.StructRecord "eof_create_inputs::EOFCreateKind::Tx" [] [] [
+    OfValue.C (Value.StructRecord "eof_create_inputs::EOFCreateKind::Tx" [
       ("initdata", initdata')
     ]) :=
   {
@@ -78,7 +78,7 @@ Module EOFCreateKind.
       (initcode' : Value.t) {H_initcode : OfValueWith.C (Eof.t) initcode'}
       (input' : Value.t) {H_input : OfValueWith.C (Bytes.t) input'}
       :
-    OfValueWith.C t (Value.StructRecord "eof_create_inputs::EOFCreateKind::Opcode" [] [] [
+    OfValueWith.C t (Value.StructRecord "eof_create_inputs::EOFCreateKind::Opcode" [
       ("created_address", created_address');
       ("initcode", initcode');
       ("input", input')
@@ -97,7 +97,7 @@ Module EOFCreateKind.
       (initcode' : Value.t) {H_initcode : OfValueWith.C (Eof.t) initcode'}
       (input' : Value.t) {H_input : OfValueWith.C (Bytes.t) input'}
       :
-    OfValue.C (Value.StructRecord "eof_create_inputs::EOFCreateKind::Opcode" [] [] [
+    OfValue.C (Value.StructRecord "eof_create_inputs::EOFCreateKind::Opcode" [
       ("created_address", created_address');
       ("initcode", initcode');
       ("input", input')
@@ -223,7 +223,7 @@ Module EOFCreateInputs.
   Instance IsLink : Link t := {
     Φ := Ty.path "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs";
     φ x :=
-      Value.StructRecord "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs" [] [] [
+      Value.StructRecord "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs" [
         ("caller", φ x.(caller));
         ("gas_limit", φ x.(gas_limit));
         ("kind", φ x.(kind));
@@ -243,7 +243,7 @@ Module EOFCreateInputs.
       (kind' : Value.t) {H_kind : OfValueWith.C (EOFCreateKind.t) kind'}
       (value' : Value.t) {H_value : OfValueWith.C (aliases.U256.t) value'}
       :
-    OfValueWith.C t (Value.StructRecord "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs" [] [] [
+    OfValueWith.C t (Value.StructRecord "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs" [
       ("caller", caller');
       ("gas_limit", gas_limit');
       ("kind", kind');
@@ -265,7 +265,7 @@ Module EOFCreateInputs.
       (kind' : Value.t) {H_kind : OfValueWith.C (EOFCreateKind.t) kind'}
       (value' : Value.t) {H_value : OfValueWith.C (aliases.U256.t) value'}
       :
-    OfValue.C (Value.StructRecord "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs" [] [] [
+    OfValue.C (Value.StructRecord "revm_interpreter::interpreter_action::eof_create_inputs::EOFCreateInputs" [
       ("caller", caller');
       ("gas_limit", gas_limit');
       ("kind", kind');

@@ -84,7 +84,9 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                           M.never_to_any (|
                             M.read (|
                               let~ kind : Ty.path "core::panicking::AssertKind" :=
-                                Value.StructTuple "core::panicking::AssertKind::Eq" [] [] [] in
+                                M.value_with_ty
+                                  (Value.StructTuple "core::panicking::AssertKind::Eq" [])
+                                  (Ty.path "core::panicking::AssertKind") in
                               M.alloc (|
                                 Ty.path "never",
                                 M.call_closure (|
@@ -95,30 +97,42 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                                     [ Ty.path "u64"; Ty.path "u64" ]
                                   |),
                                   [
-                                    M.read (| kind |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| left_val |) |)
+                                    M.value_with_ty
+                                      (M.read (| kind |))
+                                      (Ty.path "core::panicking::AssertKind");
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| left_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    M.borrow (|
-                                      Pointer.Kind.Ref,
-                                      M.deref (|
-                                        M.borrow (|
-                                          Pointer.Kind.Ref,
-                                          M.deref (| M.read (| right_val |) |)
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                    M.value_with_ty
+                                      (M.borrow (|
+                                        Pointer.Kind.Ref,
+                                        M.deref (|
+                                          M.borrow (|
+                                            Pointer.Kind.Ref,
+                                            M.deref (| M.read (| right_val |) |)
+                                          |)
                                         |)
-                                      |)
-                                    |);
-                                    Value.StructTuple
-                                      "core::option::Option::None"
-                                      []
-                                      [ Ty.path "core::fmt::Arguments" ]
-                                      []
+                                      |))
+                                      (Ty.apply (Ty.path "&") [] [ Ty.path "u64" ]);
+                                    M.value_with_ty
+                                      (M.value_with_ty
+                                        (Value.StructTuple "core::option::Option::None" [])
+                                        (Ty.apply
+                                          (Ty.path "core::option::Option")
+                                          []
+                                          [ Ty.path "core::fmt::Arguments" ]))
+                                      (Ty.apply
+                                        (Ty.path "core::option::Option")
+                                        []
+                                        [ Ty.path "core::fmt::Arguments" ])
                                   ]
                                 |)
                               |)

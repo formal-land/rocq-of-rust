@@ -47,23 +47,29 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
     ltac:(M.monadic
       (M.read (|
         let~ _s : Ty.path "generics::Single" :=
-          Value.StructTuple "generics::Single" [] [] [ Value.StructTuple "generics::A" [] [] [] ] in
+          M.value_with_ty
+            (Value.StructTuple
+              "generics::Single"
+              [ M.value_with_ty (Value.StructTuple "generics::A" []) (Ty.path "generics::A") ])
+            (Ty.path "generics::Single") in
         let~ _char : Ty.apply (Ty.path "generics::SingleGen") [] [ Ty.path "char" ] :=
-          Value.StructTuple "generics::SingleGen" [] [ Ty.path "char" ] [ Value.UnicodeChar 97 ] in
+          M.value_with_ty
+            (Value.StructTuple "generics::SingleGen" [ Value.UnicodeChar 97 ])
+            (Ty.apply (Ty.path "generics::SingleGen") [] [ Ty.path "char" ]) in
         let~ _t : Ty.apply (Ty.path "generics::SingleGen") [] [ Ty.path "generics::A" ] :=
-          Value.StructTuple
-            "generics::SingleGen"
-            []
-            [ Ty.path "generics::A" ]
-            [ Value.StructTuple "generics::A" [] [] [] ] in
+          M.value_with_ty
+            (Value.StructTuple
+              "generics::SingleGen"
+              [ M.value_with_ty (Value.StructTuple "generics::A" []) (Ty.path "generics::A") ])
+            (Ty.apply (Ty.path "generics::SingleGen") [] [ Ty.path "generics::A" ]) in
         let~ _i32 : Ty.apply (Ty.path "generics::SingleGen") [] [ Ty.path "i32" ] :=
-          Value.StructTuple
-            "generics::SingleGen"
-            []
-            [ Ty.path "i32" ]
-            [ Value.Integer IntegerKind.I32 6 ] in
+          M.value_with_ty
+            (Value.StructTuple "generics::SingleGen" [ Value.Integer IntegerKind.I32 6 ])
+            (Ty.apply (Ty.path "generics::SingleGen") [] [ Ty.path "i32" ]) in
         let~ _char : Ty.apply (Ty.path "generics::SingleGen") [] [ Ty.path "char" ] :=
-          Value.StructTuple "generics::SingleGen" [] [ Ty.path "char" ] [ Value.UnicodeChar 97 ] in
+          M.value_with_ty
+            (Value.StructTuple "generics::SingleGen" [ Value.UnicodeChar 97 ])
+            (Ty.apply (Ty.path "generics::SingleGen") [] [ Ty.path "char" ]) in
         M.alloc (| Ty.tuple [], Value.Tuple [] |)
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"

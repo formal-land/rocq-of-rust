@@ -43,28 +43,33 @@ Module Impl_core_fmt_Debug_for_combinators_and_then_Food.
           Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.path "core::fmt::Error" ],
           M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.match_operator (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-              self,
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ := M.is_struct_tuple (| γ, "combinators_and_then::Food::CordonBleu" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CordonBleu" |) |) |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ := M.is_struct_tuple (| γ, "combinators_and_then::Food::Steak" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Steak" |) |) |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ := M.is_struct_tuple (| γ, "combinators_and_then::Food::Sushi" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Sushi" |) |) |)))
-              ]
-            |)
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.match_operator (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                self,
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ :=
+                        M.is_struct_tuple (| γ, "combinators_and_then::Food::CordonBleu" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "CordonBleu" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ := M.is_struct_tuple (| γ, "combinators_and_then::Food::Steak" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Steak" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ := M.is_struct_tuple (| γ, "combinators_and_then::Food::Sushi" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Sushi" |) |) |)))
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -121,28 +126,32 @@ Module Impl_core_fmt_Debug_for_combinators_and_then_Day.
           Ty.apply (Ty.path "core::result::Result") [] [ Ty.tuple []; Ty.path "core::fmt::Error" ],
           M.get_associated_function (| Ty.path "core::fmt::Formatter", "write_str", [], [] |),
           [
-            M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |);
-            M.match_operator (|
-              Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
-              self,
-              [
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ := M.is_struct_tuple (| γ, "combinators_and_then::Day::Monday" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Monday" |) |) |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ := M.is_struct_tuple (| γ, "combinators_and_then::Day::Tuesday" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Tuesday" |) |) |)));
-                fun γ =>
-                  ltac:(M.monadic
-                    (let γ := M.deref (| M.read (| γ |) |) in
-                    let _ := M.is_struct_tuple (| γ, "combinators_and_then::Day::Wednesday" |) in
-                    M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Wednesday" |) |) |)))
-              ]
-            |)
+            M.value_with_ty
+              (M.borrow (| Pointer.Kind.MutRef, M.deref (| M.read (| f |) |) |))
+              (Ty.apply (Ty.path "&mut") [] [ Ty.path "core::fmt::Formatter" ]);
+            M.value_with_ty
+              (M.match_operator (|
+                Ty.apply (Ty.path "&") [] [ Ty.path "str" ],
+                self,
+                [
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ := M.is_struct_tuple (| γ, "combinators_and_then::Day::Monday" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Monday" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ := M.is_struct_tuple (| γ, "combinators_and_then::Day::Tuesday" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Tuesday" |) |) |)));
+                  fun γ =>
+                    ltac:(M.monadic
+                      (let γ := M.deref (| M.read (| γ |) |) in
+                      let _ := M.is_struct_tuple (| γ, "combinators_and_then::Day::Wednesday" |) in
+                      M.borrow (| Pointer.Kind.Ref, M.deref (| mk_str (| "Wednesday" |) |) |)))
+                ]
+              |))
+              (Ty.apply (Ty.path "&") [] [ Ty.path "str" ])
           ]
         |)))
     | _, _, _ => M.impossible "wrong number of arguments"
@@ -177,18 +186,20 @@ Definition have_ingredients (ε : list Value.t) (τ : list Ty.t) (α : list Valu
           fun γ =>
             ltac:(M.monadic
               (let _ := M.is_struct_tuple (| γ, "combinators_and_then::Food::Sushi" |) in
-              Value.StructTuple
-                "core::option::Option::None"
-                []
-                [ Ty.path "combinators_and_then::Food" ]
-                []));
+              M.value_with_ty
+                (Value.StructTuple "core::option::Option::None" [])
+                (Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.path "combinators_and_then::Food" ])));
           fun γ =>
             ltac:(M.monadic
-              (Value.StructTuple
-                "core::option::Option::Some"
-                []
-                [ Ty.path "combinators_and_then::Food" ]
-                [ M.read (| food |) ]))
+              (M.value_with_ty
+                (Value.StructTuple "core::option::Option::Some" [ M.read (| food |) ])
+                (Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.path "combinators_and_then::Food" ])))
         ]
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"
@@ -219,18 +230,20 @@ Definition have_recipe (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
           fun γ =>
             ltac:(M.monadic
               (let _ := M.is_struct_tuple (| γ, "combinators_and_then::Food::CordonBleu" |) in
-              Value.StructTuple
-                "core::option::Option::None"
-                []
-                [ Ty.path "combinators_and_then::Food" ]
-                []));
+              M.value_with_ty
+                (Value.StructTuple "core::option::Option::None" [])
+                (Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.path "combinators_and_then::Food" ])));
           fun γ =>
             ltac:(M.monadic
-              (Value.StructTuple
-                "core::option::Option::Some"
-                []
-                [ Ty.path "combinators_and_then::Food" ]
-                [ M.read (| food |) ]))
+              (M.value_with_ty
+                (Value.StructTuple "core::option::Option::Some" [ M.read (| food |) ])
+                (Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.path "combinators_and_then::Food" ])))
         ]
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"
@@ -264,18 +277,19 @@ Definition cookable_v1 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
           M.call_closure (|
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_and_then::Food" ],
             M.get_function (| "combinators_and_then::have_recipe", [], [] |),
-            [ M.read (| food |) ]
+            [ M.value_with_ty (M.read (| food |)) (Ty.path "combinators_and_then::Food") ]
           |)
         |),
         [
           fun γ =>
             ltac:(M.monadic
               (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-              Value.StructTuple
-                "core::option::Option::None"
-                []
-                [ Ty.path "combinators_and_then::Food" ]
-                []));
+              M.value_with_ty
+                (Value.StructTuple "core::option::Option::None" [])
+                (Ty.apply
+                  (Ty.path "core::option::Option")
+                  []
+                  [ Ty.path "combinators_and_then::Food" ])));
           fun γ =>
             ltac:(M.monadic
               (let γ0_0 :=
@@ -297,18 +311,19 @@ Definition cookable_v1 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
                       []
                       [ Ty.path "combinators_and_then::Food" ],
                     M.get_function (| "combinators_and_then::have_ingredients", [], [] |),
-                    [ M.read (| food |) ]
+                    [ M.value_with_ty (M.read (| food |)) (Ty.path "combinators_and_then::Food") ]
                   |)
                 |),
                 [
                   fun γ =>
                     ltac:(M.monadic
                       (let _ := M.is_struct_tuple (| γ, "core::option::Option::None" |) in
-                      Value.StructTuple
-                        "core::option::Option::None"
-                        []
-                        [ Ty.path "combinators_and_then::Food" ]
-                        []));
+                      M.value_with_ty
+                        (Value.StructTuple "core::option::Option::None" [])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.path "combinators_and_then::Food" ])));
                   fun γ =>
                     ltac:(M.monadic
                       (let γ0_0 :=
@@ -318,11 +333,12 @@ Definition cookable_v1 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
                           0
                         |) in
                       let food := M.copy (| Ty.path "combinators_and_then::Food", γ0_0 |) in
-                      Value.StructTuple
-                        "core::option::Option::Some"
-                        []
-                        [ Ty.path "combinators_and_then::Food" ]
-                        [ M.read (| food |) ]))
+                      M.value_with_ty
+                        (Value.StructTuple "core::option::Option::Some" [ M.read (| food |) ])
+                        (Ty.apply
+                          (Ty.path "core::option::Option")
+                          []
+                          [ Ty.path "combinators_and_then::Food" ])))
                 ]
               |)))
         ]
@@ -362,12 +378,21 @@ Definition cookable_v2 (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) 
           ]
         |),
         [
-          M.call_closure (|
-            Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_and_then::Food" ],
-            M.get_function (| "combinators_and_then::have_recipe", [], [] |),
-            [ M.read (| food |) ]
-          |);
-          M.get_function (| "combinators_and_then::have_ingredients", [], [] |)
+          M.value_with_ty
+            (M.call_closure (|
+              Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_and_then::Food" ],
+              M.get_function (| "combinators_and_then::have_recipe", [], [] |),
+              [ M.value_with_ty (M.read (| food |)) (Ty.path "combinators_and_then::Food") ]
+            |))
+            (Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_and_then::Food" ]);
+          M.value_with_ty
+            (M.get_function (| "combinators_and_then::have_ingredients", [], [] |))
+            (Ty.function
+              [ Ty.path "combinators_and_then::Food" ]
+              (Ty.apply
+                (Ty.path "core::option::Option")
+                []
+                [ Ty.path "combinators_and_then::Food" ]))
         ]
       |)))
   | _, _, _ => M.impossible "wrong number of arguments"
@@ -399,7 +424,7 @@ Definition eat (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
           M.call_closure (|
             Ty.apply (Ty.path "core::option::Option") [] [ Ty.path "combinators_and_then::Food" ],
             M.get_function (| "combinators_and_then::cookable_v2", [], [] |),
-            [ M.read (| food |) ]
+            [ M.value_with_ty (M.read (| food |)) (Ty.path "combinators_and_then::Food") ]
           |)
         |),
         [
@@ -414,85 +439,120 @@ Definition eat (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Ty.tuple [],
                     M.get_function (| "std::io::stdio::_print", [], [] |),
                     [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 3; Value.Integer IntegerKind.Usize 2 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 3; Value.Integer IntegerKind.Usize 2
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 3 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [
+                                          mk_str (| "Yay! On " |);
+                                          mk_str (| " we get to eat " |);
+                                          mk_str (| ".
+" |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 3 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (| "Yay! On " |);
-                                      mk_str (| " we get to eat " |);
-                                      mk_str (| ".
-" |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      Value.Array
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_debug",
+                                              [],
+                                              [ Ty.path "combinators_and_then::Day" ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, day |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.path "combinators_and_then::Day" ])
+                                            ]
+                                          |);
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_debug",
+                                              [],
+                                              [ Ty.path "combinators_and_then::Food" ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (|
+                                                    M.borrow (| Pointer.Kind.Ref, food |)
+                                                  |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.path "combinators_and_then::Food" ])
+                                            ]
+                                          |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_debug",
-                                          [],
-                                          [ Ty.path "combinators_and_then::Day" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, day |) |)
-                                          |)
-                                        ]
-                                      |);
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_debug",
-                                          [],
-                                          [ Ty.path "combinators_and_then::Food" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, food |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -506,69 +566,97 @@ Definition eat (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Ty.tuple [],
                     M.get_function (| "std::io::stdio::_print", [], [] |),
                     [
-                      M.call_closure (|
-                        Ty.path "core::fmt::Arguments",
-                        M.get_associated_function (|
+                      M.value_with_ty
+                        (M.call_closure (|
                           Ty.path "core::fmt::Arguments",
-                          "new_v1",
-                          [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1 ],
-                          []
-                        |),
-                        [
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                          M.get_associated_function (|
+                            Ty.path "core::fmt::Arguments",
+                            "new_v1",
+                            [ Value.Integer IntegerKind.Usize 2; Value.Integer IntegerKind.Usize 1
+                            ],
+                            []
+                          |),
+                          [
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 2 ]
+                                        [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
+                                      Value.Array
+                                        [
+                                          mk_str (| "Oh no. We don't get to eat on " |);
+                                          mk_str (| "?
+" |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 2 ]
-                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ],
-                                  Value.Array
-                                    [
-                                      mk_str (| "Oh no. We don't get to eat on " |);
-                                      mk_str (| "?
-" |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |);
-                          M.borrow (|
-                            Pointer.Kind.Ref,
-                            M.deref (|
-                              M.borrow (|
+                                    [ Ty.apply (Ty.path "&") [] [ Ty.path "str" ] ]
+                                ]);
+                            M.value_with_ty
+                              (M.borrow (|
                                 Pointer.Kind.Ref,
-                                M.alloc (|
+                                M.deref (|
+                                  M.borrow (|
+                                    Pointer.Kind.Ref,
+                                    M.alloc (|
+                                      Ty.apply
+                                        (Ty.path "array")
+                                        [ Value.Integer IntegerKind.Usize 1 ]
+                                        [ Ty.path "core::fmt::rt::Argument" ],
+                                      Value.Array
+                                        [
+                                          M.call_closure (|
+                                            Ty.path "core::fmt::rt::Argument",
+                                            M.get_associated_function (|
+                                              Ty.path "core::fmt::rt::Argument",
+                                              "new_debug",
+                                              [],
+                                              [ Ty.path "combinators_and_then::Day" ]
+                                            |),
+                                            [
+                                              M.value_with_ty
+                                                (M.borrow (|
+                                                  Pointer.Kind.Ref,
+                                                  M.deref (| M.borrow (| Pointer.Kind.Ref, day |) |)
+                                                |))
+                                                (Ty.apply
+                                                  (Ty.path "&")
+                                                  []
+                                                  [ Ty.path "combinators_and_then::Day" ])
+                                            ]
+                                          |)
+                                        ]
+                                    |)
+                                  |)
+                                |)
+                              |))
+                              (Ty.apply
+                                (Ty.path "&")
+                                []
+                                [
                                   Ty.apply
                                     (Ty.path "array")
                                     [ Value.Integer IntegerKind.Usize 1 ]
-                                    [ Ty.path "core::fmt::rt::Argument" ],
-                                  Value.Array
-                                    [
-                                      M.call_closure (|
-                                        Ty.path "core::fmt::rt::Argument",
-                                        M.get_associated_function (|
-                                          Ty.path "core::fmt::rt::Argument",
-                                          "new_debug",
-                                          [],
-                                          [ Ty.path "combinators_and_then::Day" ]
-                                        |),
-                                        [
-                                          M.borrow (|
-                                            Pointer.Kind.Ref,
-                                            M.deref (| M.borrow (| Pointer.Kind.Ref, day |) |)
-                                          |)
-                                        ]
-                                      |)
-                                    ]
-                                |)
-                              |)
-                            |)
-                          |)
-                        ]
-                      |)
+                                    [ Ty.path "core::fmt::rt::Argument" ]
+                                ])
+                          ]
+                        |))
+                        (Ty.path "core::fmt::Arguments")
                     ]
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)
@@ -606,9 +694,15 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
             ],
           Value.Tuple
             [
-              Value.StructTuple "combinators_and_then::Food::CordonBleu" [] [] [];
-              Value.StructTuple "combinators_and_then::Food::Steak" [] [] [];
-              Value.StructTuple "combinators_and_then::Food::Sushi" [] [] []
+              M.value_with_ty
+                (Value.StructTuple "combinators_and_then::Food::CordonBleu" [])
+                (Ty.path "combinators_and_then::Food");
+              M.value_with_ty
+                (Value.StructTuple "combinators_and_then::Food::Steak" [])
+                (Ty.path "combinators_and_then::Food");
+              M.value_with_ty
+                (Value.StructTuple "combinators_and_then::Food::Sushi" [])
+                (Ty.path "combinators_and_then::Food")
             ]
         |),
         [
@@ -626,8 +720,14 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Ty.tuple [],
                     M.get_function (| "combinators_and_then::eat", [], [] |),
                     [
-                      M.read (| cordon_bleu |);
-                      Value.StructTuple "combinators_and_then::Day::Monday" [] [] []
+                      M.value_with_ty
+                        (M.read (| cordon_bleu |))
+                        (Ty.path "combinators_and_then::Food");
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "combinators_and_then::Day::Monday" [])
+                          (Ty.path "combinators_and_then::Day"))
+                        (Ty.path "combinators_and_then::Day")
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -635,8 +735,12 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Ty.tuple [],
                     M.get_function (| "combinators_and_then::eat", [], [] |),
                     [
-                      M.read (| steak |);
-                      Value.StructTuple "combinators_and_then::Day::Tuesday" [] [] []
+                      M.value_with_ty (M.read (| steak |)) (Ty.path "combinators_and_then::Food");
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "combinators_and_then::Day::Tuesday" [])
+                          (Ty.path "combinators_and_then::Day"))
+                        (Ty.path "combinators_and_then::Day")
                     ]
                   |) in
                 let~ _ : Ty.tuple [] :=
@@ -644,8 +748,12 @@ Definition main (ε : list Value.t) (τ : list Ty.t) (α : list Value.t) : M :=
                     Ty.tuple [],
                     M.get_function (| "combinators_and_then::eat", [], [] |),
                     [
-                      M.read (| sushi |);
-                      Value.StructTuple "combinators_and_then::Day::Wednesday" [] [] []
+                      M.value_with_ty (M.read (| sushi |)) (Ty.path "combinators_and_then::Food");
+                      M.value_with_ty
+                        (M.value_with_ty
+                          (Value.StructTuple "combinators_and_then::Day::Wednesday" [])
+                          (Ty.path "combinators_and_then::Day"))
+                        (Ty.path "combinators_and_then::Day")
                     ]
                   |) in
                 M.alloc (| Ty.tuple [], Value.Tuple [] |)

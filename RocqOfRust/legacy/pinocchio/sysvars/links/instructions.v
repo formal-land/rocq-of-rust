@@ -24,7 +24,7 @@ Module instruction.
     Global Instance IsLink (T : Set) `{Link T} : Link (t T) := {
       Φ := Ty.path "pinocchio::sysvars::instruction::Instructions";
       φ x :=
-        Value.StructRecord "pinocchio::sysvars::instruction::Instructions" [] [] [
+        Value.StructRecord "pinocchio::sysvars::instruction::Instructions" [
           ("data", φ x.(data T))
         ];
     }.
@@ -44,7 +44,7 @@ Module instruction.
     Global Instance IsLink : Link t := {
       Φ := Ty.path "pinocchio::sysvars::instruction::IntrospectedInstruction";
       φ x :=
-        Value.StructRecord "pinocchio::sysvars::instruction::IntrospectedInstruction" [] [] [
+        Value.StructRecord "pinocchio::sysvars::instruction::IntrospectedInstruction" [
           ("raw", φ x.(raw));
           ("marker", Value.Tuple [])
         ];
@@ -64,7 +64,7 @@ Module instruction.
     Global Instance IsLink : Link t := {
       Φ := Ty.path "pinocchio::sysvars::instruction::IntrospectedAccountMeta";
       φ x :=
-        Value.StructRecord "pinocchio::sysvars::instruction::IntrospectedAccountMeta" [] [] [
+        Value.StructRecord "pinocchio::sysvars::instruction::IntrospectedAccountMeta" [
           ("flags", φ x.(flags));
           ("key", φ x.(key))
         ];
